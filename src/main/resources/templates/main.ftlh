@@ -10,7 +10,7 @@
 
         <div class="event-card">
             <div class="event-date">29 мая 2025 09:00</div>
-            <h2>🎯 КИТ ФОРУМ 2025 принимает заявки от спикеров!</h2>
+            <h3>🎯 КИТ ФОРУМ 2025 принимает заявки от спикеров!</h3>
             <div class="event-details">
                 <div class="event-detail">
                     <div class="event-detail-label">Организатор</div>
@@ -134,10 +134,9 @@
                 </div>
             </div>
         </div>
-
         <div class="my-5">
             <h3 class="mb-4">Предстоящие соревнования</h3>
-            <div class="carousel-wrapper">
+            <div class="carousel-wrapper position-relative">
                 <button class="carousel-nav-btn carousel-btn-prev"
                         type="button"
                         data-bs-target="#competitionsCarousel"
@@ -147,30 +146,34 @@
 
                 <div id="competitionsCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
+
+                        <!-- Первый слайд -->
                         <div class="carousel-item active">
                             <div class="row g-3">
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" class="card-img-top"  alt="">
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
                                         <h5 class="mt-2">TSI Programming Contest</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-12 col-md-4 d-none d-md-block">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" alt="">
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
                                         <h5 class="mt-2">IT Кубок Кыргызстана 2025</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-12 col-md-4 d-none d-md-block">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" alt="">
-                                        <h5 class="mt-2">Республиканская Олимпиада Школьников</h5>
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
+                                        <h5 class="mt-2">Республиканская Олимпиада</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
@@ -179,30 +182,33 @@
                             </div>
                         </div>
 
+                        <!-- Второй слайд -->
                         <div class="carousel-item">
                             <div class="row g-3">
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" alt="">
-                                        <h5 class="mt-2">ACM ICPC Regional Contest</h5>
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
+                                        <h5 class="mt-2">ACM ICPC Regional</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-12 col-md-4 d-none d-md-block">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" alt="">
-                                        <h5 class="mt-2">Machine Learning Challenge</h5>
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
+                                        <h5 class="mt-2">ML Challenge</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-12 col-md-4 d-none d-md-block">
                                     <div class="competition-card d-flex flex-column h-100 border p-2 rounded">
-                                        <img src="../static/images/photo_logo1.webp" alt="">
-                                        <h5 class="mt-2">Web Development Championship</h5>
+                                        <img src="../static/images/photo_logo1.webp" class="card-img-top" alt="">
+                                        <h5 class="mt-2">Web Dev Championship</h5>
                                         <div class="card-footer mt-auto">
                                             <small class="competition-link">Подробнее →</small>
                                         </div>
@@ -210,6 +216,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
