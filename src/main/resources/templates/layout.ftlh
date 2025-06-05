@@ -11,14 +11,32 @@
               integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
               crossorigin="anonymous">
         <link rel="stylesheet" href="../static/css/layout.css">
+        <style>
+            .navbar > .container-fluid {
+                padding-left: 15px;
+                padding-right: 15px;
+                max-width: 1400px;
+            }
+
+            .navbar-collapse {
+                justify-content: flex-end !important;
+            }
+
+            .navbar-nav.ms-auto {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .left-padding {
+                padding-left: 280px;
+            }
+        </style>
     </head>
     <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container-fluid" style="max-width: 1400px;">
+        <div class="container-fluid">
             <div class="d-flex align-items-center me-3">
-                <a href="/"
-                   class="logo-custom d-flex align-items-center justify-content-center text-white fw-bold fs-5 text-decoration-none me-3">🎓</a>
+                <a href="/" class="logo-custom d-flex align-items-center justify-content-center text-white fw-bold fs-5 text-decoration-none me-3">🎓</a>
                 <div class="text-dark fw-semibold lh-sm d-none d-md-block" style="font-size: 12px; max-width: 200px;">
                     МИНИСТЕРСТВО ОБРАЗОВАНИЯ<br>И НАУКИ КЫРГЫЗСКОЙ РЕСПУБЛИКИ
                 </div>
@@ -28,69 +46,51 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Олимпиады</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom px-3 py-2" href="#">SAT</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Книги</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Публикации</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Блог</a>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav ms-auto">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Олимпиады</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">SAT</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Книги</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Публикации</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Блог</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            🌐 Русский
-                        </a>
+                        <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">🌐 Русский</a>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
                             <li><a class="dropdown-item" href="#">🇷🇺 Русский</a></li>
                             <li><a class="dropdown-item" href="#">🇰🇬 Кыргызча</a></li>
                             <li><a class="dropdown-item" href="#">🇺🇸 English</a></li>
                         </ul>
                     </li>
+                </ul>
+
+                <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-auth px-4 py-2 ms-3" href="#">Войти</a>
+                        <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="#">Войти</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Нижний navbar -->
     <nav class="navbar navbar-expand-lg bg-light border-bottom py-2">
-        <div class="container-fluid" style="max-width: 1400px;">
+        <div class="container-fluid">
             <div class="collapse navbar-collapse" id="secondaryNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2" href="#">Мероприятия</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2" href="#">Новости</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2" href="#">О проекте</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2" href="#">Контакты</a>
-                    </li>
+                <ul class="navbar-nav left-padding">
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Мероприятия</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Новости</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">О проекте</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Контакты</a></li>
                 </ul>
 
-                <div class="d-flex align-items-center">
-                    <a href="#" class="btn btn-outline-primary btn-sm me-2">Регистрация</a>
-                </div>
+                <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
+                    <li class="nav-item">
+                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
+
 
     <div class="container-fluid" style="max-width: 1400px;">
         <#nested spring>

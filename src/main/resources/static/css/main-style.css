@@ -46,8 +46,8 @@ body {
     margin-bottom: 8px;
 }
 
-.event-card h3 {
-    font-size: 10px;
+.event-card h2 {
+    font-size: 15px;
     margin: 10px 0 16px 0;
     font-weight: 500;
     line-height: 1.3;
