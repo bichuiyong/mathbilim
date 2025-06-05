@@ -7,9 +7,9 @@ spring:
     version: 1.0.2
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: qwerty
+    url: jdbc:postgresql://localhost:5432/mathbilim
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
 
   liquibase:
