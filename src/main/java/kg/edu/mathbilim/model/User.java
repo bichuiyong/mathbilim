@@ -37,7 +37,8 @@ public class User {
 
     private LocalDateTime updatedAt;
 
-    private String resetPasswordToken;
+// Данного поля нет в таблице
+//    private String resetPasswordToken;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -47,9 +48,10 @@ public class User {
     @JoinColumn(name = "type_id")
     private UserType type;
 
-    @OneToMany(mappedBy = "author")
-    private List<User> authorList = new ArrayList<>();
+// Код ниже вызывает ошибку
+//    @OneToMany(mappedBy = "author")
+//    private List<User> authorList = new ArrayList<>();
 
     @OneToMany(mappedBy = "approvedBy")
-    private List<User> approvedByList = new ArrayList<>();
+    private List<Content> approvedByList = new ArrayList<>();
 }

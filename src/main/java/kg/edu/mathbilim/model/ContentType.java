@@ -18,7 +18,7 @@ import java.util.Set;
 public class ContentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -29,6 +29,7 @@ public class ContentType {
     @OneToMany(mappedBy = "parent")
     private Set<ContentType> children = new HashSet<>();
 
-    @OneToMany(mappedBy = "type")
-    private List<ContentType> typeList = new ArrayList<>();
+// Код ниже вызывает ошибки
+//    @OneToMany(mappedBy = "type")
+//    private List<ContentType> typeList = new ArrayList<>();
 }
