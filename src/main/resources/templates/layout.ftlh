@@ -66,7 +66,7 @@
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
                     <#if !known>
                         <li class="nav-item">
-                            <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="#">Войти</a>
+                            <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="/auth/login">Войти</a>
                         </li>
                     </#if>
 
@@ -88,7 +88,7 @@
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
                     <#if !known>
                         <li class="nav-item">
-                            <a href="#" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
+                            <a href="/auth/register" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
                         </li>
                     </#if>
                 </ul>
