@@ -1,4 +1,4 @@
--- changeset Aisha: 008 create content table
+-- changeset Aisha: 009 create content table
 create table content
 (
     id             bigserial primary key,
