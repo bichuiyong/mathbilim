@@ -20,6 +20,7 @@ public class ContentStatus {
 
     private String name;
 
-    @OneToMany(mappedBy = "status")
-    private List<ContentStatus> contentStatusList = new ArrayList<>();
+// Код ниже вызывает ошибки
+//    @OneToMany(mappedBy = "status")
+//    private List<ContentStatus> contentStatusList = new ArrayList<>();
 }

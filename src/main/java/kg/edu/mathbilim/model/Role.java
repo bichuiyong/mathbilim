@@ -18,19 +18,19 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true, nullable = false)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_authorities",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private Set<Authority> authorities = new HashSet<>();
-
-    @OneToMany(mappedBy = "role")
-    private List<Role> roleList = new ArrayList<>();
+// Код ниже вызывает ошибки
+//    @OneToMany(mappedBy = "role")
+//    private List<Role> roleList = new ArrayList<>();
 }

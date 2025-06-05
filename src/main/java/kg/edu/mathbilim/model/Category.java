@@ -18,7 +18,7 @@ import java.util.Set;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -28,7 +28,7 @@ public class Category {
 
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
-
-    @OneToMany(mappedBy = "category")
-    private List<Category> categoryList = new ArrayList<>();
+// Поле вызывает ошибку
+//    @OneToMany(mappedBy = "category")
+//    private List<Category> categoryList = new ArrayList<>();
 }
