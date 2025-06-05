@@ -1,0 +1,169 @@
+2025-06-05T12:46:05.689+06:00  INFO 2408 --- [Math Bilim] [main] kg.edu.mathbilim.MathbilimApplication    : Starting MathbilimApplication v1.0.2 using Java 21.0.4 with PID 2408 (C:\Users\erik\IdeaProjects\mathbilim\target\classes started by erik in C:\Users\erik\IdeaProjects\mathbilim)
+2025-06-05T12:46:05.692+06:00  INFO 2408 --- [Math Bilim] [main] kg.edu.mathbilim.MathbilimApplication    : No active profile set, falling back to 1 default profile: "default"
+2025-06-05T12:46:06.325+06:00  INFO 2408 --- [Math Bilim] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-05T12:46:06.344+06:00  INFO 2408 --- [Math Bilim] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 JPA repository interfaces.
+2025-06-05T12:46:06.726+06:00  INFO 2408 --- [Math Bilim] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 9999 (http)
+2025-06-05T12:46:06.739+06:00  INFO 2408 --- [Math Bilim] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-05T12:46:06.739+06:00  INFO 2408 --- [Math Bilim] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-05T12:46:06.788+06:00  INFO 2408 --- [Math Bilim] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-05T12:46:06.788+06:00  INFO 2408 --- [Math Bilim] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1065 ms
+2025-06-05T12:46:06.914+06:00  INFO 2408 --- [Math Bilim] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-05T12:46:08.033+06:00  WARN 2408 --- [Math Bilim] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'liquibase' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.DatabaseException: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+2025-06-05T12:46:08.036+06:00  INFO 2408 --- [Math Bilim] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-06-05T12:46:08.047+06:00  INFO 2408 --- [Math Bilim] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-06-05T12:46:08.060+06:00 ERROR 2408 --- [Math Bilim] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'liquibase' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.DatabaseException: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:328) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.7.jar:6.2.7]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.7.jar:6.2.7]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.0.jar:3.5.0]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753) ~[spring-boot-3.5.0.jar:3.5.0]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.0.jar:3.5.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.0.jar:3.5.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362) ~[spring-boot-3.5.0.jar:3.5.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351) ~[spring-boot-3.5.0.jar:3.5.0]
+	at kg.edu.mathbilim.MathbilimApplication.main(MathbilimApplication.java:10) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.DatabaseException: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315) ~[spring-beans-6.2.7.jar:6.2.7]
+	... 10 common frames omitted
+Caused by: liquibase.exception.LiquibaseException: liquibase.exception.DatabaseException: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+	at liquibase.integration.spring.SpringLiquibase.afterPropertiesSet(SpringLiquibase.java:288) ~[liquibase-core-4.31.1.jar:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.7.jar:6.2.7]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.7.jar:6.2.7]
+	... 17 common frames omitted
+Caused by: liquibase.exception.DatabaseException: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+	at liquibase.integration.spring.SpringLiquibase.lambda$afterPropertiesSet$0(SpringLiquibase.java:280) ~[liquibase-core-4.31.1.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:201) ~[liquibase-core-4.31.1.jar:na]
+	at liquibase.Scope.child(Scope.java:210) ~[liquibase-core-4.31.1.jar:na]
+	at liquibase.Scope.child(Scope.java:200) ~[liquibase-core-4.31.1.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.31.1.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.afterPropertiesSet(SpringLiquibase.java:271) ~[liquibase-core-4.31.1.jar:na]
+	... 19 common frames omitted
+Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "sa"
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:752) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:234) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.6.jar:42.7.6]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.6.jar:42.7.6]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:139) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:483) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:571) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:101) ~[HikariCP-6.3.0.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-6.3.0.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.lambda$afterPropertiesSet$0(SpringLiquibase.java:275) ~[liquibase-core-4.31.1.jar:na]
+	... 24 common frames omitted
+
+2025-06-05T16:07:22.603+06:00  INFO 14692 --- [Math Bilim] [main] kg.edu.mathbilim.MathbilimApplication    : Starting MathbilimApplication v1.0.2 using Java 21.0.4 with PID 14692 (C:\Users\erik\IdeaProjects\mathbilim\target\classes started by erik in C:\Users\erik\IdeaProjects\mathbilim)
+2025-06-05T16:07:22.604+06:00  INFO 14692 --- [Math Bilim] [main] kg.edu.mathbilim.MathbilimApplication    : No active profile set, falling back to 1 default profile: "default"
+2025-06-05T16:07:23.068+06:00  INFO 14692 --- [Math Bilim] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-05T16:07:23.079+06:00  INFO 14692 --- [Math Bilim] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2025-06-05T16:07:23.334+06:00  INFO 14692 --- [Math Bilim] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 9999 (http)
+2025-06-05T16:07:23.342+06:00  INFO 14692 --- [Math Bilim] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-05T16:07:23.342+06:00  INFO 14692 --- [Math Bilim] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-05T16:07:23.377+06:00  INFO 14692 --- [Math Bilim] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-05T16:07:23.378+06:00  INFO 14692 --- [Math Bilim] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 745 ms
+2025-06-05T16:07:23.478+06:00  INFO 14692 --- [Math Bilim] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-05T16:07:23.613+06:00  INFO 14692 --- [Math Bilim] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5e193ef5
+2025-06-05T16:07:23.615+06:00  INFO 14692 --- [Math Bilim] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-05T16:07:23.755+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.database                       : Set default schema name to public
+2025-06-05T16:07:23.884+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/001_create_authorities.sql
+2025-06-05T16:07:23.961+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.snapshot                       : Creating snapshot
+2025-06-05T16:07:23.979+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2025-06-05T16:07:24.015+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/002_create_roles.sql
+2025-06-05T16:07:24.027+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/003_create_role_authorities.sql
+2025-06-05T16:07:24.033+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/004_create_user_types.sql
+2025-06-05T16:07:24.038+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/005_create_users.sql
+2025-06-05T16:07:24.045+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/006_create_сategories.sql
+2025-06-05T16:07:24.051+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/007_create_content_types.sql
+2025-06-05T16:07:24.057+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/008_create_statuses.sql
+2025-06-05T16:07:24.063+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/009_create_contents.sql
+2025-06-05T16:07:24.070+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/010_create_media_types.sql
+2025-06-05T16:07:24.075+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading resource: db/changelog/initial/011_create_medias.sql
+2025-06-05T16:07:24.086+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.snapshot                       : Creating snapshot
+2025-06-05T16:07:24.136+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.lockservice                    : Successfully acquired change log lock
+2025-06-05T16:07:24.137+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.command                        : Using deploymentId: 9118043460
+2025-06-05T16:07:24.138+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-06-05T16:07:24.162+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/001_create_authorities.sql::raw::includeAll
+2025-06-05T16:07:24.179+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.181+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/001_create_authorities.sql::raw::includeAll ran successfully in 18ms
+2025-06-05T16:07:24.186+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/002_create_roles.sql::raw::includeAll
+2025-06-05T16:07:24.191+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.193+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/002_create_roles.sql::raw::includeAll ran successfully in 5ms
+2025-06-05T16:07:24.195+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/003_create_role_authorities.sql::raw::includeAll
+2025-06-05T16:07:24.203+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.204+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/003_create_role_authorities.sql::raw::includeAll ran successfully in 9ms
+2025-06-05T16:07:24.205+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/004_create_user_types.sql::raw::includeAll
+2025-06-05T16:07:24.209+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.209+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/004_create_user_types.sql::raw::includeAll ran successfully in 3ms
+2025-06-05T16:07:24.211+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/005_create_users.sql::raw::includeAll
+2025-06-05T16:07:24.219+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.221+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/005_create_users.sql::raw::includeAll ran successfully in 9ms
+2025-06-05T16:07:24.222+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/006_create_сategories.sql::raw::includeAll
+2025-06-05T16:07:24.226+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.227+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/006_create_сategories.sql::raw::includeAll ran successfully in 4ms
+2025-06-05T16:07:24.228+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/007_create_content_types.sql::raw::includeAll
+2025-06-05T16:07:24.233+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.233+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/007_create_content_types.sql::raw::includeAll ran successfully in 4ms
+2025-06-05T16:07:24.235+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/008_create_statuses.sql::raw::includeAll
+2025-06-05T16:07:24.238+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.239+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/008_create_statuses.sql::raw::includeAll ran successfully in 3ms
+2025-06-05T16:07:24.241+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/009_create_contents.sql::raw::includeAll
+2025-06-05T16:07:24.247+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.248+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/009_create_contents.sql::raw::includeAll ran successfully in 7ms
+2025-06-05T16:07:24.249+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/010_create_media_types.sql::raw::includeAll
+2025-06-05T16:07:24.253+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.253+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/010_create_media_types.sql::raw::includeAll ran successfully in 2ms
+2025-06-05T16:07:24.255+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Running Changeset: db/changelog/initial/011_create_medias.sql::raw::includeAll
+2025-06-05T16:07:24.260+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : Custom SQL executed
+2025-06-05T16:07:24.261+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.changelog                      : ChangeSet db/changelog/initial/011_create_medias.sql::raw::includeAll ran successfully in 5ms
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : UPDATE SUMMARY
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : Run:                         11
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : Previously run:               0
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : Filtered out:                 0
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : -------------------------------
+2025-06-05T16:07:24.266+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : Total change sets:           11
+2025-06-05T16:07:24.267+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.util                           : Update summary generated
+2025-06-05T16:07:24.268+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.command                        : Update command completed successfully.
+2025-06-05T16:07:24.268+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.ui                             : Liquibase: Update has been successful. Rows affected: 11
+2025-06-05T16:07:24.270+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.lockservice                    : Successfully released change log lock
+2025-06-05T16:07:24.271+06:00  INFO 14692 --- [Math Bilim] [main] liquibase.command                        : Command execution complete
+2025-06-05T16:07:24.838+06:00  INFO 14692 --- [Math Bilim] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-05T16:07:24.899+06:00  INFO 14692 --- [Math Bilim] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-05T16:07:24.931+06:00  INFO 14692 --- [Math Bilim] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-05T16:07:25.166+06:00  INFO 14692 --- [Math Bilim] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-05T16:07:25.234+06:00  INFO 14692 --- [Math Bilim] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.2
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-05T16:07:25.510+06:00  INFO 14692 --- [Math Bilim] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-05T16:07:25.513+06:00  INFO 14692 --- [Math Bilim] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-05T16:07:25.594+06:00  WARN 14692 --- [Math Bilim] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-05T16:07:25.940+06:00  WARN 14692 --- [Math Bilim] [main] o.s.b.a.f.FreeMarkerAutoConfiguration    : Cannot find template location: [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.check-template-location=false)
+2025-06-05T16:07:26.007+06:00  INFO 14692 --- [Math Bilim] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-06-05T16:07:26.069+06:00 DEBUG 14692 --- [Math Bilim] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, DefaultResourcesFilter, DefaultLoginPageGeneratingFilter, DefaultLogoutPageGeneratingFilter, BasicAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-06-05T16:07:26.112+06:00  INFO 14692 --- [Math Bilim] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 9999 (http) with context path '/'
+2025-06-05T16:07:26.117+06:00  INFO 14692 --- [Math Bilim] [main] kg.edu.mathbilim.MathbilimApplication    : Started MathbilimApplication in 3.871 seconds (process running for 4.311)
+2025-06-05T16:19:11.613+06:00  INFO 14692 --- [Math Bilim] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-05T16:19:11.620+06:00  INFO 14692 --- [Math Bilim] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-05T16:19:11.620+06:00  INFO 14692 --- [Math Bilim] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-05T16:19:11.620+06:00  INFO 14692 --- [Math Bilim] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-05T16:19:11.632+06:00  INFO 14692 --- [Math Bilim] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
