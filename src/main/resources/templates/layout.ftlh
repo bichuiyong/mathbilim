@@ -68,6 +68,16 @@
                         <li class="nav-item">
                             <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="/auth/login">Войти</a>
                         </li>
+                    <#else>
+                        <#if _csrf??>
+                            <form action="/logout" method="post">
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                       value="${(_csrf.token)!'--no-token--'}"/>
+                                <button type="submit" class="btn btn-primary btn-auth px-4 py-2 mt-2"
+                                        id="logout">Выйти
+                                </button>
+                            </form>
+                        </#if>
                     </#if>
 
                 </ul>
