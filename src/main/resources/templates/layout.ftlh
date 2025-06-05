@@ -32,7 +32,7 @@
         </style>
     </head>
     <body class="bg-light">
-
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center me-3">
@@ -64,9 +64,12 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
-                    <li class="nav-item">
-                        <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="#">Войти</a>
-                    </li>
+                    <#if !known>
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="#">Войти</a>
+                        </li>
+                    </#if>
+
                 </ul>
             </div>
         </div>
@@ -83,9 +86,11 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
-                    <li class="nav-item">
-                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
-                    </li>
+                    <#if !known>
+                        <li class="nav-item">
+                            <a href="#" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
+                        </li>
+                    </#if>
                 </ul>
             </div>
         </div>
