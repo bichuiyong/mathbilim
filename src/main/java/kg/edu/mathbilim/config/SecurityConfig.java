@@ -23,7 +23,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println(new BCryptPasswordEncoder().encode("password"));
         return new BCryptPasswordEncoder();
     }
 
@@ -35,11 +34,10 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
                         .failureUrl("/auth/login?error=true")
+                        .defaultSuccessUrl("/", true)
                         .permitAll())
                 .logout((logout) -> logout.logoutUrl("/logout"))
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("images/**").fullyAuthenticated()
                         .anyRequest().permitAll());
 
         return http.build();
