@@ -14,7 +14,6 @@
     </head>
     <body class="bg-light">
 
-    <!-- Верхний навбар -->
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container-fluid" style="max-width: 1400px;">
             <div class="d-flex align-items-center me-3">
@@ -31,51 +30,24 @@
 
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-custom dropdown-toggle active px-3 py-2" href="#" role="button" data-bs-toggle="dropdown">
-                            Образование
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Олимпиады</a></li>
-                            <li><a class="dropdown-item" href="#">SAT</a></li>
-                            <li><a class="dropdown-item" href="#">Стипендии</a></li>
-                            <li><a class="dropdown-item" href="#">Курсы</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Олимпиады</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" role="button" data-bs-toggle="dropdown">
-                            Ресурсы
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Книги</a></li>
-                            <li><a class="dropdown-item" href="#">Публикации</a></li>
-                            <li><a class="dropdown-item" href="#">Методические материалы</a></li>
-                            <li><a class="dropdown-item" href="#">Библиотека</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom px-3 py-2" href="#">SAT</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" role="button" data-bs-toggle="dropdown">
-                            Информация
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Новости</a></li>
-                            <li><a class="dropdown-item" href="#">Блог</a></li>
-                            <li><a class="dropdown-item" href="#">Мероприятия</a></li>
-                            <li><a class="dropdown-item" href="#">Объявления</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Книги</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" role="button" data-bs-toggle="dropdown">
-                            О нас
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">О проекте</a></li>
-                            <li><a class="dropdown-item" href="#">Команда</a></li>
-                            <li><a class="dropdown-item" href="#">Контакты</a></li>
-                            <li><a class="dropdown-item" href="#">Партнеры</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Публикации</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom px-3 py-2" href="#">Блог</a>
+                    </li>
+                </ul>
 
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             🌐 Русский
@@ -86,34 +58,35 @@
                             <li><a class="dropdown-item" href="#">🇺🇸 English</a></li>
                         </ul>
                     </li>
-
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-auth px-4 py-2" href="#">Войти</a>
+                        <a class="btn btn-primary btn-auth px-4 py-2 ms-3" href="#">Войти</a>
                     </li>
-
                 </ul>
             </div>
-
         </div>
     </nav>
 
-    <!-- Второй уровень навбара (хлебные крошки / подразделы) -->
+    <!-- Нижний navbar -->
     <nav class="navbar navbar-expand-lg bg-light border-bottom py-2">
         <div class="container-fluid" style="max-width: 1400px;">
-            <div class="d-flex align-items-center w-100">
-                <nav aria-label="breadcrumb" class="me-auto">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Главная</a></li>
-                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Образование</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Олимпиады</li>
-                    </ol>
-                </nav>
+            <div class="collapse navbar-collapse" id="secondaryNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="#">Мероприятия</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="#">Новости</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="#">О проекте</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="#">Контакты</a>
+                    </li>
+                </ul>
 
                 <div class="d-flex align-items-center">
-                    <span class="text-muted me-3" style="font-size: 14px;">Быстрые ссылки:</span>
                     <a href="#" class="btn btn-outline-primary btn-sm me-2">Регистрация</a>
-                    <a href="#" class="btn btn-outline-secondary btn-sm me-2">Результаты</a>
-                    <a href="#" class="btn btn-outline-info btn-sm">Архив</a>
                 </div>
             </div>
         </div>
@@ -189,7 +162,6 @@
             </div>
         </div>
     </footer>
-
 
     <script src="../static/js/nav-bar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
