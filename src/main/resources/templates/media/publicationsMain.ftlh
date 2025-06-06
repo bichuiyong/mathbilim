@@ -6,17 +6,26 @@
 
     <div class="container py-4">
         <div class="row">
-            <aside class="col-md-3">
-                <div class="sidebar custom-sidebar p-3 rounded shadow-sm bg-white">
-                    <h3>Публикации по подразделениям</h3>
-                    <a href="#">Центральный аппарат</a>
-                    <a href="#">Управление науки и инноваций</a>
-                    <a href="#">Управление высшего образования</a>
-                    <a href="#">Управление начального образования</a>
-                    <a href="#">Управление школьного образования</a>
-                    <a href="#">Управление дошкольного образования</a>
-                    <a href="#">Управление финансов</a>
+            <aside class="col-md-3 mb-3">
+                <div class="bg-white p-3 rounded shadow-sm sidebar">
+                    <h3>Новости от подразделений</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle-publication w-100" type="button" id="departmentDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Выбрать подразделение
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="departmentDropdown">
+                            <li><a class="dropdown-item" href="#">Центральный аппарат</a></li>
+                            <li><a class="dropdown-item" href="#">Управление науки и инноваций</a></li>
+                            <li><a class="dropdown-item" href="#">Управление высшего образования</a></li>
+                            <li><a class="dropdown-item" href="#">Управление начального образования</a></li>
+                            <li><a class="dropdown-item" href="#">Управление школьного образования</a></li>
+                            <li><a class="dropdown-item" href="#">Управление дошкольного образования</a></li>
+                            <li><a class="dropdown-item" href="#">Управление финансов</a></li>
+                        </ul>
+                    </div>
                 </div>
+
             </aside>
 
             <section class="col-md-9 publications-list">
