@@ -13,6 +13,9 @@ public class MainController {
         return "main";
     }
 
+    @GetMapping("books")
+    public String books() { return "books"; }
+
     @GetMapping("olymp")
     public String olymp() { return "olymp"; }
 
