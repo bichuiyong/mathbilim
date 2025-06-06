@@ -8,8 +8,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/mathbilim
-    username: ahmatbek
-    password: qwerty
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
 
   liquibase:
