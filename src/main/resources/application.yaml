@@ -8,8 +8,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/mathbilim
-    username:
-    password:
+    username: ahmatbek
+    password: qwerty
     driver-class-name: org.postgresql.Driver
 
   liquibase:
@@ -24,10 +24,10 @@ spring:
     ansi:
       enabled: always
 
-  security:
-    user:
-      name: email
-      password: password
+#  security:
+#    user:
+#      name: email
+#      password: password
 
   freemarker:
     expose-session-attributes: true
