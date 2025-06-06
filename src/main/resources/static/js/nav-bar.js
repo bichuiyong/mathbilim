@@ -69,3 +69,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.addEventListener('click', function(event) {
+        const isClickInsideNav = navbarNav.contains(event.target) ||
+            secondaryNav.contains(event.target);
+        const isClickOnToggler = toggleButton.contains(event.target);
+
+        if (!isClickInsideNav && !isClickOnToggler &&
+            (navbarNav.classList.contains('show') || secondaryNav.classList.contains('show'))) {
+            closeMenu();
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 992) {
+            closeMenu();
+        }
+    });
+});
