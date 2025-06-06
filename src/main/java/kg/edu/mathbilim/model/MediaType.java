@@ -16,13 +16,21 @@ import java.util.List;
 public class MediaType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",
+            nullable = false)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "name",
+            unique = true,
+            nullable = false)
     private String name;
 
+    @Column(name = "mime_type",
+            nullable = false)
     private String mimeType;
 
+    @Column(name = "extension",
+            nullable = false)
     private String extension;
 
     @OneToMany(mappedBy = "type")
