@@ -66,7 +66,4 @@ public class User {
     @JoinColumn(name = "type_id",
             nullable = false)
     private UserType type;
-
-    @OneToMany(mappedBy = "approvedBy")
-    private List<Content> approvedByList = new ArrayList<>();
 }
