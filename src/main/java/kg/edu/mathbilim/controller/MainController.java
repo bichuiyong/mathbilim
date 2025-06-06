@@ -15,4 +15,7 @@ public class MainController {
 
     @GetMapping("olymp")
     public String olymp() { return "olymp"; }
+
+    @GetMapping("olymp-details")
+    public String olympDetails() { return "olymp-details"; }
 }
