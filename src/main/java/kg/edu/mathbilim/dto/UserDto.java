@@ -2,6 +2,7 @@ package kg.edu.mathbilim.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class UserDto {
 
     @NotBlank(message = "Email обязателен")
     @Email(message = "Неверный формат email")
+    @UniqueEmail
     private String email;
 
     @NotBlank
