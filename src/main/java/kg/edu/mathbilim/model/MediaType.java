@@ -32,7 +32,4 @@ public class MediaType {
     @Column(name = "extension",
             nullable = false)
     private String extension;
-
-    @OneToMany(mappedBy = "type")
-    private List<Media> mediaList = new ArrayList<>();
 }
