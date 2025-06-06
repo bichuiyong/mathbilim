@@ -13,8 +13,12 @@ import lombok.*;
 public class UserType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id",
+            nullable = false)
+    private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "name",
+            unique = true,
+            nullable = false)
     private String name;
 }

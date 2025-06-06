@@ -16,8 +16,13 @@ import java.util.Set;
 public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id",
+            nullable = false)
+    private Integer id;
 
+    @Column(name = "name",
+            nullable = false,
+            unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "authorities")
