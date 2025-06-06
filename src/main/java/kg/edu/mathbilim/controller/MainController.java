@@ -12,4 +12,13 @@ public class MainController {
     public String index() {
         return "main";
     }
+
+    @GetMapping("books")
+    public String books() { return "books"; }
+
+    @GetMapping("olymp")
+    public String olymp() { return "olymp"; }
+
+    @GetMapping("olymp-details")
+    public String olympDetails() { return "olymp-details"; }
 }
