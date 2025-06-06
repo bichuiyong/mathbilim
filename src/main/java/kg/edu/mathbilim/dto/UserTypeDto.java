@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -8,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserTypeDto {
+    @NotNull(message = "Выберите тип аккаунта")
     private Integer id;
 
     private String name;
