@@ -1,6 +1,8 @@
 package kg.edu.mathbilim.exception;
 
-public class UserTypeNotFoundException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class UserTypeNotFoundException extends NoSuchElementException {
     public UserTypeNotFoundException(String message) {
         super(message);
     }
