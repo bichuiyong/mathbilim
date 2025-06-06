@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,18 +14,29 @@ import java.time.LocalDateTime;
 public class UserDto {
     private Long id;
 
+    @NotBlank(message = "Имя обязательно")
     private String name;
+
 
     private String surname;
 
+    @NotBlank(message = "Email обязателен")
+    @Email(message = "Неверный формат email")
     private String email;
 
+    @NotBlank
+    @Size(min = 6, max = 24, message = "Длина должна быть >= 6 и <= 24")
+    @Pattern(
+            regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$",
+            message = "Should contain at least one uppercase letter and one number"
+    )
     private String password;
 
     @Builder.Default
     private Boolean enabled = true;
 
-    private Boolean isEmailVerified;
+    @Builder.Default
+    private Boolean isEmailVerified = false;
 
     @Builder.Default
     private String preferredLanguage = "ru";
@@ -36,5 +49,7 @@ public class UserDto {
 
     private RoleDto role;
 
+    @NotNull(message = "Выберите тип аккаунта")
+    @Valid
     private UserTypeDto type;
 }
