@@ -335,7 +335,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-outline-secondary">Все новости</button>
+                        <a href="/media/publication" class="btn btn-outline-secondary">Все публикации</a>
                     </div>
                 </div>
             </div>
