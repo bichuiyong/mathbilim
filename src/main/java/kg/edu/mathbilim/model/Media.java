@@ -15,17 +15,27 @@ import java.time.LocalDateTime;
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",
+            nullable = false)
     private Integer id;
 
+    @Column(name = "filename",
+            nullable = false)
     private String filename;
 
+    @Column(name = "file_path",
+            nullable = false)
     private String filePath;
 
+    @Column(name = "file_size")
     private Long fileSize;
 
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id",
+            nullable = false)
     private MediaType type;
 }

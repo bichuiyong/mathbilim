@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.embedded;
+package kg.edu.mathbilim.dto;
 
 
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ContentBlock {
+public class ContentBlockDto {
     private String type;
     private String value;
 }

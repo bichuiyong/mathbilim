@@ -3,9 +3,7 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,9 +16,13 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",
+            nullable = false)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "name",
+            unique = true,
+            nullable = false)
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -30,7 +32,4 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private Set<Authority> authorities = new HashSet<>();
-// Код ниже вызывает ошибки
-//    @OneToMany(mappedBy = "role")
-//    private List<Role> roleList = new ArrayList<>();
 }

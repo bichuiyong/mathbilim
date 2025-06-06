@@ -21,19 +21,34 @@ import java.util.Map;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",
+            nullable = false)
     private Long id;
 
+    @Column(name = "title",
+            nullable = false)
     private String title;
 
+    @Column(name = "slug",
+            nullable = false,
+            unique = true)
     private String slug;
 
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at")
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-    private Long viewCount;
+    @Column(name = "view_count")
+    @Builder.Default
+    private Long viewCount = 0L;
 
-    private Long shareCount;
+    @Column(name = "share_count")
+    @Builder.Default
+    private Long shareCount = 0L;
 
     @Type(JsonBinaryType.class)
     @Column(name = "content_blocks", columnDefinition = "jsonb")
@@ -52,14 +67,17 @@ public class Content {
     private User approvedBy;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id",
+            nullable = false)
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id",
+            nullable = false)
     private ContentStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id",
+            nullable = false)
     private ContentType type;
 }
