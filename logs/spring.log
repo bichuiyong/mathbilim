@@ -1723,3 +1723,8 @@
 2025-06-06T20:47:25.283+06:00 DEBUG 31063 --- [Math Bilim] [http-nio-9999-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
 2025-06-06T20:47:25.283+06:00 DEBUG 31063 --- [Math Bilim] [http-nio-9999-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /static/js/nav-bar.js
 2025-06-06T20:47:25.283+06:00 DEBUG 31063 --- [Math Bilim] [http-nio-9999-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /static/css/layout.css
+2025-06-06T21:08:56.250+06:00  INFO 31063 --- [Math Bilim] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-06T21:08:56.283+06:00  INFO 31063 --- [Math Bilim] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-06T21:08:56.319+06:00  INFO 31063 --- [Math Bilim] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-06T21:08:56.349+06:00  INFO 31063 --- [Math Bilim] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-06T21:08:56.359+06:00  INFO 31063 --- [Math Bilim] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
