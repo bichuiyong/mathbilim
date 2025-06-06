@@ -17,39 +17,56 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",
+            nullable = false)
     private Long id;
 
+    @Column(name = "name",
+            nullable = false)
     private String name;
 
+    @Column(name = "surname")
     private String surname;
 
+    @Column(name = "email",
+            nullable = false,
+            unique = true)
     private String email;
 
+    @Column(name = "password")
     private String password;
 
-    private Boolean enabled;
+    @Column(name = "enabled",
+            nullable = false)
+    @Builder.Default
+    private Boolean enabled = true;
 
+    @Column(name = "is_email_verified")
     private Boolean isEmailVerified;
 
-    private String preferredLanguage;
+    @Column(name = "preferred_language",
+            nullable = false)
+    @Builder.Default
+    private String preferredLanguage = "ru";
 
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt;
-
-    private String resetPasswordToken;
+    @Column(name = "updated_at")
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id",
+            nullable = false)
     private Role role;
 
     @OneToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id",
+            nullable = false)
     private UserType type;
 
-    @OneToMany(mappedBy = "author")
-    private List<User> authorList = new ArrayList<>();
-
     @OneToMany(mappedBy = "approvedBy")
-    private List<User> approvedByList = new ArrayList<>();
+    private List<Content> approvedByList = new ArrayList<>();
 }
