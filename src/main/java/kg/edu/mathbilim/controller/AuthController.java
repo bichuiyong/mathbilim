@@ -1,17 +1,26 @@
 package kg.edu.mathbilim.controller;
 
 
+import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.exception.RoleNotFoundException;
+import kg.edu.mathbilim.exception.UserAlreadyExistException;
+import kg.edu.mathbilim.exception.UserTypeNotFoundException;
+import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private final UserService userService;
+    private final UserTypeService userTypeService;
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -20,5 +29,34 @@ public class AuthController {
             model.addAttribute("error", true);
         }
         return "auth/login";
+    }
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("types", userTypeService.getAllTypes());
+        return "auth/register";
+    }
+
+    @PostMapping("/register")
+    public String processRegistration(@ModelAttribute("userDto") @Valid UserDto userDto,
+                                      BindingResult result,
+                                      Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("types", userTypeService.getAllTypes());
+            model.addAttribute("errors", result);
+            return "auth/register";
+        }
+
+        try {
+            userService.createUser(userDto);
+        } catch (UserAlreadyExistException e) {
+            model.addAttribute("error", true);
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("types", userTypeService.getAllTypes());
+            return "auth/register";
+        }
+
+        return "redirect:/login?registered=true";
     }
 }

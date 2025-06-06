@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ContentStatusMapper {
-    ContentStatusDto toDto(ContentStatus entity);
 
-    ContentStatus toEntity(ContentStatusDto dto);
+    ContentStatus toEntity(ContentStatusDto contentStatusDto);
+
+    ContentStatusDto toDto(ContentStatus contentStatus);
 }
