@@ -8,7 +8,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/mathbilim
-    username: mvoin21
+    username: postgres
     password: qwerty
     driver-class-name: org.postgresql.Driver
 

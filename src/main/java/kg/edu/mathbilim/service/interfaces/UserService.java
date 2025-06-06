@@ -4,4 +4,6 @@ import kg.edu.mathbilim.dto.UserDto;
 
 public interface UserService {
     void createUser(UserDto userDto);
+
+    boolean existsByEmail(String email);
 }

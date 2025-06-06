@@ -29,13 +29,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserDto userDto) {
         log.info("Creating user with email: {}", userDto.getEmail());
-
-        if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new UserAlreadyExistException("User with email already exists: " + userDto.getEmail());
-        }
-
         User user = userMapper.toEntity(userDto);
-        Role role = roleService.getDefaultRole("USER");
+        Role role = roleService.getRoleByName("USER");
         UserType userType = userTypeService.getById(userDto.getType().getId());
 
         user.setRole(role);
@@ -44,5 +39,10 @@ public class UserServiceImpl implements UserService {
 
         user = userRepository.saveAndFlush(user);
         log.info("Created user with id: {}", user.getId());
+    }
+
+    @Override
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
     }
 }
