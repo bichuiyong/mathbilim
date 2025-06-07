@@ -55,6 +55,10 @@ public class Test {
     private Integer result;
 
     @NotNull
+    @Column(name = "time_limit", nullable = false)
+    private Integer timeLimit;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "status_id", nullable = false)

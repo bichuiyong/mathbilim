@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.model.embedded.TestChoiceId;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,12 +26,7 @@ public class TestChoice {
     @JoinColumn(name = "test_id", nullable = false)
     private Test test;
 
-    @NotNull
-    @Column(name = "time_limit", nullable = false)
-    private Integer timeLimit;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "answered_at")
     private Instant answeredAt;
-
 }

@@ -46,6 +46,11 @@ public class File {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
+
     @Column(name = "size")
     private Long size;
 
@@ -72,5 +77,4 @@ public class File {
             joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     private Set<Post> posts = new LinkedHashSet<>();
-
 }
