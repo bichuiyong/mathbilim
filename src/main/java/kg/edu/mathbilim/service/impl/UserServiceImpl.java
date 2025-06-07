@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.exception.UserAlreadyExistException;
+import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.model.Role;
 import kg.edu.mathbilim.model.User;
@@ -10,10 +10,17 @@ import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.UserTypeService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.util.function.Supplier;
 
 
 @Service
@@ -26,6 +33,15 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final UserTypeService userTypeService;
 
+    private User getEntityById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserDto getDtoById(Long id) {
+        return userMapper.toDto(getEntityById(id));
+    }
+
     @Override
     public void createUser(UserDto userDto) {
         log.info("Creating user with email: {}", userDto.getEmail());
@@ -35,6 +51,9 @@ public class UserServiceImpl implements UserService {
 
         user.setRole(role);
         user.setType(userType);
+        user.setName(normalizeField(userDto.getName(), true));
+        user.setSurname(normalizeField(userDto.getSurname(), true));
+        user.setEmail(normalizeField(userDto.getEmail(), false));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         user = userRepository.saveAndFlush(user);
@@ -42,7 +61,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsByEmail(String email){
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+        log.info("Deleted user with id: {}", id);
+    }
+
+    @Override
+    public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        if (query == null || query.isEmpty()) {
+            return getPage(() -> userRepository.findAll(pageable));
+        }
+        return getPage(() -> userRepository.findByQuery(query, pageable));
+    }
+
+    @Transactional
+    @Override
+    public void toggleUserBlocking(Long userId) {
+        User user = getEntityById(userId);
+        user.setEnabled(!user.getEnabled().equals(Boolean.TRUE));
+        userRepository.save(user);
+    }
+
+
+    private Page<UserDto> getPage(Supplier<Page<User>> supplier, String notFoundMessage) {
+        Page<User> userPage = supplier.get();
+        if (userPage.isEmpty()) {
+            throw new UserNotFoundException(notFoundMessage);
+        }
+        log.info("Получено {} пользователей на странице", userPage.getSize());
+        return userPage.map(userMapper::toDto);
+    }
+
+    private Page<UserDto> getPage(Supplier<Page<User>> supplier) {
+        return getPage(supplier, "Пользователи не были найдены");
+    }
+
+    private String normalizeField(String field, boolean capitalize) {
+        if (field == null || field.isBlank()) {
+            return null;
+        }
+
+        String normalized = field.trim().toLowerCase();
+        return capitalize ? StringUtils.capitalize(normalized) : normalized;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 }
