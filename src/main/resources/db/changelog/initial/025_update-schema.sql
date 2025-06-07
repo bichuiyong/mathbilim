@@ -1,0 +1,11 @@
+ALTER TABLE users
+    ALTER COLUMN name SET NOT NULL;
+
+ALTER TABLE files
+    DROP COLUMN user_id;
+
+ALTER TABLE files
+    ADD user_id BIGINT;
+
+ALTER TABLE files
+    ADD CONSTRAINT FK_FILES_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);

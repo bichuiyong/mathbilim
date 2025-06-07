@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -32,4 +33,7 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private Set<Authority> authorities = new HashSet<>();
+
+    @OneToMany(mappedBy = "role")
+    private Set<User> users = new LinkedHashSet<>();
 }

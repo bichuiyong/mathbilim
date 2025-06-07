@@ -3,6 +3,9 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "user_types")
 @Getter
@@ -21,4 +24,7 @@ public class UserType {
             unique = true,
             nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "type")
+    private Set<User> users = new LinkedHashSet<>();
 }

@@ -3,16 +3,13 @@ package kg.edu.mathbilim.controller;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.exception.RoleNotFoundException;
 import kg.edu.mathbilim.exception.UserAlreadyExistException;
-import kg.edu.mathbilim.exception.UserTypeNotFoundException;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -48,15 +45,7 @@ public class AuthController {
             return "auth/register";
         }
 
-        try {
-            userService.createUser(userDto);
-        } catch (UserAlreadyExistException e) {
-            model.addAttribute("error", true);
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("types", userTypeService.getAllTypes());
-            return "auth/register";
-        }
-
+        userService.createUser(userDto);
         return "redirect:/login?registered=true";
     }
 }
