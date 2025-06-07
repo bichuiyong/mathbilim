@@ -1,10 +1,7 @@
 <#import "layout.ftlh" as main>
 <@main.layout>
-
     <link rel="stylesheet" href="../static/css/main-style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
     <div class="container">
         <div class="header">Последние мероприятия</div>
 
