@@ -11,6 +11,4 @@ public class PostTypeDto {
     private Integer id;
 
     private String name;
-
-    private PostTypeDto parent;
 }

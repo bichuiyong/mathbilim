@@ -3,7 +3,6 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,13 +24,6 @@ public class Category {
             nullable = false,
             unique = true)
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Category parent;
-
-    @OneToMany(mappedBy = "parent")
-    private Set<Category> children = new HashSet<>();
 
     @OneToMany(mappedBy = "category")
     private Set<Book> books = new LinkedHashSet<>();
