@@ -1,12 +1,12 @@
 package kg.edu.mathbilim.mapper;
 
-import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.FileTypeDto;
 import kg.edu.mathbilim.model.FileType;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface FileTypeMapper {
-    FileType toEntity(FileDto dto);
+    FileType toEntity(FileTypeDto dto);
 
-    FileDto toDto(FileType type);
+    FileTypeDto toDto(FileType type);
 }

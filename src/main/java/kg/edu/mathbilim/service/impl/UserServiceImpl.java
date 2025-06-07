@@ -11,6 +11,7 @@ import kg.edu.mathbilim.service.interfaces.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import kg.edu.mathbilim.util.PaginationUtil;
+import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.function.Supplier;
 
@@ -51,9 +51,9 @@ public class UserServiceImpl implements UserService {
 
         user.setRole(role);
         user.setType(userType);
-        user.setName(normalizeField(userDto.getName(), true));
-        user.setSurname(normalizeField(userDto.getSurname(), true));
-        user.setEmail(normalizeField(userDto.getEmail(), false));
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setEmail(StringUtil.normalizeField(userDto.getEmail(), false));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         user = userRepository.saveAndFlush(user);
@@ -95,15 +95,6 @@ public class UserServiceImpl implements UserService {
 
     private Page<UserDto> getPage(Supplier<Page<User>> supplier) {
         return getPage(supplier, "Пользователи не были найдены");
-    }
-
-    private String normalizeField(String field, boolean capitalize) {
-        if (field == null || field.isBlank()) {
-            return null;
-        }
-
-        String normalized = field.trim().toLowerCase();
-        return capitalize ? StringUtils.capitalize(normalized) : normalized;
     }
 
     @Override
