@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import kg.edu.mathbilim.dto.reference.types.FileTypeDto;
 import lombok.*;
 
 import java.time.Instant;
