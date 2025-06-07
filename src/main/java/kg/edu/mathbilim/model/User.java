@@ -1,11 +1,17 @@
 package kg.edu.mathbilim.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "users")
@@ -17,53 +23,63 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",
-            nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name",
-            nullable = false)
+    @Size(max = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "surname")
+    @Size(max = 100)
+    @Column(name = "surname", length = 100)
     private String surname;
 
-    @Column(name = "email",
-            nullable = false,
-            unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Size(max = 255)
     @Column(name = "password")
     private String password;
 
-    @Column(name = "enabled",
-            nullable = false)
-    @Builder.Default
-    private Boolean enabled = true;
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
 
     @Column(name = "is_email_verified")
     private Boolean isEmailVerified;
 
-    @Column(name = "preferred_language",
-            nullable = false)
-    @Builder.Default
-    private String preferredLanguage = "ru";
-
-    @Column(name = "created_at")
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
-    @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id",
-            nullable = false)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToOne
-    @JoinColumn(name = "type_id",
-            nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "type_id")
     private UserType type;
+
+    @Size(max = 2)
+    @NotNull
+    @ColumnDefault("'ru'")
+    @Column(name = "preferred_language", nullable = false, length = 2)
+    private String preferredLanguage;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @OneToMany(mappedBy = "user")
+    private Set<File> files = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Test> tests = new LinkedHashSet<>();
+
 }

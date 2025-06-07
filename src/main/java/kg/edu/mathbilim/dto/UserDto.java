@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -44,10 +44,10 @@ public class UserDto {
     private String preferredLanguage = "ru";
 
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Instant createdAt = Instant.now();
 
     @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private Instant updatedAt = Instant.now();
 
     private RoleDto role;
 

@@ -4,13 +4,16 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ContentTypeDto {
+public class FileTypeDto {
     private Integer id;
 
     private String name;
 
-    private ContentTypeDto parent;
+    private String mimeType;
+
+    private String extension;
+
 }

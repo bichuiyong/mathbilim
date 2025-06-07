@@ -3,6 +3,9 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "content_statuses")
 @Getter
@@ -21,4 +24,8 @@ public class ContentStatus {
             nullable = false,
             unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "status")
+    private Set<Post> posts = new LinkedHashSet<>();
+
 }

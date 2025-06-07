@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -31,4 +32,11 @@ public class Category {
 
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
+
+    @OneToMany(mappedBy = "category")
+    private Set<Book> books = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "category")
+    private Set<Test> tests = new LinkedHashSet<>();
+
 }
