@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.exception;
+package kg.edu.mathbilim.exception.nsee;
 
 import java.util.NoSuchElementException;
 

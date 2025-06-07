@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.UserTypeDto;
-import kg.edu.mathbilim.exception.UserTypeNotFoundException;
+import kg.edu.mathbilim.exception.nsee.UserTypeNotFoundException;
 import kg.edu.mathbilim.mapper.UserTypeMapper;
 import kg.edu.mathbilim.model.UserType;
 import kg.edu.mathbilim.repository.UserTypeRepository;

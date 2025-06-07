@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.service.impl;
 
-import kg.edu.mathbilim.exception.RoleNotFoundException;
+import kg.edu.mathbilim.exception.nsee.RoleNotFoundException;
 import kg.edu.mathbilim.model.Role;
 import kg.edu.mathbilim.repository.RoleRepository;
 import kg.edu.mathbilim.service.interfaces.RoleService;
