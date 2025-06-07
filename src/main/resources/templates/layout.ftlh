@@ -72,7 +72,7 @@
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="secondaryNav">
                 <ul class="navbar-nav left-padding">
-                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Мероприятия</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="/events">Мероприятия</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Новости</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">О проекте</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Контакты</a></li>

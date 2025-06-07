@@ -14,11 +14,28 @@ public class MainController {
     }
 
     @GetMapping("books")
-    public String books() { return "books"; }
+    public String books() {
+        return "books";
+    }
 
     @GetMapping("olymp")
-    public String olymp() { return "olymp"; }
+    public String olymp() {
+        return "olymp";
+    }
 
     @GetMapping("olymp-details")
-    public String olympDetails() { return "olymp-details"; }
+    public String olympDetails() {
+        return "olymp-details";
+    }
+
+    @GetMapping("events")
+    public String eventList() {
+        return "events/event-list";
+    }
+
+    @GetMapping("event/details")
+    public String eventDetail() {
+        return "events/event-details";
+    }
+
 }
