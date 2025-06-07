@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.controller.api;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.CategoryDto;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

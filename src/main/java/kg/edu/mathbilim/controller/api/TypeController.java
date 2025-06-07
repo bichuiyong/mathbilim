@@ -1,13 +1,13 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.EventTypeDto;
-import kg.edu.mathbilim.dto.FileTypeDto;
-import kg.edu.mathbilim.dto.PostTypeDto;
-import kg.edu.mathbilim.dto.UserTypeDto;
-import kg.edu.mathbilim.service.interfaces.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.FileTypeService;
-import kg.edu.mathbilim.service.interfaces.PostTypeService;
-import kg.edu.mathbilim.service.interfaces.UserTypeService;
+import kg.edu.mathbilim.dto.reference.types.EventTypeDto;
+import kg.edu.mathbilim.dto.reference.types.FileTypeDto;
+import kg.edu.mathbilim.dto.reference.types.PostTypeDto;
+import kg.edu.mathbilim.dto.reference.types.UserTypeDto;
+import kg.edu.mathbilim.service.interfaces.reference.types.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.types.FileTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.types.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.types.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

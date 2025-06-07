@@ -1,9 +1,9 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.ContentStatusDto;
-import kg.edu.mathbilim.dto.TestStatusDto;
-import kg.edu.mathbilim.service.interfaces.ContentStatusService;
-import kg.edu.mathbilim.service.interfaces.TestStatusService;
+import kg.edu.mathbilim.dto.reference.status.ContentStatusDto;
+import kg.edu.mathbilim.dto.reference.status.TestStatusDto;
+import kg.edu.mathbilim.service.interfaces.reference.status.ContentStatusService;
+import kg.edu.mathbilim.service.interfaces.reference.status.TestStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
