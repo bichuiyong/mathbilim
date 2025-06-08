@@ -1,11 +1,10 @@
 package kg.edu.mathbilim.controller.api;
 
 import kg.edu.mathbilim.dto.reference.types.EventTypeDto;
-import kg.edu.mathbilim.dto.reference.types.FileTypeDto;
 import kg.edu.mathbilim.dto.reference.types.PostTypeDto;
 import kg.edu.mathbilim.dto.reference.types.UserTypeDto;
+import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.service.interfaces.reference.types.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.reference.types.FileTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.types.PostTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.types.UserTypeService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.List;
 public class TypeController {
     private final UserTypeService userTypeService;
     private final EventTypeService eventTypeService;
-    private final FileTypeService fileTypeService;
     private final PostTypeService postTypeService;
 
     @GetMapping("users")
@@ -36,8 +34,8 @@ public class TypeController {
     }
 
     @GetMapping("files")
-    public ResponseEntity<List<FileTypeDto>> getAllFileTypes() {
-        return ResponseEntity.ofNullable(fileTypeService.getAllTypes());
+    public ResponseEntity<List<FileType>> getAllFileTypes() {
+        return ResponseEntity.ofNullable(FileType.getAllPublicTypes());
     }
 
     @GetMapping("posts")
