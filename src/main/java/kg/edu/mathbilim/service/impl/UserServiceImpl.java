@@ -6,11 +6,9 @@ import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.model.reference.role.Role;
 import kg.edu.mathbilim.model.User;
-import kg.edu.mathbilim.model.reference.types.UserType;
 import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.types.UserTypeService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final UserTypeService userTypeService;
 
     @Override
     public User getEntityById(Long userId) {
@@ -49,10 +46,8 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user with email: {}", userDto.getEmail());
         User user = userMapper.toEntity(userDto);
         Role role = roleService.getRoleByName("USER");
-        UserType userType = userTypeService.getById(userDto.getType().getId());
 
         user.setRole(role);
-        user.setType(userType);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
         user.setEmail(StringUtil.normalizeField(userDto.getEmail(), false));
