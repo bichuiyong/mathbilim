@@ -45,6 +45,6 @@ public class AuthController {
         }
 
         userService.createUser(userDto);
-        return "redirect:/login?registered=true";
+        return "redirect:/auth/login?registered=true";
     }
 }

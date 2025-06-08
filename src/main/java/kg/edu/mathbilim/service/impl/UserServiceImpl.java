@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
+import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.model.reference.role.Role;
 import kg.edu.mathbilim.model.User;
@@ -60,6 +61,15 @@ public class UserServiceImpl implements UserService {
         log.info("Created user with id: {}", user.getId());
     }
 
+
+    @Override
+    public void edit(UserEditDto userDto, String email) {
+        User user = getEntityByEmail(email);
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        userRepository.saveAndFlush(user);
+    }
+
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
@@ -100,5 +110,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private User getEntityByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + "not found"));
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        return userMapper.toDto(getEntityByEmail(email));
     }
 }
