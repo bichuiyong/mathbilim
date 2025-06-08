@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.types.FileTypeDto;
+import kg.edu.mathbilim.enums.FileType;
 import lombok.*;
 
 import java.time.Instant;
@@ -17,7 +17,7 @@ public class FileDto {
 
     private String filePath;
 
-    private FileTypeDto type;
+    private FileType type;
 
     private UserDto user;
 
@@ -30,5 +30,4 @@ public class FileDto {
     private Instant updatedAt;
 
     private String s3Link;
-
 }

@@ -55,10 +55,6 @@ public class S3Config {
                 .build();
     }
 
-    public String getMaxSize(String category) {
-        return maxSizes.get(category);
-    }
-
     public String getFolder(String context, String type) {
         Map<String, String> contextFolders = folders.get(context);
         return contextFolders != null ? contextFolders.get(type) : folders.get("general").get("uploads");

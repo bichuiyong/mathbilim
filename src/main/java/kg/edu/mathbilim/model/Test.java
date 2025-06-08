@@ -3,8 +3,10 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.reference.Category;
-import kg.edu.mathbilim.model.reference.status.TestStatus;
+import kg.edu.mathbilim.enums.Category;
+import kg.edu.mathbilim.enums.TestStatus;
+import kg.edu.mathbilim.enums.converter.CategoryConverter;
+import kg.edu.mathbilim.enums.converter.TestStatusConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -34,10 +36,8 @@ public class Test {
     @Column(name = "s3_link", nullable = false)
     private String s3Link;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "category_id", nullable = false)
+    @Convert(converter = CategoryConverter.class)
+    @Column(name = "category_id", nullable = false)
     private Category category;
 
     @NotNull
@@ -60,10 +60,8 @@ public class Test {
     @Column(name = "time_limit", nullable = false)
     private Integer timeLimit;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "status_id", nullable = false)
+    @Convert(converter = TestStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
     private TestStatus status;
 
     @NotNull

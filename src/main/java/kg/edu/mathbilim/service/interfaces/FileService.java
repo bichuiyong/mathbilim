@@ -15,8 +15,6 @@ public interface FileService {
                                int page, int size,
                                String sortBy, String sortDirection);
 
-    void delete(Long id);
-
     @Transactional
     FileDto uploadFile(MultipartFile multipartFile, String context, User user);
 
