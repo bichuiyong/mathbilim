@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.enums.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
