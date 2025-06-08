@@ -1,7 +1,8 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.exception.UserAlreadyExistException;
+import kg.edu.mathbilim.dto.UserEditDto;
+import kg.edu.mathbilim.exception.UserNotFoundException;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.model.Role;
 import kg.edu.mathbilim.model.User;
@@ -41,8 +42,18 @@ public class UserServiceImpl implements UserService {
         log.info("Created user with id: {}", user.getId());
     }
 
+
     @Override
-    public boolean existsByEmail(String email){
+    public void edit(UserEditDto userDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User not found"));
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 

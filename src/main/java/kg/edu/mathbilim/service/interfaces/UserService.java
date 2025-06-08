@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.UserEditDto;
 
 public interface UserService {
     void createUser(UserDto userDto);
@@ -11,4 +12,6 @@ public interface UserService {
     void edit(UserEditDto userDto, String email);
 
     boolean existsByEmail(String email);
+
+
 }

@@ -29,7 +29,7 @@
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <div class="input-wrapper">
-                    <input type="email" class="form-control" id="email" name="username" placeholder="your@email.com"
+                    <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com"
                     >
                     <i class="bi bi-envelope input-icon"></i>
                 </div>
