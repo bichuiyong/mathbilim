@@ -1,9 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
-
-
-import kg.edu.mathbilim.model.Authority;
-import kg.edu.mathbilim.model.Role;
+import kg.edu.mathbilim.model.reference.role.Authority;
+import kg.edu.mathbilim.model.reference.role.Role;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +52,6 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     private List<String> getPrivileges(Role roles) {
         List<String> privileges = new ArrayList<>();
-        System.out.println("Роль пользователя: " + roles);
         privileges.add(roles.getName());
         List<Authority> collection = new ArrayList<>(roles.getAuthorities());
         for (Authority authority : collection) {
