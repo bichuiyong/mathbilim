@@ -1,11 +1,14 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.dto.UserEditDto;
 
 public interface UserService {
+
+    User getEntityById(Long userId);
 
     UserDto getDtoById(Long id);
 
