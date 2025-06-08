@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.status.ContentStatusDto;
-import kg.edu.mathbilim.dto.reference.types.PostTypeDto;
+import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.PostType;
 import lombok.*;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class PostDto {
     private Long id;
 
-    private PostTypeDto type;
+    private PostType type;
 
     private String title;
 
@@ -31,7 +31,7 @@ public class PostDto {
 
     private Long shareCount;
 
-    private ContentStatusDto status;
+    private ContentStatus status;
 
     private UserDto user;
 
