@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.CategoryDto;
-import kg.edu.mathbilim.dto.reference.status.TestStatusDto;
+import kg.edu.mathbilim.enums.Category;
+import kg.edu.mathbilim.enums.TestStatus;
 import lombok.*;
 
 import java.time.Instant;
@@ -17,7 +17,7 @@ public class TestDto {
 
     private String s3Link;
 
-    private CategoryDto category;
+    private Category category;
 
     private Map<String, Object> metadata;
 
@@ -27,7 +27,7 @@ public class TestDto {
 
     private Integer result;
 
-    private TestStatusDto status;
+    private TestStatus status;
 
     private UserDto user;
 
