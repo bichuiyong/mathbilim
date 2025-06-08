@@ -45,4 +45,11 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userMapper.toDto(user);
+    }
 }

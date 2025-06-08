@@ -25,8 +25,8 @@ public class AuthUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
@@ -54,6 +54,7 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     private List<String> getPrivileges(Role roles) {
         List<String> privileges = new ArrayList<>();
+        System.out.println("Роль пользователя: " + roles);
         privileges.add(roles.getName());
         List<Authority> collection = new ArrayList<>(roles.getAuthorities());
         for (Authority authority : collection) {
