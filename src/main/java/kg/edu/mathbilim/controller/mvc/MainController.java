@@ -38,4 +38,13 @@ public class MainController {
         return "events/event-details";
     }
 
+    @GetMapping("test-details")
+    public String testDetails() { return "test-details"; }
+
+    @GetMapping("tests")
+    public String tests() { return "tests"; }
+
+    @GetMapping("test-ready")
+    public String testReady() { return "test-ready"; }
+
 }

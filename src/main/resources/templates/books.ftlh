@@ -53,13 +53,12 @@
                     </div>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary flex-shrink-0">Найти</button>
-                        <button class="btn btn-primary flex-shrink-0">Добавить книгу</button>
+                        <button class="btn btn-success flex-shrink-0">Добавить книгу</button>
                     </div>
                 </div>
 
                 <div class="list-group mb-4">
 
-<#--                    <#list>-->
                     <div class="list-group-item p-3">
                         <div class="d-flex flex-column flex-md-row w-100 gap-3">
                             <div class="flex-shrink-0 book-cover-placeholder">
@@ -67,16 +66,19 @@
                                     Обложка
                                 </div>
                             </div>
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 d-flex flex-column">
                                 <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
                                     <h5 class="mb-1 mb-md-0">Алгебра 7 класс</h5>
                                     <span class="badge bg-secondary align-self-start align-self-md-center">Геометрия</span>
                                 </div>
                                 <p class="mb-2 text-muted">Учебник по алгебре для 7 класса общеобразовательных учреждений.</p>
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-primary btn-sm">Читать</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Скачать</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-<#--                    </#list>-->
 
                     <div class="list-group-item p-3">
                         <div class="d-flex flex-column flex-md-row w-100 gap-3">
@@ -85,16 +87,19 @@
                                     Обложка
                                 </div>
                             </div>
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 d-flex flex-column">
                                 <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
                                     <h5 class="mb-1 mb-md-0">Комбинаторика</h5>
                                     <span class="badge bg-info text-dark align-self-start align-self-md-center">Теория</span>
                                 </div>
                                 <p class="mb-2 text-muted">Введение в комбинаторику для начинающих изучение этой дисциплины.</p>
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-primary btn-sm">Читать</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Скачать</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-
 
                     <div class="list-group-item p-3">
                         <div class="d-flex flex-column flex-md-row w-100 gap-3">
@@ -103,16 +108,19 @@
                                     Обложка
                                 </div>
                             </div>
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 d-flex flex-column">
                                 <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
                                     <h5 class="mb-1 mb-md-0">Олимпиадная подготовка</h5>
                                     <span class="badge bg-warning text-dark align-self-start align-self-md-center">Олимпиадная подготовка</span>
                                 </div>
                                 <p class="mb-2 text-muted">Сборник задач для подготовки к математическим олимпиадам.</p>
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-primary btn-sm">Читать</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Скачать</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-
 
                     <div class="list-group-item p-3">
                         <div class="d-flex flex-column flex-md-row w-100 gap-3">
@@ -121,18 +129,22 @@
                                     Обложка
                                 </div>
                             </div>
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 d-flex flex-column">
                                 <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
                                     <h5 class="mb-1 mb-md-0">Геометрия 10-11</h5>
                                     <span class="badge bg-secondary align-self-start align-self-md-center">Алгебра</span>
                                 </div>
                                 <p class="mb-2 text-muted">Учебник по геометрии для старших классов.</p>
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-primary btn-sm">Читать</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Скачать</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-
                 </div>
+
 
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
@@ -218,6 +230,8 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76A2z02tPqdjfvYtmO3pC6tE3PaVTK/rb+8q2FxC5VdPfYjdf29tGxCiqbslY+/"
+            crossorigin="anonymous"></script>
 
 </@main.layout>
