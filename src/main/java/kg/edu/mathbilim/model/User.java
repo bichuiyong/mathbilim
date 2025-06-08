@@ -3,8 +3,9 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.enums.UserType;
+import kg.edu.mathbilim.enums.converter.UserTypeConverter;
 import kg.edu.mathbilim.model.reference.role.Role;
-import kg.edu.mathbilim.model.reference.types.UserType;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -59,9 +60,8 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "type_id")
+    @Convert(converter = UserTypeConverter.class)
+    @Column(name = "type_id", nullable = false)
     private UserType type;
 
     @Size(max = 2)

@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.enums.Category;
 import lombok.*;
 
 import java.time.Instant;
@@ -20,7 +20,7 @@ public class BookDto {
 
     private FileDto file;
 
-    private CategoryDto category;
+    private Category category;
 
     private Map<String, Object> metadata;
 

@@ -3,7 +3,8 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.reference.types.FileType;
+import kg.edu.mathbilim.enums.FileType;
+import kg.edu.mathbilim.enums.converter.FileTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -36,10 +37,8 @@ public class File {
     @Column(name = "file_path", nullable = false)
     private String filePath;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "type_id", nullable = false)
+    @Convert(converter = FileTypeConverter.class)
+    @Column(name = "type_id", nullable = false)
     private FileType type;
 
     @ManyToOne(fetch = FetchType.LAZY)

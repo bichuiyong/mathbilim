@@ -3,8 +3,10 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.reference.status.ContentStatus;
-import kg.edu.mathbilim.model.reference.types.PostType;
+import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.PostType;
+import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.enums.converter.PostTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -30,10 +32,8 @@ public class Post {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "type_id", nullable = false)
+    @Convert(converter = PostTypeConverter.class)
+    @Column(name = "type_id", nullable = false)
     private PostType type;
 
     @Size(max = 500)
@@ -67,10 +67,8 @@ public class Post {
     @Column(name = "share_count")
     private Long shareCount;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "status_id", nullable = false)
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
     private ContentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)

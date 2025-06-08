@@ -2,17 +2,16 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.config.S3Config;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.reference.types.FileTypeDto;
+import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.FileMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.User;
-import kg.edu.mathbilim.model.reference.types.FileType;
 import kg.edu.mathbilim.repository.FileRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
-import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.types.FileTypeService;
+import kg.edu.mathbilim.service.interfaces.S3Service;
+import kg.edu.mathbilim.util.FileUtil;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,16 +20,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 @Service
@@ -39,9 +33,7 @@ import java.util.function.Supplier;
 public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
-
-    private final FileTypeService fileTypeService;
-    private final S3Client s3Client;
+    private final S3Service s3Service;
     private final S3Config s3Config;
     private final Tika tika = new Tika();
 
@@ -55,14 +47,19 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public boolean existsById(Long fileId) {
+        return fileRepository.existsById(fileId);
+    }
+
+    @Override
     public Page<FileDto> getFilePage(String query,
                                      int page, int size,
                                      String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if (query == null || query.isEmpty()) {
-            return getPage(() -> fileRepository.findAll(pageable));
+        if (StringUtils.hasText(query)) {
+            return getPage(() -> fileRepository.findByQuery(query, pageable));
         }
-        return getPage(() -> fileRepository.findByQuery(query, pageable));
+        return getPage(() -> fileRepository.findAll(pageable));
     }
 
     @Override
@@ -71,16 +68,10 @@ public class FileServiceImpl implements FileService {
                                       String sortBy, String sortDirection) {
         String userEmail = user.getEmail();
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if (query == null || query.isEmpty()) {
-            return getPage(() -> fileRepository.findByUser_Email(userEmail, pageable));
+        if (StringUtils.hasText(userEmail)) {
+            return getPage(() -> fileRepository.findByUserWithQuery(userEmail, query, pageable));
         }
-        return getPage(() -> fileRepository.findByUserWithQuery(userEmail, query, pageable));
-    }
-
-    @Override
-    public void delete(Long id) {
-        fileRepository.deleteById(id);
-        log.info("Deleted file: {}", id);
+        return getPage(() -> fileRepository.findByUser_Email(userEmail, pageable));
     }
 
     private Page<FileDto> getPage(Supplier<Page<File>> supplier, String notFoundMessage) {
@@ -103,165 +94,90 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileDto uploadFile(MultipartFile multipartFile, String context, User user) {
         try {
-            log.info("Starting upload file");
+            log.info("Starting file upload for user: {}", user.getEmail());
 
-            validateFile(multipartFile);
+            FileUtil.validateFile(multipartFile);
 
-            String detectedMimeType = tika.detect(multipartFile.getInputStream());
-            FileType fileType = fileTypeService.determineFileTypeEntity(detectedMimeType, multipartFile.getOriginalFilename());
-            validateFileSize(multipartFile.getSize(), fileType.getMimeType());
+            String mimeType = tika.detect(multipartFile.getInputStream());
+            FileType fileType = FileType.determineFileType(mimeType, multipartFile.getOriginalFilename());
 
-            String uniqueFileName = generateUniqueFileName(multipartFile.getOriginalFilename());
+            String s3Key = FileUtil.buildS3Key(multipartFile.getOriginalFilename(), context, fileType, s3Config);
+            s3Service.uploadFile(multipartFile, s3Key, mimeType);
 
-            String category = fileTypeService.getFileCategory(fileType.getMimeType());
-            String folder = s3Config.getFolder(context, category);
-            String s3key = folder + uniqueFileName;
-
-            uploadToS3(multipartFile, s3key, detectedMimeType);
-
-            File file = File.builder()
-                    .filename(multipartFile.getOriginalFilename())
-                    .filePath(s3key)
-                    .type(fileType)
-                    .user(user)
-                    .size(multipartFile.getSize())
-                    .s3Link(s3Config.getBaseUrl() + "/" + s3key)
-                    .createdAt(Instant.now())
-                    .updatedAt(Instant.now())
-                    .build();
-
+            File file = createFileEntity(multipartFile, s3Key, fileType, user);
             fileRepository.save(file);
-            log.info("File uploaded successfully");
+            log.info("File uploaded successfully: {} (type: {})", s3Key, fileType.getName());
             return fileMapper.toDto(file);
+
         } catch (IOException e) {
-            log.error("Error uploading file {}", e.getMessage());
-            throw new FileValidationException(e.getMessage());
+            log.error("Error uploading file: {}", e.getMessage());
+            throw new FileValidationException("Ошибка загрузки файла");
         }
     }
 
     @Transactional
     @Override
     public FileDto updateFile(Long fileId, MultipartFile newFile) {
-        FileDto existingFile = getById(fileId);
         try {
-            validateFile(newFile);
-            String detectedMimeType = tika.detect(newFile.getInputStream());
-            FileTypeDto fileTypeDto = fileTypeService.determineFileType(detectedMimeType, newFile.getOriginalFilename());
-            validateFileSize(newFile.getSize(), fileTypeDto.getMimeType());
+            File existingFile = getEntityById(fileId);
 
-            deleteFromS3(existingFile.getFilePath());
+            FileUtil.validateFile(newFile);
+            String mimeType = tika.detect(newFile.getInputStream());
+            FileType fileType = FileType.determineFileType(mimeType, newFile.getOriginalFilename());
 
-            String uniqueFileName = generateUniqueFileName(newFile.getOriginalFilename());
-            String category = fileTypeService.getFileCategory(fileTypeDto.getMimeType());
-            String folder = s3Config.getFolder("general", category);
-            String s3Key = folder + uniqueFileName;
+            s3Service.deleteFile(existingFile.getFilePath());
 
-            uploadToS3(newFile, s3Key, detectedMimeType);
+            String s3Key = FileUtil.buildS3Key(newFile.getOriginalFilename(), "general", fileType, s3Config);
+            s3Service.uploadFile(newFile, s3Key, mimeType);
 
             existingFile.setFilename(newFile.getOriginalFilename());
             existingFile.setFilePath(s3Key);
-            existingFile.setType(fileTypeDto);
+            existingFile.setType(fileType);
             existingFile.setSize(newFile.getSize());
             existingFile.setS3Link(s3Config.getBaseUrl() + "/" + s3Key);
             existingFile.setUpdatedAt(Instant.now());
 
-            File file = fileMapper.toEntity(existingFile);
-            fileRepository.save(file);
-            log.info("File updated successfully");
-            return existingFile;
+            fileRepository.save(existingFile);
+            log.info("File updated successfully: {}", fileId);
+            return fileMapper.toDto(existingFile);
+
         } catch (IOException e) {
-            log.error("Error updating file {}", e.getMessage());
-            throw new FileValidationException(e.getMessage());
+            log.error("Error updating file: {}", e.getMessage());
+            throw new FileValidationException("Ошибка обновления файла");
         }
     }
-
 
     @Transactional
     @Override
     public void deleteFile(Long fileId) {
         File file = getEntityById(fileId);
-        deleteFromS3(file.getFilePath());
+        s3Service.deleteFile(file.getFilePath());
         fileRepository.delete(file);
-        log.info("File deleted successfully");
+        log.info("File deleted successfully: {}", fileId);
     }
 
     @Override
     public byte[] dowloadFile(Long fileId) {
         File file = getEntityById(fileId);
         try {
-            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .bucket(s3Config.getBucketName())
-                    .key(file.getFilePath())
-                    .build();
-
-            return s3Client.getObject(getObjectRequest).readAllBytes();
+            return s3Service.downloadFile(file.getFilePath());
         } catch (IOException e) {
-            log.error("Error downloading file {}", e.getMessage());
-            throw new FileValidationException(e.getMessage());
+            log.error("Error downloading file: {}", e.getMessage());
+            throw new FileValidationException("Ошибка скачивания файла");
         }
     }
 
-    @Override
-    public boolean existsById(Long fileId) {
-        return fileRepository.existsById(fileId);
-    }
-
-    private void deleteFromS3(String s3Key) {
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(s3Config.getBucketName())
-                .key(s3Key)
+    private File createFileEntity(MultipartFile multipartFile, String s3Key, FileType fileType, User user) {
+        Instant now = Instant.now();
+        return File.builder()
+                .filename(multipartFile.getOriginalFilename())
+                .filePath(s3Key)
+                .type(fileType)
+                .user(user)
+                .size(multipartFile.getSize())
+                .s3Link(s3Config.getBaseUrl() + "/" + s3Key)
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
-        s3Client.deleteObject(deleteObjectRequest);
-        log.info("Deleted file from s3 bucket {}", s3Key);
-    }
-
-    private void uploadToS3(MultipartFile multipartFile, String s3key, String detectedMimeType) throws IOException {
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(s3Config.getBucketName())
-                .key(s3key)
-                .contentType(detectedMimeType)
-                .contentLength(multipartFile.getSize())
-                .build();
-
-
-        s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
-        log.info("Upload file to s3: {}", s3key);
-    }
-
-    private String generateUniqueFileName(String originalFilename) {
-        return UUID.randomUUID().toString().replace("-", "") + originalFilename;
-    }
-
-    private void validateFile(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new FileValidationException("Файл не может быть пустым");
-        }
-
-        if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
-            throw new FileValidationException("Имя файла не может быть пустым");
-        }
-    }
-
-    private void validateFileSize(long fileSize, String mimeType) {
-        String category = fileTypeService.getFileCategory(mimeType);
-        String maxSizeStr = s3Config.getMaxSize(category);
-
-        if (maxSizeStr != null) {
-            long maxSize = parseSize(maxSizeStr);
-            if (fileSize > maxSize) {
-                throw new FileValidationException(
-                        String.format("Размер файла превышает максимально допустимый размер для типа %s: %s",
-                                category, maxSizeStr));
-            }
-        }
-    }
-
-    private long parseSize(String sizeStr) {
-        if (sizeStr.endsWith("MB")) {
-            return Long.parseLong(sizeStr.substring(0, sizeStr.length() - 2)) * 1024 * 1024;
-        } else if (sizeStr.endsWith("KB")) {
-            return Long.parseLong(sizeStr.substring(0, sizeStr.length() - 2)) * 1024;
-        }
-        return Long.parseLong(sizeStr);
     }
 }
