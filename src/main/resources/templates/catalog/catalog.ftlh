@@ -1,78 +1,379 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Math Bilim</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <link rel="stylesheet" href="/static/css/catalog.css">
-
-</head>
-
-<body>
 
 
-<!-- Header -->
-<header class="bg-light border-bottom d-none d-lg-block mb-3">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <!-- Left: Social icons -->
-            <ul class="list-inline mb-0">
-                <li class="list-inline-item me-2"><a href="https://www.facebook.com/limonkg/" class="text-dark"><i class="fab fa-facebook-f"></i></a></li>
-                <li class="list-inline-item me-2"><a href="https://twitter.com/LimonKG" class="text-dark"><i class="fab fa-twitter"></i></a></li>
-                <li class="list-inline-item me-2"><a href="https://www.instagram.com/limon_kg/" class="text-dark"><i class="fab fa-instagram"></i></a></li>
-                <li class="list-inline-item me-2"><a href="https://www.youtube.com/" class="text-dark"><i class="fab fa-youtube"></i></a></li>
-                <li class="list-inline-item"><a href="https://wa.me/996554202981" class="text-dark"><i class="fab fa-whatsapp"></i></a></li>
-            </ul>
+<#import "../layout.ftlh" as main>
 
-            <!-- Center: Logo -->
-            <a href="/ru/" class="mx-auto">
-                <img src="/static/" alt="Math Bilim" height="40">
-            </a>
 
-            <!-- Right: Language (stacked) + Auth -->
-            <div class="d-flex align-items-center gap-3">
-                <!-- Language stacked vertically -->
-                <div class="d-flex flex-column me-3">
-                    <button class="btn btn-link text-dark px-1 is-selected" disabled>рус</button>
-                    <button class="btn btn-link text-dark px-1">кырг</button>
-                </div>
+<@main.layout>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-                <!-- Auth Links -->
-                <div class="d-flex flex-column">
-                    <a class="btn btn-link text-dark px-1" href="#">Вход</a>
-                    <a class="btn btn-link text-dark px-1" href="#">Регистрация</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+        .text-gray {
+            color: #6c757d;
+        }
+        a.text-black:hover {
+            color: #555 !important;
+        }
 
+        .header_logo img {
+            max-height: 60px;
+        }
+
+        .top_pannel_menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .top_pannel_menu li a {
+            color: #000;
+            font-size: 1.2rem;
+        }
+
+        header {
+            z-index: 1030;
+        }
+
+        header ul.list-inline i {
+            font-size: 16px;
+            transition: color 0.2s ease-in-out;
+        }
+
+        header ul.list-inline a:hover {
+            color: #6b5b95;
+        }
+
+        .locale_switcher .btn.is-selected {
+            font-weight: bold;
+            cursor: default;
+            text-decoration: underline;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+            background: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* === Main & Side Blocks === */
+        .main-block,
+        .side-block {
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /*=== Main Block ===*/
+        .main-block {
+            position: relative;
+            flex: 1 1 calc(66.66% - 15px); /* Adjusted for gap */
+            min-width: 300px; /* Minimum width before wrapping */
+        }
+
+        .side-block{
+            position: relative;
+            flex: 1 1 calc(33.33% - 15px); /* Adjusted for gap */
+            min-width: 250px; /* Minimum width before wrapping */
+        }
+
+        .main-block .content-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .main-block .content-image:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        .main-block .content-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            z-index: 2;
+        }
+
+        .main-block .content-body * {
+            color: #fff !important;
+        }
+
+        /* === Side Block === */
+        .side-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-block .content-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .side-block .content-body {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .side-block .category,
+        .side-block .title {
+            color: #000 !important;
+        }
+
+        .side-block .content-image:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        .content-body {
+            padding: 15px;
+        }
+
+        .category {
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            line-height: 1.4;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .title:hover {
+            text-decoration: underline;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 25vw;
+            max-width: 300px;
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-menu .close-btn {
+            align-self: flex-end;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-menu.show {
+            transform: translateX(0);
+        }
+
+        .menu {
+            margin-left: auto;
+            width: auto;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: none !important;
+            color: black;
+        }
+
+        footer ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .text-purple {
+            color: #5a42bc !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-block,
+            .side-block {
+                flex: 1 1 100%;
+                min-width: unset;
+                height: auto;
+                min-height: 300px;
+            }
+
+            .main-block .content-image,
+            .side-block .content-image {
+                height: 200px;
+            }
+
+            .main-block .content-body,
+            .side-block .content-body {
+                padding: 12px;
+            }
+
+            .title {
+                font-size: 16px;
+                -webkit-line-clamp: 2;
+            }
+
+            .category {
+                font-size: 11px;
+            }
+
+            .row {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .main-block .content-body,
+            .side-block .content-body {
+                padding: 10px;
+            }
+
+            .title {
+                font-size: 14px;
+                -webkit-line-clamp: 2;
+            }
+
+            .category {
+                font-size: 10px;
+                margin-bottom: 3px;
+            }
+
+            .row {
+                gap: 10px;
+            }
+        }
+
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            background: none;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 36px;
+        }
+
+        .pagination-btn:hover {
+            background-color: #f5f5f5;
+            border-color: #999;
+        }
+
+        .pagination-btn.active {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .pagination-btn.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #eee;
+        }
+
+        .pagination-btn.disabled:hover {
+            background: none;
+            border-color: #eee;
+        }
+
+        .pagination-dots {
+            color: #666;
+            padding: 0 8px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .pagination {
+                gap: 4px;
+                margin: 30px 0;
+            }
+
+            .pagination-btn {
+                padding: 6px 8px;
+                min-width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+
+    </style>
 <div class="container">
-
-<nav class="navbar d-flex justify-content-between align-items-center px-3 mb-3">
-<#--    <div class="burger d-flex align-items-center" onclick="toggleMenu()">-->
-<#--        <i class="fa fa-bars"></i>-->
-<#--    </div>-->
-
-    <div class="menu d-flex justify-content-between align-items-center w-100">
-        <div class="burger d-flex align-items-" onclick="toggleMenu()">
-            <i class="fa fa-bars"></i>
-        </div>
-        <a href="/">Главная</a>
-        <a href="/ru/catalog/?cat=1">Стартапы и Бизнес</a>
-        <a href="/ru/catalog/?cat=45">IT</a>
-        <a href="/ru/catalog/?cat=55">Образование</a>
-        <a href="/ru/catalog/?cat=14">Карьера</a>
-        <a href="/ru/catalog/?cat=84">Новости</a>
-        <a href="/ru/catalog/?cat=91">Новости партнеров</a>
-        <a href="/ru/catalog/?cat=243">Блоги</a>
-    </div>
-</nav>
-
 <!-- Catalog Filter/Search Section -->
 <h3 class="text-gray">Каталог</h3>
 <div class="row mb-4">
@@ -106,23 +407,11 @@
 
 
 
-<div class="mobile-menu" id="mobileMenu">
-    <button class="close-btn" onclick="exitMobileMenu()">✕</button>
-    <a href="/">Главная</a>
-    <a href="/ru/catalog/?cat=1">Стартапы и Бизнес</a>
-    <a href="/ru/catalog/?cat=45">IT</a>
-    <a href="/ru/catalog/?cat=55">Образование</a>
-    <a href="/ru/catalog/?cat=14">Карьера</a>
-    <a href="/ru/catalog/?cat=84">Новости</a>
-    <a href="/ru/catalog/?cat=91">Новости партнеров</a>
-    <a href="/ru/catalog/?cat=243">Блоги</a>
-</div>
 
 <div class="container">
-
     <div class="row">
-        <div class="main-block col-md-8 col-sm-12 ">
-            <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
+        <div class="main-block">
+            <img src="https://via.placeholder.com/600x300/4a90e2/ffffff?text=Main+Article" alt="Main image" class="content-image">
             <div class="content-body">
                 <div class="category">НОВОСТИ · 21.05.2025</div>
                 <a href="#" class="title">
@@ -131,8 +420,8 @@
             </div>
         </div>
 
-        <div class="side-block col-md-4 col-sm-12 ">
-            <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
+        <div class="side-block">
+            <img src="https://via.placeholder.com/400x200/7b68ee/ffffff?text=Side+Article" alt="Side image" class="content-image">
             <div class="content-body">
                 <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
                 <a href="#" class="title">
@@ -141,9 +430,10 @@
             </div>
         </div>
     </div>
+
     <div class="row">
-        <div class="main-block col-md-8 col-12 ">
-            <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
+        <div class="main-block">
+            <img src="https://via.placeholder.com/600x300/4a90e2/ffffff?text=Main+Article" alt="Main image" class="content-image">
             <div class="content-body">
                 <div class="category">НОВОСТИ · 21.05.2025</div>
                 <a href="#" class="title">
@@ -152,29 +442,8 @@
             </div>
         </div>
 
-        <div class="side-block col-md-4 col-12 ">
-            <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
-            <div class="content-body">
-                <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
-                <a href="#" class="title">
-                    Как Нурсултан из Оша поступил в университет, где учились Илон Маск и Дональд Трамп
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="main-block col-md-8 col-12 ">
-            <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
-            <div class="content-body">
-                <div class="category">НОВОСТИ · 21.05.2025</div>
-                <a href="#" class="title">
-                    inDrive упростил поездки по Кыргызстану — теперь можно уехать без автовокзала и маршруток
-                </a>
-            </div>
-        </div>
-
-        <div class="side-block col-md-4 col-12 ">
-            <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
+        <div class="side-block">
+            <img src="https://via.placeholder.com/400x200/7b68ee/ffffff?text=Side+Article" alt="Side image" class="content-image">
             <div class="content-body">
                 <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
                 <a href="#" class="title">
@@ -185,90 +454,39 @@
     </div>
     <!-- Repeat the above .row block 11 more times -->
 
+    <div class="pagination">
+        <button class="pagination-btn disabled">‹</button>
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <button class="pagination-btn">4</button>
+        <button class="pagination-btn">5</button>
+        <span class="pagination-dots">...</span>
+        <button class="pagination-btn">12</button>
+        <button class="pagination-btn">›</button>
+    </div>
 </div>
 
 
     </div>
-<!-- Footer -->
-<footer class="bg-light text-dark pt-5 border-top">
-    <div class="container">
-        <div class="row">
-            <!-- Контакты -->
-            <div class=" col-md-5 mb-4">
-                <h5 class="text-purple">КОНТАКТЫ</h5>
-                <p><strong>Бишкек ш., Чуйков көч. 93</strong></p>
-                <p><a href="mailto:limonmediakg@gmail.com" class="text-dark">limonmediakg@gmail.com</a></p>
-                <p><a href="tel:+996555202981" class="text-dark">Тел.: 0554 20 29 81</a></p>
-                <p><a href="#" class="text-dark">Рекламодателям</a></p>
-                <p><a href="#" class="text-dark">Политика конфиденциальности</a></p>
-                <p><a href="#" class="text-dark">Договор оферты</a></p>
-            </div>
-
-            <!-- Рубрики -->
-            <div class="  col-md-3 mb-4">
-                <h5 class="text-purple">РУБРИКИ</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-dark ">Стартапы и Бизнес</a></li>
-                    <li><a href="#" class="text-dark">IT</a></li>
-                    <li><a href="#" class="text-dark">Образование</a></li>
-                    <li><a href="#" class="text-dark">Карьера</a></li>
-                    <li><a href="#" class="text-dark">Новости</a></li>
-                    <li><a href="#" class="text-dark">Новости партнеров</a></li>
-                    <li><a href="#" class="text-dark">Блоги</a></li>
-                </ul>
-            </div>
-
-            <!-- Соцсети -->
-            <div class=" col-md-3 mb-4">
-                <h5 class="text-purple mb-3">СОЦСЕТИ</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="#" class="text-black text-decoration-none d-flex align-items-center">
-                            <i class="fab fa-facebook fa-lg me-2"></i> Facebook
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-black text-decoration-none d-flex align-items-center">
-                            <i class="fab fa-twitter fa-lg me-2"></i> Twitter
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-black text-decoration-none d-flex align-items-center">
-                            <i class="fab fa-instagram fa-lg me-2"></i> Instagram
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-black text-decoration-none d-flex align-items-center">
-                            <i class="fab fa-youtube fa-lg me-2"></i> YouTube
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-black text-decoration-none d-flex align-items-center">
-                            <i class="fab fa-whatsapp fa-lg me-2"></i> WhatsApp
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="text-center pt-3 border-top">
-            <p class="mb-0">© 2025 Все права защищены &nbsp;|&nbsp; 16+</p>
-        </div>
-    </div>
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/catalog.js"></script>
-        </div>
+
 
 <script>
-    function exitMobileMenu() {
+    function exitMobileMenu(event) {
+        if (event) event.preventDefault();
         document.getElementById('mobileMenu').classList.remove('show');
         setTimeout(() => {
             window.location.href = '/catalog';
         }, 300);
     }
-</script>
 
-</body>
-</html>
+    function toggleMenu(event) {
+        if (event) event.preventDefault();
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('show');
+    }
+</script>
+</@main.layout>
