@@ -1,19 +1,26 @@
 package kg.edu.mathbilim.service.impl;
 
+import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.PostDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.PostMapper;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.repository.PostRepository;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Service
@@ -23,20 +30,23 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
-    private Post getEntityById(Long id){
+    private final UserService userService;
+    private final FileService fileService;
+
+    private Post getEntityById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
-    public PostDto getById(Long id){
+    public PostDto getById(Long id) {
         return postMapper.toDto(getEntityById(id));
     }
 
     @Override
     public Page<PostDto> getPostPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if(query == null || query.isEmpty()){
+        if (query == null || query.isEmpty()) {
             return getPage(() -> postRepository.findAll(pageable));
         }
         return getPage(() -> postRepository.findByQuery(query, pageable));
@@ -46,6 +56,30 @@ public class PostServiceImpl implements PostService {
     public void delete(Long id) {
         postRepository.deleteById(id);
         log.info("Deleted post: {}", id);
+    }
+
+    @Override
+    public PostDto createPost(PostDto postDto, MultipartFile[] files) {
+        postDto.setUser(userService.getAuthUser());
+        postDto.setStatus(ContentStatus.PENDING_REVIEW);
+
+        Post post = postMapper.toEntity(postDto);
+        postRepository.save(post);
+
+        if (files.length > 0) {
+            postDto.getFiles().forEach(file -> {
+                List<FileDto> uploadedFiles = fileService.uploadFilesForPost(
+                        files,
+                        post.getSlug(),
+                        userService.getAuthUserEntity()
+                );
+                if (!uploadedFiles.isEmpty()) {
+                    postDto.setFiles(new LinkedHashSet<>(uploadedFiles));
+                    log.info("Uploaded {} files for post {}", uploadedFiles.size(), post.getId());
+                }
+            });
+        }
+        return postDto;
     }
 
     private Page<PostDto> getPage(Supplier<Page<Post>> supplier, String notFoundMessage) {
@@ -60,5 +94,5 @@ public class PostServiceImpl implements PostService {
     private Page<PostDto> getPage(Supplier<Page<Post>> supplier) {
         return getPage(supplier, "Посты не были найдены");
     }
-    
+
 }
