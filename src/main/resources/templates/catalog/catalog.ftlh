@@ -2,12 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Limon.kg Catalog</title>
+    <title>Math Bilim</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FontAwesome (for icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="/static/css/catalog.css">
@@ -16,11 +14,11 @@
 
 <body>
 
+
 <!-- Header -->
-<header class="bg-white border-bottom d-none d-lg-block mb-3">
+<header class="bg-light border-bottom d-none d-lg-block mb-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-
             <!-- Left: Social icons -->
             <ul class="list-inline mb-0">
                 <li class="list-inline-item me-2"><a href="https://www.facebook.com/limonkg/" class="text-dark"><i class="fab fa-facebook-f"></i></a></li>
@@ -32,19 +30,19 @@
 
             <!-- Center: Logo -->
             <a href="/ru/" class="mx-auto">
-                <img src="/static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Limon.kg" height="40">
+                <img src="/static/" alt="Math Bilim" height="40">
             </a>
 
-            <!-- Right: Lang + Auth -->
+            <!-- Right: Language (stacked) + Auth -->
             <div class="d-flex align-items-center gap-3">
-                <!-- Language -->
-                <div class="locale_switcher d-flex">
+                <!-- Language stacked vertically -->
+                <div class="d-flex flex-column me-3">
                     <button class="btn btn-link text-dark px-1 is-selected" disabled>рус</button>
                     <button class="btn btn-link text-dark px-1">кырг</button>
                 </div>
 
                 <!-- Auth Links -->
-                <div>
+                <div class="d-flex flex-column">
                     <a class="btn btn-link text-dark px-1" href="#">Вход</a>
                     <a class="btn btn-link text-dark px-1" href="#">Регистрация</a>
                 </div>
@@ -52,12 +50,18 @@
         </div>
     </div>
 </header>
-<nav class="navbar d-flex justify-content-between align-items-center px-3 mb-3">
-    <div class="burger d-flex align-items-center" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
-    </div>
 
-    <div class="menu d-flex gap-3 align-items-center">
+<div class="container">
+
+<nav class="navbar d-flex justify-content-between align-items-center px-3 mb-3">
+<#--    <div class="burger d-flex align-items-center" onclick="toggleMenu()">-->
+<#--        <i class="fa fa-bars"></i>-->
+<#--    </div>-->
+
+    <div class="menu d-flex justify-content-between align-items-center w-100">
+        <div class="burger d-flex align-items-" onclick="toggleMenu()">
+            <i class="fa fa-bars"></i>
+        </div>
         <a href="/">Главная</a>
         <a href="/ru/catalog/?cat=1">Стартапы и Бизнес</a>
         <a href="/ru/catalog/?cat=45">IT</a>
@@ -69,9 +73,41 @@
     </div>
 </nav>
 
+<!-- Catalog Filter/Search Section -->
+<h3 class="text-gray">Каталог</h3>
+<div class="row mb-4">
+    <div class="col-12">
+        <input type="text" class="form-control" placeholder="">
+    </div>
+
+    <div class="d-flex gap-2 mb-3">
+        <select class="form-select w-50">
+            <option selected disabled>Категория</option>
+            <option>Стартапы и Бизнес</option>
+            <option>IT</option>
+            <option>Образование</option>
+            <option>Карьера</option>
+            <option>Новости</option>
+            <option>Новости партнеров</option>
+            <option>Блоги</option>
+        </select>
+
+        <select class="form-select w-50">
+            <option selected disabled>Сортировать</option>
+            <option>Сначала новые</option>
+            <option>Сначала старые</option>
+            <option>По популярности</option>
+        </select>
+    </div>
+
+
+
+</div>
+
 
 
 <div class="mobile-menu" id="mobileMenu">
+    <button class="close-btn" onclick="exitMobileMenu()">✕</button>
     <a href="/">Главная</a>
     <a href="/ru/catalog/?cat=1">Стартапы и Бизнес</a>
     <a href="/ru/catalog/?cat=45">IT</a>
@@ -84,10 +120,8 @@
 
 <div class="container">
 
-
-    <!-- Repeat this .row 12 times -->
     <div class="row">
-        <div class="main-block">
+        <div class="main-block col-md-8 col-sm-12 ">
             <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
             <div class="content-body">
                 <div class="category">НОВОСТИ · 21.05.2025</div>
@@ -97,7 +131,7 @@
             </div>
         </div>
 
-        <div class="side-block">
+        <div class="side-block col-md-4 col-sm-12 ">
             <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
             <div class="content-body">
                 <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
@@ -107,20 +141,61 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="main-block col-md-8 col-12 ">
+            <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
+            <div class="content-body">
+                <div class="category">НОВОСТИ · 21.05.2025</div>
+                <a href="#" class="title">
+                    inDrive упростил поездки по Кыргызстану — теперь можно уехать без автовокзала и маршруток
+                </a>
+            </div>
+        </div>
 
+        <div class="side-block col-md-4 col-12 ">
+            <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
+            <div class="content-body">
+                <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
+                <a href="#" class="title">
+                    Как Нурсултан из Оша поступил в университет, где учились Илон Маск и Дональд Трамп
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="main-block col-md-8 col-12 ">
+            <img src="../static/images/Screenshot 2025-05-17 at 00.14.40.png" alt="Main image" class="content-image">
+            <div class="content-body">
+                <div class="category">НОВОСТИ · 21.05.2025</div>
+                <a href="#" class="title">
+                    inDrive упростил поездки по Кыргызстану — теперь можно уехать без автовокзала и маршруток
+                </a>
+            </div>
+        </div>
+
+        <div class="side-block col-md-4 col-12 ">
+            <img src="../static/images/Screenshot 2025-05-20 at 23.12.43.png" alt="Side image" class="content-image">
+            <div class="content-body">
+                <div class="category">ОБРАЗОВАНИЕ · 20.05.2025</div>
+                <a href="#" class="title">
+                    Как Нурсултан из Оша поступил в университет, где учились Илон Маск и Дональд Трамп
+                </a>
+            </div>
+        </div>
+    </div>
     <!-- Repeat the above .row block 11 more times -->
 
 </div>
 
 
-
+    </div>
 <!-- Footer -->
 <footer class="bg-light text-dark pt-5 border-top">
     <div class="container">
-        <div class="row flex-nowrap">
+        <div class="row">
             <!-- Контакты -->
-            <div class=" col-12 col-md-6 mb-4">
-                <h5 class="text-primary">КОНТАКТЫ</h5>
+            <div class=" col-md-5 mb-4">
+                <h5 class="text-purple">КОНТАКТЫ</h5>
                 <p><strong>Бишкек ш., Чуйков көч. 93</strong></p>
                 <p><a href="mailto:limonmediakg@gmail.com" class="text-dark">limonmediakg@gmail.com</a></p>
                 <p><a href="tel:+996555202981" class="text-dark">Тел.: 0554 20 29 81</a></p>
@@ -130,10 +205,10 @@
             </div>
 
             <!-- Рубрики -->
-            <div class=" col-12 col-md-3 mb-4">
-                <h5 class="text-primary">РУБРИКИ</h5>
+            <div class="  col-md-3 mb-4">
+                <h5 class="text-purple">РУБРИКИ</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-dark">Стартапы и Бизнес</a></li>
+                    <li><a href="#" class="text-dark ">Стартапы и Бизнес</a></li>
                     <li><a href="#" class="text-dark">IT</a></li>
                     <li><a href="#" class="text-dark">Образование</a></li>
                     <li><a href="#" class="text-dark">Карьера</a></li>
@@ -144,8 +219,8 @@
             </div>
 
             <!-- Соцсети -->
-            <div class=" col-12 col-md-3 mb-4">
-                <h5 class="text-black mb-3">СОЦСЕТИ</h5>
+            <div class=" col-md-3 mb-4">
+                <h5 class="text-purple mb-3">СОЦСЕТИ</h5>
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="#" class="text-black text-decoration-none d-flex align-items-center">
@@ -182,8 +257,18 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/catalog.js"></script>
+        </div>
+
+<script>
+    function exitMobileMenu() {
+        document.getElementById('mobileMenu').classList.remove('show');
+        setTimeout(() => {
+            window.location.href = '/catalog';
+        }, 300);
+    }
+</script>
+
 </body>
 </html>
