@@ -40,8 +40,7 @@ public class Event {
     @Column(name = "status_id", nullable = false)
     private ContentStatus status;
 
-    @Lob
-    @Column(name = "content", length = Integer.MAX_VALUE)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "metadata")
@@ -82,11 +81,5 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     private Set<File> files = new LinkedHashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "post_events",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private Set<Post> posts = new LinkedHashSet<>();
 
 }

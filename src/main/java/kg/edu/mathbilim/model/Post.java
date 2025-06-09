@@ -44,8 +44,7 @@ public class Post {
     private String slug;
 
     @NotNull
-    @Lob
-    @Column(name = "content", length = Integer.MAX_VALUE)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
@@ -79,9 +78,5 @@ public class Post {
     private User approvedBy;
 
     @ManyToMany(mappedBy = "posts")
-    private Set<Event> events = new LinkedHashSet<>();
-
-    @ManyToMany(mappedBy = "posts")
     private Set<File> files = new LinkedHashSet<>();
-
 }
