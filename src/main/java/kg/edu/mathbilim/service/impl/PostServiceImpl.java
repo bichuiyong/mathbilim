@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.PostDto;
+import kg.edu.mathbilim.enums.PostType;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.PostMapper;
@@ -34,13 +35,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostDto> getPostPage(String query, int page, int size, String sortBy, String sortDirection) {
-        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+    public Page<PostDto> getPostsByType(String postType,String query, Pageable pageable) {
         if(query == null || query.isEmpty()){
-            return getPage(() -> postRepository.findAll(pageable));
+            try{
+                PostType type = fromStringIgnoreCase(postType);
+                return getPage(() -> postRepository.findAllByType(type,pageable));
+            } catch (IllegalArgumentException e){
+                throw new PostNotFoundException(postType);
+            }
         }
-        return getPage(() -> postRepository.findByQuery(query, pageable));
+        try{
+            PostType type = PostType.valueOf(postType);
+            return getPage(() -> postRepository.findByQuery(type,query, pageable));
+        } catch (IllegalArgumentException e) {
+            throw new PostNotFoundException(postType);
+        }
+
     }
+
+    public static PostType fromStringIgnoreCase(String value) {
+        if (value == null) return null;
+
+        try {
+            return PostType.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null; // или выбросить свое исключение, если нужно
+        }
+    }
+
 
     @Override
     public void delete(Long id) {
