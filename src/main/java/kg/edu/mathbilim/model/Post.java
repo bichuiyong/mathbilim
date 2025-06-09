@@ -13,7 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -77,6 +77,12 @@ public class Post {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    @ManyToMany(mappedBy = "posts")
-    private Set<File> files = new LinkedHashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "post_files",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id")
+    )
+    @Builder.Default
+    private Set<File> files = new HashSet<>();
 }

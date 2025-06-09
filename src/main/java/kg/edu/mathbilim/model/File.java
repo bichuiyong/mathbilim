@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -72,9 +73,6 @@ public class File {
     @ManyToMany(mappedBy = "files")
     private Set<Event> events = new LinkedHashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "post_files",
-            joinColumns = @JoinColumn(name = "file_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private Set<Post> posts = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "files")
+    private Set<Post> posts = new HashSet<>();
 }
