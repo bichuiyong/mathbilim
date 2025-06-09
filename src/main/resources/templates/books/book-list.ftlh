@@ -3,7 +3,7 @@
 <#--3.пагинацию сверху можно езе-->
 <#--4.возможно добавить в навбаре уведомления, что допустим книга на модерации и позже одобрено оно или нет (ну это так как идея)-->
 <#--5.вопрос как будем реализовавать показ книг (текстом, пдф , хз кароче)-->
-<#import "layout.ftlh" as main>
+<#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
@@ -35,16 +35,16 @@
                 </div>
 
                 <aside class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block" id="sidebarCategories" style="margin-bottom: 20px">
-                        <h3 class="h5 fw-bold mb-3">Предметы</h3>
-                        <ul class="nav flex-column">
-                            <li class="nav-item"><a href="#" class="nav-link">Алгебра</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link">Геометрия</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link">Теория чисел</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link">Анализ</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link">Комбинаторика</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link">Олимпиадная подготовка</a></li>
-                        </ul>
-                        <hr>
+                    <h3 class="h5 fw-bold mb-3">Предметы</h3>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="#" class="nav-link">Алгебра</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Геометрия</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Теория чисел</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Анализ</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Комбинаторика</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Олимпиадная подготовка</a></li>
+                    </ul>
+                    <hr>
                 </aside>
 
                 <div class="d-flex mb-4 flex-column flex-sm-row gap-2">
