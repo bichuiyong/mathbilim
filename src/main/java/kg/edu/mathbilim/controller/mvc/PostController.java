@@ -16,23 +16,24 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
     private final PostService postService;
 
-    @GetMapping
+    @GetMapping("create")
     public String createPost(Model model) {
         model.addAttribute("post", new PostDto());
         model.addAttribute("postTypes", PostType.getAllValues());
         return "media/post-create";
     }
 
-    @PostMapping
+    @PostMapping("create")
     public String createPost(@ModelAttribute("post") PostDto post,
                              BindingResult bindingResult,
-                             @RequestParam(required = false) MultipartFile[] files,
+                             @RequestParam(required = false) MultipartFile[] attachments,
                              Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("postTypes", PostType.getAllValues());
             return "media/post-create";
         }
-        PostDto dto = postService.createPost(post, files);
+        if(attachments == null)  attachments = new MultipartFile[0];
+        PostDto dto = postService.createPost(post, attachments);
         return "redirect:/posts/" + dto.getType().getName() + "/" + dto.getId();
     }
 

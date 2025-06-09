@@ -59,27 +59,29 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto createPost(PostDto postDto, MultipartFile[] files) {
+    public PostDto createPost(PostDto postDto, MultipartFile[] attachments) {
         postDto.setUser(userService.getAuthUser());
         postDto.setStatus(ContentStatus.PENDING_REVIEW);
-
         Post post = postMapper.toEntity(postDto);
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
-        if (files.length > 0) {
-            postDto.getFiles().forEach(file -> {
-                List<FileDto> uploadedFiles = fileService.uploadFilesForPost(
-                        files,
-                        post.getSlug(),
-                        userService.getAuthUserEntity()
-                );
-                if (!uploadedFiles.isEmpty()) {
-                    postDto.setFiles(new LinkedHashSet<>(uploadedFiles));
-                    log.info("Uploaded {} files for post {}", uploadedFiles.size(), post.getId());
-                }
-            });
+        if (attachments != null && attachments.length > 0) {
+            List<FileDto> uploadedFiles = fileService.uploadFilesForPost(
+                    attachments,
+                    savedPost.getSlug(),
+                    userService.getAuthUserEntity()
+            );
+            if (!uploadedFiles.isEmpty()) {
+                PostDto result = postMapper.toDto(savedPost);
+                result.setFiles(new LinkedHashSet<>(uploadedFiles));
+                log.info("Uploaded {} files for post {}", uploadedFiles.size(), savedPost.getId());
+                return result;
+            }
         }
-        return postDto;
+
+        PostDto result = postMapper.toDto(savedPost);
+        log.info("Created post: {}", savedPost);
+        return result;
     }
 
     private Page<PostDto> getPage(Supplier<Page<Post>> supplier, String notFoundMessage) {
