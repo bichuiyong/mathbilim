@@ -5,7 +5,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.Category;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.CategoryConverter;
+import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -58,5 +60,19 @@ public class Book {
 
     @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new LinkedHashSet<>();
+
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
 
 }

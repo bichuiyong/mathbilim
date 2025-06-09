@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.EventType;
 import lombok.*;
 
@@ -18,7 +19,11 @@ public class EventDto {
 
     private String name;
 
-    private Map<String, Object> content;
+    private String content;
+
+    private Map<String, Object> metadata;
+
+    private ContentStatus status;
 
     private LocalDateTime startDate;
 

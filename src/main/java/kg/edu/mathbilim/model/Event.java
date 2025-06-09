@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.EventType;
+import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.enums.converter.EventTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
@@ -34,9 +36,17 @@ public class Event {
     @Column(name = "name", nullable = false, length = 500)
     private String name;
 
-    @Column(name = "content")
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
+
+    @Lob
+    @Column(name = "content", length = Integer.MAX_VALUE)
+    private String content;
+
+    @Column(name = "metadata")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> content;
+    private Map<String, Object> metadata;
 
     @NotNull
     @Column(name = "start_date", nullable = false)

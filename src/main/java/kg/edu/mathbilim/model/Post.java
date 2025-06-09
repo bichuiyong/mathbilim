@@ -9,14 +9,11 @@ import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.enums.converter.PostTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -47,9 +44,9 @@ public class Post {
     private String slug;
 
     @NotNull
-    @Column(name = "content", nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> content;
+    @Lob
+    @Column(name = "content", length = Integer.MAX_VALUE)
+    private String content;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
