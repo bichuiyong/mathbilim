@@ -1,4 +1,4 @@
-<#import "layout.ftlh" as main>
+<#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
@@ -66,7 +66,7 @@
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
 
-<#--                    <#list> -->
+                    <#--                    <#list> -->
                     <div class="col">
                         <div class="card h-100 shadow-sm">
                             <div class="card-header bg-primary text-white">
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                     </div>
-<#--                    </#list>-->
+                    <#--                    </#list>-->
 
                     <div class="col">
                         <div class="card h-100 shadow-sm">
