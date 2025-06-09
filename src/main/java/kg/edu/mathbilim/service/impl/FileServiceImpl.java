@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Service
@@ -87,6 +89,22 @@ public class FileServiceImpl implements FileService {
         return getPage(supplier, "Файлы не были найдены");
     }
 
+    @Transactional
+    @Override
+    public List<FileDto> uploadFilesForPost(MultipartFile[] files, String postSlug, User user) {
+        List<FileDto> uploadedFiles = new ArrayList<>();
+        String context = "posts/" + postSlug;
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                FileDto uploadedFile = uploadFile(file, context, user);
+                uploadedFiles.add(uploadedFile);
+                log.info("File uploaded for post {}: {}", postSlug, file.getOriginalFilename());
+            }
+        }
+
+        return uploadedFiles;
+    }
 
     /// ДЛЯ РАБОТЫ С S3
 

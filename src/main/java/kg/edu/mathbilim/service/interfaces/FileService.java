@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface FileService {
     FileDto getById(Long id);
 
@@ -17,6 +19,9 @@ public interface FileService {
 
     @Transactional
     FileDto uploadFile(MultipartFile multipartFile, String context, User user);
+
+    @Transactional
+    List<FileDto> uploadFilesForPost(MultipartFile[] files, String postSlug, User user);
 
     @Transactional
     FileDto updateFile(Long fileId, MultipartFile newFile);
