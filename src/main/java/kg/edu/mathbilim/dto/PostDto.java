@@ -24,6 +24,7 @@ public class PostDto {
     @NotBlank
     private String title;
 
+    @NotBlank
     private String slug;
 
     @NotBlank

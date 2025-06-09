@@ -25,7 +25,7 @@ import java.util.Set;
 @Table(name = "posts")
 public class Post {
     @Id
-    @ColumnDefault("nextval('content_id_seq')")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
