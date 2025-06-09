@@ -2,9 +2,12 @@ package kg.edu.mathbilim.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import kg.edu.mathbilim.dto.reference.role.RoleDto;
+import kg.edu.mathbilim.enums.UserType;
+import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -22,6 +25,7 @@ public class UserDto {
 
     @NotBlank(message = "Email обязателен")
     @Email(message = "Неверный формат email")
+    @UniqueEmail
     private String email;
 
     @NotBlank
@@ -42,14 +46,14 @@ public class UserDto {
     private String preferredLanguage = "ru";
 
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Instant createdAt = Instant.now();
 
     @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private Instant updatedAt = Instant.now();
 
     private RoleDto role;
 
     @NotNull(message = "Выберите тип аккаунта")
     @Valid
-    private UserTypeDto type;
+    private UserType type;
 }

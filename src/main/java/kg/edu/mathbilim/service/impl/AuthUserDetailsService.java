@@ -1,9 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
-
-
-import kg.edu.mathbilim.model.Authority;
-import kg.edu.mathbilim.model.Role;
+import kg.edu.mathbilim.model.reference.role.Authority;
+import kg.edu.mathbilim.model.reference.role.Role;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +23,8 @@ public class AuthUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
