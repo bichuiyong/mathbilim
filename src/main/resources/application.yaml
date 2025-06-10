@@ -124,7 +124,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: false
-
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   output:
     ansi:
       enabled: always
@@ -145,17 +145,17 @@ tinymce:
     images:
       endpoint: "/api/upload/tinymce/image"
       max-size: 5242880
-      allowed-extensions: ["jpg", "jpeg", "png", "gif", "webp"]
+      allowed-extensions: [ "jpg", "jpeg", "png", "gif", "webp" ]
 
     documents:
       endpoint: "/api/upload/tinymce/file"
       max-size: 26214400
-      allowed-extensions: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"]
+      allowed-extensions: [ "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx" ]
 
     media:
       endpoint: "/api/upload/tinymce/media"
       max-size: 104857600
-      allowed-extensions: ["mp4", "avi", "mov", "mp3", "wav"]
+      allowed-extensions: [ "mp4", "avi", "mov", "mp3", "wav" ]
 
   security:
     virus-scanning: false

@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl;
 
+import kg.edu.mathbilim.dto.PostTypeDto;
 import kg.edu.mathbilim.mapper.PostTypeMapper;
 import kg.edu.mathbilim.model.PostType;
 import kg.edu.mathbilim.repository.PostTypeRepository;
