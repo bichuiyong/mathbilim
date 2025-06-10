@@ -3,9 +3,7 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.enums.Category;
 import kg.edu.mathbilim.enums.TestStatus;
-import kg.edu.mathbilim.enums.converter.CategoryConverter;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -28,6 +26,7 @@ import java.util.Set;
 @Table(name = "tests")
 public class Test {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -36,9 +35,9 @@ public class Test {
     @Column(name = "s3_link", nullable = false)
     private String s3Link;
 
-    @Convert(converter = CategoryConverter.class)
-    @Column(name = "category_id", nullable = false)
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private kg.edu.mathbilim.model.Category category;
 
     @NotNull
     @Column(name = "metadata", nullable = false)

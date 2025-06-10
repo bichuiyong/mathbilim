@@ -15,10 +15,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 
@@ -101,6 +105,34 @@ public class UserServiceImpl implements UserService {
 
     private Page<UserDto> getPage(Supplier<Page<User>> supplier) {
         return getPage(supplier, "Пользователи не были найдены");
+    }
+
+    @Override
+    public UserDto getAuthUser() {
+        return userMapper.toDto(getAuthUserEntity());
+    }
+
+    @Override
+    public User getAuthUserEntity() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Auth object: {}", authentication);
+
+        if (authentication == null) {
+            log.error("Authentication is null");
+            throw new NoSuchElementException("user not authorized");
+        }
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            log.error("Authentication is anonymous");
+            throw new IllegalArgumentException("user not authorized");
+        }
+
+        String email = authentication.getName();
+        return getEntityByEmail(email);
+    }
+
+    @Override
+    public Long getAuthId() {
+        return getAuthUser().getId();
     }
 
     @Override

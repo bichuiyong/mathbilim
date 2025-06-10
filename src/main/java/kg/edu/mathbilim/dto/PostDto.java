@@ -1,11 +1,13 @@
 package kg.edu.mathbilim.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.PostType;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,26 +17,38 @@ import java.util.Map;
 public class PostDto {
     private Long id;
 
-    private PostType type;
+    @NotNull
+    private PostTypeDto type;
 
+    @NotBlank
     private String title;
 
+    @NotBlank
     private String slug;
 
-    private Map<String, Object> content;
+    @NotBlank
+    private String content;
 
-    private Instant createdAt;
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 
-    private Instant updatedAt;
+    @Builder.Default
+    private Instant updatedAt = Instant.now();
 
-    private Long viewCount;
+    @Builder.Default
+    private Long viewCount = 0L;
 
-    private Long shareCount;
+    @Builder.Default
+    private Long shareCount = 0L;
 
-    private ContentStatus status;
+    @Builder.Default
+    private ContentStatus status = ContentStatus.DRAFT;
 
+    @NotNull
     private UserDto user;
 
-    private UserDto approvedBy;
+    @Builder.Default
+    private UserDto approvedBy = null;
 
+    Set<FileDto> files = new LinkedHashSet<>();
 }

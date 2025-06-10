@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.enums.EventType;
-import kg.edu.mathbilim.enums.converter.EventTypeConverter;
+import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -34,9 +34,16 @@ public class Event {
     @Column(name = "name", nullable = false, length = 500)
     private String name;
 
-    @Column(name = "content")
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
+
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "metadata")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> content;
+    private Map<String, Object> metadata;
 
     @NotNull
     @Column(name = "start_date", nullable = false)
@@ -45,8 +52,8 @@ public class Event {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Convert(converter = EventTypeConverter.class)
-    @Column(name = "type_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
     private EventType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,11 +79,5 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     private Set<File> files = new LinkedHashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "post_events",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private Set<Post> posts = new LinkedHashSet<>();
 
 }
