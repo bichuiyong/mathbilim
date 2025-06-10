@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/news.css">
+    <link rel="stylesheet" href="/static/main.css">
 
     <div class="container py-4">
         <div class="row">
@@ -15,11 +15,11 @@
                         </button>
                         <ul class="dropdown-menu w-100" aria-labelledby="departmentDropdown">
                             <li><a class="dropdown-item" href="#">Центральный аппарат</a></li>
-                            <li><a class="dropdown-item" href="#">Управление науки и инноваций</a></li>
-                            <li><a class="dropdown-item" href="#">Управление высшего образования</a></li>
-                            <li><a class="dropdown-item" href="#">Управление начального образования</a></li>
-                            <li><a class="dropdown-item" href="#">Управление школьного образования</a></li>
-                            <li><a class="dropdown-item" href="#">Управление дошкольного образования</a></li>
+                            <li><a class="dropdown-item" href="#">Управление науки</a></li>
+                            <li><a class="dropdown-item" href="#">Управление высшего</a></li>
+                            <li><a class="dropdown-item" href="#">Управление начального</a></li>
+                            <li><a class="dropdown-item" href="#">Управление школьного</a></li>
+                            <li><a class="dropdown-item" href="#">Управление дошкольного</a></li>
                             <li><a class="dropdown-item" href="#">Управление финансов</a></li>
                         </ul>
                     </div>

@@ -5,21 +5,16 @@
     <title>Редактирование профиля</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/profile-edit.css">
+    <link rel="stylesheet" href="/static/main.css">
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="profile-banner p-4 p-lg-5">
             <div class="row align-items-center position-relative" style="z-index: 2;">
-                <div class="col-12 col-lg-auto text-center text-lg-start mb-3 mb-lg-0">
-                    <div class="avatar mx-auto mx-lg-0">
-                        ИП
-                    </div>
-                </div>
                 <div class="col-12 col-lg text-center text-lg-start">
                     <h1 class="profile-name mb-2">Редактирование профиля</h1>
                     <div class="profile-role">Обновите свою информацию</div>
                 </div>
                 <div class="col-12 col-lg-auto text-center mt-3 mt-lg-0">
-                    <a href="/profile" class="back-button">
+                    <a href="/profile" class="back-button" style="color: white">
                         <i class="fas fa-arrow-left"></i>
                         Назад к профилю
                     </a>
@@ -60,12 +55,12 @@
                         </div>
 
                         <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">
-                            <button type="button" class="btn btn-outline-secondary"
+                            <button type="button" class="btn btn-outline-secondary  mt-4"
                                     onclick="window.location.href='/profile'">
                                 <i class="fas fa-times me-2"></i>
                                 Отмена
                             </button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary mt-4">
                                 <i class="fas fa-save me-2"></i>
                                 Сохранить изменения
                             </button>

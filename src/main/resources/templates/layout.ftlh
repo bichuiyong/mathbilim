@@ -68,8 +68,8 @@
         </div>
     </nav>
 
-    <nav class="navbar navbar-expand-lg bg-light border-bottom py-2">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg bg-light border-bottom py-2 mx-auto">
+        <div class="container-fluid ">
             <div class="collapse navbar-collapse" id="secondaryNav">
                 <ul class="navbar-nav left-padding">
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="/events">Мероприятия</a></li>
