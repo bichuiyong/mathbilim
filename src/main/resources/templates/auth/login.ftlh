@@ -1,32 +1,22 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
-    <style>
-        .alert-custom {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1050;
-            width: 300px;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 16px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .alert-custom.visible {
-            opacity: 1;
-        }
-    </style>
-    <div class="auth-container">
-        <div class="auth-header">
-            <i class="bi bi-egg-fried"></i>
+<@main.layout ; spring>
+    <link rel="stylesheet" href="/static/css/login.css">
+
+    <div class="container-fluid">
+    <div class="row justify-content-center">
+    <div class="col-12">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="icon">
+                <i class="bi bi-box-arrow-in-right"></i>
+            </div>
             <h2>Welcome Back!</h2>
+            <p>Sign in to your account</p>
         </div>
 
         <#if error?? && error>
-            <div id="errorAlert" class="alert alert-danger alert-custom" role="alert">
-                <strong>Неверная почта или пароль повторите попытку</strong>
+            <div class="alert alert-danger alert-custom" role="alert">
+                <strong>Invalid email or password. Please try again.</strong>
             </div>
         </#if>
 
@@ -35,28 +25,31 @@
                 <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                        value="${(_csrf.token)!'csrf-token'}"/>
             </#if>
+
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-envelope"></i>
-                    </span>
-                    <input type="email" class="form-control" id="email" name="username" placeholder="your@email.com" required>
+                <div class="input-wrapper">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com"
+                    >
+                    <i class="bi bi-envelope input-icon"></i>
                 </div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-lock"></i>
-                    </span>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                <div class="input-wrapper">
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="Enter your password">
+                    <i class="bi bi-lock input-icon"></i>
+                </div>
+                <div class="forgot-password">
+                    <a href="/auth/forgot-password">Forgot Password?</a>
                 </div>
             </div>
 
-            <button class="w-100 btn btn-primary btn-lg" type="submit">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+            <button class="login-btn" type="submit">
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Sign In
             </button>
         </form>
 

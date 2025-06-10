@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+
 import lombok.*;
 
 @Getter
@@ -11,6 +12,4 @@ public class CategoryDto {
     private Integer id;
 
     private String name;
-
-    private CategoryDto parent;
 }
