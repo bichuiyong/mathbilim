@@ -139,7 +139,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-4" id="publicationsGrid">
                         <div class="col-12 col-lg-6">
                             <div class="publication-card" data-type="event" data-status="approved"
