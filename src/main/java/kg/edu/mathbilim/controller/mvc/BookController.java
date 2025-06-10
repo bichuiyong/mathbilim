@@ -17,7 +17,8 @@ public class BookController {
     private final BookService bookService;
     private final CategoryService categoryService;
 
-    public String books() {
+    @GetMapping
+    public String books(Model model) {
         return "books/book-list";
     }
 

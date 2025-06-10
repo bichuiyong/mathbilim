@@ -16,8 +16,8 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
-                        <#if user.type?? && user.type.name?has_content>
-                            ${user.type.name}
+                        <#if user.type?? && user.type.name()?has_content>
+                            ${user.type.name()}
                         <#else>
                             Администратор / Модератор
                         </#if>

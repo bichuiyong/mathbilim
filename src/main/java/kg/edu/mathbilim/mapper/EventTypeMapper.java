@@ -1,8 +1,6 @@
 package kg.edu.mathbilim.mapper;
 
-import kg.edu.mathbilim.dto.CategoryDto;
 import kg.edu.mathbilim.dto.EventTypeDto;
-import kg.edu.mathbilim.model.Category;
 import kg.edu.mathbilim.model.EventType;
 import org.mapstruct.Mapper;
 

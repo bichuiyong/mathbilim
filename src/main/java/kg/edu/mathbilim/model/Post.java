@@ -7,14 +7,11 @@ import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -26,14 +23,14 @@ import java.util.Set;
 @Table(name = "posts")
 public class Post {
     @Id
-    @ColumnDefault("nextval('content_id_seq')")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "type_id")
-    private kg.edu.mathbilim.model.PostType type;
+    private PostType type;
 
     @Size(max = 500)
     @NotNull
@@ -46,9 +43,8 @@ public class Post {
     private String slug;
 
     @NotNull
-    @Column(name = "content", nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> content;
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -80,10 +76,12 @@ public class Post {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    @ManyToMany(mappedBy = "posts")
-    private Set<Event> events = new LinkedHashSet<>();
-
-    @ManyToMany(mappedBy = "posts")
-    private Set<File> files = new LinkedHashSet<>();
-
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "post_files",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id")
+    )
+    @Builder.Default
+    private Set<File> files = new HashSet<>();
 }

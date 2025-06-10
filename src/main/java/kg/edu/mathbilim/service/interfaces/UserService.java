@@ -24,6 +24,12 @@ public interface UserService {
     @Transactional
     void toggleUserBlocking(Long userId);
 
+    UserDto getAuthUser();
+
+    User getAuthUserEntity();
+
+    Long getAuthId();
+
     boolean existsByEmail(String email);
 
     void deleteUser(Long id);
