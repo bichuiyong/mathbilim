@@ -1,3 +1,7 @@
+const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
+    document.querySelector('input[name="csrf"]')?.value ||
+    document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+
 window.onload = function () {
     doFetch('api/users');
 }
@@ -54,40 +58,35 @@ function addUserToTable(users) {
         resultTable.appendChild(tr);
     });
 }
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-
 
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
+    const selectElement = document.getElementById('type');
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
     const form = document.getElementById('createNewUser');
     const formData = new FormData(form);
-    // const csrfToken = getCookie('XSRF-TOKEN');
     const data = Object.fromEntries(formData.entries());
     data.role = {name: data.role};
+    data.type = {id: selectedOption.value, name: selectedOption.dataset.name}
     console.log(data);
     fetch('/api/users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // 'XSRF-TOKEN': csrfToken
+            'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify(data),
-        credentials: 'include'
     })
         .then(response => {
             if (!response.ok) {
                 console.log(response);
                 throw new Error('Ошибка запроса');
             }
-            return response.json();
+            let myModalEl = document.getElementById('createUserModal');
+            let modal = bootstrap.Modal.getInstance(myModalEl);
+            modal.hide();
+            doFetch('api/users');
         })
-        .then(result => {
-            console.log('Успех:', result);
-            alert('Данные отправлены!');
-        })
+
+
 }

@@ -186,9 +186,6 @@
             </div>
             <div class="modal-body">
                 <form id="createNewUser">
-                    <#if _csrf??>
-                        <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>
-                    </#if>
                     <div class="mb-3">
                         <label for="firstName" class="form-label">First name</label>
                         <input type="text" class="form-control" id="firstName" name="name" required>
@@ -208,18 +205,22 @@
                     <div class="mb-3">
                         <label for="newUserRole" class="form-label">Роль</label>
                         <select class="form-select" id="newUserRole" name="role">
-                            <option value="user" selected>Пользователь</option>
-                            <option value="moderator">Модератор</option>
-                            <option value="admin">Администратор</option>
+                            <#list roles as role>
+                                <option value="${role.name}">${role.name}</option>
+                            </#list>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="type" class="form-label">Тип аккаунта</label>
                         <div class="account-type-select">
-                            <@spring.formSingleSelect "userDto.type" types 'class="account-type-dropdown" id="type"'/>
+                            <select class="form-select" id="type" name="type">
+                                <option selected disabled>Выберите тип аккаунта</option>
+                                <#list types as type>
+                                    <option value="${type.id}" data-name="${type.name()}">${type}</option>
+                                </#list>
+                            </select>
                             <i class="bi bi-chevron-down dropdown-icon"></i>
                         </div>
-                        <@spring.showErrors "<br>" "error text-danger"/>
                     </div>
                 </form>
             </div>
