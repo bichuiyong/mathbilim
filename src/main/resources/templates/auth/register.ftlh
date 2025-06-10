@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
-    <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="../static/scss/main.css">
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">

@@ -5,7 +5,7 @@
     <title>Редактирование профиля</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="../static/scss/main.css">
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="profile-banner p-4 p-lg-5">
             <div class="row align-items-center position-relative" style="z-index: 2;">
