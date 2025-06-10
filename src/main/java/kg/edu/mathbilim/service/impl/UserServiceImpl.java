@@ -4,9 +4,11 @@ import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
+import kg.edu.mathbilim.model.UserType;
 import kg.edu.mathbilim.model.reference.role.Role;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
+import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
@@ -34,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final UserTypeService userTypeService;
 
     @Override
     public User getEntityById(Long userId) {
@@ -148,5 +152,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByEmail(String email) {
         return userMapper.toDto(getEntityByEmail(email));
+    }
+
+    @Override
+    public void setUserType(String email, Long userTypeId) {
+        User user = getEntityByEmail(email);
+
+        if (user.getType() != null) {
+            throw new IllegalStateException("User type already set for user: " + email);
+        }
+
+        UserType userType = userTypeService.findById(userTypeId);
+
+        user.setType(userType);
+        user.setUpdatedAt(Instant.now());
+
+        userRepository.save(user);
     }
 }

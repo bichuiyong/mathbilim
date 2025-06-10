@@ -8,11 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum UserType {
-    SCHOOLBOY(1, "SCHOOLBOY"),
-    STUDENT(2, "STUDENT"),
-    TEACHER(3, "TEACHER"),
-    EXPLORER(4, "EXPLORER");
+public enum EventType {
+    OLYMPIAD(1, "OLYMPIAD"),
+    FORUM(2, "FORUM"),
+    MEETUP(3, "MEETUP"),
+    WEBINAR(4, "WEBINAR"),
+    WORKSHOP(5, "WORKSHOP"),
+    CONFERENCE(6, "CONFERENCE"),
+    COMPETITION(7, "COMPETITION"),
+    LECTURE(8, "LECTURE"),
+    COURSE(9, "COURSE"),
+    EXHIBITION(10, "EXHIBITION");
 
     @JsonProperty("id")
     private final Integer id;
@@ -20,31 +26,36 @@ public enum UserType {
     @JsonProperty("name")
     private final String name;
 
-    UserType(Integer id, String name) {
+
+    EventType(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
     @JsonProperty("id")
-    public Integer getId() { return id; }
+    public Integer getId() {
+        return id;
+    }
 
     @JsonProperty("name")
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public static UserType fromId(Integer id) {
-        if (id == null) return SCHOOLBOY;
+    public static EventType fromId(Integer id) {
+        if (id == null) return OLYMPIAD;
         return Arrays.stream(values())
                 .filter(type -> type.id.equals(id))
                 .findFirst()
-                .orElse(SCHOOLBOY);
+                .orElse(OLYMPIAD);
     }
 
     @JsonCreator
-    public static UserType fromJson(@JsonProperty("id") Integer id) {
+    public static EventType fromJson(@JsonProperty("id") Integer id) {
         return fromId(id);
     }
 
-    public static List<UserType> getAllValues() {
+    public static List<EventType> getAllValues() {
         return Arrays.asList(values());
     }
 }
