@@ -160,11 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(`Файл "${file.name}" слишком большой. Максимальный размер: 50MB`);
                 return false;
             }
-
-            if (file.type.startsWith('image/')) {
-                alert(`Изображения "${file.name}" нужно вставлять в текст через редактор, а не прикреплять как файл`);
-                return false;
-            }
         }
 
         return true;
@@ -223,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getFileIcon(fileName) {
         const ext = fileName.split('.').pop().toLowerCase();
         const iconMap = {
+            // Документы
             'pdf': 'fa-file-pdf text-danger',
             'doc': 'fa-file-word text-primary',
             'docx': 'fa-file-word text-primary',
@@ -230,10 +226,34 @@ document.addEventListener('DOMContentLoaded', function() {
             'xlsx': 'fa-file-excel text-success',
             'ppt': 'fa-file-powerpoint text-warning',
             'pptx': 'fa-file-powerpoint text-warning',
+
+            // Архивы
             'zip': 'fa-file-archive text-secondary',
             'rar': 'fa-file-archive text-secondary',
             '7z': 'fa-file-archive text-secondary',
-            'txt': 'fa-file-text text-info'
+
+            // Текст
+            'txt': 'fa-file-text text-info',
+
+            // Изображения
+            'jpg': 'fa-file-image text-success',
+            'jpeg': 'fa-file-image text-success',
+            'png': 'fa-file-image text-success',
+            'gif': 'fa-file-image text-success',
+            'bmp': 'fa-file-image text-success',
+            'svg': 'fa-file-image text-success',
+            'webp': 'fa-file-image text-success',
+
+            // Аудио
+            'mp3': 'fa-file-audio text-purple',
+            'wav': 'fa-file-audio text-purple',
+            'flac': 'fa-file-audio text-purple',
+
+            // Видео
+            'mp4': 'fa-file-video text-dark',
+            'avi': 'fa-file-video text-dark',
+            'mkv': 'fa-file-video text-dark',
+            'mov': 'fa-file-video text-dark'
         };
 
         return iconMap[ext] || 'fa-file text-muted';

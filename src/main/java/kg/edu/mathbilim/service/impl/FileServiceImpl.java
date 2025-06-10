@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -99,7 +100,7 @@ public class FileServiceImpl implements FileService {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 File uploadedFile = uploadFileReturnEntity(file, context, user);
-                uploadedFile.getPosts().add(post);
+                uploadedFile.setPosts(new LinkedHashSet<>(Collections.singleton(post)));
                 fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
                 log.info("File uploaded for post {}: {}", post.getSlug(), file.getOriginalFilename());

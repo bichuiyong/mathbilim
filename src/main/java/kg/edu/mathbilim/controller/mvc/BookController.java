@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
     private final BookService bookService;
 
-    public String books() {
+    @GetMapping
+    public String books(Model model) {
         return "books/book-list";
     }
 
