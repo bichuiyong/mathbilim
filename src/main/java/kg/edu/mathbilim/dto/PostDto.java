@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.dto;
 
 import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.PostType;
+import kg.edu.mathbilim.model.PostType;
 import lombok.*;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class PostDto {
     private Long id;
 
-    private PostType type;
+    private PostTypeDto type;
 
     private String title;
 

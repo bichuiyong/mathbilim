@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.enums.EventType;
-import kg.edu.mathbilim.enums.converter.EventTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -45,9 +43,9 @@ public class Event {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Convert(converter = EventTypeConverter.class)
-    @Column(name = "type_id", nullable = false)
-    private EventType type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    private kg.edu.mathbilim.model.EventType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)

@@ -2,8 +2,8 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.enums.Category;
 import kg.edu.mathbilim.service.interfaces.BookService;
+import kg.edu.mathbilim.service.interfaces.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("books")
 public class BookController {
     private final BookService bookService;
+    private final CategoryService categoryService;
 
     public String books() {
         return "books/book-list";
@@ -28,7 +29,7 @@ public class BookController {
 
     @GetMapping("create")
     public String create(Model model) {
-        model.addAttribute("categories", Category.getAllValues());
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("book", new BookDto());
         return "books/create";
     }
