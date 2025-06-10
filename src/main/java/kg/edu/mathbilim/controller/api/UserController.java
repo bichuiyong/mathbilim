@@ -2,6 +2,7 @@ package kg.edu.mathbilim.controller.api;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.UserEditByAdminDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto) {
         userService.createUser(userDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Void> updateUser(@RequestBody @Valid UserEditByAdminDto userDto, @PathVariable Long id) {
+        userService.updateUser(userDto, id);
         return ResponseEntity.ok().build();
     }
 }

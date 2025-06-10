@@ -4,6 +4,7 @@ const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
 
 window.onload = function () {
     doFetch('api/users');
+
 }
 
 
@@ -30,6 +31,7 @@ function doFetch(url) {
 
             } else {
                 addUserToTable(data.content)
+                changeEditModal()
             }
 
         })
@@ -50,7 +52,7 @@ function addUserToTable(users) {
                 ${user.enabled ? 'Активен' : 'Неактивен'}</span></td>
       <td>
     <td>
-      <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal">Изменить</button>
+      <button class="edit-button btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.id}" data-user-name="${user.name}" data-user-surname="${user.surname}" data-user-role="${user.role.name}" data-user-type="${user.type.id}">Изменить</button>
       <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal">Удалить</button>
       <button class="btn btn-sm btn-warning">Заблокировать</button>
     </td>
@@ -61,16 +63,52 @@ function addUserToTable(users) {
 
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
-    const selectElement = document.getElementById('type');
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
     const form = document.getElementById('createNewUser');
+    sendForm(form, '/api/users', 'POST', 'createUserModal');
+}
+
+function changeEditModal() {
+    document.getElementById('resultTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('edit-button')) {
+            const button = event.target;
+            const userId = button.dataset.userId;
+            const userName = button.dataset.userName;
+            const userSurname = button.dataset.userSurname
+            const userRole = button.dataset.userRole;
+            const userType = button.dataset.userType;
+
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUserName').value = userName;
+            document.getElementById('editUserSurname').value = userSurname;
+            document.getElementById('editUserRole').value = userRole;
+            document.getElementById('editUserType').value = userType;
+        }
+    });
+}
+
+let editUserBtn = document.getElementById('editUserBtn');
+editUserBtn.onclick = function () {
+    let editUserForm = document.getElementById('editUserForm');
+    let userId = document.getElementById('editUserId').value
+    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal')
+}
+
+function sendForm(form, fetchUrl, method, modalId) {
+    let selectElement;
+    if (form.id === 'createNewUser') {
+        selectElement = document.getElementById('type');
+    } else {
+        selectElement = document.getElementById('editUserType');
+    }
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    // const form = document.getElementById('createNewUser');
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     data.role = {name: data.role};
     data.type = {id: selectedOption.value, name: selectedOption.dataset.name}
     console.log(data);
-    fetch('/api/users', {
-        method: 'POST',
+    fetch(fetchUrl, {
+        method: method,
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken
@@ -82,11 +120,10 @@ createUserBtn.onclick = function () {
                 console.log(response);
                 throw new Error('Ошибка запроса');
             }
-            let myModalEl = document.getElementById('createUserModal');
+            let myModalEl = document.getElementById(modalId);
             let modal = bootstrap.Modal.getInstance(myModalEl);
             modal.hide();
             doFetch('api/users');
         })
-
 
 }

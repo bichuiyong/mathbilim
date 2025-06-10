@@ -1,6 +1,8 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.UserEditByAdminDto;
+import kg.edu.mathbilim.enums.UserType;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
@@ -74,6 +76,16 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
         log.info("Deleted user with id: {}", id);
+    }
+
+    @Override
+    public void updateUser(UserEditByAdminDto userDto, Long userId) {
+        User user = getEntityById(userId);
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setRole(roleService.getRoleByName(userDto.getRole().getName().toUpperCase()));
+        user.setType(UserType.fromId(userDto.getType().getId()));
+        userRepository.saveAndFlush(user);
     }
 
     @Override

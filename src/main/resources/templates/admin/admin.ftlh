@@ -143,18 +143,18 @@
             </thead>
             <tbody id="resultTable">
             <tr>
-                <td>1</td>
-                <td>user_admin</td>
-                <td>admin@example.com</td>
-                <td><span class="badge bg-danger">Администратор</span></td>
-                <td><span class="user-status-active">Активен</span></td>
-                <td>
-                    <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"
-                            data-bs-target="#editUserModal">Изменить</button>
-                    <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal"
-                            data-bs-target="#deleteUserModal">Удалить</button>
-                    <button class="btn btn-sm btn-warning">Заблокировать</button>
-                </td>
+<#--                <td>1</td>-->
+<#--                <td>user_admin</td>-->
+<#--                <td>admin@example.com</td>-->
+<#--                <td><span class="badge bg-danger">Администратор</span></td>-->
+<#--                <td><span class="user-status-active">Активен</span></td>-->
+<#--                <td>-->
+<#--                    <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"-->
+<#--                            data-bs-target="#editUserModal">Изменить</button>-->
+<#--                    <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal"-->
+<#--                            data-bs-target="#deleteUserModal">Удалить</button>-->
+<#--                    <button class="btn btn-sm btn-warning">Заблокировать</button>-->
+<#--                </td>-->
             </tr>
             </tbody>
         </table>
@@ -214,7 +214,7 @@
                         <label for="type" class="form-label">Тип аккаунта</label>
                         <div class="account-type-select">
                             <select class="form-select" id="type" name="type">
-                                <option selected disabled>Выберите тип аккаунта</option>
+<#--                                <option selected disabled>Выберите тип аккаунта</option>-->
                                 <#list types as type>
                                     <option value="${type.id}" data-name="${type.name()}">${type}</option>
                                 </#list>
@@ -240,39 +240,41 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId" name="id" value="">
                     <div class="mb-3">
-                        <label for="editUserId" class="form-label">ID пользователя</label>
-                        <input type="text" class="form-control" id="editUserId" value="1" readonly>
+                        <label for="editUserName" class="form-label">First name</label>
+                        <input type="text" class="form-control" id="editUserName" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editUsername" class="form-label">Имя пользователя</label>
-                        <input type="text" class="form-control" id="editUsername" value="user_admin">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="editEmail" value="admin@example.com">
+                        <label for="editUserSurname" class="form-label">Last name</label>
+                        <input type="text" class="form-control" id="editUserSurname" name="surname" required>
                     </div>
                     <div class="mb-3">
                         <label for="editUserRole" class="form-label">Роль</label>
-                        <select class="form-select" id="editUserRole">
-                            <option value="user">Пользователь</option>
-                            <option value="moderator">Модератор</option>
-                            <option value="admin" selected>Администратор</option>
+                        <select class="form-select" id="editUserRole" name="role">
+                            <#list roles as role>
+                                <option value="${role.name}">${role.name}</option>
+                            </#list>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="editUserStatus" class="form-label">Статус</label>
-                        <select class="form-select" id="editUserStatus">
-                            <option value="active" selected>Активен</option>
-                            <option value="blocked">Заблокирован</option>
-                        </select>
+                        <label for="editUserType" class="form-label">Тип аккаунта</label>
+                        <div class="account-type-select">
+                            <select class="form-select" id="editUserType" name="type">
+                                <option selected disabled value="">Выберите тип аккаунта</option>
+                                <#list types as type>
+                                    <option value="${type.id}" data-name="${type.name()}">${type}</option>
+                                </#list>
+                            </select>
+                            <i class="bi bi-chevron-down dropdown-icon"></i>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" >Сохранить изменения</button>
+                <button type="button" class="btn btn-primary" id="editUserBtn">Сохранить изменения</button>
             </div>
         </div>
     </div>
