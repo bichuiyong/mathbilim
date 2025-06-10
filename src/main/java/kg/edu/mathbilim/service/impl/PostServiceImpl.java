@@ -113,4 +113,8 @@ public class PostServiceImpl implements PostService {
     private Page<PostDto> getPage(Supplier<Page<Post>> supplier) {
         return getPage(supplier, "Посты не были найдены");
     }
+
+}
+
+
 }

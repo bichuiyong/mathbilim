@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.enums.Category;
+import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
 import java.time.Instant;
@@ -20,7 +20,7 @@ public class BookDto {
 
     private FileDto file;
 
-    private Category category;
+    private CategoryDto category;
 
     private Map<String, Object> metadata;
 
@@ -29,4 +29,10 @@ public class BookDto {
     private Instant updatedAt;
 
     private Set<AuthorDto> authors = new LinkedHashSet<>();
+
+    private ContentStatus status;
+
+    private UserDto user;
+
+    private UserDto approvedBy;
 }

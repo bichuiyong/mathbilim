@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.enums.EventType;
+import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,13 +18,17 @@ public class EventDto {
 
     private String name;
 
-    private Map<String, Object> content;
+    private String content;
+
+    private Map<String, Object> metadata;
+
+    private ContentStatus status;
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
-    private EventType type;
+    private EventTypeDto type;
 
     private UserDto user;
 
