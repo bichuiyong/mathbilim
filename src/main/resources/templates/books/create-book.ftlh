@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring/>
+
 <@main.layout>
     <div class="container my-5">
         <div class="card shadow-sm">
@@ -12,13 +14,9 @@
                     </#if>
 
                     <div class="mb-3">
-                        <label for="title" class="form-label">Book Title</label>
-                        <input type="text" class="form-control" id="title" name="name" placeholder="Enter book title" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="authors" class="form-label">Authors (comma-separated)</label>
-                        <input type="text" class="form-control" id="authors" name="author" placeholder="Enter author names, e.g., John Doe, Jane Smith" required>
+                        <label for="name" class="form-label">Book Title</label>
+                        <@spring.formInput "book.name" 'class="form-control" id="name" placeholder="Enter book title"'/>
+                        <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
 
                     <div class="mb-3">
@@ -32,16 +30,19 @@
                     </div>
 
                     <div class="mb-3">
+                        <#assign categoryOptions = {}>
+                        <#list categories as category>
+                            <#assign categoryOptions = categoryOptions + {category.id?string: category.name}>
+                        </#list>
+
                         <label for="category" class="form-label">Category</label>
-                        <select class="form-select" id="category" name="category">
-                            <option value="" selected disabled>Select a category</option>
-                            <#if categories?? && categories?size gt 0>
-                                <#list categories as category>
-                                    <option value="${category.name}">${category.name}</option>
-                                </#list>
-                            </#if>
-                        </select>
+                        <@spring.formSingleSelect
+                        "book.category.id",
+                        categoryOptions,
+                        'class="form-select" id="category"'/>
+                        <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
+
 
                     <!-- Metadata Section -->
                     <div class="mb-3">
@@ -49,13 +50,16 @@
                         <div id="metadataFields">
                             <div class="row g-3 mb-2 metadata-field">
                                 <div class="col-md-5">
-                                    <input type="text" class="form-control" name="metadataKeys" placeholder="Key (e.g., genre)">
+                                    <input type="text" class="form-control" name="metadataKeys"
+                                           placeholder="Key (e.g., genre)">
                                 </div>
                                 <div class="col-md-5">
                                     <input type="text" class="form-control" name="metadataValues" placeholder="Value">
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger w-100" onclick="removeMetadataField(this)">Remove</button>
+                                    <button type="button" class="btn btn-danger w-100"
+                                            onclick="removeMetadataField(this)">Remove
+                                    </button>
                                 </div>
                             </div>
                         </div>

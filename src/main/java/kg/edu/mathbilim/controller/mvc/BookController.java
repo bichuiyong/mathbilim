@@ -42,8 +42,10 @@ public class BookController {
                           BindingResult bindingResult,
                           Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
             return "books/create-book";
         }
+
         bookService.createBook(book);
         return "redirect:/books/" + book.getId();
     }
