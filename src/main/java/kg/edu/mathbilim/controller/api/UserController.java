@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.api;
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,12 @@ public class UserController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto) {
+        userService.createUser(userDto);
         return ResponseEntity.ok().build();
     }
 }

@@ -46,6 +46,10 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user with email: {}", userDto.getEmail());
         User user = userMapper.toEntity(userDto);
         Role role = roleService.getRoleByName("USER");
+        if (user.getRole() != null) {
+            role = roleService.getRoleByName(user.getRole().getName());
+        }
+
 
         user.setRole(role);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
