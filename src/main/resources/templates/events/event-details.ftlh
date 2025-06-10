@@ -2,7 +2,7 @@
 <@main.layout>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/event-detail.css">
+    <link rel="stylesheet" href="../static/scss/main.css">
     <section class="hero-section py-5">
         <div class="container">
             <div class="hero-content">
