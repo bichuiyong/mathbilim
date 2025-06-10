@@ -80,4 +80,10 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     private Set<File> files = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "event_organizations",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "organization_id"))
+    private Set<Organization> organizations = new LinkedHashSet<>();
+
 }

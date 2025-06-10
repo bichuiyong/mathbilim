@@ -115,7 +115,7 @@ public class FileServiceImpl implements FileService {
     public String uploadAvatar(MultipartFile avatarFile, User user) {
         FileDto uploadedFile = uploadFile(avatarFile, "avatars", user);
         log.info("Organization avatar uploaded successfully for user: {}", user.getEmail());
-        return uploadedFile.getS3Link();
+        return uploadedFile.getFilePath();
     }
 
     /// ДЛЯ РАБОТЫ С S3
