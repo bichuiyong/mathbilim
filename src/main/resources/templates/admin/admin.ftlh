@@ -288,12 +288,13 @@
                 <h5 class="modal-title" id="deleteUserModalLabel">Подтвердить удаление</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="deleteUserModalBody">
+                <input type="hidden" value="" id="deleteUserInput">
                 Вы уверены, что хотите удалить пользователя "user_admin" (ID: 1)? Это действие необратимо.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
+                <button type="button" class="btn btn-danger" id="deleteUserBtn">Удалить</button>
             </div>
         </div>
     </div>

@@ -53,8 +53,8 @@ function addUserToTable(users) {
       <td>
     <td>
       <button class="edit-button btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.id}" data-user-name="${user.name}" data-user-surname="${user.surname}" data-user-role="${user.role.name}" data-user-type="${user.type.id}">Изменить</button>
-      <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal">Удалить</button>
-      <button class="btn btn-sm btn-warning">Заблокировать</button>
+      <button class="delete-button btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="${user.id}">Удалить</button>
+      <button class="block-button btn btn-sm btn-warning" data-user-id="${user.id}">${user.enabled ? 'Заблокировать' : 'Разблокировать'}</button>
     </td>
   `;
         resultTable.appendChild(tr);
@@ -67,21 +67,46 @@ createUserBtn.onclick = function () {
     sendForm(form, '/api/users', 'POST', 'createUserModal');
 }
 
-function changeEditModal() {
-    document.getElementById('resultTable').addEventListener('click', function(event) {
-        if (event.target.classList.contains('edit-button')) {
-            const button = event.target;
-            const userId = button.dataset.userId;
-            const userName = button.dataset.userName;
-            const userSurname = button.dataset.userSurname
-            const userRole = button.dataset.userRole;
-            const userType = button.dataset.userType;
+async function handleUserAction(method, successMessage, errorMessage, userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
 
+        if (response.ok) {
+            console.log(successMessage);
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || errorMessage);
+        }
+    } catch (error) {
+        console.error('Ошибка:', error.message);
+    }
+}
+
+function changeEditModal() {
+    document.getElementById('resultTable').addEventListener('click', async function(event) {
+        const button = event.target;
+        const userId = button.dataset.userId;
+        if (button.classList.contains('edit-button')) {
             document.getElementById('editUserId').value = userId;
-            document.getElementById('editUserName').value = userName;
-            document.getElementById('editUserSurname').value = userSurname;
-            document.getElementById('editUserRole').value = userRole;
-            document.getElementById('editUserType').value = userType;
+            document.getElementById('editUserName').value = button.dataset.userName;
+            document.getElementById('editUserSurname').value = button.dataset.userSurname;
+            document.getElementById('editUserRole').value = button.dataset.userRole;
+            document.getElementById('editUserType').value = button.dataset.userType;
+        } else if (button.classList.contains('delete-button')) {
+            let deleteUserModal = document.getElementById('deleteUserModalBody');
+            document.getElementById('deleteUserInput').value = userId;
+            deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
+
+        } else if (button.classList.contains('block-button')) {
+            await handleUserAction('PATCH',
+                `Пользователь с id=${userId} успешно заблокирован/изменён`,
+                'Ошибка блокировки/изменения пользователя', userId);
+            doFetch('/api/users')
         }
     });
 }
@@ -93,6 +118,15 @@ editUserBtn.onclick = function () {
     sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal')
 }
 
+let deleteUserBtn = document.getElementById('deleteUserBtn');
+deleteUserBtn.onclick = async function () {
+    let userId = document.getElementById('deleteUserInput').value
+    await handleUserAction('DELETE',
+        `Пользователь с id=${userId} успешно удалён`,
+        'Ошибка удаления пользователя', userId);
+    doFetch('/api/users')
+}
+
 function sendForm(form, fetchUrl, method, modalId) {
     let selectElement;
     if (form.id === 'createNewUser') {
@@ -101,7 +135,6 @@ function sendForm(form, fetchUrl, method, modalId) {
         selectElement = document.getElementById('editUserType');
     }
     const selectedOption = selectElement.options[selectElement.selectedIndex];
-    // const form = document.getElementById('createNewUser');
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     data.role = {name: data.role};
