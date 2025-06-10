@@ -33,12 +33,7 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userConfig -> userConfig
                                 .userService(customOAuth2UserService))
-                        .successHandler((request, response, authentication) -> {
-                            var oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                            customOAuth2UserService.processOAuthPostLogin(oauthUser);
-                            response.sendRedirect("/");
-                        }))
-
+                        .defaultSuccessUrl("/", true))
 
                 .formLogin(login -> login
                         .loginPage("/auth/login")

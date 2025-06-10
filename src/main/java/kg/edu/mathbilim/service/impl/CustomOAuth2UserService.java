@@ -33,11 +33,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        return new CustomOAuth2User(oAuth2User);
+        CustomOAuth2User customUser = new CustomOAuth2User(oAuth2User);
+        processOAuthPostLogin(customUser);
+
+        return customUser;
     }
 
-    public void processOAuthPostLogin(CustomOAuth2User username) {
-        String email = username.getEmail();
+    private void processOAuthPostLogin(CustomOAuth2User customUser) {
+        String email = customUser.getEmail();
         if (email == null) {
             throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
         }
@@ -60,14 +63,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             userRepository.save(user);
         }
-
-        try {
-            UserDetails userDetails = authUserDetailsService.loadUserByUsername(email);
-            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        } catch (Exception e) {
-            throw new OAuth2AuthenticationException("Failed to authenticate user after OAuth2 login: " + e.getMessage());
-        }
-
     }
 }
