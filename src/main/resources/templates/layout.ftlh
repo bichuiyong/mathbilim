@@ -37,11 +37,11 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Олимпиады</a></li>
-                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">SAT</a></li>
-                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Книги</a></li>
-                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Публикации</a></li>
-                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="#">Блог</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="/events/olymps">Олимпиады</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="/tests">SAT</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="/books">Книги</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="/posts">Публикации</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom px-3 py-2" href="/posts/blog">Блог</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-link-custom dropdown-toggle px-3 py-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">🌐 Русский</a>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
@@ -81,9 +81,9 @@
             <div class="collapse navbar-collapse" id="secondaryNav">
                 <ul class="navbar-nav left-padding">
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="/events">Мероприятия</a></li>
-                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Новости</a></li>
-                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">О проекте</a></li>
-                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Контакты</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="/posts/news">Новости</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="/about">О проекте</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="/contacts">Контакты</a></li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
