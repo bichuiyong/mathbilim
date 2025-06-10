@@ -11,25 +11,6 @@
               integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
               crossorigin="anonymous">
         <link rel="stylesheet" href="../static/css/layout.css">
-        <style>
-            .navbar > .container-fluid {
-                padding-left: 15px;
-                padding-right: 15px;
-                max-width: 1400px;
-            }
-
-            .navbar-collapse {
-                justify-content: flex-end !important;
-            }
-
-            .navbar-nav.ms-auto {
-                flex-direction: column;
-                align-items: flex-end;
-            }
-            .left-padding {
-                padding-left: 280px;
-            }
-        </style>
     </head>
     <body class="bg-light">
     <#assign known = SPRING_SECURITY_CONTEXT?? >
@@ -67,7 +48,9 @@
                     <#if !known>
                         <li class="nav-item">
                             <a class="btn btn-primary btn-auth px-4 py-2 mt-2" href="/auth/login">Войти</a>
+                            <a href="/auth/register" class="btn btn-primary btn-auth px-3 py-2 mt-2">Регистрация</a>
                         </li>
+
                     <#else>
                         <#if _csrf??>
                             <form action="/logout" method="post">
@@ -89,7 +72,7 @@
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="secondaryNav">
                 <ul class="navbar-nav left-padding">
-                    <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Мероприятия</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2" href="/events">Мероприятия</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Новости</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">О проекте</a></li>
                     <li class="nav-item"><a class="nav-link px-3 py-2" href="#">Контакты</a></li>
@@ -98,7 +81,6 @@
                 <ul class="navbar-nav ms-auto d-flex flex-column align-items-end">
                     <#if !known>
                         <li class="nav-item">
-                            <a href="/auth/register" class="btn btn-outline-primary btn-sm mt-2">Регистрация</a>
                         </li>
                     </#if>
                 </ul>
@@ -182,6 +164,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
     </html>
