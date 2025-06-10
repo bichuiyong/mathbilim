@@ -1,12 +1,20 @@
 package kg.edu.mathbilim.service.interfaces;
 
-import kg.edu.mathbilim.dto.EventTypeDto;
-import kg.edu.mathbilim.model.EventType;
-import kg.edu.mathbilim.model.PostType;
+
+import kg.edu.mathbilim.dto.PostTypeDto;
 
 import java.util.List;
 
 public interface PostTypeService {
-    PostType getPostTypeByName(String name);
-    List<PostType> getAllPostTypes();
+    PostTypeDto getPostTypeByName(String name);
+
+    List<PostTypeDto> getAllPostTypes();
+
+    boolean existByPostType(String postType);
+
+    PostTypeDto createPostType(PostTypeDto postTypeDto);
+
+    void deletePostType(Integer postType);
+
+    PostTypeDto updatePostType(PostTypeDto postTypeDto);
 }

@@ -1,12 +1,11 @@
 package kg.edu.mathbilim.controller.api;
 
+import kg.edu.mathbilim.dto.CategoryDto;
+import kg.edu.mathbilim.dto.EventTypeDto;
+import kg.edu.mathbilim.dto.PostTypeDto;
 import kg.edu.mathbilim.enums.*;
-import kg.edu.mathbilim.model.Category;
-import kg.edu.mathbilim.model.EventType;
-import kg.edu.mathbilim.model.PostType;
 import kg.edu.mathbilim.service.interfaces.CategoryService;
 import kg.edu.mathbilim.service.interfaces.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.PostService;
 import kg.edu.mathbilim.service.interfaces.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,7 @@ public class StaticController {
     }
 
     @GetMapping("categories")
-    public ResponseEntity<List<Category>> getCategories() {
+    public ResponseEntity<List<CategoryDto>> getCategories() {
         return ResponseEntity.ofNullable(categoryService.getAllCategories());
     }
 
@@ -45,7 +44,7 @@ public class StaticController {
     }
 
     @GetMapping("events")
-    public ResponseEntity<List<EventType>> getAllEventTypes() {
+    public ResponseEntity<List<EventTypeDto>> getAllEventTypes() {
         return ResponseEntity.ofNullable(eventTypeService.getAllEventTypes());
     }
 
@@ -55,7 +54,7 @@ public class StaticController {
     }
 
     @GetMapping("posts")
-    public ResponseEntity<List<PostType>> getAllPostTypes() {
+    public ResponseEntity<List<PostTypeDto>> getAllPostTypes() {
         return ResponseEntity.ofNullable(postService.getAllPostTypes());
     }
 }

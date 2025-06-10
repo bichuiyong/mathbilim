@@ -1,11 +1,19 @@
 package kg.edu.mathbilim.service.interfaces;
 
-import kg.edu.mathbilim.model.Category;
-import kg.edu.mathbilim.model.reference.role.Role;
 
+import kg.edu.mathbilim.dto.CategoryDto;
 import java.util.List;
 
 public interface CategoryService {
-    Category getCategoryByName(String name);
-    List<Category> getAllCategories();
+    CategoryDto getCategoryByName(String name);
+
+    List<CategoryDto> getAllCategories();
+
+    boolean existsByCategory(String email);
+
+    CategoryDto createCategory(CategoryDto category);
+
+    void deleteCategory(Integer category);
+
+    CategoryDto updateCategory(CategoryDto category);
 }
