@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -39,9 +40,11 @@ public class EventDto {
 
     @NotNull
     @Future
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startDate;
 
     @Future
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endDate;
 
     @NotNull

@@ -143,6 +143,7 @@ public class FileServiceImpl implements FileService {
     /// ДЛЯ РАБОТЫ С S3
 
     @Transactional
+    @Override
     public File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user) {
         try {
             log.info("Starting file upload for user: {}", user.getEmail());
