@@ -20,6 +20,8 @@ public class EventDto {
 
     private String content;
 
+    private FileDto mainImage;
+
     private Map<String, Object> metadata;
 
     private ContentStatus status;
