@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.EventTypeDto;
 import java.util.List;
 
 public interface EventTypeService {
+
     EventTypeDto getEventTypeByName(String name);
 
     List<EventTypeDto> getAllEventTypes();

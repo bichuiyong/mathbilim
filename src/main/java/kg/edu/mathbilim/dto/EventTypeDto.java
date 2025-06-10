@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto;
 
-
 import kg.edu.mathbilim.validation.annotation.EventType;
 import lombok.*;
 
