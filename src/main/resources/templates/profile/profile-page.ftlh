@@ -17,6 +17,11 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
+                        <#if user.type?? && user.type.name()?has_content>
+                            ${user.type.name()}
+                        <#else>
+                            Администратор / Модератор
+                        </#if>
                     </div>
                     <div class="row justify-content-center justify-content-md-start">
                         <div class="col-4 col-md-auto text-center px-2 px-md-3">
@@ -135,7 +140,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-4" id="publicationsGrid">
                         <div class="col-12 col-lg-6">
                             <div class="publication-card" data-type="event" data-status="approved"
