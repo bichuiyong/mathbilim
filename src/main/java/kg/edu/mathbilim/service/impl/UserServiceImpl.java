@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.UserEditDto;
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
@@ -149,4 +152,21 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
         return userMapper.toDto(getEntityByEmail(email));
     }
+
+    private void updateResetPasswordToken(String email, String token) {
+        User user = userRepository.findByEmail(email).
+                orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public void makeResetPasswordToken(HttpServletRequest request)
+            throws
+            MessagingException,
+            UnsupportedEncodingException {
+
+
+
+    }
+
+
 }

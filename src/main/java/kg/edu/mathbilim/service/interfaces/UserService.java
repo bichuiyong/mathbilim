@@ -1,10 +1,14 @@
 package kg.edu.mathbilim.service.interfaces;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.dto.UserEditDto;
+
+import java.io.UnsupportedEncodingException;
 
 public interface UserService {
 
@@ -33,4 +37,9 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     void deleteUser(Long id);
+
+    void makeResetPasswordToken(HttpServletRequest request)
+            throws
+            MessagingException,
+            UnsupportedEncodingException;
 }
