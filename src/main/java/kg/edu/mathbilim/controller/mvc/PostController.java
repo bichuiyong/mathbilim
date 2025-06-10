@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import kg.edu.mathbilim.dto.PostDto;
-import kg.edu.mathbilim.enums.PostType;
 import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.service.interfaces.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final PostTypeService postTypeService;
 
     @GetMapping("create")
     public String createPost(Model model) {
         model.addAttribute("post", new PostDto());
-        model.addAttribute("postTypes", PostType.getAllValues());
+        model.addAttribute("postTypes", postTypeService.getAllPostTypes());
         return "media/post-create";
     }
 
@@ -29,7 +30,7 @@ public class PostController {
                              @RequestParam(required = false) MultipartFile[] attachments,
                              Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("postTypes", PostType.getAllValues());
+            model.addAttribute("postTypes", postTypeService.getAllPostTypes());
             return "media/post-create";
         }
         if(attachments == null)  attachments = new MultipartFile[0];

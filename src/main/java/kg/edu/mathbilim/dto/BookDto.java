@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.enums.Category;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
@@ -21,7 +20,7 @@ public class BookDto {
 
     private FileDto file;
 
-    private Category category;
+    private CategoryDto category;
 
     private Map<String, Object> metadata;
 

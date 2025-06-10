@@ -3,7 +3,6 @@ package kg.edu.mathbilim.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.PostType;
 import lombok.*;
 
 import java.time.Instant;
@@ -19,7 +18,7 @@ public class PostDto {
     private Long id;
 
     @NotNull
-    private PostType type;
+    private PostTypeDto type;
 
     @NotBlank
     private String title;

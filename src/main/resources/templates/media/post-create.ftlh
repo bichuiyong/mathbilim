@@ -35,15 +35,19 @@
 
                             <!-- Тип поста -->
                             <div class="form-group">
-                                <label for="type" class="form-label">
+                                <label for="type.id" class="form-label">
                                     <i class="fas fa-tags me-2 text-primary"></i>
                                     Тип поста
                                 </label>
-                                <@spring.formSingleSelect
-                                "post.type",
-                                postTypes,
-                                'class="form-control" id="type"'
-                                />
+                                <select name="type.id" id="typeId" class="form-control" required>
+                                    <option value="">Выберите тип поста</option>
+                                    <#list postTypes as postType>
+                                        <option value="${postType.id}"
+                                                <#if post.type?? && post.type.id == postType.id>selected</#if>>
+                                            ${postType.name}
+                                        </option>
+                                    </#list>
+                                </select>
                                 <@spring.showErrors "<br>" "error text-danger"/>
                             </div>
                         </div>

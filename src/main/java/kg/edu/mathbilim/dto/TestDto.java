@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.enums.Category;
 import kg.edu.mathbilim.enums.TestStatus;
 import lombok.*;
 
@@ -17,7 +16,7 @@ public class TestDto {
 
     private String s3Link;
 
-    private Category category;
+    private CategoryDto category;
 
     private Map<String, Object> metadata;
 
