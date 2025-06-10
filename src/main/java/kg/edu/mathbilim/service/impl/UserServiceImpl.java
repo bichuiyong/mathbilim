@@ -117,4 +117,5 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
         return userMapper.toDto(getEntityByEmail(email));
     }
+
 }
