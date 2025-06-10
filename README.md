@@ -3,9 +3,11 @@ Jar файл должен быть в папке, рядом с jar будет .
 
 в .env должно быть:
 
-DB_URL=jdbc:(url базы) (пример postgresql://localhost:5432/postgres)
-DB_USERNAME=(название базы)
-DB_PASSWORD=(пароль базы)
+DB_URL=url базы (пример postgresql://localhost:5432/postgres)
+
+DB_USERNAME=название базы
+
+DB_PASSWORD=пароль базы
 
 дальше перейти через консоль к папке
 cd (путь к папке) 
