@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.service.interfaces;
 import kg.edu.mathbilim.dto.PostDto;
-import kg.edu.mathbilim.enums.PostType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
