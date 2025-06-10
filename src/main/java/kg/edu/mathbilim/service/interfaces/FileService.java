@@ -19,6 +19,8 @@ public interface FileService {
                                int page, int size,
                                String sortBy, String sortDirection);
 
+    String uploadAvatar(MultipartFile avatarFile, User user);
+
     @Transactional
     FileDto uploadFile(MultipartFile multipartFile, String context, User user);
 
