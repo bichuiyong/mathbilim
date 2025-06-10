@@ -1,20 +1,29 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.PostDto;
+
 import kg.edu.mathbilim.enums.PostType;
+
+import kg.edu.mathbilim.enums.ContentStatus;
+
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.PostMapper;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.repository.PostRepository;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
@@ -34,24 +43,24 @@ public class PostServiceImpl implements PostService {
         return postMapper.toDto(getEntityById(id));
     }
 
-    @Override
-    public Page<PostDto> getPostsByType(String postType,String query, Pageable pageable) {
-        if(query == null || query.isEmpty()){
-            try{
-                PostType type = fromStringIgnoreCase(postType);
-                return getPage(() -> postRepository.findAllByType(type,pageable));
-            } catch (IllegalArgumentException e){
-                throw new PostNotFoundException(postType);
-            }
-        }
-        try{
-            PostType type = PostType.valueOf(postType);
-            return getPage(() -> postRepository.findByQuery(type,query, pageable));
-        } catch (IllegalArgumentException e) {
-            throw new PostNotFoundException(postType);
-        }
-
-    }
+//    @Override
+//    public Page<PostDto> getPostsByType(String postType,String query, Pageable pageable) {
+//        if(query == null || query.isEmpty()){
+//            try{
+//                PostType type = fromStringIgnoreCase(postType);
+//                return getPage(() -> postRepository.findAllByType(type,pageable));
+//            } catch (IllegalArgumentException e){
+//                throw new PostNotFoundException(postType);
+//            }
+//        }
+//        try{
+//            PostType type = PostType.valueOf(postType);
+//            return getPage(() -> postRepository.findByQuery(type,query, pageable));
+//        } catch (IllegalArgumentException e) {
+//            throw new PostNotFoundException(postType);
+//        }
+//
+//    }
 
     public static PostType fromStringIgnoreCase(String value) {
         if (value == null) return null;
