@@ -4,9 +4,11 @@ import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.reference.EventTypeDto;
 import kg.edu.mathbilim.dto.reference.PostTypeDto;
 import kg.edu.mathbilim.enums.*;
+import kg.edu.mathbilim.model.reference.UserType;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.service.interfaces.reference.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ public class StaticController {
     private final CategoryService categoryService;
     private final EventTypeService eventTypeService;
     private final PostTypeService postService;
+    private final UserTypeService userTypeService;
 
     @GetMapping("tests")
     public ResponseEntity<List<TestStatus>> getTestStatuses() {
@@ -40,7 +43,7 @@ public class StaticController {
 
     @GetMapping("users")
     public ResponseEntity<List<UserType>> getAllUserTypes() {
-        return ResponseEntity.ofNullable(UserType.getAllValues());
+        return ResponseEntity.ofNullable(userTypeService.getAll());
     }
 
     @GetMapping("events")
