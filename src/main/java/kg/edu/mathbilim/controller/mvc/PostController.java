@@ -1,8 +1,10 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.PostDto;
 import kg.edu.mathbilim.service.interfaces.PostService;
 import kg.edu.mathbilim.service.interfaces.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,26 +18,29 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
     private final PostService postService;
     private final PostTypeService postTypeService;
+    private final UserService userService;
 
     @GetMapping("create")
     public String createPost(Model model) {
+        model.addAttribute("user", userService.getAuthUser());
         model.addAttribute("post", new PostDto());
         model.addAttribute("postTypes", postTypeService.getAllPostTypes());
         return "media/post-create";
     }
 
     @PostMapping("create")
-    public String createPost(@ModelAttribute("post") PostDto post,
+    public String createPost(@ModelAttribute("post") @Valid PostDto post,
                              BindingResult bindingResult,
                              @RequestParam(required = false) MultipartFile[] attachments,
                              Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("user", userService.getAuthUser());
             model.addAttribute("postTypes", postTypeService.getAllPostTypes());
             return "media/post-create";
         }
-        if(attachments == null)  attachments = new MultipartFile[0];
-        PostDto dto = postService.createPost(post, attachments);
-        return "redirect:/posts/" + dto.getType().getName() + "/" + dto.getId();
+        if (attachments == null) attachments = new MultipartFile[0];
+        postService.createPost(post, attachments);
+        return "redirect:/posts/";
     }
 
     @GetMapping("news")

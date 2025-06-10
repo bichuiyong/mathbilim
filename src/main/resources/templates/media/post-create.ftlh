@@ -18,6 +18,7 @@
 
                     <form action="/posts/create" method="post" enctype="multipart/form-data" id="postForm">
                         <@main.csrf/>
+                        <@spring.formHiddenInput "post.user.id"/>
 
                         <div class="form-grid">
                             <!-- Название поста -->
