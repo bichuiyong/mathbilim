@@ -1,6 +1,13 @@
 package kg.edu.mathbilim.controller.api;
 
 import kg.edu.mathbilim.enums.*;
+import kg.edu.mathbilim.model.Category;
+import kg.edu.mathbilim.model.EventType;
+import kg.edu.mathbilim.model.PostType;
+import kg.edu.mathbilim.service.interfaces.CategoryService;
+import kg.edu.mathbilim.service.interfaces.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.service.interfaces.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +20,9 @@ import java.util.List;
 @RequestMapping("api/dict")
 @RequiredArgsConstructor
 public class StaticController {
+    private final CategoryService categoryService;
+    private final EventTypeService eventTypeService;
+    private final PostTypeService postService;
 
     @GetMapping("tests")
     public ResponseEntity<List<TestStatus>> getTestStatuses() {
@@ -26,7 +36,7 @@ public class StaticController {
 
     @GetMapping("categories")
     public ResponseEntity<List<Category>> getCategories() {
-        return ResponseEntity.ofNullable(Category.getAllValues());
+        return ResponseEntity.ofNullable(categoryService.getAllCategories());
     }
 
     @GetMapping("users")
@@ -36,7 +46,7 @@ public class StaticController {
 
     @GetMapping("events")
     public ResponseEntity<List<EventType>> getAllEventTypes() {
-        return ResponseEntity.ofNullable(EventType.getAllValues());
+        return ResponseEntity.ofNullable(eventTypeService.getAllEventTypes());
     }
 
     @GetMapping("files")
@@ -46,6 +56,6 @@ public class StaticController {
 
     @GetMapping("posts")
     public ResponseEntity<List<PostType>> getAllPostTypes() {
-        return ResponseEntity.ofNullable(PostType.getAllValues());
+        return ResponseEntity.ofNullable(postService.getAllPostTypes());
     }
 }

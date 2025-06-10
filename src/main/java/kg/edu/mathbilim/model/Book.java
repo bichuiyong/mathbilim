@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.enums.Category;
-import kg.edu.mathbilim.enums.converter.CategoryConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -39,9 +37,10 @@ public class Book {
     @JoinColumn(name = "file_id", nullable = false)
     private File file;
 
-    @Convert(converter = CategoryConverter.class)
-    @Column(name = "category_id", nullable = false)
-    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private kg.edu.mathbilim.model.Category category;
 
     @ColumnDefault("'{}'")
     @Column(name = "metadata")

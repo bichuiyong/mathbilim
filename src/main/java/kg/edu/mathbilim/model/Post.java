@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.PostType;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
-import kg.edu.mathbilim.enums.converter.PostTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -32,9 +30,10 @@ public class Post {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Convert(converter = PostTypeConverter.class)
-    @Column(name = "type_id", nullable = false)
-    private PostType type;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "type_id")
+    private kg.edu.mathbilim.model.PostType type;
 
     @Size(max = 500)
     @NotNull
