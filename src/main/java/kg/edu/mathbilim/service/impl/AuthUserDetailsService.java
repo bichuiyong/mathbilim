@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,8 +28,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
 
     @Override
@@ -67,5 +68,50 @@ public class AuthUserDetailsService implements UserDetailsService {
             privileges.add(authority.getName());
         }
         return privileges;
+    }
+
+    public Boolean processOAuthPostLogin(String email, String fullName) {
+        var existUser = userRepository.findByEmail(email);
+
+        boolean isNewUser = false;
+
+        if (existUser.isEmpty()) {
+            isNewUser = true;
+            Role role = roleService.getRoleByName("USER");
+
+            String firstName = "";
+            String lastName = "";
+
+            if (fullName != null && !fullName.trim().isEmpty()) {
+                String[] nameParts = fullName.trim().split("\\s+");
+                firstName = nameParts[0];
+                if (nameParts.length > 1) {
+                    lastName = String.join(" ", Arrays.copyOfRange(nameParts, 1, nameParts.length));
+                }
+            } else {
+                firstName = email.split("@")[0];
+            }
+
+            User user = User.builder()
+                    .email(email)
+                    .name(firstName)
+                    .surname(lastName)
+                    .password(passwordEncoder.encode("qwerty"))
+                    .role(role)
+                    .isEmailVerified(true)
+                    .preferredLanguage("ru")
+                    .createdAt(Instant.now())
+                    .updatedAt(Instant.now())
+                    .enabled(Boolean.TRUE)
+                    .build();
+
+            userRepository.saveAndFlush(user);
+        }
+
+        UserDetails userDetails = loadUserByUsername(email);
+        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return isNewUser;
     }
 }
