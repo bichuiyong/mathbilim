@@ -1,12 +1,12 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.CategoryDto;
-import kg.edu.mathbilim.dto.EventTypeDto;
-import kg.edu.mathbilim.dto.PostTypeDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.dto.reference.EventTypeDto;
+import kg.edu.mathbilim.dto.reference.PostTypeDto;
 import kg.edu.mathbilim.enums.*;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
-import kg.edu.mathbilim.service.interfaces.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

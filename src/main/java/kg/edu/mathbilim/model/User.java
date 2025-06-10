@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.UserType;
 import kg.edu.mathbilim.enums.converter.UserTypeConverter;
-import kg.edu.mathbilim.model.reference.role.Role;
+import kg.edu.mathbilim.model.reference.Role;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;

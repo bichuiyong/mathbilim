@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.PostDto;
 import kg.edu.mathbilim.service.interfaces.PostService;
-import kg.edu.mathbilim.service.interfaces.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -51,5 +51,10 @@ public class PostController {
     @GetMapping("publications")
     public String publications(Model model) {
         return "media/publication-page";
+    }
+
+    @GetMapping("blog")
+    public String blog(Model model) {
+        return "media/blog";
     }
 }

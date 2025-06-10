@@ -3,6 +3,7 @@ package kg.edu.mathbilim.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.dto.reference.EventTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
