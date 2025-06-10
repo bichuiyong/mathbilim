@@ -18,6 +18,6 @@ public class PostTypeValidator implements ConstraintValidator<PostType, String> 
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        return email != null && userService.existByPostType(email);
+        return email != null && !userService.existByPostType(email);
     }
 }

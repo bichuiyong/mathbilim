@@ -17,6 +17,6 @@ public class CategoryValidator implements ConstraintValidator<Category, String> 
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        return email != null && userService.existsByCategory(email);
+        return email != null && !userService.existsByCategory(email);
     }
 }

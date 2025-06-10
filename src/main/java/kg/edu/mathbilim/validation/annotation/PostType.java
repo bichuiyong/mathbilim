@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PostTypeValidator.class)
 public @interface PostType {
-    String message() default "PostType doesn't exist";
+    String message() default "PostType already exists";
 
     Class<?>[] groups() default {};
 

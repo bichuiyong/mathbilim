@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CategoryValidator.class)
 public @interface Category {
-    String message() default "Category doesn't exist";
+    String message() default "Category already exists";
 
     Class<?>[] groups() default {};
 

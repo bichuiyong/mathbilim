@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EventTypeValidator.class)
 public @interface EventType {
-    String message() default "EventType doesn't exist";
+    String message() default "EventType already exists";
 
     Class<?>[] groups() default {};
 

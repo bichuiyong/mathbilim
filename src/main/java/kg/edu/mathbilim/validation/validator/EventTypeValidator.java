@@ -17,6 +17,6 @@ public class EventTypeValidator implements ConstraintValidator<EventType, String
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        return email != null && userService.existsByEventType(email);
+        return email != null && !userService.existsByEventType(email);
     }
 }
