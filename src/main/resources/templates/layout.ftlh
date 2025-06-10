@@ -1,4 +1,4 @@
-<#import "spring.ftl" as spring>
+<#import "/spring.ftl" as spring>
 <#macro layout>
 
     <!DOCTYPE html>
@@ -7,6 +7,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Навигация edu.gov.kg</title>
+        <#if _csrf??>
+            <meta name="_csrf" content="${_csrf.token!}"/>
+            <meta name="_csrf_header" content="${_csrf.headerName!}"/>
+        </#if>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
               crossorigin="anonymous">
