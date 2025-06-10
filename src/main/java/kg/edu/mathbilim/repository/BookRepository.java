@@ -12,11 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("""
                 SELECT DISTINCT b FROM Book b 
-                LEFT JOIN b.authors a 
-                WHERE LOWER(b.name) LIKE LOWER(CONCAT('%', :query, '%')) 
-                   OR LOWER(a.name) LIKE LOWER(CONCAT('%', :query, '%')) 
-                   OR LOWER(a.surname) LIKE LOWER(CONCAT('%', :query, '%')) 
-                   OR LOWER(a.middleName) LIKE LOWER(CONCAT('%', :query, '%'))
             """)
     Page<Book> findByQuery(@Param("query") String query, Pageable pageable);
 }

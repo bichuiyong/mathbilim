@@ -11,9 +11,7 @@ import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -43,6 +41,7 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
+
     @ColumnDefault("'{}'")
     @Column(name = "metadata")
     @JdbcTypeCode(SqlTypes.JSON)
@@ -56,8 +55,9 @@ public class Book {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToMany(mappedBy = "books")
-    private Set<Author> authors = new LinkedHashSet<>();
+
+    private String author;
+
 
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)

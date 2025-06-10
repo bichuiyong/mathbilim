@@ -9,4 +9,6 @@ public interface BookService {
     Page<BookDto> getBookPage(String query, int page, int size, String sortBy, String sortDirection);
 
     void delete(Long id);
+
+    BookDto createBook(BookDto bookDto);
 }

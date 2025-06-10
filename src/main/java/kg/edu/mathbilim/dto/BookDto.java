@@ -28,7 +28,7 @@ public class BookDto {
 
     private Instant updatedAt;
 
-    private Set<AuthorDto> authors = new LinkedHashSet<>();
+    private String author;
 
     private ContentStatus status;
 

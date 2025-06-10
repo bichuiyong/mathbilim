@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller("mvcBook")
 @RequiredArgsConstructor
@@ -28,20 +29,22 @@ public class BookController {
         return "books/book";
     }
 
-    @GetMapping("create")
+    @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("book", new BookDto());
-        return "books/create";
+        return "books/create-book";
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
+                          @RequestParam  MultipartFile attachments,
                           BindingResult bindingResult,
                           Model model) {
         if (bindingResult.hasErrors()) {
-            return "books/create";
+            return "books/create-book";
         }
+        bookService.createBook(book);
         return "redirect:/books/" + book.getId();
     }
 }

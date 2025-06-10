@@ -46,6 +46,12 @@ public class BookServiceImpl implements BookService {
         log.info("Deleted Book with id {}", id);
     }
 
+    @Override
+    public BookDto createBook(BookDto bookDto) {
+        log.info("Created Book with id {}", bookDto.getId());
+        return bookMapper.toDto(bookRepository.save(bookMapper.toEntity(bookDto)));
+    }
+
 
     private Page<BookDto> getPage(Supplier<Page<Book>> supplier, String notFoundMessage) {
         Page<Book> bookPage = supplier.get();
