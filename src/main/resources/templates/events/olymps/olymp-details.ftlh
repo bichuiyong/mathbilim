@@ -1,37 +1,41 @@
-<#import "../layout.ftlh" as main>
+<#import "../../layout.ftlh" as main>
 <@main.layout>
+    <link rel="stylesheet" href="/static/scss/main.css">
     <div class="container mt-4 mb-5">
         <h1 class="mb-4">TSI Programming Contest 2025</h1>
-
 
         <ul class="nav nav-tabs mb-4" id="olympiadTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="stages-tab" data-bs-toggle="tab" data-bs-target="#stages"
-                        type="button" role="tab" aria-controls="stages" aria-selected="true">Этапы проведения</button>
+                        type="button" role="tab" aria-controls="stages" aria-selected="true">Этапы проведения
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="archive-tab" data-bs-toggle="tab" data-bs-target="#archive"
-                        type="button" role="tab" aria-controls="archive" aria-selected="false">Архив задач</button>
+                        type="button" role="tab" aria-controls="archive" aria-selected="false">Архив задач
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials"
-                        type="button" role="tab" aria-controls="materials" aria-selected="false">Материалы</button>
+                        type="button" role="tab" aria-controls="materials" aria-selected="false">Материалы
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results"
-                        type="button" role="tab" aria-controls="results" aria-selected="false">Результаты</button>
+                        type="button" role="tab" aria-controls="results" aria-selected="false">Результаты
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts"
-                        type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты</button>
+                        type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="rules-tab" data-bs-toggle="tab" data-bs-target="#rules"
-                        type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент</button>
+                        type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент
+                </button>
             </li>
         </ul>
-
-
 
 
         <div class="tab-content" id="olympiadTabContent" style="margin-bottom: 100px">
@@ -78,13 +82,14 @@
 
             <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
                 <h4>Регламент / правила участия</h4>
-                <p><a href="/rules/tsi-2025.pdf" class="btn btn-outline-secondary" target="_blank">Скачать регламент</a></p>
+                <p><a href="/rules/tsi-2025.pdf" class="btn btn-outline-secondary" target="_blank">Скачать регламент</a>
+                </p>
             </div>
 
 
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </@main.layout>

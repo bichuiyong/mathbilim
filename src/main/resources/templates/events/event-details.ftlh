@@ -2,10 +2,10 @@
 <@main.layout>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/scss/main.css">
-    <section class="hero-section py-5">
+    <link rel="stylesheet" href="/static/scss/main.css">
+    <section class="hero-section-event py-5">
         <div class="container">
-            <div class="hero-content">
+            <div class="hero-content-event">
                 <div class="mb-4">
                     <a href="/events" class="btn btn-back">
                         <i class="fas fa-arrow-left me-2"></i>Назад к мероприятиям
@@ -18,34 +18,34 @@
     </section>
 
     <div class="container pb-5">
-        <div class="event-detail-card">
-            <div class="event-header">
+        <div class="event-detail-card-event">
+            <div class="event-header-event">
                 <div class="event-badge badge-олимпиада">Олимпиада</div>
                 <h2 class="h3 fw-bold mb-3">Добро пожаловать на Республиканскую Олимпиаду по Математике 2025!</h2>
 
-                <div class="event-meta">
-                    <div class="meta-item">
+                <div class="event-meta-event">
+                    <div class="meta-item-event">
                         <i class="fas fa-calendar-alt"></i>
                         <div>
                             <strong>15 июня 2025</strong><br>
                             <small>Суббота, 10:00 - 17:00</small>
                         </div>
                     </div>
-                    <div class="meta-item">
+                    <div class="meta-item-event">
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
                             <strong>Кыргызский Национальный Университет</strong><br>
                             <small>Бишкек, Кыргызстан</small>
                         </div>
                     </div>
-                    <div class="meta-item">
+                    <div class="meta-item-event">
                         <i class="fas fa-users"></i>
                         <div>
                             <strong>Оффлайн</strong><br>
                             <small>До 300 участников</small>
                         </div>
                     </div>
-                    <div class="meta-item">
+                    <div class="meta-item-event">
                         <i class="fas fa-user-tie"></i>
                         <div>
                             <strong>Ассоциация Математиков Кыргызстана</strong><br>
@@ -55,13 +55,13 @@
                 </div>
             </div>
 
-            <div class="event-content">
-                <div class="source-info">
+            <div class="event-content-event">
+                <div class="source-info-event">
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Источник:</strong> Министерство образования и науки КР
                 </div>
 
-                <div class="event-description">
+                <div class="event-description-event">
                     <p>Республиканская Олимпиада по Математике — это ежегодное интеллектуальное соревнование для
                         талантливых школьников и студентов со всей страны. В 2025 году олимпиада пройдёт в Бишкеке на
                         базе КНУ.</p>
@@ -94,14 +94,14 @@
                 </div>
             </div>
 
-            <div class="register-section">
+            <div class="register-section-event">
                 <h3 class="h4 fw-bold mb-3">Готовы проверить свои математические способности?</h3>
                 <p class="mb-4">Зарегистрируйтесь сейчас и станьте участником главной олимпиады Кыргызстана!</p>
                 <a href="#" class="btn btn-register" target="_blank">
                     <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
                 </a>
                 <div class="mt-3">
-                    <small class="text-muted">
+                    <small class="text-muted-event">
                         <i class="fas fa-clock me-1"></i>
                         Регистрация займет не более 2 минут
                     </small>
