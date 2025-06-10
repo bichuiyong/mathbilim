@@ -16,7 +16,6 @@ public interface UserService {
 
     UserDto getUserByEmail(String email);
 
-
     void edit(UserEditDto userDto, String email);
 
     Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection);
@@ -33,4 +32,6 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     void deleteUser(Long id);
+
+    void setUserType(String email, Long userTypeId);
 }
