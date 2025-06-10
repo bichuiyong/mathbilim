@@ -9,5 +9,4 @@ public class MathbilimApplication {
     public static void main(String[] args) {
         SpringApplication.run(MathbilimApplication.class, args);
     }
-
 }
