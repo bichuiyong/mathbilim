@@ -56,7 +56,7 @@ public class FileController {
     @GetMapping("/{fileId}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
         FileDto fileDto = fileService.getById(fileId);
-        byte[] fileContent = fileService.dowloadFile(fileId);
+        byte[] fileContent = fileService.downloadFile(fileId);
 
         ByteArrayResource resource = new ByteArrayResource(fileContent);
 

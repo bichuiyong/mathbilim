@@ -78,6 +78,7 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/posts/create/**", "/organizations/create/**").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();

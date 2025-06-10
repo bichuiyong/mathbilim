@@ -6,6 +6,7 @@ import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.FileMapper;
+import kg.edu.mathbilim.model.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.model.User;
@@ -41,7 +42,8 @@ public class FileServiceImpl implements FileService {
     private final S3Config s3Config;
     private final Tika tika = new Tika();
 
-    private File getEntityById(Long id) {
+    @Override
+    public File getEntityById(Long id) {
         return fileRepository.findById(id).orElseThrow(FileNotFoundException::new);
     }
 
@@ -108,6 +110,33 @@ public class FileServiceImpl implements FileService {
         }
 
         return uploadedFiles;
+    }
+
+    @Transactional
+    @Override
+    public Set<File> uploadFilesForEvent(MultipartFile[] files, Event event, User user) {
+        Set<File> uploadedFiles = new LinkedHashSet<>();
+        String context = "events/" + event.getId();
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                File uploadedFile = uploadFileReturnEntity(file, context, user);
+                uploadedFile.setEvents(new LinkedHashSet<>(Collections.singleton(event)));
+                fileRepository.saveAndFlush(uploadedFile);
+                uploadedFiles.add(uploadedFile);
+                log.info("File uploaded for event {}: {}", event.getId(), file.getOriginalFilename());
+            }
+        }
+
+        return uploadedFiles;
+    }
+
+    @Transactional
+    @Override
+    public String uploadAvatar(MultipartFile avatarFile, User user) {
+        FileDto uploadedFile = uploadFile(avatarFile, "avatars", user);
+        log.info("Organization avatar uploaded successfully for user: {}", user.getEmail());
+        return uploadedFile.getFilePath();
     }
 
     /// ДЛЯ РАБОТЫ С S3
@@ -184,7 +213,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] dowloadFile(Long fileId) {
+    public byte[] downloadFile(Long fileId) {
         File file = getEntityById(fileId);
         try {
             return s3Service.downloadFile(file.getFilePath());

@@ -23,6 +23,8 @@ public class PostDto {
     @NotBlank
     private String title;
 
+    private FileDto mainImage;
+
     @NotBlank
     private String slug;
 

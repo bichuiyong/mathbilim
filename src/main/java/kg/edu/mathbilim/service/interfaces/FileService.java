@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.model.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.model.User;
@@ -20,6 +21,11 @@ public interface FileService {
                                String sortBy, String sortDirection);
 
     @Transactional
+    Set<File> uploadFilesForEvent(MultipartFile[] files, Event event, User user);
+
+    String uploadAvatar(MultipartFile avatarFile, User user);
+
+    @Transactional
     FileDto uploadFile(MultipartFile multipartFile, String context, User user);
 
     @Transactional
@@ -31,7 +37,9 @@ public interface FileService {
     @Transactional
     void deleteFile(Long fileId);
 
-    byte[] dowloadFile(Long fileId);
+    byte[] downloadFile(Long fileId);
 
     boolean existsById(Long fileId);
+
+    File getEntityById(Long id);
 }

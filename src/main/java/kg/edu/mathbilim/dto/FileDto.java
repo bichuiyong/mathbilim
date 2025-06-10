@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.FileType;
 import lombok.*;
 
@@ -30,4 +31,7 @@ public class FileDto {
     private Instant updatedAt;
 
     private String s3Link;
+
+    @Builder.Default
+    private ContentStatus status = ContentStatus.DRAFT;
 }

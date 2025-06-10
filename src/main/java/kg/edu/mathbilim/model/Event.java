@@ -34,6 +34,11 @@ public class Event {
     @Column(name = "name", nullable = false, length = 500)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "main_image_id")
+    private File mainImage;
+
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
     private ContentStatus status;
@@ -80,4 +85,9 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     private Set<File> files = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "event_organizations",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "organization_id"))
+    private Set<Organization> organizations = new LinkedHashSet<>();
 }
