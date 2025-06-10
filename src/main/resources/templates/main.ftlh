@@ -1,11 +1,11 @@
 <#import "layout.ftlh" as main>
 <@main.layout>
-    <link rel="stylesheet" href="../static/css/main-style.css">
+    <link rel="stylesheet" href="../static/scss/main.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
     <div class="container">
-        <div class="header">Последние мероприятия</div>
+        <h2>Последние мероприятия</h2>
 
-        <div class="event-card">
+        <div class="event-card mb-5">
             <div class="event-date">29 мая 2025 09:00</div>
             <h2>🎯 КИТ ФОРУМ 2025 принимает заявки от спикеров!</h2>
             <div class="event-details">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 mt-5">
                     <div class="news-section">
                         <h3>Последние новости</h3>
                         <div class="news-container">
