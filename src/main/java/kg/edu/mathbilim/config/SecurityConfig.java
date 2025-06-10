@@ -39,6 +39,7 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login")
                         .permitAll())
 
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests

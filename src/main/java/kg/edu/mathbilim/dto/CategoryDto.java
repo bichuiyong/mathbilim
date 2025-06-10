@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class CategoryDto {
     private Integer id;
+
     @Category
     private String name;
 }

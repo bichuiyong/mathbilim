@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class PostTypeDto {
     private Integer id;
+
     @PostType
     private String name;
 }

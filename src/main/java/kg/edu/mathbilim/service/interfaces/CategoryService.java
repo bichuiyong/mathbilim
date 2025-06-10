@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.CategoryDto;
-
 import java.util.List;
 
 public interface CategoryService {
@@ -16,5 +15,4 @@ public interface CategoryService {
     void deleteCategory(Integer category);
 
     CategoryDto updateCategory(CategoryDto category);
-
 }

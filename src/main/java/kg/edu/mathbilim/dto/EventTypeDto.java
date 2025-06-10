@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class EventTypeDto {
     private Integer id;
+
     @EventType
     private String name;
 }

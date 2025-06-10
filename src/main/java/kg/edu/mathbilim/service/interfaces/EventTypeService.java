@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.interfaces;
 
+
 import kg.edu.mathbilim.dto.EventTypeDto;
 
 import java.util.List;
