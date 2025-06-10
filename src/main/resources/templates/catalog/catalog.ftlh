@@ -54,7 +54,7 @@
 
         body {
             margin: 0;
-            padding: 20px;
+            /*padding: 20px;*/
             font-family: sans-serif;
             background: white;
         }
@@ -62,6 +62,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 24px;
         }
 
         .row {
