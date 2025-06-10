@@ -7,6 +7,7 @@ import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.FileMapper;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.FileRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -25,8 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
@@ -91,15 +92,17 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public List<FileDto> uploadFilesForPost(MultipartFile[] files, String postSlug, User user) {
-        List<FileDto> uploadedFiles = new ArrayList<>();
-        String context = "posts/" + postSlug;
+    public Set<File> uploadFilesForPost(MultipartFile[] files, Post post, User user) {
+        Set<File> uploadedFiles = new LinkedHashSet<>();
+        String context = "posts/" + post.getSlug();
 
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
-                FileDto uploadedFile = uploadFile(file, context, user);
+                File uploadedFile = uploadFileReturnEntity(file, context, user);
+                uploadedFile.getPosts().add(post);
+                fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
-                log.info("File uploaded for post {}: {}", postSlug, file.getOriginalFilename());
+                log.info("File uploaded for post {}: {}", post.getSlug(), file.getOriginalFilename());
             }
         }
 
@@ -109,8 +112,7 @@ public class FileServiceImpl implements FileService {
     /// ДЛЯ РАБОТЫ С S3
 
     @Transactional
-    @Override
-    public FileDto uploadFile(MultipartFile multipartFile, String context, User user) {
+    public File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user) {
         try {
             log.info("Starting file upload for user: {}", user.getEmail());
 
@@ -125,12 +127,18 @@ public class FileServiceImpl implements FileService {
             File file = createFileEntity(multipartFile, s3Key, fileType, user);
             fileRepository.save(file);
             log.info("File uploaded successfully: {} (type: {})", s3Key, fileType.getName());
-            return fileMapper.toDto(file);
 
+            return file;
         } catch (IOException e) {
             log.error("Error uploading file: {}", e.getMessage());
             throw new FileValidationException("Ошибка загрузки файла");
         }
+    }
+
+    @Transactional
+    @Override
+    public FileDto uploadFile(MultipartFile multipartFile, String context, User user) {
+        return fileMapper.toDto(uploadFileReturnEntity(multipartFile, context, user));
     }
 
     @Transactional

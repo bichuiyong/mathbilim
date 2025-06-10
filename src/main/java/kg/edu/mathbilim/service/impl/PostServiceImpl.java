@@ -1,11 +1,11 @@
 package kg.edu.mathbilim.service.impl;
 
-import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.PostDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.PostMapper;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.repository.PostRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -19,8 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
@@ -66,16 +65,16 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(post);
 
         if (attachments != null && attachments.length > 0) {
-            List<FileDto> uploadedFiles = fileService.uploadFilesForPost(
+            Set<File> uploadedFiles = fileService.uploadFilesForPost(
                     attachments,
-                    savedPost.getSlug(),
+                    savedPost,
                     userService.getAuthUserEntity()
             );
             if (!uploadedFiles.isEmpty()) {
-                PostDto result = postMapper.toDto(savedPost);
-                result.setFiles(new LinkedHashSet<>(uploadedFiles));
+                savedPost.setFiles(uploadedFiles);
+                postRepository.saveAndFlush(savedPost);
                 log.info("Uploaded {} files for post {}", uploadedFiles.size(), savedPost.getId());
-                return result;
+                return postMapper.toDto(savedPost);
             }
         }
 
