@@ -2,7 +2,7 @@ package kg.edu.mathbilim.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.validation.annotation.Category;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

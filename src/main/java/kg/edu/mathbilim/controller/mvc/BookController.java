@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
