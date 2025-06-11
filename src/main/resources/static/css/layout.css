@@ -70,12 +70,6 @@ body {
     justify-content: flex-end;
 }
 
-.footer {
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
-    padding: 48px 0;
-    color: #6c757d;
-}
 
 .container {
     max-width: 1200px;
@@ -83,13 +77,6 @@ body {
     padding: 0 24px;
 }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: auto 1fr 1fr 1fr 1fr auto;
-    gap: 48px;
-    margin-bottom: 48px;
-    align-items: start;
-}
 
 .logo-section {
     display: flex;
@@ -154,39 +141,6 @@ body {
     background: #e9ecef;
     color: #495057;
 }
-
-.footer-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.footer-column h6 {
-    color: #212529;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    text-transform: none;
-}
-
-.footer-column ul {
-    list-style: none;
-}
-
-.footer-column li {
-    margin-bottom: 12px;
-}
-
-.footer-column a {
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s ease;
-}
-
-.footer-column a:hover {
-    color: #212529;
-}
-
 .explore-more {
     display: flex;
     align-items: center;
@@ -195,21 +149,6 @@ body {
     font-weight: 600;
 }
 
-.footer-bottom {
-    border-top: 1px solid #e9ecef;
-    padding-top: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.footer-bottom-left {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
 
 .language-selector {
     display: flex;
@@ -234,66 +173,6 @@ body {
     font-size: 14px;
 }
 
-.footer-links {
-    display: flex;
-    gap: 16px;
-}
-
-.footer-link {
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s ease;
-}
-
-.footer-link:hover {
-    color: #212529;
-}
-
-@media (max-width: 1024px) {
-    .footer-content {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 32px;
-    }
-
-    .logo-section {
-        grid-column: 1 / -1;
-        margin-bottom: 16px;
-    }
-
-    .explore-more {
-        grid-column: 1 / -1;
-        margin-top: 16px;
-    }
-}
-
-@media (max-width: 768px) {
-    .footer-content {
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .footer-bottom-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .footer-content {
-        grid-template-columns: 1fr;
-    }
-
-    .container {
-        padding: 0 16px;
-    }
-}
 
 .navbar > .container-fluid {
     padding-left: 15px;

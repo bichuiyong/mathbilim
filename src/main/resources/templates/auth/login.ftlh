@@ -1,10 +1,6 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
     <link rel="stylesheet" href="../static/scss/main.css">
-
-    <div class="container-fluid">
-    <div class="row justify-content-center">
-    <div class="col-12">
     <div class="login-card">
         <div class="login-header">
             <div class="icon">
