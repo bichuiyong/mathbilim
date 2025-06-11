@@ -19,7 +19,7 @@
 }
 
 .nav-link-custom:hover {
-    color: #4a90e2 !important;
+    color: #3b82f6 !important;
 }
 
 .nav-link-custom::after {
@@ -44,13 +44,13 @@
 }
 
 .btn-auth {
-    background: #4a90e2;
+    background: #3b82f6;
     border: none;
     transition: all 0.2s;
 }
 
 .btn-auth:hover {
-    background: #357abd;
+    background: #3b82f6;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
