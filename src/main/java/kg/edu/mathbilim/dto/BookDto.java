@@ -23,13 +23,11 @@ public class BookDto {
 
     private CategoryDto category;
 
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
     private Instant createdAt;
 
     private Instant updatedAt;
-
-    private Set<AuthorDto> authors = new LinkedHashSet<>();
 
     private ContentStatus status;
 

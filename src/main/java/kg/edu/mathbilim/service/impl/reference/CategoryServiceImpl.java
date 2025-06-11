@@ -52,4 +52,9 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto category) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(category)));
     }
+
+    @Override
+    public CategoryDto getCategoryById(Integer category) {
+        return categoryMapper.toDto(categoryRepository.findById(category).orElseThrow(()-> new NoSuchElementException("Category with id " + category + " not found")));
+    }
 }
