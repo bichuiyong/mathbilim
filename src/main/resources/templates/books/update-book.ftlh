@@ -5,10 +5,11 @@
     <div class="container my-5">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">Create New Book</h3>
+                <h3 class="mb-0">Update the Book</h3>
             </div>
             <div class="card-body">
-                <form action="/books/create" method="post" enctype="multipart/form-data">
+                <form action="/books/update" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="${book.id}"/>
                     <#if _csrf??>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </#if>

@@ -1,4 +1,2 @@
 DROP TABLE authors CASCADE;
 
-ALTER TABLE books
-    ADD COLUMN author VARCHAR(500);

@@ -45,7 +45,7 @@ public class Book {
     @ColumnDefault("'{}'")
     @Column(name = "metadata")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -54,9 +54,6 @@ public class Book {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-
-    private String author;
 
 
     @Convert(converter = ContentStatusConverter.class)
