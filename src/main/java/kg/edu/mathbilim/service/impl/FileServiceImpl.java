@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.config.S3Config;
 import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
@@ -142,6 +143,7 @@ public class FileServiceImpl implements FileService {
     /// ДЛЯ РАБОТЫ С S3
 
     @Transactional
+    @Override
     public File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user) {
         try {
             log.info("Starting file upload for user: {}", user.getEmail());
@@ -232,6 +234,7 @@ public class FileServiceImpl implements FileService {
                 .user(user)
                 .size(multipartFile.getSize())
                 .s3Link(s3Config.getBaseUrl() + "/" + s3Key)
+                .status(ContentStatus.PENDING_REVIEW)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

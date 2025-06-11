@@ -18,6 +18,7 @@
 
                     <form action="/posts/create" method="post" enctype="multipart/form-data" id="postForm">
                         <@main.csrf/>
+                        <@spring.formHiddenInput "post.user.id"/>
 
                         <div class="form-grid">
                             <!-- Название поста -->
@@ -39,15 +40,17 @@
                                     <i class="fas fa-tags me-2 text-primary"></i>
                                     Тип поста
                                 </label>
-                                <select name="type.id" id="typeId" class="form-control" required>
-                                    <option value="">Выберите тип поста</option>
-                                    <#list postTypes as postType>
-                                        <option value="${postType.id}"
-                                                <#if post.type?? && post.type.id == postType.id>selected</#if>>
-                                            ${postType.name}
-                                        </option>
-                                    </#list>
-                                </select>
+
+                                <#assign typeMap = {}>
+                                <#list postTypes as postType>
+                                    <#assign typeMap = typeMap + {postType.id?string: postType.name}>
+                                </#list>
+
+                                <@spring.formSingleSelect
+                                "post.type.id",
+                                typeMap,
+                                'class="form-control" id="typeId"'
+                                />
                                 <@spring.showErrors "<br>" "error text-danger"/>
                             </div>
                         </div>
@@ -111,11 +114,6 @@
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-save me-2"></i>
                                 Создать пост
-                            </button>
-
-                            <button type="button" class="btn btn-secondary btn-lg" id="saveAsDraft">
-                                <i class="fas fa-file-alt me-2"></i>
-                                Сохранить как черновик
                             </button>
 
                             <button type="button" class="btn btn-outline-primary btn-lg" id="previewBtn">

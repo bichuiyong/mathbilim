@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <div class="text-center">
-                                <a href="/media/news" class="btn btn-outline-secondary">Все новости</a>
+                                <a href="/posts/news" class="btn btn-outline-secondary">Все новости</a>
                         </div>
                     </div>
                 </div>
@@ -332,7 +332,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <a href="/media/publication" class="btn btn-outline-secondary">Все публикации</a>
+                        <a href="/posts/publications" class="btn btn-outline-secondary">Все публикации</a>
                     </div>
                 </div>
             </div>

@@ -1,9 +1,7 @@
 package kg.edu.mathbilim.config;
 
-import kg.edu.mathbilim.service.impl.AuthUserDetailsService;
-import kg.edu.mathbilim.service.impl.CustomOAuth2UserService;
-import kg.edu.mathbilim.model.CustomOAuth2User;
-import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.impl.auth.AuthUserDetailsService;
+import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

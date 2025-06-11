@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
