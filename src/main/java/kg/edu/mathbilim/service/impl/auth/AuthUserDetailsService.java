@@ -6,6 +6,7 @@ import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.reference.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,10 @@ public class AuthUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
             User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+
+        if (!Boolean.TRUE.equals(user.getIsEmailVerified())) {
+            throw new DisabledException("Email не подтвержден. Проверьте почту и перейдите по ссылке подтверждения.");
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

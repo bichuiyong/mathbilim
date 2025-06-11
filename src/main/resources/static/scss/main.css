@@ -823,7 +823,6 @@ body.login-page {
   color: #3b82f6;
   margin-bottom: 20px;
   font-size: 1.3rem;
-  color: #333;
 }
 .sidebar a {
   color: #333;
@@ -1267,6 +1266,332 @@ body.login-page {
   }
   .metric-value {
     font-size: 1.25rem;
+  }
+}
+h2 {
+  text-align: center;
+  color: #3b82f6;
+  margin-bottom: 1.5rem;
+}
+
+.text-danger {
+  color: #ef4444;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
+
+.form-outline {
+  background-color: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+.form-outline p {
+  margin-bottom: 1rem;
+}
+.form-outline input[type=email] {
+  border: 1px solid #e0e7ff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+.form-outline input[type=email]:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+.form-outline input[type=submit] {
+  background-color: #3b82f6;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+.form-outline input[type=submit]:hover {
+  background-color: rgb(11.1512195122, 99.1219512195, 242.8487804878);
+}
+
+.account-type-dropdown {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  color: #374151;
+}
+.account-type-dropdown:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(53, 122, 189, 0.1);
+  outline: none;
+}
+.account-type-dropdown:hover {
+  border-color: #3b82f6;
+}
+.account-type-dropdown option {
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  background: white;
+  color: #374151;
+}
+.account-type-dropdown option:hover, .account-type-dropdown option:focus {
+  background: white;
+  color: #3b82f6;
+}
+
+.form-container {
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-control {
+  height: 50px;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+}
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+.container-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.page-header {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.verification-page, .verification-page .btn .password-reset-page {
+  background: linear-gradient(135deg, #ffffff 0%, 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+.verification-page .verification-card, .verification-page .btn .password-reset-page .password-reset-card, .verification-page .btn .password-reset-page .verification-card {
+  background: #ffffff;
+  border: 2px solid #3b82f6;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+  transition: all 0.3s ease;
+}
+.verification-page .verification-card:hover, .verification-page .btn .password-reset-page .password-reset-card:hover {
+  box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+.verification-page .verification-card .card-body, .verification-page .btn .password-reset-page .password-reset-card .card-body {
+  padding: 3rem 2rem;
+}
+.verification-page .verification-icon, .verification-page .btn .password-reset-page .password-reset-icon, .verification-page .btn .password-reset-page .verification-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  font-size: 2.5rem;
+}
+.verification-page .verification-icon.success, .verification-page .btn .password-reset-page .success.password-reset-icon {
+  background: linear-gradient(135deg, #10b981, rgb(20.0597014925, 231.9402985075, 161.7313432836));
+  color: #ffffff;
+}
+.verification-page .verification-icon.danger, .verification-page .btn .password-reset-page .danger.password-reset-icon {
+  background: linear-gradient(135deg, #ef4444, rgb(243.0197044335, 114.9802955665, 114.9802955665));
+  color: #ffffff;
+}
+.verification-page .verification-icon.primary, .verification-page .btn .password-reset-page .primary.password-reset-icon {
+  background: #3b82f6;
+  color: #ffffff;
+}
+.verification-page .verification-title, .verification-page .btn .password-reset-page .password-reset-title, .verification-page .btn .password-reset-page .verification-title {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.verification-page .verification-title.success, .verification-page .btn .password-reset-page .success.password-reset-title {
+  color: #10b981;
+}
+.verification-page .verification-title.danger, .verification-page .btn .password-reset-page .danger.password-reset-title {
+  color: #ef4444;
+}
+.verification-page .verification-title.primary, .verification-page .btn .password-reset-page .primary.password-reset-title {
+  color: #3b82f6;
+}
+.verification-page .verification-text, .verification-page .btn .password-reset-page .password-reset-text, .verification-page .btn .password-reset-page .verification-text {
+  color: #8e8e93;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.verification-page .alert, .verification-page .btn .password-reset-page .alert {
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+}
+.verification-page .alert.alert-info {
+  background: #3b82f6;
+  color: white;
+  border-left: black;
+}
+.verification-page .alert.alert-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+  color: rgb(11.9402985075, 138.0597014925, 96.2686567164);
+  border-left: 4px solid #10b981;
+}
+.verification-page .alert.alert-danger {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+  color: rgb(234.9802955665, 21.0197044335, 21.0197044335);
+  border-left: 4px solid #ef4444;
+}
+.verification-page .btn, .verification-page .btn .password-reset-page .btn {
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+.verification-page .btn.btn-primary {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+.verification-page .btn.btn-primary:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+.verification-page .btn.btn-outline-secondary {
+  background: transparent;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+.verification-page .btn.btn-outline-secondary:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: #3b82f6;
+}
+.verification-page .form-control, .verification-page .btn .password-reset-page .form-control {
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.verification-page .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+.verification-page .form-label, .verification-page .btn .password-reset-page .form-label {
+  color: #3b82f6;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.verification-page .form-text, .verification-page .btn .password-reset-page .form-text {
+  color: #8e8e93;
+  font-size: 0.9rem;
+}
+.verification-page .reasons-list, .verification-page .btn .password-reset-page .reasons-list {
+  background: #3b82f6;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.verification-page .reasons-list ul, .verification-page .btn .password-reset-page .reasons-list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.verification-page .reasons-list ul li, .verification-page .btn .password-reset-page .reasons-list ul li {
+  color: #8e8e93;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.verification-page .reasons-list ul li:before, .verification-page .btn .password-reset-page .reasons-list ul li:before {
+  content: "•";
+  color: #3b82f6;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+.verification-page a, .verification-page .btn .password-reset-page a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.verification-page a:hover, .verification-page .btn .password-reset-page a:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.verification-page .verification-card, .verification-page .btn .password-reset-page .verification-card, .verification-page .btn .password-reset-page .password-reset-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@media (max-width: 768px) {
+  .verification-page, .verification-page .btn .password-reset-page {
+    padding: 1rem;
+  }
+  .verification-page .verification-card .card-body, .verification-page .btn .password-reset-page .password-reset-card .card-body {
+    padding: 2rem 1.5rem;
+  }
+  .verification-page .verification-icon, .verification-page .btn .password-reset-page .verification-icon, .verification-page .btn .password-reset-page .password-reset-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  .verification-page .btn, .verification-page .btn .password-reset-page .btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
   }
 }
 

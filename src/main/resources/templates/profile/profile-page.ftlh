@@ -17,10 +17,10 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
-                        <#if user.role.name = "ADMIN" || user.role.name = "MODER">
-                            Администратор / Модератор
-                        <#else>
+                        <#if user.type?? && user.type?has_content>
                             ${user.type.name}
+                        <#else>
+                            Администратор / Модератор
                         </#if>
                     </div>
                     <div class="row justify-content-center justify-content-md-start">

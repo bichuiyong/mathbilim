@@ -7,6 +7,7 @@ $danger-color: #ef4444;
 $info-color: #06b6d4;
 $error-color: #dc2626;
 
+
 $light-bg: #f8fafc;
 $white: #ffffff;
 $light-blue: #e8f2ff;
@@ -940,7 +941,6 @@ body {
     color: $primary-color;
     margin-bottom: 20px;
     font-size: 1.3rem;
-    color: $text-primary;
   }
 
   a {
@@ -1399,5 +1399,401 @@ body {
 
   .metric-value {
     font-size: 1.25rem;
+  }
+}
+
+  h2 {
+  text-align: center;
+  color: $primary-color;
+  margin-bottom: 1.5rem;
+}
+
+.text-danger {
+  color: $danger-color;
+}
+
+.text-warning {
+  color: $warning-color;
+}
+
+.form-outline {
+  background-color: #ffffff;
+  border: 1px solid $border-color;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  input[type="email"] {
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+
+    &:focus {
+      border-color: $primary-color;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    }
+  }
+
+  input[type="submit"] {
+    background-color: $primary-color;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+.account-type-dropdown {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  color: #374151;
+
+  &:focus {
+    border-color:$primary-color;
+    box-shadow: 0 0 0 3px rgba(53, 122, 189, 0.1);
+    outline: none;
+  }
+
+  &:hover {
+    border-color: $primary-color;
+  }
+
+  option {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    background: white;
+    color: #374151;
+
+    &:hover,
+    &:focus {
+      background: white;
+      color: $primary-color;
+    }
+  }
+}
+
+.form-container {
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-control {
+  height: 50px;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
+  }
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0b5ed7;
+  }
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+.container-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.page-header {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+
+.verification-page {
+  background: linear-gradient(135deg, $white 0%, 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+
+  .verification-card {
+    background: $white;
+    border: 2px solid $primary-color;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba($primary-color, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 15px 40px rgba($primary-color, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .card-body {
+      padding: 3rem 2rem;
+    }
+  }
+
+  .verification-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    font-size: 2.5rem;
+
+    &.success {
+      background: linear-gradient(135deg, $success-color, lighten($success-color, 10%));
+      color: $white;
+    }
+
+    &.danger {
+      background: linear-gradient(135deg, $danger-color, lighten($danger-color, 10%));
+      color: $white;
+    }
+
+    &.primary {
+      background: $primary-color;
+      color: $white;
+    }
+  }
+
+  .verification-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+
+    &.success {
+      color: $success-color;
+    }
+
+    &.danger {
+      color: $danger-color;
+    }
+
+    &.primary {
+      color: $primary-color;
+    }
+  }
+
+  .verification-text {
+    color: $text-muted;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .alert {
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+
+    &.alert-info {
+      background: $primary-color;
+      color: white;
+      border-left: black;
+    }
+
+    &.alert-success {
+      background: linear-gradient(135deg, rgba($success-color, 0.1), rgba($success-color, 0.05));
+      color: darken($success-color, 10%);
+      border-left: 4px solid $success-color;
+    }
+
+    &.alert-danger {
+      background: linear-gradient(135deg, rgba($danger-color, 0.1), rgba($danger-color, 0.05));
+      color: darken($danger-color, 10%);
+      border-left: 4px solid $danger-color;
+    }
+  }
+
+  .btn {
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+
+    &.btn-primary {
+      background: $primary-color;
+      border-color: $primary-color;
+      color: $white;
+
+      &:hover {
+        background: $primary-color;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba($primary-color, 0.3);
+      }
+    }
+
+    .password-reset-page {
+      @extend .verification-page;
+
+      .password-reset-card {
+        @extend .verification-card;
+      }
+
+      .password-reset-icon {
+        @extend .verification-icon;
+      }
+
+      .password-reset-title {
+        @extend .verification-title;
+      }
+
+      .password-reset-text {
+        @extend .verification-text;
+      }
+    }
+
+    &.btn-outline-secondary {
+      background: transparent;
+      border-color: $primary-color;
+      color: $primary-color;
+
+      &:hover {
+        background: $primary-color;
+        color: $white;
+        transform: translateY(-2px);
+        box-shadow: $primary-color;
+      }
+    }
+  }
+
+  .form-control {
+    border: 2px solid $border-color;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+    }
+  }
+
+  .form-label {
+    color: $primary-color;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-text {
+    color: $text-muted;
+    font-size: 0.9rem;
+  }
+
+  .reasons-list {
+    background: $primary-color;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+
+    ul {
+      margin: 0;
+      padding-left: 1.5rem;
+
+      li {
+        color: $text-muted;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+
+        &:before {
+          content: "•";
+          color: $primary-color;
+          font-weight: bold;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $primary-color;
+      text-decoration: underline;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .verification-card {
+    animation: fadeInUp 0.6s ease-out;
+  }
+}
+
+@media (max-width: 768px) {
+  .verification-page {
+    padding: 1rem;
+
+    .verification-card .card-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .verification-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1.5rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
   }
 }
