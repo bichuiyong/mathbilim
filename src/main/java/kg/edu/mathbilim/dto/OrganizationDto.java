@@ -23,7 +23,7 @@ public class OrganizationDto {
 
     private String url;
 
-    private String avatar;
+    private FileDto avatar;
 
     @NotNull
     private UserDto creator;
