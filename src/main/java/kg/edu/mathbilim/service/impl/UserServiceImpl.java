@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserType(String email, Long userTypeId) {
+    public void setUserType(String email, Integer userTypeId) {
         User user = getEntityByEmail(email);
 
         if (user.getType() != null) {

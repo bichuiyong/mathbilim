@@ -38,7 +38,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void setUserType(String email, Long userTypeId);
+    void setUserType(String email, Integer userTypeId);
 
     void makeResetPasswordToken(HttpServletRequest request)
             throws
@@ -59,7 +59,6 @@ public interface UserService {
     UserDto getUserByEmailVerificationToken(String token);
 
     boolean isEmailVerified(String email);
-    void setUserType(String email, Integer userTypeId);
 
     void updateUser(UserEditByAdminDto userDto, Long userId);
 }
