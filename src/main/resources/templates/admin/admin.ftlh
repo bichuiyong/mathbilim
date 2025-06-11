@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}">
     <title>Админ-панель: Управление пользователями</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -83,6 +84,7 @@
 </nav>
 
 <div id="content">
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Dashboard</a>
@@ -118,15 +120,6 @@
                 <button class="btn btn-outline-secondary" type="button" id="searchButton">Поиск</button>
             </div>
         </div>
-        <div class="col-md-4">
-            <select class="form-select" aria-label="Фильтр по роли">
-                <option selected>Фильтр по роли</option>
-                <option value="all">Все</option>
-                <option value="admin">Администратор</option>
-                <option value="moderator">Модератор</option>
-                <option value="user">Пользователь</option>
-            </select>
-        </div>
     </div>
 
     <div class="table-responsive">
@@ -148,15 +141,6 @@
 
     <nav aria-label="Навигация по страницам пользователей">
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предыдущая</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Следующая</a>
-            </li>
         </ul>
     </nav>
 
@@ -172,6 +156,9 @@
             </div>
             <div class="modal-body">
                 <form id="createNewUser">
+                    <#if _csrf??>
+                        <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>
+                    </#if>
                     <div class="mb-3">
                         <label for="name" class="form-label">First name</label>
                         <input type="text" class="form-control" id="name" name="name" required>

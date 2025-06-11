@@ -4,7 +4,7 @@ const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
 
 window.onload = function () {
     doFetch('api/users');
-
+    changeEditModal()
 }
 
 
@@ -17,8 +17,48 @@ searchButton.onclick = function () {
     }
     doFetch(url);
 }
-function doFetch(url) {
-    fetch(url)
+function renderPagination(currentPage, totalPages, url) {
+    const paginationContainer = document.querySelector('.pagination');
+    paginationContainer.innerHTML = '';
+
+    const createPageItem = (page, text = null, active = false, disabled = false) => {
+        const li = document.createElement('li');
+        li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+
+        const a = document.createElement('a');
+        a.className = 'page-link';
+        a.href = '#';
+        a.textContent = text || page;
+        a.dataset.page = page;
+
+        li.appendChild(a);
+        return li;
+    };
+    paginationContainer.appendChild(
+        createPageItem(currentPage - 1, 'Предыдущая', false, currentPage === 1)
+    );
+    for (let i = 1; i <= totalPages; i++) {
+        paginationContainer.appendChild(
+            createPageItem(i, (i).toString(), i === currentPage)
+        );
+    }
+    paginationContainer.appendChild(
+        createPageItem(currentPage + 1, 'Следующая', false, currentPage === totalPages)
+    );
+
+    paginationContainer.querySelectorAll('a.page-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = parseInt(e.target.dataset.page);
+            if (!isNaN(page)) {
+                doFetch(url, page)
+            }
+        });
+    });
+}
+function doFetch(url, page = 1) {
+    const connector = url.includes('?') ? '&' : '?';
+    fetch(`${url}${connector}page=${page}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ошибка сети: ' + response.status);
@@ -31,7 +71,7 @@ function doFetch(url) {
 
             } else {
                 addUserToTable(data.content)
-                changeEditModal()
+                renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
             }
 
         })
@@ -67,7 +107,7 @@ createUserBtn.onclick = function () {
     sendForm(form, '/api/users', 'POST', 'createUserModal');
 }
 
-async function handleUserAction(method, successMessage, errorMessage, userId) {
+async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
     try {
         const response = await fetch(`/api/users/${userId}`, {
             method: method,
@@ -78,6 +118,15 @@ async function handleUserAction(method, successMessage, errorMessage, userId) {
 
         if (response.ok) {
             console.log(successMessage);
+            if (modalId) {
+                const modalEl = document.getElementById(modalId);
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+            }
+
+
+
+            doFetch('/api/users');
         } else {
             const errorData = await response.json();
             throw new Error(errorData.message || errorMessage);
@@ -99,14 +148,17 @@ function changeEditModal() {
             document.getElementById('editUserType').value = button.dataset.userType;
         } else if (button.classList.contains('delete-button')) {
             let deleteUserModal = document.getElementById('deleteUserModalBody');
-            document.getElementById('deleteUserInput').value = userId;
+            let deleteUserInput = document.getElementById('deleteUserInput')
+            let deleteUserBtn = document.getElementById('deleteUserBtn');
+            deleteUserBtn.dataset.userId = userId
+            deleteUserInput.value = userId;
+            console.log(deleteUserInput);
             deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
 
         } else if (button.classList.contains('block-button')) {
             await handleUserAction('PATCH',
                 `Пользователь с id=${userId} успешно заблокирован/изменён`,
                 'Ошибка блокировки/изменения пользователя', userId);
-            doFetch('/api/users')
         }
     });
 }
@@ -120,11 +172,10 @@ editUserBtn.onclick = function () {
 
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
-    let userId = document.getElementById('deleteUserInput').value
+    let userId = deleteUserBtn.dataset.userId
     await handleUserAction('DELETE',
         `Пользователь с id=${userId} успешно удалён`,
-        'Ошибка удаления пользователя', userId);
-    doFetch('/api/users')
+        'Ошибка удаления пользователя', userId, 'deleteUserModal');
 }
 
 function sendForm(form, fetchUrl, method, modalId) {
@@ -150,6 +201,7 @@ function sendForm(form, fetchUrl, method, modalId) {
             'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify(data),
+        // credentials: "include"
     })
         .then(async response => {
             if (!response.ok) {
@@ -161,7 +213,7 @@ function sendForm(form, fetchUrl, method, modalId) {
                 form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
 
                 for (const fieldName in errors) {
-                    const messages = errors[fieldName]; // массив строк
+                    const messages = errors[fieldName];
                     const field = form.querySelector(`[name="${fieldName}"]`);
                     if (field) {
                         field.classList.add("is-invalid");
@@ -178,8 +230,11 @@ function sendForm(form, fetchUrl, method, modalId) {
                 const modalEl = document.getElementById(modalId);
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
-                doFetch('api/users');
+                doFetch('/api/users');
             }
         })
+
+
+
 
 }
