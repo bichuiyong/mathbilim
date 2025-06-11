@@ -1,6 +1,11 @@
-const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
-    document.querySelector('input[name="csrf"]')?.value ||
-    document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content') ||
+    document.querySelector('input[name="_csrf"]')?.value ||
+    document.querySelector('input[name="csrf"]')?.value;
+
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+console.log('CSRF Token:', csrfToken);
+console.log('CSRF Header:', csrfHeader);
 
 window.onload = function () {
     doFetch('api/users');
@@ -58,7 +63,20 @@ function renderPagination(currentPage, totalPages, url) {
 }
 function doFetch(url, page = 1) {
     const connector = url.includes('?') ? '&' : '?';
-    fetch(`${url}${connector}page=${page}`)
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (csrfToken) {
+        headers[csrfHeader] = csrfToken;
+    }
+
+    fetch(`${url}${connector}page=${page}`, {
+        method: 'GET',
+        headers: headers,
+        credentials: 'same-origin'
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ошибка сети: ' + response.status);
@@ -88,18 +106,18 @@ function addUserToTable(users) {
         const tr = document.createElement('tr');
         console.log("WAS APPENDED3")
         tr.innerHTML = `
-  <td>${user.id}</td>
-  <td>${user.name}</td>
-  <td>${user.email}</td>
-  <td><span class="badge bg-secondary">${user.role.name}</span></td>
-  <td><span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
-    ${user.enabled ? 'Активен' : 'Неактивен'}</span></td>
-  <td>
-    <button class="edit-button btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.id}" data-user-name="${user.name}" data-user-surname="${user.surname}" data-user-role="${user.role.name}" data-user-type="${user.type?.id || ''}">Изменить</button>
-    <button class="delete-button btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="${user.id}">Удалить</button>
-    <button class="block-button btn btn-sm btn-warning" data-user-id="${user.id}">${user.enabled ? 'Заблокировать' : 'Разблокировать'}</button>
-  </td>
-`;
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td><span class="badge bg-secondary">${user.role.name}</span></td>
+            <td><span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
+                ${user.enabled ? 'Активен' : 'Неактивен'}</span></td>
+            <td>
+                <button class="edit-button btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.id}" data-user-name="${user.name}" data-user-surname="${user.surname}" data-user-role="${user.role.name}" data-user-type="${user.type?.id || ''}">Изменить</button>
+                <button class="delete-button btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="${user.id}">Удалить</button>
+                <button class="block-button btn btn-sm btn-warning" data-user-id="${user.id}">${user.enabled ? 'Заблокировать' : 'Разблокировать'}</button>
+            </td>
+        `;
 
         console.log("WAS APPENDED4")
 
@@ -116,11 +134,18 @@ createUserBtn.onclick = function () {
 
 async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
         const response = await fetch(`/api/users/${userId}`, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: headers,
+            credentials: 'same-origin'
         });
 
         if (response.ok) {
@@ -201,14 +226,20 @@ function sendForm(form, fetchUrl, method, modalId) {
     }
     data.type = type
     console.log(data);
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (csrfToken) {
+        headers[csrfHeader] = csrfToken;
+    }
+
     fetch(fetchUrl, {
         method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
-        },
+        headers: headers,
         body: JSON.stringify(data),
-        // credentials: "include"
+        credentials: 'same-origin'
     })
         .then(async response => {
             if (!response.ok) {
@@ -241,8 +272,4 @@ function sendForm(form, fetchUrl, method, modalId) {
                 doFetch('/api/users');
             }
         })
-
-
-
-
 }
