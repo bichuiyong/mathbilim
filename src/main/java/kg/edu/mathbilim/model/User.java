@@ -82,4 +82,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "type_id")
     private UserType type;
+
+    @Column(name = "password_reset_token")
+    private String resetPasswordToken;
+
+    @Column(name = "email_verification_token")
+    private String emailVerificationToken;
+
 }

@@ -38,7 +38,7 @@ public class UserTypeController {
     }
 
     @PostMapping("/select-user-type")
-    public String selectUserType(@RequestParam("userTypeId") Long userTypeId,
+    public String selectUserType(@RequestParam("userTypeId") Integer userTypeId,
                                  Authentication authentication,
                                  RedirectAttributes redirectAttributes) {
 

@@ -63,10 +63,18 @@
                         <div class="mb-4">
                             <label for="type" class="form-label">Account Type</label>
                             <div class="account-type-select">
-                                <@spring.formSingleSelect "userDto.type" types 'class="account-type-dropdown" id="type"'/>
+                                <select class="account-type-dropdown" id="type" name="type.id">
+                                    <#list types as type>
+                                    <option value="${type.id}">
+                                        ${type.name}
+                                    </option>
+                                </#list>
+                                </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
-                            <@spring.showErrors "<br>" "error text-danger"/>
+                            <#if errors?? && errors.hasFieldErrors("type.id")>
+                                <div class="error">${errors.getFieldError("type.id").defaultMessage}</div>
+                            </#if>
                         </div>
 
                         <button class="login-btn" type="submit">

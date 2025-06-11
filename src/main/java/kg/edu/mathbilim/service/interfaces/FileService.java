@@ -23,7 +23,7 @@ public interface FileService {
     @Transactional
     Set<File> uploadFilesForEvent(MultipartFile[] files, Event event, User user);
 
-    String uploadAvatar(MultipartFile avatarFile, User user);
+    FileDto uploadAvatar(MultipartFile avatarFile, User user);
 
     @Transactional
     File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user);

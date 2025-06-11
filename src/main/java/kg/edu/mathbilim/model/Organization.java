@@ -41,10 +41,10 @@ public class Organization {
     @Column(name = "url")
     private String url;
 
-    @Size(max = 255)
-    @ColumnDefault("NULL")
-    @Column(name = "avatar")
-    private String avatar;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "avatar")
+    private File avatar;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
