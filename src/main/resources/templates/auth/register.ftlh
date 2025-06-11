@@ -64,7 +64,6 @@
                             <label for="type" class="form-label">Account Type</label>
                             <div class="account-type-select">
                                 <select class="account-type-dropdown" id="type" name="type.id">
-                                    <option value="">-- Select account type --</option>
                                     <#list types as type>
                                         <option value="${type.id}"
                                                 <#if userDto.typeId?? && userDto.type == type.id>selected</#if>>

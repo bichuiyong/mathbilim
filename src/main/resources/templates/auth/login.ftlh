@@ -29,19 +29,7 @@
                                     <strong>Email не подтвержден!</strong>
                                     <p class="mb-2">Проверьте почту и перейдите по ссылке подтверждения.</p>
                                     <div class="mt-2">
-                                        <form action="/auth/resend-verification" method="post" style="display: inline;">
-                                            <#if _csrf??>
-                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                                       value="${(_csrf.token)!'csrf-token'}"/>
-                                            </#if>
-                                            <#if userEmail??>
-                                                <input type="hidden" name="email" value="${userEmail}"/>
-                                            </#if>
-                                            <button type="submit" class="btn btn-sm btn-outline-warning">
-                                                <i class="bi bi-envelope me-1"></i>
-                                                Отправить письмо повторно
-                                            </button>
-                                        </form>
+                                        <a href="/auth/resend-verification">Подтверждение почты</a>
                                     </div>
                                 </div>
                             </div>
@@ -80,6 +68,7 @@
                             <div class="forgot-password">
                                 <a href="/auth/forgot-password">Forgot Password?</a>
                             </div>
+
                         </div>
 
                         <button class="login-btn" type="submit">
@@ -90,6 +79,7 @@
 
                     <div class="auth-footer">
                         <p>New user? <a href="/auth/register">Create an account</a></p>
+                        <p>Confirm Email? <a href="/auth/resend-verification">Click</a></p>
                     </div>
                 </div>
             </div>

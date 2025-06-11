@@ -25,10 +25,26 @@ public class AuthController {
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
+                        @RequestParam(name = "emailVerified", required = false) Boolean emailVerified,
+                        @RequestParam(name = "emailNotVerified", required = false) Boolean emailNotVerified,
+                        @RequestParam(name = "email", required = false) String email,
                         Model model) {
         if (Boolean.TRUE.equals(error)) {
             model.addAttribute("error", true);
         }
+
+        if (Boolean.TRUE.equals(emailVerified)) {
+            model.addAttribute("success", "Email успешно подтвержден! Теперь вы можете войти в систему.");
+        }
+
+        if (Boolean.TRUE.equals(emailNotVerified)) {
+            model.addAttribute("emailNotVerified", true);
+            model.addAttribute("errorMessage", "Email не подтвержден. Проверьте почту и перейдите по ссылке подтверждения.");
+            if (email != null) {
+                model.addAttribute("userEmail", email);
+            }
+        }
+
         return "auth/login";
     }
 

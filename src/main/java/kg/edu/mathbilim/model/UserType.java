@@ -17,4 +17,9 @@ public class UserType {
 
     @Column(nullable = false)
     private String name;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
