@@ -1269,5 +1269,56 @@ body.login-page {
     font-size: 1.25rem;
   }
 }
+h2 {
+  text-align: center;
+  color: #3b82f6;
+  margin-bottom: 1.5rem;
+}
+
+.text-danger {
+  color: #ef4444;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
+
+.form-outline {
+  background-color: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+.form-outline p {
+  margin-bottom: 1rem;
+}
+.form-outline input[type=email] {
+  border: 1px solid #e0e7ff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+.form-outline input[type=email]:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+.form-outline input[type=submit] {
+  background-color: #3b82f6;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+.form-outline input[type=submit]:hover {
+  background-color: rgb(11.1512195122, 99.1219512195, 242.8487804878);
+}
 
 /*# sourceMappingURL=main.css.map */
