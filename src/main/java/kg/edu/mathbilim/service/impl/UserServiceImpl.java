@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.UserEditByAdminDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
@@ -61,6 +62,9 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user with email: {}", userDto.getEmail());
         User user = userMapper.toEntity(userDto);
         Role role = roleService.getRoleByName("USER");
+        if (user.getRole() != null) {
+            role = roleService.getRoleByName(user.getRole().getName());
+        }
 
         user.setRole(role);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
@@ -70,7 +74,6 @@ public class UserServiceImpl implements UserService {
         user.setIsEmailVerified(false);
 
         user = userRepository.saveAndFlush(user);
-
         log.info("Created user with id: {}", user.getId());
 
         try {
@@ -184,6 +187,16 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(Instant.now());
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(UserEditByAdminDto userDto, Long userId) {
+        User user = getEntityById(userId);
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setRole(roleService.getRoleByName(userDto.getRole().getName().toUpperCase()));
+        user.setType(userTypeService.findById(userDto.getType().getId()));
+        userRepository.saveAndFlush(user);
     }
 
     private void updateResetPasswordToken(String email, String token) {

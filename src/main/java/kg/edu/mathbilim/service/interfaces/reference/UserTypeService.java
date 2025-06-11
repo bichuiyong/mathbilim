@@ -9,5 +9,5 @@ public interface UserTypeService {
 
     List<UserType> getAll();
 
-    UserType findById(Long id);
+    UserType findById(Integer id);
 }

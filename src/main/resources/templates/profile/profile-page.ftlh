@@ -44,6 +44,13 @@
                         Редактировать
                     </a>
                 </div>
+                <#if user.role.name = "ADMIN" || user.role.name = "MODER">
+                    <div class="col-12 col-md-auto text-center mt-3 mt-md-0">
+                        <a href="/admin" class="btn edit-profile-btn px-4 py-2">
+                            Панель управления
+                        </a>
+                    </div>
+                </#if>
             </div>
         </div>
 

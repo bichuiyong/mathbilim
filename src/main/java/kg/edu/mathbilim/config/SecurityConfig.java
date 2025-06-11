@@ -77,6 +77,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/posts/create/**", "/organizations/create/**").authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                         .anyRequest().permitAll());
 
         return http.build();
