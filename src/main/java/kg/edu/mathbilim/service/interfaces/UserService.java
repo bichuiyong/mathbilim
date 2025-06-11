@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.UserEditByAdminDto;
 import kg.edu.mathbilim.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +34,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void setUserType(String email, Long userTypeId);
+    void setUserType(String email, Integer userTypeId);
+
+    void updateUser(UserEditByAdminDto userDto, Long userId);
 }
