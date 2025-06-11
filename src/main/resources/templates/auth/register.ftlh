@@ -65,11 +65,10 @@
                             <div class="account-type-select">
                                 <select class="account-type-dropdown" id="type" name="type.id">
                                     <#list types as type>
-                                        <option value="${type.id}"
-                                                <#if userDto.typeId?? && userDto.type == type.id>selected</#if>>
-                                            ${type.name}
-                                        </option>
-                                    </#list>
+                                    <option value="${type.id}">
+                                        ${type.name}
+                                    </option>
+                                </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
