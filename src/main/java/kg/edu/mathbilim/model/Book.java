@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.model.reference.Category;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -56,9 +57,6 @@ public class Book {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToMany(mappedBy = "books")
-    private Set<Author> authors = new LinkedHashSet<>();
-
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
     private ContentStatus status;
@@ -72,5 +70,11 @@ public class Book {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "approved_by")
     private User approvedBy;
+
+    @ManyToMany
+    @JoinTable(name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors = new LinkedHashSet<>();
 
 }

@@ -35,10 +35,7 @@ public class Author {
     @Column(name = "surname", length = 100)
     private String surname;
 
-    @ManyToMany
-    @JoinTable(name = "book_authors",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @ManyToMany(mappedBy = "authors")
     private Set<Book> books = new LinkedHashSet<>();
 
 }

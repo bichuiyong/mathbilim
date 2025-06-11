@@ -3,7 +3,9 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.FileType;
+import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.enums.converter.FileTypeConverter;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -75,4 +77,8 @@ public class File {
 
     @ManyToMany(mappedBy = "files")
     private Set<Post> posts = new HashSet<>();
+
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
 }

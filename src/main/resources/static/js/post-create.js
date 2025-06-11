@@ -1,9 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     let formChanged = false;
 
-    const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
-        document.querySelector('input[name="csrf"]')?.value ||
-        document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content') ||
+        document.querySelector('input[name="_csrf"]')?.value ||
+        document.querySelector('input[name="csrf"]')?.value;
+
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
 
     initializeTinyMCE();
 
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setupActionButtons();
 
-    setupFormValidation();
+    setupFormSubmit();
 
     setupUnsavedChangesWarning();
 
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
             },
 
-            file_picker_callback: function(callback, value, meta) {
+            file_picker_callback: function (callback, value, meta) {
                 if (meta.filetype === 'image') {
                     selectAndUploadFile('image/*', 'editor/images', callback);
                 } else if (meta.filetype === 'file') {
@@ -89,8 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
 
-            setup: function(editor) {
-                editor.on('change', function() {
+            setup: function (editor) {
+                editor.on('change', function () {
                     formChanged = true;
                 });
             }
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const slugInput = document.getElementById('slug');
 
         if (titleInput && slugInput) {
-            titleInput.addEventListener('input', function() {
+            titleInput.addEventListener('input', function () {
                 const title = this.value;
                 const slug = generateSlugFromTitle(title);
                 slugInput.value = slug;
@@ -283,20 +285,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setupActionButtons() {
-        const saveAsDraftBtn = document.getElementById('saveAsDraft');
-        if (saveAsDraftBtn) {
-            saveAsDraftBtn.addEventListener('click', function() {
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'status';
-                statusInput.value = 'DRAFT';
-                document.getElementById('postForm').appendChild(statusInput);
-
-                formChanged = false;
-                document.getElementById('postForm').submit();
-            });
-        }
-
         const previewBtn = document.getElementById('previewBtn');
         if (previewBtn) {
             previewBtn.addEventListener('click', showPreview);
@@ -314,52 +302,22 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.show();
     }
 
-    function setupFormValidation() {
+    function setupFormSubmit() {
         const form = document.getElementById('postForm');
 
         if (form) {
-            form.addEventListener('input', function() {
+            form.addEventListener('input', function () {
                 formChanged = true;
             });
 
-            form.addEventListener('submit', function(e) {
-                if (!validateForm()) {
-                    e.preventDefault();
-                    return;
-                }
+            form.addEventListener('submit', function (e) {
                 formChanged = false;
             });
         }
     }
 
-    function validateForm() {
-        const title = document.getElementById('title').value.trim();
-        const slug = document.getElementById('slug').value.trim();
-        const content = tinymce.get('content').getContent({format: 'text'}).trim();
-
-        if (!title) {
-            alert('Пожалуйста, введите название поста');
-            document.getElementById('title').focus();
-            return false;
-        }
-
-        if (!slug) {
-            alert('Пожалуйста, введите URL адрес (slug)');
-            document.getElementById('slug').focus();
-            return false;
-        }
-
-        if (!content || content.length < 10) {
-            alert('Пожалуйста, добавьте содержание поста (минимум 10 символов)');
-            tinymce.get('content').focus();
-            return false;
-        }
-
-        return true;
-    }
-
     function setupUnsavedChangesWarning() {
-        window.addEventListener('beforeunload', function(e) {
+        window.addEventListener('beforeunload', function (e) {
             if (formChanged) {
                 e.preventDefault();
                 e.returnValue = 'У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?';
@@ -375,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                [csrfHeader]: csrfToken
             }
         });
 
@@ -391,15 +349,15 @@ document.addEventListener('DOMContentLoaded', function() {
         input.setAttribute('type', 'file');
         input.setAttribute('accept', accept);
 
-        input.onchange = function() {
+        input.onchange = function () {
             const file = this.files[0];
             if (file) {
                 uploadFileToAPI(file, file.name, context)
                     .then(result => {
                         if (context.includes('images')) {
-                            callback(result.s3Link, { alt: file.name });
+                            callback(result.s3Link, {alt: file.name});
                         } else {
-                            callback(result.s3Link, { text: result.filename });
+                            callback(result.s3Link, {text: result.filename});
                         }
                     })
                     .catch(error => {
