@@ -71,4 +71,36 @@ public class AuthController {
         }
         return "auth/forgot_password_form";
     }
+
+    @GetMapping("/reset_password")
+    public String showResetPasswordForm(
+
+            @RequestParam String token,
+
+            Model model
+
+    ) {
+        try {
+            userService.getUserByResetPasswordToken(token);
+            model.addAttribute("token", token);
+        } catch (UsernameNotFoundException ex) {
+            model.addAttribute("error", "Invalid token");
+        }
+        return "auth/reset_password_form";
+    }
+
+    @PostMapping("/reset_password")
+    public String processResetPassword(HttpServletRequest request, Model model) {
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+        try {
+            UserDto user = userService.getUserByResetPasswordToken(token);
+            userService.updatePassword(user.getId(), password);
+            model.addAttribute("message", "You have successfully changed your password.");
+            return "redirect:/auth/login";
+        } catch (UsernameNotFoundException ex) {
+            model.addAttribute("message", "Invalid Token");
+            return "auth/reset_password_form";
+        }
+    }
 }
