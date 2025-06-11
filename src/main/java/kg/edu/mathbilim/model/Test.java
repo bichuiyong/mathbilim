@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
+import kg.edu.mathbilim.model.reference.Category;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -37,7 +38,7 @@ public class Test {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private kg.edu.mathbilim.model.Category category;
+    private Category category;
 
     @NotNull
     @Column(name = "metadata", nullable = false)

@@ -2,7 +2,8 @@
 <@main.layout ; spring>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/profile.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="../static/scss/main.css">
     <div class="container-fluid px-3 px-md-4 py-4">
         <div class="profile-banner p-4 p-md-5 mb-4">
             <div class="row align-items-center position-relative" style="z-index: 2;">
@@ -16,8 +17,8 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
-                        <#if user.type?? && user.type.name()?has_content>
-                            ${user.type.name()}
+                        <#if user.type?? && user.type?has_content>
+                            ${user.type.name}
                         <#else>
                             Администратор / Модератор
                         </#if>
@@ -43,6 +44,13 @@
                         Редактировать
                     </a>
                 </div>
+                <#if user.role.name = "ADMIN" || user.role.name = "MODER">
+                    <div class="col-12 col-md-auto text-center mt-3 mt-md-0">
+                        <a href="/admin" class="btn edit-profile-btn px-4 py-2">
+                            Панель управления
+                        </a>
+                    </div>
+                </#if>
             </div>
         </div>
 
@@ -139,7 +147,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-4" id="publicationsGrid">
                         <div class="col-12 col-lg-6">
                             <div class="publication-card" data-type="event" data-status="approved"

@@ -3,9 +3,8 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.enums.UserType;
-import kg.edu.mathbilim.enums.converter.UserTypeConverter;
-import kg.edu.mathbilim.model.reference.role.Role;
+import kg.edu.mathbilim.model.reference.UserType;
+import kg.edu.mathbilim.model.reference.Role;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -60,10 +59,6 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @Convert(converter = UserTypeConverter.class)
-    @Column(name = "type_id", nullable = false)
-    private UserType type;
-
     @Size(max = 2)
     @NotNull
     @ColumnDefault("'ru'")
@@ -83,5 +78,15 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Test> tests = new LinkedHashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private UserType type;
+
+    @Column(name = "password_reset_token")
+    private String resetPasswordToken;
+
+    @Column(name = "email_verification_token")
+    private String emailVerificationToken;
 
 }

@@ -2,10 +2,12 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.config.S3Config;
 import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.FileMapper;
+import kg.edu.mathbilim.model.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Post;
 import kg.edu.mathbilim.model.User;
@@ -41,7 +43,8 @@ public class FileServiceImpl implements FileService {
     private final S3Config s3Config;
     private final Tika tika = new Tika();
 
-    private File getEntityById(Long id) {
+    @Override
+    public File getEntityById(Long id) {
         return fileRepository.findById(id).orElseThrow(FileNotFoundException::new);
     }
 
@@ -110,9 +113,35 @@ public class FileServiceImpl implements FileService {
         return uploadedFiles;
     }
 
+    @Transactional
+    @Override
+    public Set<File> uploadFilesForEvent(MultipartFile[] files, Event event, User user) {
+        Set<File> uploadedFiles = new LinkedHashSet<>();
+        String context = "events/" + event.getId();
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                File uploadedFile = uploadFileReturnEntity(file, context, user);
+                uploadedFile.setEvents(new LinkedHashSet<>(Collections.singleton(event)));
+                fileRepository.saveAndFlush(uploadedFile);
+                uploadedFiles.add(uploadedFile);
+                log.info("File uploaded for event {}: {}", event.getId(), file.getOriginalFilename());
+            }
+        }
+
+        return uploadedFiles;
+    }
+
+    @Transactional
+    @Override
+    public FileDto uploadAvatar(MultipartFile avatarFile, User user) {
+        return uploadFile(avatarFile, "avatars", user);
+    }
+
     /// ДЛЯ РАБОТЫ С S3
 
     @Transactional
+    @Override
     public File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user) {
         try {
             log.info("Starting file upload for user: {}", user.getEmail());
@@ -184,7 +213,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] dowloadFile(Long fileId) {
+    public byte[] downloadFile(Long fileId) {
         File file = getEntityById(fileId);
         try {
             return s3Service.downloadFile(file.getFilePath());
@@ -203,6 +232,7 @@ public class FileServiceImpl implements FileService {
                 .user(user)
                 .size(multipartFile.getSize())
                 .s3Link(s3Config.getBaseUrl() + "/" + s3Key)
+                .status(ContentStatus.PENDING_REVIEW)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

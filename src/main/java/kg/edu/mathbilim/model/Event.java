@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.model.reference.EventType;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
@@ -33,6 +34,11 @@ public class Event {
     @NotNull
     @Column(name = "name", nullable = false, length = 500)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "main_image_id")
+    private File mainImage;
 
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
@@ -80,4 +86,9 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     private Set<File> files = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "event_organizations",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "organization_id"))
+    private Set<Organization> organizations = new LinkedHashSet<>();
 }

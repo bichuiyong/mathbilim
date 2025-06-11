@@ -107,9 +107,9 @@ spring:
       enabled: true
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/mathbilim}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   liquibase:
@@ -129,10 +129,32 @@ spring:
     ansi:
       enabled: always
 
+  mail:
+    host: smtp.gmail.com
+    username: ${RESET_EMAIL}
+    password: ${RESET_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   security:
     user:
       name: email
       password: password
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+          scope:
+            - profile
+            - email
 
   freemarker:
     expose-session-attributes: true

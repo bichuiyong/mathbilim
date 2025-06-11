@@ -3,7 +3,7 @@ package kg.edu.mathbilim.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import kg.edu.mathbilim.service.interfaces.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
 import kg.edu.mathbilim.validation.annotation.PostType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
