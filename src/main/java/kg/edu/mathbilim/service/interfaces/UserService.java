@@ -1,7 +1,5 @@
 package kg.edu.mathbilim.service.interfaces;
 
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.model.User;
 import org.springframework.data.domain.Page;
@@ -20,7 +18,6 @@ public interface UserService {
 
     UserDto getUserByEmail(String email);
 
-
     void edit(UserEditDto userDto, String email);
 
     Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection);
@@ -37,6 +34,8 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     void deleteUser(Long id);
+
+    void setUserType(String email, Long userTypeId);
 
     void makeResetPasswordToken(HttpServletRequest request)
             throws

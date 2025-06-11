@@ -3,7 +3,7 @@ package kg.edu.mathbilim.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import kg.edu.mathbilim.dto.reference.role.RoleDto;
-import kg.edu.mathbilim.enums.UserType;
+import kg.edu.mathbilim.model.UserType;
 import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 

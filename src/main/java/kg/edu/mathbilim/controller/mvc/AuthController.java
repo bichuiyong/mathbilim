@@ -5,8 +5,8 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.enums.UserType;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
+    private final UserTypeService userTypeService;
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -34,7 +35,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("types", UserType.getAllValues());
+        model.addAttribute("types", userTypeService.getAll());
         return "auth/register";
     }
 
@@ -43,7 +44,7 @@ public class AuthController {
                                       BindingResult result,
                                       Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("types", UserType.getAllValues());
+            model.addAttribute("types", userTypeService.getAll());
             model.addAttribute("errors", result);
             return "auth/register";
         }
