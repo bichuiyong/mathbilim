@@ -13,6 +13,7 @@ import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.util.CommonUtilities;
 import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final UserTypeService userTypeService;
+    private final EmailServiceImpl emailService;
 
     @Override
     public User getEntityById(Long userId) {
@@ -179,13 +182,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void makeResetPasswordToken(HttpServletRequest request)
-            throws
-            MessagingException,
-            UnsupportedEncodingException {
+    public void makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+        updateResetPasswordToken(token, email);
+        String resetPasswordLink = CommonUtilities.getSiteURL(request) + "/auth/reset_password?token=" + token;
+        emailService.sendEmail(email, resetPasswordLink);
+    }
 
 
+    @Override
+    public UserDto getUserByResetPasswordToken(String token) {
+        User user = userRepository.findUserByResetPasswordToken(token)
+                .orElseThrow(UserNotFoundException::new);
 
+        return userMapper.toDto(user);
+    }
+
+
+    @Override
+    public void updatePassword(Long userId, String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+//        user.setResetPasswordToken(null);
+        userRepository.saveAndFlush(user);
     }
 
 

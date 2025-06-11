@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.model.User;
 import org.springframework.data.domain.Page;
@@ -41,4 +43,8 @@ public interface UserService {
             throws
             MessagingException,
             UnsupportedEncodingException;
+
+    UserDto getUserByResetPasswordToken(String token);
+
+    void updatePassword(Long userId, String password);
 }
