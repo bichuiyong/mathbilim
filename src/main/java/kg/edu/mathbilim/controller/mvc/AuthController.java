@@ -42,24 +42,74 @@ public class AuthController {
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("userDto") @Valid UserDto userDto,
                                       BindingResult result,
-                                      Model model) {
+                                      Model model, HttpServletRequest request) {
+
         if (result.hasErrors()) {
             model.addAttribute("types", userTypeService.getAll());
             model.addAttribute("errors", result);
             return "auth/register";
         }
+        try {
+            userService.createUser(userDto, request);
+            return "redirect:/auth/registration-success";
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при регистрации: " + e.getMessage());
+            model.addAttribute("types", userTypeService.getAll());
+            return "auth/register";
+        }
+    }
 
-        userService.createUser(userDto);
-        return "redirect:/auth/login?registered=true";
+    @GetMapping("/registration-success")
+    public String registrationSuccess() {
+        return "auth/registration-success";
     }
 
 
-    @GetMapping("/forgot_password")
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token, Model model) {
+        try {
+            boolean isVerified = userService.verifyEmail(token);
+
+            if (isVerified) {
+                return "redirect:/auth/login?emailVerified=true";
+            } else {
+                model.addAttribute("error", "Недействительный токен верификации");
+                return "auth/verification-error";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при верификации email: " + e.getMessage());
+            return "auth/verification-error";
+        }
+    }
+
+    @GetMapping("/resend-verification")
+    public String showResendVerificationForm() {
+        return "auth/resend-verification";
+    }
+
+    @PostMapping("/resend-verification")
+    public String resendVerificationEmail(HttpServletRequest request, Model model) {
+        String email = request.getParameter("email");
+
+        try {
+            userService.resendVerificationEmail(request, email);
+            model.addAttribute("message", "Письмо с подтверждением отправлено повторно. Проверьте вашу почту.");
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при отправке письма: " + e.getMessage());
+        }
+
+        return "auth/resend-verification";
+    }
+
+
+    @GetMapping("/forgot-password")
     public String showForgotPasswordForm() {
-        return "auth/forgot_password_form";
+        return "auth/forgot-password_form";
     }
 
-    @PostMapping("/forgot_password")
+    @PostMapping("/forgot-password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
         try {
             userService.makeResetPasswordToken(request);
@@ -69,7 +119,7 @@ public class AuthController {
         } catch (MessagingException ex) {
             model.addAttribute("error", "Error while sending email");
         }
-        return "auth/forgot_password_form";
+        return "auth/forgot-password_form";
     }
 
     @GetMapping("/reset_password")
@@ -97,10 +147,9 @@ public class AuthController {
             UserDto user = userService.getUserByResetPasswordToken(token);
             userService.updatePassword(user.getId(), password);
             model.addAttribute("message", "You have successfully changed your password.");
-            return "redirect:/auth/login";
         } catch (UsernameNotFoundException ex) {
             model.addAttribute("message", "Invalid Token");
-            return "auth/reset_password_form";
         }
+        return "auth/message";
     }
 }

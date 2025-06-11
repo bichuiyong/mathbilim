@@ -129,6 +129,19 @@ spring:
     ansi:
       enabled: always
 
+  mail:
+    host: smtp.gmail.com
+    username: ${RESET_EMAIL}
+    password: ${RESET_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   security:
     user:
       name: email
