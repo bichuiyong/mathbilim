@@ -29,6 +29,8 @@ public class OrganizationController {
         if (bindingResult.hasErrors()) {
             return "organizations/create-organization";
         }
+        if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
+
         organizationService.create(organization, avatarFile);
         return "redirect:/organizations";
     }
