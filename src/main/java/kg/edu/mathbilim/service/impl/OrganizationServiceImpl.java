@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl;
 
+import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.OrganizationNotFound;
@@ -76,13 +77,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         dto.setCreator(userService.getAuthUser());
         dto.setStatus(ContentStatus.PENDING_REVIEW);
 
-        Organization organization = organizationMapper.toEntity(dto);
-
         if (avatarFile != null) {
-            String path = fileService.uploadAvatar(avatarFile, organization.getCreator());
-            organization.setAvatar(path);
+            FileDto avatar = fileService.uploadAvatar(avatarFile, userService.getAuthUserEntity());
+            dto.setAvatar(avatar);
         }
 
+        Organization organization = organizationMapper.toEntity(dto);
         organizationRepository.save(organization);
         return organizationMapper.toDto(organization);
     }

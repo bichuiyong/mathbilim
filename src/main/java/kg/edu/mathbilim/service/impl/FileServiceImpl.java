@@ -134,10 +134,8 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public String uploadAvatar(MultipartFile avatarFile, User user) {
-        FileDto uploadedFile = uploadFile(avatarFile, "avatars", user);
-        log.info("Organization avatar uploaded successfully for user: {}", user.getEmail());
-        return uploadedFile.getFilePath();
+    public FileDto uploadAvatar(MultipartFile avatarFile, User user) {
+        return uploadFile(avatarFile, "avatars", user);
     }
 
     /// ДЛЯ РАБОТЫ С S3
