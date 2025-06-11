@@ -5,15 +5,11 @@ import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.enums.Metadata;
 import kg.edu.mathbilim.mapper.UserMapper;
-import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.service.interfaces.BookService;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,9 +81,9 @@ public class BookController {
         return "redirect:/profile";
     }
 
-    @GetMapping("/update")
+    @GetMapping("{id}/update")
     public String update(Model model,
-                         @RequestParam long id) {
+                         @PathVariable long id) {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("book", bookService.getById(id));
         model.addAttribute("metadataKeysEnum", Metadata.values());
@@ -95,9 +91,9 @@ public class BookController {
         return "books/update-book";
     }
 
-    @PostMapping("/update")
-    public String updateBoook(@RequestParam long id,
-            @ModelAttribute("book") @Valid BookDto book,
+    @PostMapping("{id}/update")
+    public String updateBook(@PathVariable long id,
+                              @ModelAttribute("book") @Valid BookDto book,
                               @RequestParam MultipartFile attachments,
                               @RequestParam(value = "context", defaultValue = "general") String context,
                               @RequestParam("metadataKeys") List<String> keys,

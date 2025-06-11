@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.CategoryDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
@@ -9,8 +9,7 @@ import kg.edu.mathbilim.mapper.BookMapper;
 import kg.edu.mathbilim.model.Book;
 import kg.edu.mathbilim.repository.BookRepository;
 import kg.edu.mathbilim.service.interfaces.BookService;
-import kg.edu.mathbilim.service.interfaces.CategoryService;
-import kg.edu.mathbilim.service.interfaces.FileService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.util.FileUtil;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
