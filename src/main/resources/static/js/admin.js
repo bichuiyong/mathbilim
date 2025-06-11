@@ -129,16 +129,19 @@ deleteUserBtn.onclick = async function () {
 
 function sendForm(form, fetchUrl, method, modalId) {
     let selectElement;
-    if (form.id === 'createNewUser') {
-        selectElement = document.getElementById('type');
-    } else {
-        selectElement = document.getElementById('editUserType');
-    }
+    console.log(form);
+    selectElement = form.querySelector('select[name="type"]');
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     data.role = {name: data.role};
-    data.type = {id: selectedOption.value, name: selectedOption.dataset.name}
+    let type;
+    if (selectedOption.value && selectedOption.dataset.name) {
+        type = {id: selectedOption.value, name: selectedOption.dataset.name}
+    } else {
+        type = null;
+    }
+    data.type = type
     console.log(data);
     fetch(fetchUrl, {
         method: method,
@@ -148,15 +151,35 @@ function sendForm(form, fetchUrl, method, modalId) {
         },
         body: JSON.stringify(data),
     })
-        .then(response => {
+        .then(async response => {
             if (!response.ok) {
-                console.log(response);
-                throw new Error('Ошибка запроса');
+                const errorBody = await response.json();
+                const errors = errorBody.response;
+                console.log(errors);
+
+                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+
+                for (const fieldName in errors) {
+                    const messages = errors[fieldName]; // массив строк
+                    const field = form.querySelector(`[name="${fieldName}"]`);
+                    if (field) {
+                        field.classList.add("is-invalid");
+
+                        messages.forEach(msg => {
+                            const div = document.createElement("div");
+                            div.classList.add("invalid-feedback");
+                            div.innerText = msg;
+                            field.parentElement.appendChild(div);
+                        });
+                    }
+                }
+            } else {
+                const modalEl = document.getElementById(modalId);
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+                doFetch('api/users');
             }
-            let myModalEl = document.getElementById(modalId);
-            let modal = bootstrap.Modal.getInstance(myModalEl);
-            modal.hide();
-            doFetch('api/users');
         })
 
 }

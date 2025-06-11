@@ -142,20 +142,6 @@
             </tr>
             </thead>
             <tbody id="resultTable">
-            <tr>
-<#--                <td>1</td>-->
-<#--                <td>user_admin</td>-->
-<#--                <td>admin@example.com</td>-->
-<#--                <td><span class="badge bg-danger">Администратор</span></td>-->
-<#--                <td><span class="user-status-active">Активен</span></td>-->
-<#--                <td>-->
-<#--                    <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"-->
-<#--                            data-bs-target="#editUserModal">Изменить</button>-->
-<#--                    <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal"-->
-<#--                            data-bs-target="#deleteUserModal">Удалить</button>-->
-<#--                    <button class="btn btn-sm btn-warning">Заблокировать</button>-->
-<#--                </td>-->
-            </tr>
             </tbody>
         </table>
     </div>
@@ -187,20 +173,20 @@
             <div class="modal-body">
                 <form id="createNewUser">
                     <div class="mb-3">
-                        <label for="firstName" class="form-label">First name</label>
-                        <input type="text" class="form-control" id="firstName" name="name" required>
+                        <label for="name" class="form-label">First name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="lastName" class="form-label">Last name</label>
-                        <input type="text" class="form-control" id="lastName" name="surname" required>
+                        <label for="surname" class="form-label">Last name</label>
+                        <input type="text" class="form-control" id="surname" name="surname" required>
                     </div>
                     <div class="mb-3">
-                        <label for="newEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="newEmail" name="email" required>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="newPassword" class="form-label">Пароль</label>
-                        <input type="password" class="form-control" id="newPassword" name="password" required>
+                        <label for="password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <div class="mb-3">
                         <label for="newUserRole" class="form-label">Роль</label>
@@ -214,7 +200,7 @@
                         <label for="type" class="form-label">Тип аккаунта</label>
                         <div class="account-type-select">
                             <select class="form-select" id="type" name="type">
-<#--                                <option selected disabled>Выберите тип аккаунта</option>-->
+                                <option selected disabled value="">Выберите тип аккаунта</option>
                                 <#list types as type>
                                     <option value="${type.id}" data-name="${type.name()}">${type}</option>
                                 </#list>
@@ -290,7 +276,6 @@
             </div>
             <div class="modal-body" id="deleteUserModalBody">
                 <input type="hidden" value="" id="deleteUserInput">
-                Вы уверены, что хотите удалить пользователя "user_admin" (ID: 1)? Это действие необратимо.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
