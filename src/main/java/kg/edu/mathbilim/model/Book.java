@@ -12,9 +12,7 @@ import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -44,10 +42,11 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
+
     @ColumnDefault("'{}'")
     @Column(name = "metadata")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -56,6 +55,7 @@ public class Book {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
+
 
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
@@ -70,11 +70,5 @@ public class Book {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "approved_by")
     private User approvedBy;
-
-    @ManyToMany
-    @JoinTable(name = "book_authors",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors = new LinkedHashSet<>();
 
 }

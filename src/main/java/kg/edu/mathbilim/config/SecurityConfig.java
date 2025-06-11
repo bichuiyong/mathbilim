@@ -5,6 +5,7 @@ import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,7 +22,6 @@ public class SecurityConfig {
     private final AuthUserDetailsService userService;
     private final CustomOAuth2UserService oauthUserService;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, UserDetailsService userDetailsService) throws Exception {
         http
@@ -29,6 +29,7 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .httpBasic(Customizer.withDefaults())
 
                 .oauth2Login(oauth -> oauth
                         .loginPage("/auth/login")
@@ -73,12 +74,16 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login")
                         .permitAll())
 
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/posts/create/**", "/organizations/create/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/users/**").hasAuthority("ADMIN")
+                        .requestMatchers("/posts/create/**").authenticated()
+                        .requestMatchers("/books/create/**").authenticated()
+                        .requestMatchers("/books/update/**").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();
