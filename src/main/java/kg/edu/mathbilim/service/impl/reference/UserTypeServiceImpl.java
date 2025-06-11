@@ -22,7 +22,7 @@ public class UserTypeServiceImpl implements UserTypeService {
     }
 
     @Override
-    public UserType findById(Long id) {
+    public UserType findById(Integer id) {
         return userTypeRepository.findById(id)
                 .orElseThrow(() -> new UserTypeNotFoundException("UserType not found with id: " + id));
     }
