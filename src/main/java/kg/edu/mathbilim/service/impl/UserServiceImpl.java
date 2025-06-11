@@ -55,8 +55,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(getEntityById(id));
     }
 
+
     @Override
-    public void createUser(UserDto userDto) {
+    public void createUser(UserDto userDto, HttpServletRequest request) {
         log.info("Creating user with email: {}", userDto.getEmail());
         User user = userMapper.toEntity(userDto);
         Role role = roleService.getRoleByName("USER");
@@ -66,9 +67,18 @@ public class UserServiceImpl implements UserService {
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
         user.setEmail(StringUtil.normalizeField(userDto.getEmail(), false));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setIsEmailVerified(false);
 
         user = userRepository.saveAndFlush(user);
+
         log.info("Created user with id: {}", user.getId());
+
+        try {
+            generateEmailVerificationToken(request, user.getEmail());
+            log.info("Verification email sent to: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send verification email to: {}", user.getEmail(), e);
+        }
     }
 
 
@@ -179,13 +189,16 @@ public class UserServiceImpl implements UserService {
     private void updateResetPasswordToken(String email, String token) {
         User user = userRepository.findByEmail(email).
                 orElseThrow(UserNotFoundException::new);
+
+        user.setResetPasswordToken(token);
+        userRepository.saveAndFlush(user);
     }
 
     @Override
     public void makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
-        updateResetPasswordToken(token, email);
+        updateResetPasswordToken(email, token);
         String resetPasswordLink = CommonUtilities.getSiteURL(request) + "/auth/reset_password?token=" + token;
         emailService.sendEmail(email, resetPasswordLink);
     }
@@ -207,8 +220,76 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
-//        user.setResetPasswordToken(null);
+        user.setResetPasswordToken(null);
         userRepository.saveAndFlush(user);
+    }
+
+
+
+    @Override
+    public void generateEmailVerificationToken(HttpServletRequest request, String email) throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
+        String token = UUID.randomUUID().toString();
+
+        user.setEmailVerificationToken(token);
+        user.setIsEmailVerified(false);
+        userRepository.saveAndFlush(user);
+
+        String verificationLink = CommonUtilities.getSiteURL(request) + "/auth/verify-email?token=" + token;
+        emailService.sendVerificationEmail(email, verificationLink);
+    }
+
+    @Override
+    public boolean verifyEmail(String token) {
+        User user = userRepository.findByEmailVerificationToken(token)
+                .orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.setIsEmailVerified(true);
+        user.setEmailVerificationToken(null);
+        userRepository.saveAndFlush(user);
+
+        return true;
+    }
+
+    @Override
+    public void resendVerificationEmail(HttpServletRequest request, String email)
+            throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (Boolean.TRUE.equals(user.getIsEmailVerified())) {
+            throw new IllegalStateException("Email уже верифицирован");
+        }
+
+        String token = UUID.randomUUID().toString();
+
+        user.setEmailVerificationToken(token);
+        userRepository.saveAndFlush(user);
+
+        String verificationLink = CommonUtilities.getSiteURL(request) + "/auth/verify-email?token=" + token;
+        emailService.sendVerificationEmail(email, verificationLink);
+    }
+
+    @Override
+    public UserDto getUserByEmailVerificationToken(String token) {
+        User user = userRepository.findByEmailVerificationToken(token)
+                .orElseThrow(UserNotFoundException::new);
+
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public boolean isEmailVerified(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
+        return Boolean.TRUE.equals(user.getIsEmailVerified());
     }
 
 
