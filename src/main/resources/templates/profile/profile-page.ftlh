@@ -17,10 +17,10 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
-                        <#if user.type?? && user.type.name()?has_content>
-                            ${user.type.name()}
-                        <#else>
+                        <#if user.role.name = "ADMIN" || user.role.name = "MODER">
                             Администратор / Модератор
+                        <#else>
+                            ${user.type.name}
                         </#if>
                     </div>
                     <div class="row justify-content-center justify-content-md-start">
@@ -44,6 +44,13 @@
                         Редактировать
                     </a>
                 </div>
+                <#if user.role.name = "ADMIN" || user.role.name = "MODER">
+                    <div class="col-12 col-md-auto text-center mt-3 mt-md-0">
+                        <a href="/admin" class="btn edit-profile-btn px-4 py-2">
+                            Панель управления
+                        </a>
+                    </div>
+                </#if>
             </div>
         </div>
 
