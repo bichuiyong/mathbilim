@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.repository.reference;
+package kg.edu.mathbilim.repository.reference.role;
 
 import kg.edu.mathbilim.model.reference.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
