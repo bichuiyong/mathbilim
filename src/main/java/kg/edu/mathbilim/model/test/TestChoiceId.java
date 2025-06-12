@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.embedded;
+package kg.edu.mathbilim.model.test;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

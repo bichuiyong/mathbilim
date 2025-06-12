@@ -1,7 +1,6 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.test;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.embedded.TestChoiceId;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;

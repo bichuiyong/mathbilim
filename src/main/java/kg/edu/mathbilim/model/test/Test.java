@@ -1,10 +1,11 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.test;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
+import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.model.reference.category.Category;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
