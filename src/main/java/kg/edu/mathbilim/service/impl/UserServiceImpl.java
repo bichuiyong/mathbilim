@@ -2,10 +2,10 @@ package kg.edu.mathbilim.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.dto.UserEditByAdminDto;
+import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
-import kg.edu.mathbilim.dto.UserEditDto;
+import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.model.reference.user_type.UserType;
 import kg.edu.mathbilim.model.reference.Role;

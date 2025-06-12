@@ -1,9 +1,8 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import org.springframework.data.domain.Page;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

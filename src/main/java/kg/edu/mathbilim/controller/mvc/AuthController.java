@@ -4,7 +4,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;

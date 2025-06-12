@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;

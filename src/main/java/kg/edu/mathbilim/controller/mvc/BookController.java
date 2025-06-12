@@ -2,7 +2,7 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.Metadata;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.service.interfaces.BookService;
@@ -52,7 +52,6 @@ public class BookController {
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
                           @RequestParam MultipartFile attachments,
-                          @RequestParam(value = "context", defaultValue = "general") String context,
                           @RequestParam("metadataKeys") List<String> keys,
                           @RequestParam("metadataValues") List<String> values,
                           BindingResult bindingResult,
@@ -65,7 +64,7 @@ public class BookController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto user = userService.getUserByEmail(email);
 
-        book.setFile(fileService.uploadFile(attachments, context));
+        book.setFile(fileService.uploadFile(attachments, "books"));
         book.setUser(user);
         bookService.createBook(book, keys, values);
         return "redirect:/books";

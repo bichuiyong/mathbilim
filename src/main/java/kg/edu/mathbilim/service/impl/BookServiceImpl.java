@@ -2,7 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.dto.reference.category.CategoryDto;
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
 import kg.edu.mathbilim.mapper.BookMapper;
@@ -10,7 +10,6 @@ import kg.edu.mathbilim.model.Book;
 import kg.edu.mathbilim.repository.BookRepository;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.reference.category.CategoryService;
-import kg.edu.mathbilim.util.FileUtil;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,6 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final CategoryService categoryService;
-    private static final String SUB_DIR="books";
-    private FileUtil fileUtil;
 
     private Book getEntityById(Long id) {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);

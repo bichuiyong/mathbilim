@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.dto.UserEditDto;
+import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
