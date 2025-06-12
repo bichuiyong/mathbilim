@@ -1,7 +1,6 @@
-package kg.edu.mathbilim.dto.reference;
+package kg.edu.mathbilim.dto.reference.post_type;
 
 
-import kg.edu.mathbilim.validation.annotation.PostType;
 import lombok.*;
 
 @Getter
@@ -12,6 +11,5 @@ import lombok.*;
 public class PostTypeDto {
     private Integer id;
 
-    @PostType
-    private String name;
+
 }

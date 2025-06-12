@@ -1,6 +1,5 @@
-package kg.edu.mathbilim.dto.reference;
+package kg.edu.mathbilim.dto.reference.user_type;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,4 @@ import lombok.Setter;
 @Builder
 public class UserTypeDto {
     private Integer id;
-
-    @NotBlank
-    private String name;
 }

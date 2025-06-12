@@ -1,6 +1,5 @@
-package kg.edu.mathbilim.dto.reference;
+package kg.edu.mathbilim.dto.reference.event_type;
 
-import kg.edu.mathbilim.validation.annotation.EventType;
 import lombok.*;
 
 @Getter
@@ -11,6 +10,4 @@ import lombok.*;
 public class EventTypeDto {
     private Integer id;
 
-    @EventType
-    private String name;
 }

@@ -2,7 +2,7 @@ package kg.edu.mathbilim.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import kg.edu.mathbilim.dto.reference.PostTypeDto;
+import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 

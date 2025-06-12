@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.reference.RoleDto;
-import kg.edu.mathbilim.dto.reference.UserTypeDto;
+import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
 import lombok.*;
 
 @Getter
