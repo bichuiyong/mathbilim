@@ -1,8 +1,9 @@
-package kg.edu.mathbilim.dto;
+package kg.edu.mathbilim.dto.event;
 
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.reference.event_type.EventTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
@@ -26,18 +27,6 @@ import java.util.Set;
 )
 public class EventDto {
     private Long id;
-
-    @NotBlank
-    private String name;
-
-    @NotBlank
-    private String content;
-
-    private FileDto mainImage;
-
-    private Map<String, Object> metadata;
-
-    private ContentStatus status;
 
     @NotNull
     @Future
@@ -63,6 +52,16 @@ public class EventDto {
     @Builder.Default
     private Instant updatedAt = Instant.now();
 
+    private Map<String, Object> metadata;
+
+    private ContentStatus status;
+
+    private FileDto mainImage;
+
+    private Boolean isOffline;
+
     @Builder.Default
     private Set<FileDto> files = new LinkedHashSet<>();
+
+    private Set<EventTranslationDto> eventTranslations;
 }

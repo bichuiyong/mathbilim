@@ -1,11 +1,13 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.event;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.Organization;
+import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.model.reference.event_type.EventType;
 import lombok.*;
 import org.hibernate.annotations.*;
@@ -29,27 +31,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Size(max = 500)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 500)
-    private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "main_image_id")
-    private File mainImage;
-
-    @Convert(converter = ContentStatusConverter.class)
-    @Column(name = "status_id", nullable = false)
-    private ContentStatus status;
-
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
-
-    @Column(name = "metadata")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> metadata;
 
     @NotNull
     @Column(name = "start_date", nullable = false)
@@ -80,6 +61,23 @@ public class Event {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Column(name = "metadata")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> metadata;
+
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "main_image_id")
+    private File mainImage;
+
+    @NotNull
+    @Column(name = "is_offline", nullable = false)
+    private Boolean isOffline;
+
     @ManyToMany
     @JoinTable(name = "event_files",
             joinColumns = @JoinColumn(name = "event_id"),
@@ -91,4 +89,8 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "organization_id"))
     private Set<Organization> organizations = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "event")
+    private Set<EventTranslation> eventTranslations = new LinkedHashSet<>();
+
 }
