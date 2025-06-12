@@ -3,7 +3,7 @@ package kg.edu.mathbilim.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import kg.edu.mathbilim.dto.reference.RoleDto;
-import kg.edu.mathbilim.model.reference.user_type.UserType;
+import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
 import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 
@@ -20,6 +20,7 @@ public class UserDto {
     @NotBlank(message = "Имя обязательно")
     private String name;
 
+    FileDto avatar;
 
     private String surname;
 
@@ -43,9 +44,6 @@ public class UserDto {
     private Boolean isEmailVerified = false;
 
     @Builder.Default
-    private String preferredLanguage = "ru";
-
-    @Builder.Default
     private Instant createdAt = Instant.now();
 
     @Builder.Default
@@ -55,5 +53,5 @@ public class UserDto {
 
     @NotNull(message = "Выберите тип аккаунта")
     @Valid
-    private UserType type;
+    private UserTypeDto type;
 }

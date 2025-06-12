@@ -59,12 +59,6 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @Size(max = 2)
-    @NotNull
-    @ColumnDefault("'ru'")
-    @Column(name = "preferred_language", nullable = false, length = 2)
-    private String preferredLanguage;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -72,9 +66,6 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @OneToMany(mappedBy = "user")
-    private Set<File> files = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<Test> tests = new LinkedHashSet<>();
@@ -88,5 +79,10 @@ public class User {
 
     @Column(name = "email_verification_token")
     private String emailVerificationToken;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "avatar")
+    private File avatar;
 
 }
