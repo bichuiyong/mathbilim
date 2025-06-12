@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto;
+package kg.edu.mathbilim.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
