@@ -6,7 +6,7 @@ import kg.edu.mathbilim.dto.UserDto;
 import kg.edu.mathbilim.enums.Metadata;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.service.interfaces.BookService;
-import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.category.CategoryService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;

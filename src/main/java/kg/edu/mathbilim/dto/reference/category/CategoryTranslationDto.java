@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.dto.reference.category;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -11,7 +10,6 @@ import lombok.*;
 @Builder
 public class CategoryTranslationDto {
 
-    @NotNull
     Integer categoryId;
 
     @NotBlank

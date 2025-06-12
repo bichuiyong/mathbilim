@@ -12,5 +12,5 @@ import java.util.Set;
 public class CategoryDto {
     private Integer id;
 
-    private Set<CategoryTranslationDto> translations;
+    private Set<CategoryTranslationDto> categoryTranslations;
 }

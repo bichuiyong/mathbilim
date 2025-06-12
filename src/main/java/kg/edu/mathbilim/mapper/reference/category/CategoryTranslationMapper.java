@@ -13,6 +13,7 @@ public interface CategoryTranslationMapper {
 
     @Mapping(source = "id.languageCode", target = "languageCode")
     @Mapping(source = "translation", target = "translation")
+    @Mapping(source = "id.categoryId", target = "categoryId")
     CategoryTranslationDto toDto(CategoryTranslation entity);
 
     @Mapping(target = "id.languageCode", source = "languageCode")

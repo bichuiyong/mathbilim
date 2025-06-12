@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.PostDto;
 import kg.edu.mathbilim.service.interfaces.PostService;
-import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.post_type.PostTypeService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

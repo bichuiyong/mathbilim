@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.EventDto;
 import kg.edu.mathbilim.service.interfaces.EventService;
-import kg.edu.mathbilim.service.interfaces.reference.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.event_type.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;

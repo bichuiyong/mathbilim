@@ -16,10 +16,10 @@ public interface UserTypeTranslationMapper {
     UserTypeTranslationDto toDto(UserTypeTranslation entity);
 
     @Mapping(target = "id.languageCode", source = "languageCode")
-    @Mapping(target = "id.postTypeId", source = "postTypeId")
+    @Mapping(target = "id.userTypeId", source = "userTypeId")
     @Mapping(target = "translation", source = "translation")
-    @Mapping(target = "postType.id", source = "postTypeId")
-    @Mapping(target = "postType.postTypeTranslations", ignore = true)
+    @Mapping(target = "userType.id", source = "userTypeId")
+    @Mapping(target = "userType.userTypeTranslations", ignore = true)
     UserTypeTranslation toEntity(UserTypeTranslationDto dto);
 
 
