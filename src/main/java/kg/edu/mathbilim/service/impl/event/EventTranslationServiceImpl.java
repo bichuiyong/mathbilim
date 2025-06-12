@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -113,7 +114,7 @@ public class EventTranslationServiceImpl implements EventTranslationService {
 
     @Transactional
     @Override
-    public void saveTranslations(Long eventId, List<EventTranslationDto> translations) {
+    public void saveTranslations(Long eventId, Set<EventTranslationDto> translations) {
         if (translations == null || translations.isEmpty()) {
             return;
         }

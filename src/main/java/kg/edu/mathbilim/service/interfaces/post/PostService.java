@@ -1,6 +1,6 @@
-package kg.edu.mathbilim.service.interfaces;
+package kg.edu.mathbilim.service.interfaces.post;
 
-import kg.edu.mathbilim.dto.PostDto;
+import kg.edu.mathbilim.dto.post.PostDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 

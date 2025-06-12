@@ -58,6 +58,7 @@ public class EventDto {
 
     private FileDto mainImage;
 
+    @NotNull
     private Boolean isOffline;
 
     @Builder.Default

@@ -2,10 +2,12 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.layout>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js">
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-10">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">
@@ -15,30 +17,48 @@
                     <div class="card-body">
                         <form action="/events/create" method="post" enctype="multipart/form-data" novalidate>
                             <@layout.csrf />
-                            <@spring.formHiddenInput "event.user.id"/>
+                            <input type="hidden" name="user.id" value="${user.id}"/>
 
+                            <!-- Основная информация -->
+                            <div class="row">
+                                <!-- Тип мероприятия -->
+                                <select name="type.id" class="form-select" required>
+                                    <option value="">Выберите тип</option>
+                                    <#list eventsTypes as type>
+                                        <option value="${type.id}">${type.eventTypeTranslations[0].translation}</option>
+                                    </#list>
+                                </select>
 
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Название мероприятия <span
-                                            class="text-danger">*</span></label>
-                                <@spring.formInput "event.name" 'class="form-control" id="name" placeholder="Введите название мероприятия"' />
-                                <@spring.showErrors "<br>" "text-danger small" />
+                                <!-- Формат мероприятия -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="isOffline" class="form-label">Формат мероприятия</label>
+                                        <@spring.formSingleSelect "event.isOffline" {"true": "Офлайн", "false": "Онлайн"} 'class="form-select" id="isOffline"' />
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Тип мероприятия -->
-                            <div class="mb-3">
-                                <#assign typeMap = {}>
-                                <#list eventsTypes as type>
-                                    <#assign typeMap = typeMap + {type.id?string: type.name}>
-                                </#list>
-
-                                <label for="type" class="form-label">Тип мероприятия <span class="text-danger">*</span></label>
-                                <@spring.formSingleSelect "event.type.id" typeMap 'class="form-select" id="type"' />
-                                <@spring.showErrors "<br>" "text-danger small" />
+                            <!-- Даты проведения -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="startDate" class="form-label">Дата и время начала <span class="text-danger">*</span></label>
+                                        <@spring.formInput "event.startDate" 'class="form-control" id="startDate" placeholder="Выберите дату и время начала"' "text" />
+                                        <@spring.showErrors "<br>" "text-danger small" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="endDate" class="form-label">Дата и время окончания</label>
+                                        <@spring.formInput "event.endDate" 'class="form-control" id="endDate" placeholder="Выберите дату и время окончания"' "text" />
+                                        <@spring.showErrors "<br>" "text-danger small" />
+                                        <div class="form-text">Оставьте пустым, если мероприятие в один день</div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Организация -->
-                            <div class="mb-3">
+                            <!-- Организации -->
+                            <div class="mb-4">
                                 <label for="organizations" class="form-label">Организации</label>
                                 <div class="organizations-container">
                                     <#list organizations as org>
@@ -54,38 +74,11 @@
                                 <div class="form-text">Выберите одну или несколько организаций</div>
                             </div>
 
-                            <!-- Даты проведения -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="startDate" class="form-label">Дата начала <span class="text-danger">*</span></label>
-                                        <@spring.formInput "event.startDate",
-                                        'class="form-control" id="startDate"',
-                                        "text" />
-                                        <@spring.showErrors "<br>" "text-danger small" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="endDate" class="form-label">Дата окончания</label>
-                                        <@spring.formInput
-                                        "event.endDate",
-                                        'class="form-control" id="endDate"',
-                                        "text" />
-                                        <@spring.showErrors "<br>" "text-danger small" />
-                                        <div class="form-text">Оставьте пустым, если мероприятие в один день</div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Главное изображение -->
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="mainImage" class="form-label">Главное изображение</label>
-                                <input type="file" name="mainImageMp" id="mainImage" class="form-control"
-                                       accept="image/*">
-                                <div class="form-text">Рекомендуемый размер: 1200x600 пикселей. Максимальный размер: 5
-                                    МБ
-                                </div>
+                                <input type="file" name="mainImageMp" id="mainImage" class="form-control" accept="image/*">
+                                <div class="form-text">Рекомендуемый размер: 1200x600 пикселей. Максимальный размер: 5 МБ</div>
                                 <!-- Превью изображения -->
                                 <div id="imagePreviewContainer" class="mt-3" style="display: none;">
                                     <div class="image-preview-wrapper">
@@ -97,12 +90,67 @@
                                 </div>
                             </div>
 
-                            <!-- Описание мероприятия -->
-                            <div class="mb-3">
-                                <label for="content" class="form-label">Описание мероприятия <span
-                                            class="text-danger">*</span></label>
-                                <@spring.formTextarea "event.content" 'class="form-control" id="content" rows="10" placeholder="Введите подробное описание мероприятия"' />
-                                <@spring.showErrors "<br>" "text-danger small" />
+                            <!-- Языковые вкладки -->
+                            <div class="mb-4">
+                                <label class="form-label">Информация о мероприятии <span class="text-danger">*</span></label>
+
+                                <!-- Навигация по языкам -->
+                                <ul class="nav nav-tabs language-tabs" id="languageTabs" role="tablist">
+                                    <#list languageEnum as lang>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link ${lang?is_first?then('active', '')}"
+                                                    id="tab-${lang.code}"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#content-${lang.code}"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-controls="content-${lang.code}"
+                                                    aria-selected="${lang?is_first?then('true', 'false')}">
+                                                <i class="fas fa-globe me-1"></i>
+                                                ${lang.displayName}
+                                                <span class="language-indicator" id="indicator-${lang.code}"></span>
+                                            </button>
+                                        </li>
+                                    </#list>
+                                </ul>
+
+                                <!-- Содержимое вкладок -->
+                                <div class="tab-content language-content" id="languageTabsContent">
+                                    <#assign translationIndex = 0>
+                                    <#list languageEnum as lang>
+                                        <div class="tab-pane fade ${lang?is_first?then('show active', '')}"
+                                             id="content-${lang.code}"
+                                             role="tabpanel"
+                                             aria-labelledby="tab-${lang.code}">
+
+                                            <div class="language-form-content">
+                                                <!-- Скрытые поля для связи -->
+                                                <@spring.formHiddenInput "event.eventTranslations[${translationIndex}].languageCode"/>
+
+                                                <!-- Название мероприятия -->
+                                                <div class="mb-3">
+                                                    <label for="title-${lang.code}" class="form-label">
+                                                        Название мероприятия (${lang.displayName}) <span class="text-danger">*</span>
+                                                    </label>
+                                                    <@spring.formInput "event.eventTranslations[${translationIndex}].title"
+                                                    'class="form-control title-input" id="title-${lang.code}" placeholder="Введите название мероприятия на ${lang.displayName?lower_case}"' />
+                                                    <@spring.showErrors "<br>" "text-danger small" />
+                                                </div>
+
+                                                <!-- Описание мероприятия -->
+                                                <div class="mb-3">
+                                                    <label for="content-${lang.code}" class="form-label">
+                                                        Описание мероприятия (${lang.displayName}) <span class="text-danger">*</span>
+                                                    </label>
+                                                    <@spring.formTextarea "event.eventTranslations[${translationIndex}].content"
+                                                    'class="form-control content-editor" id="content-${lang.code}" rows="10" placeholder="Введите подробное описание мероприятия на ${lang.displayName?lower_case}"' />
+                                                    <@spring.showErrors "<br>" "text-danger small" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <#assign translationIndex = translationIndex + 1>
+                                    </#list>
+                                </div>
                             </div>
 
                             <!-- Прикрепленные файлы -->
@@ -110,8 +158,7 @@
                                 <label for="attachments" class="form-label">Прикрепленные файлы</label>
                                 <input type="file" name="attachments" id="attachments" class="form-control" multiple>
                                 <div class="form-text">
-                                    Можно загрузить несколько файлов. Поддерживаемые форматы: PDF, DOC, DOCX, XLS, XLSX,
-                                    JPG, PNG.
+                                    Можно загрузить несколько файлов. Поддерживаемые форматы: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.
                                     Максимальный размер одного файла: 10 МБ
                                 </div>
                             </div>
@@ -132,9 +179,9 @@
         </div>
     </div>
 
-    <!-- TinyMCE и скрипты -->
-    <script src="https://cdn.tiny.cloud/1/z66zloybrfzhb552oyl9fmnwcuplxmajqn017ne4zn5zg457/tinymce/6/tinymce.min.js"
-            referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script src="https://cdn.tiny.cloud/1/z66zloybrfzhb552oyl9fmnwcuplxmajqn017ne4zn5zg457/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="/static/js/event-create.js"></script>
 
     <!-- Дополнительные стили -->
@@ -175,17 +222,64 @@
             box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
         }
 
-        .tox-tinymce {
-            border-radius: 6px !important;
-        }
-
-        #organizations {
-            min-height: 120px;
-        }
-
         .form-text {
             font-size: 0.875rem;
             color: #6c757d;
+        }
+
+        /* Языковые вкладки */
+        .language-tabs {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 0;
+        }
+
+        .language-tabs .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            background: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .language-tabs .nav-link:hover {
+            color: #4a90e2;
+            border-bottom-color: rgba(74, 144, 226, 0.3);
+        }
+
+        .language-tabs .nav-link.active {
+            color: #4a90e2;
+            border-bottom-color: #4a90e2;
+            background: none;
+        }
+
+        .language-content {
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .language-form-content {
+            padding: 20px;
+        }
+
+        .language-indicator {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dc3545;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .language-indicator.filled {
+            opacity: 1;
+            background: #28a745;
         }
 
         /* Стили для организаций */
@@ -307,54 +401,9 @@
             background: rgba(220, 53, 69, 1);
             transform: scale(1.1);
         }
+
+        .tox-tinymce {
+            border-radius: 6px !important;
+        }
     </style>
-
-    <script>
-        document.getElementById('mainImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            const previewImage = document.getElementById('imagePreview');
-
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Размер файла не должен превышать 5 МБ');
-                    this.value = '';
-                    previewContainer.style.display = 'none';
-                    return;
-                }
-
-                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('Поддерживаются только изображения (JPG, PNG, GIF, WebP)');
-                    this.value = '';
-                    previewContainer.style.display = 'none';
-                    return;
-                }
-
-                // Создание превью
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewContainer.style.display = 'none';
-            }
-        });
-
-        document.getElementById('removeImage').addEventListener('click', function() {
-            document.getElementById('mainImage').value = '';
-            document.getElementById('imagePreviewContainer').style.display = 'none';
-        });
-
-        document.querySelectorAll('.organization-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const selectedCount = document.querySelectorAll('.organization-checkbox:checked').length;
-                const organizationsContainer = document.querySelector('.organizations-container');
-
-                organizationsContainer.setAttribute('data-selected', selectedCount);
-            });
-        });
-    </script>
 </@layout.layout>

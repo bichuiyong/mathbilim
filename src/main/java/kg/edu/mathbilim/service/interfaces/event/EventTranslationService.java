@@ -5,6 +5,7 @@ import kg.edu.mathbilim.model.event.EventTranslation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 public interface EventTranslationService {
     List<EventTranslationDto> getTranslationsByEventId(Long eventId);
@@ -33,5 +34,5 @@ public interface EventTranslationService {
     boolean existsTranslation(Long eventId, String languageCode);
 
     @Transactional
-    void saveTranslations(Long eventId, List<EventTranslationDto> translations);
+    void saveTranslations(Long eventId, Set<EventTranslationDto> translations);
 }

@@ -1,6 +1,6 @@
-package kg.edu.mathbilim.service.interfaces;
+package kg.edu.mathbilim.service.interfaces.event;
 
-import kg.edu.mathbilim.dto.EventDto;
+import kg.edu.mathbilim.dto.event.EventDto;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

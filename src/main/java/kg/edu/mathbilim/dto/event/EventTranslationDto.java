@@ -12,12 +12,9 @@ public class EventTranslationDto {
 
     Long eventId;
 
-    @NotBlank
     private String languageCode;
 
-    @NotBlank
     private String title;
 
-    @NotBlank
     private String content;
 }

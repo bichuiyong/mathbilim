@@ -1,14 +1,16 @@
-package kg.edu.mathbilim.service.impl;
+package kg.edu.mathbilim.service.impl.event;
 
-import kg.edu.mathbilim.dto.EventDto;
+import kg.edu.mathbilim.dto.event.EventDto;
+import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.EventNotFoundException;
-import kg.edu.mathbilim.mapper.EventMapper;
-import kg.edu.mathbilim.model.Event;
+import kg.edu.mathbilim.mapper.event.EventMapper;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
-import kg.edu.mathbilim.repository.EventRepository;
-import kg.edu.mathbilim.service.interfaces.EventService;
+import kg.edu.mathbilim.repository.event.EventRepository;
+import kg.edu.mathbilim.service.interfaces.event.EventService;
+import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -21,9 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,6 +35,7 @@ import java.util.function.Supplier;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final EventTranslationService eventTranslationService;
 
     private final UserService userService;
     private final FileService fileService;
@@ -52,11 +57,13 @@ public class EventServiceImpl implements EventService {
         if (query == null || query.isEmpty()) {
             return getPage(() -> eventRepository.findAll(pageable));
         }
-        return getPage(() -> eventRepository.findByQuery(query, pageable));
+        return getPage(() -> eventRepository.findAll(pageable));
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
+        eventTranslationService.deleteAllTranslationsByEventId(id);
         eventRepository.deleteById(id);
         log.info("Deleted event: {}", id);
     }
@@ -70,11 +77,20 @@ public class EventServiceImpl implements EventService {
         Event event = eventMapper.toEntity(eventDto);
         Event savedEvent = eventRepository.save(event);
 
+        Set<EventTranslationDto> filledTranslations = eventDto.getEventTranslations().stream()
+                .filter(translation ->
+                        translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&
+                                translation.getContent() != null && !translation.getContent().trim().isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+
+        eventTranslationService.saveTranslations(savedEvent.getId(), filledTranslations);
+
+
         if (mainImage != null && !mainImage.isEmpty()) {
             File mainImageFile = fileService.uploadFileReturnEntity(
                     mainImage,
-                    "events/" + savedEvent.getId() + "/main",
-                    userService.getAuthUserEntity()
+                    "events/" + savedEvent.getId() + "/main"
             );
             savedEvent.setMainImage(mainImageFile);
             log.info("Uploaded main image for event {}", savedEvent.getId());
@@ -83,8 +99,7 @@ public class EventServiceImpl implements EventService {
         if (attachments != null && attachments.length > 0) {
             Set<File> uploadedFiles = fileService.uploadFilesForEvent(
                     attachments,
-                    savedEvent,
-                    userService.getAuthUserEntity()
+                    savedEvent
             );
             if (!uploadedFiles.isEmpty()) {
                 savedEvent.setFiles(uploadedFiles);
@@ -100,11 +115,14 @@ public class EventServiceImpl implements EventService {
 
         Event finalEvent = eventRepository.saveAndFlush(savedEvent);
         EventDto result = eventMapper.toDto(finalEvent);
-        log.info("Created event: {}", finalEvent.getName());
+
+        List<EventTranslationDto> savedTranslations = eventTranslationService.getTranslationsByEventId(finalEvent.getId());
+        result.setEventTranslations(Set.copyOf(savedTranslations));
+
+        log.info("Created event with {} translations", savedTranslations.size());
 
         return result;
     }
-
 
     private Page<EventDto> getPage(Supplier<Page<Event>> supplier, String notFoundMessage) {
         Page<Event> page = supplier.get();

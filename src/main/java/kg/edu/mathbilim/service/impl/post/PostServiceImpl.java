@@ -1,15 +1,15 @@
-package kg.edu.mathbilim.service.impl;
+package kg.edu.mathbilim.service.impl.post;
 
-import kg.edu.mathbilim.dto.PostDto;
+import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
-import kg.edu.mathbilim.mapper.PostMapper;
+import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.Post;
-import kg.edu.mathbilim.repository.PostRepository;
+import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
-import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,8 @@ public class PostServiceImpl implements PostService {
         if (query == null || query.isEmpty()) {
             return getPage(() -> postRepository.findAll(pageable));
         }
-        return getPage(() -> postRepository.findByQuery(query, pageable));
+//        return getPage(() -> postRepository.findByQuery(query, pageable));
+        return getPage(() -> postRepository.findAll(pageable));
     }
 
     @Override
@@ -67,8 +68,7 @@ public class PostServiceImpl implements PostService {
         if (attachments != null && attachments.length > 0) {
             Set<File> uploadedFiles = fileService.uploadFilesForPost(
                     attachments,
-                    savedPost,
-                    userService.getAuthUserEntity()
+                    savedPost
             );
             if (!uploadedFiles.isEmpty()) {
                 savedPost.setFiles(uploadedFiles);
