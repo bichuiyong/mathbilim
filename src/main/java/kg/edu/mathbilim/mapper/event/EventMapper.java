@@ -1,7 +1,7 @@
-package kg.edu.mathbilim.mapper;
+package kg.edu.mathbilim.mapper.event;
 
-import kg.edu.mathbilim.dto.EventDto;
-import kg.edu.mathbilim.model.Event;
+import kg.edu.mathbilim.dto.event.EventDto;
+import kg.edu.mathbilim.model.event.Event;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
