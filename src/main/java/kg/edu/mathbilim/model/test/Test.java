@@ -2,9 +2,9 @@ package kg.edu.mathbilim.model.test;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.model.reference.category.Category;
 import lombok.*;
@@ -31,11 +31,6 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "s3_link", nullable = false)
-    private String s3Link;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -73,5 +68,10 @@ public class Test {
 
     @OneToMany(mappedBy = "test")
     private Set<TestChoice> testChoices = new LinkedHashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "file_id")
+    private File file;
 
 }

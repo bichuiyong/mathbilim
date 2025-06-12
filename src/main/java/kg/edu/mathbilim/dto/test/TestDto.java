@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto.test;
 
+import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.reference.category.CategoryDto;
 import kg.edu.mathbilim.enums.TestStatus;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class TestDto {
     private Long id;
 
-    private String s3Link;
+    private FileDto file;
 
     private CategoryDto category;
 
