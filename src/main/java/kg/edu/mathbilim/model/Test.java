@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
-import kg.edu.mathbilim.model.reference.Category;
+import kg.edu.mathbilim.model.reference.category.Category;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;

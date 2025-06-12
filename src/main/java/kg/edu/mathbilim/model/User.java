@@ -3,7 +3,7 @@ package kg.edu.mathbilim.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.reference.UserType;
+import kg.edu.mathbilim.model.reference.user_type.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

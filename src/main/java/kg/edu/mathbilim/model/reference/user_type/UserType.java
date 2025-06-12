@@ -1,7 +1,11 @@
-package kg.edu.mathbilim.model.reference;
+package kg.edu.mathbilim.model.reference.user_type;
 
 import jakarta.persistence.*;
+import kg.edu.mathbilim.model.User;
 import lombok.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,8 +22,9 @@ public class UserType {
     @Column(nullable = false)
     private String name;
 
-    @Override
-    public String toString() {
-        return name;
-    }
+    @OneToMany(mappedBy = "userType")
+    private Set<UserTypeTranslation> userTypeTranslations = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "type")
+    private Set<User> users = new LinkedHashSet<>();
 }
