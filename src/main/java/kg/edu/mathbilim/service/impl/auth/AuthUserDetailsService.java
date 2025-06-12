@@ -4,7 +4,7 @@ import kg.edu.mathbilim.model.reference.Authority;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
-import kg.edu.mathbilim.service.interfaces.reference.RoleService;
+import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

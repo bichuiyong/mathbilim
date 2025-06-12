@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.service.interfaces.reference;
+package kg.edu.mathbilim.service.interfaces.reference.role;
 
 import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.model.reference.Role;

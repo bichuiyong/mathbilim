@@ -30,7 +30,7 @@ public class UserTypeController {
             return "redirect:/";
         }
 
-        var userTypes = userTypeService.getAll();
+        var userTypes = userTypeService.getAllUserTypes();
         model.addAttribute("userTypes", userTypes);
         model.addAttribute("user", user);
 

@@ -7,12 +7,12 @@ import kg.edu.mathbilim.dto.UserEditByAdminDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
-import kg.edu.mathbilim.model.reference.UserType;
+import kg.edu.mathbilim.model.reference.user_type.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.repository.UserRepository;
-import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
-import kg.edu.mathbilim.service.interfaces.reference.RoleService;
+import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.CommonUtilities;
 import kg.edu.mathbilim.util.PaginationUtil;
@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("User type already set for user: " + email);
         }
 
-        UserType userType = userTypeService.findById(userTypeId);
+        UserType userType = userTypeService.getUserTypeEntity(userTypeId);
 
         user.setType(userType);
         user.setUpdatedAt(Instant.now());
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
         user.setRole(roleService.getRoleByName(userDto.getRole().getName().toUpperCase()));
-        user.setType(userTypeService.findById(userDto.getType().getId()));
+        user.setType(userTypeService.getUserTypeEntity(userDto.getType().getId()));
         userRepository.saveAndFlush(user);
     }
 

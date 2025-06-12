@@ -51,7 +51,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("types", userTypeService.getAll());
+        model.addAttribute("types", userTypeService.getAllUserTypes());
         return "auth/register";
     }
 
@@ -61,7 +61,7 @@ public class AuthController {
                                       Model model, HttpServletRequest request) {
 
         if (result.hasErrors()) {
-            model.addAttribute("types", userTypeService.getAll());
+            model.addAttribute("types", userTypeService.getAllUserTypes());
             model.addAttribute("errors", result);
             return "auth/register";
         }
@@ -70,7 +70,7 @@ public class AuthController {
             return "redirect:/auth/registration-success";
         } catch (Exception e) {
             model.addAttribute("error", "Ошибка при регистрации: " + e.getMessage());
-            model.addAttribute("types", userTypeService.getAll());
+            model.addAttribute("types", userTypeService.getAllUserTypes());
             return "auth/register";
         }
     }

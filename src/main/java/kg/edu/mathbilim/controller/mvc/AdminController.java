@@ -20,7 +20,7 @@ public class AdminController {
     public String index(Model model) {
         model.addAttribute("userDto", new UserDto());
         model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("types", userTypeService.getAll());
+        model.addAttribute("types", userTypeService.getAllUserTypes());
         return "admin/admin";
     }
 }
