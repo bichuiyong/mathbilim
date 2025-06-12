@@ -1,7 +1,7 @@
-package kg.edu.mathbilim.mapper.reference;
+package kg.edu.mathbilim.mapper.reference.post_type;
 
-import kg.edu.mathbilim.dto.reference.PostTypeDto;
-import kg.edu.mathbilim.model.reference.PostType;
+import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
+import kg.edu.mathbilim.model.reference.post_type.PostType;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

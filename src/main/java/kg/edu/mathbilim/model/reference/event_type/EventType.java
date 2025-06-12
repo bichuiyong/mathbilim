@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.model.reference.event_type;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.Event;
 import lombok.*;
 
 import java.util.LinkedHashSet;
@@ -21,8 +20,4 @@ public class EventType {
 
     @OneToMany(mappedBy = "eventType")
     private Set<EventTypeTranslation> eventTypeTranslations = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "type")
-    private Set<Event> events = new LinkedHashSet<>();
-
 }
