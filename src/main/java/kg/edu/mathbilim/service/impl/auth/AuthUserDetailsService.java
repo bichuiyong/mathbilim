@@ -103,7 +103,6 @@ public class AuthUserDetailsService implements UserDetailsService {
                     .password(passwordEncoder.encode("qwerty"))
                     .role(role)
                     .isEmailVerified(true)
-                    .preferredLanguage("ru")
                     .createdAt(Instant.now())
                     .updatedAt(Instant.now())
                     .enabled(Boolean.TRUE)

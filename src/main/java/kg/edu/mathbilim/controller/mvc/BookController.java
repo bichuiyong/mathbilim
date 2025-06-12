@@ -65,7 +65,7 @@ public class BookController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto user = userService.getUserByEmail(email);
 
-        book.setFile(fileService.uploadFile(attachments, context, userMapper.toEntity(user)));
+        book.setFile(fileService.uploadFile(attachments, context));
         book.setUser(user);
         bookService.createBook(book, keys, values);
         return "redirect:/books";
@@ -93,13 +93,13 @@ public class BookController {
 
     @PostMapping("{id}/update")
     public String updateBook(@PathVariable long id,
-                              @ModelAttribute("book") @Valid BookDto book,
-                              @RequestParam MultipartFile attachments,
-                              @RequestParam(value = "context", defaultValue = "general") String context,
-                              @RequestParam("metadataKeys") List<String> keys,
-                              @RequestParam("metadataValues") List<String> values,
-                              BindingResult bindingResult,
-                              Model model) {
+                             @ModelAttribute("book") @Valid BookDto book,
+                             @RequestParam MultipartFile attachments,
+                             @RequestParam(value = "context", defaultValue = "general") String context,
+                             @RequestParam("metadataKeys") List<String> keys,
+                             @RequestParam("metadataValues") List<String> values,
+                             BindingResult bindingResult,
+                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
             return "books/update-book";
@@ -108,7 +108,7 @@ public class BookController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto user = userService.getUserByEmail(email);
 
-        book.setFile(fileService.uploadFile(attachments, context, userMapper.toEntity(user)));
+        book.setFile(fileService.uploadFile(attachments, context));
         book.setUser(user);
         book.setId(id);
         bookService.createBook(book, keys, values);
