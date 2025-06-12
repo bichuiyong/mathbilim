@@ -1,7 +1,9 @@
-package kg.edu.mathbilim.dto;
+package kg.edu.mathbilim.dto.post;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.event.EventTranslationDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
@@ -21,16 +23,14 @@ public class PostDto {
     @NotNull
     private PostTypeDto type;
 
-    @NotBlank
-    private String title;
+    @NotNull
+    private UserDto user;
 
-    private FileDto mainImage;
+    @Builder.Default
+    private UserDto approvedBy = null;
 
-    @NotBlank
-    private String slug;
-
-    @NotBlank
-    private String content;
+    @Builder.Default
+    private ContentStatus status = ContentStatus.DRAFT;
 
     @Builder.Default
     private Instant createdAt = Instant.now();
@@ -44,14 +44,10 @@ public class PostDto {
     @Builder.Default
     private Long shareCount = 0L;
 
-    @Builder.Default
-    private ContentStatus status = ContentStatus.DRAFT;
-
-    @NotNull
-    private UserDto user;
-
-    @Builder.Default
-    private UserDto approvedBy = null;
+    private FileDto mainImage;
 
     Set<FileDto> files = new LinkedHashSet<>();
+
+    private Set<PostTranslationDto> postTranslations;
+
 }

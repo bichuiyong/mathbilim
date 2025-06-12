@@ -1,10 +1,10 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.model.reference.post_type.PostType;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -34,22 +35,17 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "main_image_id")
-    private File mainImage;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Size(max = 500)
-    @NotNull
-    @Column(name = "title", nullable = false, length = 500)
-    private String title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
 
-    @Size(max = 500)
-    @NotNull
-    @Column(name = "slug", nullable = false, length = 500)
-    private String slug;
-
-    @NotNull
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
+    @Convert(converter = ContentStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
+    private ContentStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -67,19 +63,10 @@ public class Post {
     @Column(name = "share_count")
     private Long shareCount;
 
-    @Convert(converter = ContentStatusConverter.class)
-    @Column(name = "status_id", nullable = false)
-    private ContentStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "approved_by")
-    private User approvedBy;
+    @JoinColumn(name = "main_image_id")
+    private File mainImage;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -89,4 +76,8 @@ public class Post {
     )
     @Builder.Default
     private Set<File> files = new HashSet<>();
+
+    @OneToMany(mappedBy = "post")
+    private Set<PostTranslation> postTranslations = new LinkedHashSet<>();
+
 }
