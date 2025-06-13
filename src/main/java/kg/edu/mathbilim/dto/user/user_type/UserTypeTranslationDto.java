@@ -1,19 +1,14 @@
 package kg.edu.mathbilim.dto.user.user_type;
 
-import jakarta.validation.constraints.NotBlank;
+import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserTypeTranslationDto {
+@SuperBuilder
+public class UserTypeTranslationDto extends TypeTranslationDto {
     private Integer userTypeId;
-
-    @NotBlank
-    private String languageCode;
-
-    @NotBlank
-    private String translation;
 }

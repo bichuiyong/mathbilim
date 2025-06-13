@@ -5,6 +5,7 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.post.post_type.PostTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
 
 import java.time.Instant;
@@ -22,7 +23,6 @@ public class PostDto {
     @NotNull
     private PostTypeDto type;
 
-    @NotNull
     private UserDto user;
 
     @Builder.Default
@@ -47,6 +47,7 @@ public class PostDto {
 
     List<FileDto> files = new ArrayList<>();
 
+    @AtLeastOneTranslationRequired
     private List<PostTranslationDto> postTranslations;
 
 }

@@ -1,19 +1,14 @@
 package kg.edu.mathbilim.dto.post.post_type;
 
-import jakarta.validation.constraints.NotBlank;
+import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class PostTypeTranslationDto {
+@SuperBuilder
+public class PostTypeTranslationDto extends TypeTranslationDto {
     private Integer postTypeId;
-
-    @NotBlank
-    private String languageCode;
-
-    @NotBlank
-    private String translation;
 }

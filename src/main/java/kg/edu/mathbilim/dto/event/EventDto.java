@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslation;
+import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -61,6 +61,6 @@ public class EventDto {
     @Builder.Default
     private List<FileDto> files = new ArrayList<>();
 
-    @AtLeastOneTranslation
+    @AtLeastOneTranslationRequired
     private List<EventTranslationDto> eventTranslations;
 }
