@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class EventTypeServiceImpl implements EventTypeService {
         return eventTypeRepository.findAll().stream()
                 .map(eventType -> {
                     EventTypeDto dto = eventTypeMapper.toDto(eventType);
-                    dto.setEventTypeTranslations(Set.of(eventTypeTranslationService.getTranslation(eventType.getId(), languageCode)));
+                    dto .setEventTypeTranslations(List.of(eventTypeTranslationService.getTranslation(eventType.getId(), languageCode)));
                     return dto;
                 })
                 .toList();
@@ -61,14 +59,14 @@ public class EventTypeServiceImpl implements EventTypeService {
         EventTypeDto savedDto = eventTypeMapper.toDto(savedEventType);
 
         if (eventTypeDto.getEventTypeTranslations() != null && !eventTypeDto.getEventTypeTranslations().isEmpty()) {
-            Set<EventTypeTranslationDto> savedTranslations = eventTypeDto
+            List<EventTypeTranslationDto> savedTranslations = eventTypeDto
                     .getEventTypeTranslations()
                     .stream()
                     .map(translation -> {
                         translation.setEventTypeId(savedEventType.getId());
                         return eventTypeTranslationService.createTranslation(translation);
                     })
-                    .collect(Collectors.toSet());
+                    .toList();
             savedDto.setEventTypeTranslations(savedTranslations);
         }
 
@@ -83,14 +81,14 @@ public class EventTypeServiceImpl implements EventTypeService {
         if (eventTypeDto.getEventTypeTranslations() != null) {
             eventTypeTranslationService.deleteAllTranslationsByEventTypeId(id);
 
-            Set<EventTypeTranslationDto> savedTranslations =
+            List<EventTypeTranslationDto> savedTranslations =
                     eventTypeDto.getEventTypeTranslations()
                             .stream()
                             .map(translation -> {
                                 translation.setEventTypeId(id);
                                 return eventTypeTranslationService.createTranslation(translation);
                             })
-                            .collect(Collectors.toSet());
+                            .toList();
 
             dto.setEventTypeTranslations(savedTranslations);
             return dto;

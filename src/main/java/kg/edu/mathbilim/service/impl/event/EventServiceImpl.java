@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl.event;
 
+import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
@@ -23,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -70,7 +69,12 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventDto create(EventDto eventDto, MultipartFile mainImage, MultipartFile[] attachments, List<Long> organizationIds) {
+    public EventDto create(CreateEventDto createEventDto) {
+        MultipartFile[] attachments = createEventDto.getAttachments() == null ? new MultipartFile[0] : createEventDto.getAttachments();
+        MultipartFile mainImage = createEventDto.getImage() != null && createEventDto.getImage().isEmpty() ? null : createEventDto.getImage();
+        List<Long> organizationsIds = createEventDto.getOrganizationIds();
+        EventDto eventDto = createEventDto.getEvent();
+
         eventDto.setUser(userService.getAuthUser());
         eventDto.setStatus(ContentStatus.PENDING_REVIEW);
 
@@ -78,12 +82,12 @@ public class EventServiceImpl implements EventService {
         Event savedEvent = eventRepository.save(event);
         Long savedEventId = savedEvent.getId();
 
-        Set<EventTranslationDto> translations = eventDto.getEventTranslations();
+        List<EventTranslationDto> translations = eventDto.getEventTranslations();
         setEventTranslations(translations, savedEventId);
 
         uploadMainImage(mainImage, savedEvent);
         uploadFilesForEvent(attachments, savedEvent);
-        setEventOrganizations(organizationIds, savedEvent);
+        setEventOrganizations(organizationsIds, savedEvent);
 
         eventRepository.saveAndFlush(savedEvent);
 
@@ -108,13 +112,13 @@ public class EventServiceImpl implements EventService {
         boolean isNotEmpty = organizationIds != null && !organizationIds.isEmpty();
 
         if (isNotEmpty) {
-            Set<Organization> organizations = organizationService.addEventToOrganizations(organizationIds, event);
+            List<Organization> organizations = organizationService.addEventToOrganizations(organizationIds, event);
             event.setOrganizations(organizations);
             log.info("Added event {} to {} organizations", event.getId(), organizations.size());
         }
     }
 
-    private void setEventTranslations(Set<EventTranslationDto> translations, Long eventId) {
+    private void setEventTranslations(List<EventTranslationDto> translations, Long eventId) {
         Set<EventTranslationDto> filledTranslations = translations.stream()
                 .filter(translation ->
                         translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&
@@ -138,7 +142,7 @@ public class EventServiceImpl implements EventService {
 
     private void uploadFilesForEvent(MultipartFile[] attachments, Event event) {
         if (attachments != null && attachments.length > 0) {
-            Set<File> uploadedFiles = fileService.uploadFilesForEvent(
+            List<File> uploadedFiles = fileService.uploadFilesForEvent(
                     attachments,
                     event
             );

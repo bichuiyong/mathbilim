@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.Language;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -41,11 +41,10 @@ public class EventController {
 
     @GetMapping("create")
     public String createEvent(Model model) {
-        model.addAttribute("user", userService.getAuthUser());
-
         EventDto eventDto = new EventDto();
+        eventDto.setUser(userService.getAuthUser());
 
-        Set<EventTranslationDto> translations = new LinkedHashSet<>();
+        List<EventTranslationDto> translations = new ArrayList<>();
         for (Language lang : Language.values()) {
             translations.add(EventTranslationDto.builder()
                     .languageCode(lang.getCode())
@@ -55,7 +54,11 @@ public class EventController {
         }
         eventDto.setEventTranslations(translations);
 
-        model.addAttribute("event", eventDto);
+        CreateEventDto createEventDto = CreateEventDto.builder()
+                .event(eventDto)
+                .build();
+
+        model.addAttribute("createEventDto", createEventDto);
         model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
         model.addAttribute("organizations", organizationService.getOrganizations(null));
         model.addAttribute("languages", Language.getLanguagesMap());
@@ -65,16 +68,13 @@ public class EventController {
     }
 
     @PostMapping("create")
-    public String createEvent(@ModelAttribute("event") @Valid EventDto event,
-                              @RequestParam(required = false) MultipartFile mainImageMp,
-                              @RequestParam(required = false) MultipartFile[] attachments,
-                              @RequestParam(required = false) Long[] organizationIds,
+    public String createEvent(@ModelAttribute("createEventDto") @Valid CreateEventDto createEventDto,
                               BindingResult bindingResult,
                               Model model) {
 
+        createEventDto.getEvent().setUser(userService.getAuthUser());
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", userService.getAuthUser());
             model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
             model.addAttribute("organizations", organizationService.getOrganizations(null));
             model.addAttribute("languages", Language.getLanguagesMap());
@@ -82,13 +82,8 @@ public class EventController {
             return "events/event-create";
         }
 
-        if (attachments == null) attachments = new MultipartFile[0];
-        if (mainImageMp != null && mainImageMp.isEmpty()) mainImageMp = null;
-
-        List<Long> orgIds = organizationIds != null ? Arrays.asList(organizationIds) : null;
-
-        eventService.create(event, mainImageMp, attachments, orgIds);
-        return "redirect:/events";
+        eventService.create(createEventDto);
+        return "redirect:/events?success=created";
     }
 
     @GetMapping("olymps")
