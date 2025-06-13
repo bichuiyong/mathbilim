@@ -26,7 +26,6 @@ public class BookController {
     private final BookService bookService;
     private final CategoryService categoryService;
     private final FileService fileService;
-    private final UserMapper userMapper;
     private final UserService userService;
 
     @GetMapping

@@ -3,10 +3,9 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditDto;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.i18n.LocaleContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +21,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ProfileController {
     private final UserService userService;
-    private final UserTypeService userTypeService;
+    private final TranslationService translationService;
 
 
     @GetMapping
@@ -41,7 +40,7 @@ public class ProfileController {
                 .surname(userDto.getSurname())
                 .typeId(userDto.getType().getId())
                 .build();
-        model.addAttribute("types", userTypeService.getUserTypesByLanguage("ru"));
+        model.addAttribute("types", translationService.getUserTypesByLanguage());
         model.addAttribute("userEditDto", userEditDto);
         return "profile/profile-edit";
     }
@@ -50,7 +49,7 @@ public class ProfileController {
     public String profileEdit(@Valid @ModelAttribute(name = "userEditDto") UserEditDto userEditDto, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("userEditDto", userEditDto);
-            model.addAttribute("types", userTypeService.getUserTypesByLanguage("ru"));
+            model.addAttribute("types", translationService.getUserTypesByLanguage());
             model.addAttribute("errors", bindingResult);
             return "profile/profile-edit";
         }
