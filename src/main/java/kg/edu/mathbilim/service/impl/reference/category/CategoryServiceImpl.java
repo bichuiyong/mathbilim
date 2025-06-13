@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll().stream()
                 .map(category -> {
                     CategoryDto dto = categoryMapper.toDto(category);
-                    dto.setCategoryTranslations(Set.of(categoryTranslationService.getTranslation(category.getId(), languageCode)));
+                    dto.setCategoryTranslations(List.of(categoryTranslationService.getTranslation(category.getId(), languageCode)));
                     return dto;
                 })
                 .toList();
@@ -61,14 +59,14 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDto savedDto = categoryMapper.toDto(savedCategory);
 
         if (categoryDto.getCategoryTranslations() != null && !categoryDto.getCategoryTranslations().isEmpty()) {
-            Set<CategoryTranslationDto> savedTranslations = categoryDto
+            List<CategoryTranslationDto> savedTranslations = categoryDto
                     .getCategoryTranslations()
                     .stream()
                     .map(translation -> {
                         translation.setCategoryId(savedCategory.getId());
                         return categoryTranslationService.createTranslation(translation);
                     })
-                    .collect(Collectors.toSet());
+                    .toList();
             savedDto.setCategoryTranslations(savedTranslations);
         }
 
@@ -83,14 +81,14 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryDto.getCategoryTranslations() != null) {
             categoryTranslationService.deleteAllTranslationsByCategoryId(id);
 
-            Set<CategoryTranslationDto> savedTranslations =
+            List<CategoryTranslationDto> savedTranslations =
                     categoryDto.getCategoryTranslations()
                             .stream()
                             .map(translation -> {
                                 translation.setCategoryId(id);
                                 return categoryTranslationService.createTranslation(translation);
                             })
-                            .collect(Collectors.toSet());
+                            .toList();
 
             dto.setCategoryTranslations(savedTranslations);
             return dto;

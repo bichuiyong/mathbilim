@@ -1,23 +1,15 @@
 package kg.edu.mathbilim.dto.post;
 
-import jakarta.validation.constraints.NotBlank;
+import kg.edu.mathbilim.dto.translations.ContentTranslationDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class PostTranslationDto {
+@SuperBuilder
+public class PostTranslationDto extends ContentTranslationDto {
 
     Long postId;
-
-    @NotBlank
-    private String languageCode;
-
-    @NotBlank
-    private String title;
-
-    @NotBlank
-    private String content;
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.model.reference.category.Category;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -15,9 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -67,7 +65,7 @@ public class Test {
     private User user;
 
     @OneToMany(mappedBy = "test")
-    private Set<TestChoice> testChoices = new LinkedHashSet<>();
+    private List<TestChoice> testChoices = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)

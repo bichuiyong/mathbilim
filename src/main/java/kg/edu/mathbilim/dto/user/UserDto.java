@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.reference.RoleDto;
-import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
+import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
 import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
 
