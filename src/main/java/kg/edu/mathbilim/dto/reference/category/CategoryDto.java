@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto.reference.category;
 
+import kg.edu.mathbilim.validation.annotation.AllTranslationsRequired;
 import lombok.*;
 
 import java.util.List;
@@ -12,5 +13,6 @@ import java.util.List;
 public class CategoryDto {
     private Integer id;
 
+    @AllTranslationsRequired
     private List<CategoryTranslationDto> categoryTranslations;
 }
