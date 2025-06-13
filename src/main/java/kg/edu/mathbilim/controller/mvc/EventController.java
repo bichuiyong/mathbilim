@@ -1,9 +1,11 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.EventDto;
-import kg.edu.mathbilim.service.interfaces.EventService;
-import kg.edu.mathbilim.service.interfaces.reference.EventTypeService;
+import kg.edu.mathbilim.dto.event.EventDto;
+import kg.edu.mathbilim.dto.event.EventTranslationDto;
+import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.service.interfaces.event.EventService;
+import kg.edu.mathbilim.service.interfaces.reference.event_type.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller("mvcEvent")
 @RequestMapping("events")
@@ -34,15 +35,32 @@ public class EventController {
     public String eventDetail(@PathVariable Long id, Model model) {
         EventDto event = eventService.getById(id);
         model.addAttribute("event", event);
+        model.addAttribute("languageEnum", Language.values());
         return "events/event-details";
     }
 
     @GetMapping("create")
     public String createEvent(Model model) {
         model.addAttribute("user", userService.getAuthUser());
-        model.addAttribute("event", new EventDto());
-        model.addAttribute("eventsTypes", eventTypeService.getAllEventTypes());
+
+        EventDto eventDto = new EventDto();
+
+        Set<EventTranslationDto> translations = new LinkedHashSet<>();
+        for (Language lang : Language.values()) {
+            translations.add(EventTranslationDto.builder()
+                    .languageCode(lang.getCode())
+                    .title("")
+                    .content("")
+                    .build());
+        }
+        eventDto.setEventTranslations(translations);
+
+        model.addAttribute("event", eventDto);
+        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
         model.addAttribute("organizations", organizationService.getOrganizations(null));
+        model.addAttribute("languages", Language.getLanguagesMap());
+        model.addAttribute("languageEnum", Language.values());
+
         return "events/event-create";
     }
 
@@ -54,10 +72,13 @@ public class EventController {
                               @RequestParam(required = false) Long[] organizationIds,
                               Model model) {
 
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", userService.getAuthUser());
-            model.addAttribute("eventsTypes", eventTypeService.getAllEventTypes());
+            model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
             model.addAttribute("organizations", organizationService.getOrganizations(null));
+            model.addAttribute("languages", Language.getLanguagesMap());
+            model.addAttribute("languageEnum", Language.values());
             return "events/event-create";
         }
 

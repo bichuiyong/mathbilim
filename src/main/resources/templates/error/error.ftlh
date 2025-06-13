@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as layout>
-
 <@layout.layout>
+    <link rel="stylesheet" href="/static/scss/main.css">
     <div class="container py-5">
         <div class="card shadow-sm mx-auto" style="max-width: 720px;">
             <div class="card-header bg-danger text-white">

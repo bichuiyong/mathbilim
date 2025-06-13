@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.PostDto;
-import kg.edu.mathbilim.service.interfaces.PostService;
+import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.service.interfaces.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

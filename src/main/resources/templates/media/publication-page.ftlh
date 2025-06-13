@@ -4,7 +4,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.css" rel="stylesheet">
 
 
-    <div class="container py-4">
+    <div class="container py-4" style="margin-bottom: 250px; margin-top: 50px">
         <div class="row">
             <aside class="col-md-3 mb-3">
                 <div class="bg-white p-3 rounded shadow-sm sidebar">

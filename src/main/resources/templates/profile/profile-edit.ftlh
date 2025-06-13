@@ -52,6 +52,24 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="type" class="form-label">Тип аккаунта</label>
+                                    <div class="account-type-select">
+                                        <select class="account-type-dropdown" id="type" name="typeId">
+                                            <#list types as type>
+                                                <option value="${type.id}" <#if userEditDto.typeId == type.id>selected</#if>>
+                                                    ${type.name}
+                                                </option>
+                                            </#list>
+                                        </select>
+                                        <i class="bi bi-chevron-down dropdown-icon"></i>
+                                    </div>
+                                    <#if errors?? && errors.hasFieldErrors("typeId")>
+                                        <div class="error">${errors.getFieldError("typeId").defaultMessage}</div>
+                                    </#if>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">

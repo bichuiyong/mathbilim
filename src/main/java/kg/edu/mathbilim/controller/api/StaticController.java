@@ -1,14 +1,14 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.reference.CategoryDto;
-import kg.edu.mathbilim.dto.reference.EventTypeDto;
-import kg.edu.mathbilim.dto.reference.PostTypeDto;
+import kg.edu.mathbilim.dto.reference.category.CategoryDto;
+import kg.edu.mathbilim.dto.reference.event_type.EventTypeDto;
+import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
+import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
 import kg.edu.mathbilim.enums.*;
-import kg.edu.mathbilim.model.reference.UserType;
-import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
-import kg.edu.mathbilim.service.interfaces.reference.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.reference.PostTypeService;
-import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.category.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.event_type.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.post_type.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +42,8 @@ public class StaticController {
     }
 
     @GetMapping("users")
-    public ResponseEntity<List<UserType>> getAllUserTypes() {
-        return ResponseEntity.ofNullable(userTypeService.getAll());
+    public ResponseEntity<List<UserTypeDto>> getAllUserTypes() {
+        return ResponseEntity.ofNullable(userTypeService.getAllUserTypes());
     }
 
     @GetMapping("events")

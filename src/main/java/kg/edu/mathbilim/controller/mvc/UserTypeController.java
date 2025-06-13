@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class UserTypeController {
             return "redirect:/";
         }
 
-        var userTypes = userTypeService.getAll();
+        var userTypes = userTypeService.getAllUserTypes();
         model.addAttribute("userTypes", userTypes);
         model.addAttribute("user", user);
 
