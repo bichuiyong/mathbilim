@@ -2,15 +2,17 @@ package kg.edu.mathbilim.dto.post;
 
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,9 +23,8 @@ public class PostDto {
     private Long id;
 
     @NotNull
-    private PostTypeDto type;
+    private Long typeId;
 
-    @NotNull
     private UserDto user;
 
     @Builder.Default
@@ -46,8 +47,19 @@ public class PostDto {
 
     private FileDto mainImage;
 
-    Set<FileDto> files = new LinkedHashSet<>();
+    List<FileDto> files = new ArrayList<>();
 
-    private Set<PostTranslationDto> postTranslations;
+    @AtLeastOneTranslationRequired
+    @Builder.Default
+    private List<PostTranslationDto> postTranslations = createDefaultTranslations();
 
+    private static List<PostTranslationDto> createDefaultTranslations() {
+        return Arrays.stream(Language.values())
+                .map(lang -> PostTranslationDto.builder()
+                        .languageCode(lang.getCode())
+                        .title("")
+                        .content("")
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

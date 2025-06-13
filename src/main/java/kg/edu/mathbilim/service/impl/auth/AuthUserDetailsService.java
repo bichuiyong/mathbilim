@@ -2,7 +2,7 @@ package kg.edu.mathbilim.service.impl.auth;
 
 import kg.edu.mathbilim.model.reference.Authority;
 import kg.edu.mathbilim.model.reference.Role;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import lombok.RequiredArgsConstructor;

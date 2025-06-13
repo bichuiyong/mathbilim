@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.mapper;
 
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -1,159 +1,178 @@
-<#import "../layout.ftlh" as main>
 <#import "/spring.ftl" as spring>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать пост</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .translation-tab {
+            display: none;
+        }
+        .translation-tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Создание поста</h2>
+    <form action="/posts/create" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 
-<@main.layout>
-    <link rel="stylesheet" href="/static/css/post-create.css">
+        <#if bindingResult?? && bindingResult.hasErrors()>
+            <div class="alert alert-danger">
+                <@spring.bind "createPostDto"/>
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
+            </div>
+        </#if>
 
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-10 col-xl-8">
-                <div class="post-create-card">
-                    <div class="post-header">
-                        <div class="icon">
-                            <i class="fas fa-edit"></i>
-                        </div>
-                        <h2>Создание поста</h2>
-                        <p>Заполните информацию для создания нового поста</p>
-                    </div>
-
-                    <form action="/posts/create" method="post" enctype="multipart/form-data" id="postForm">
-                        <@main.csrf/>
-                        <@spring.formHiddenInput "post.user.id"/>
-
-                        <div class="form-grid">
-                            <!-- Название поста -->
-                            <div class="form-group">
-                                <label for="title" class="form-label">
-                                    <i class="fas fa-heading me-2 text-primary"></i>
-                                    Название поста
-                                </label>
-                                <@spring.formInput
-                                "post.title"
-                                'type="text" id="title" class="form-control" placeholder="Введите название поста" maxlength="500"'
-                                />
-                                <@spring.showErrors "<br>" "error text-danger"/>
-                            </div>
-
-                            <!-- Тип поста -->
-                            <div class="form-group">
-                                <label for="type.id" class="form-label">
-                                    <i class="fas fa-tags me-2 text-primary"></i>
-                                    Тип поста
-                                </label>
-
-                                <#assign typeMap = {}>
-                                <#list postTypes as postType>
-                                    <#assign typeMap = typeMap + {postType.id?string: postType.name}>
-                                </#list>
-
-                                <@spring.formSingleSelect
-                                "post.type.id",
-                                typeMap,
-                                'class="form-control" id="typeId"'
-                                />
-                                <@spring.showErrors "<br>" "error text-danger"/>
-                            </div>
-                        </div>
-
-                        <!-- URL slug -->
-                        <div class="form-group">
-                            <label for="slug" class="form-label">
-                                <i class="fas fa-link me-2 text-primary"></i>
-                                URL адрес (slug)
-                            </label>
-                            <div class="input-with-prefix">
-                                <span class="input-prefix">edu.gov.kg/posts/</span>
-                                <@spring.formInput
-                                "post.slug"
-                                'type="text" id="slug" class="form-control" placeholder="url-adresa-posta" maxlength="500"'
-                                />
-                            </div>
-                            <div class="form-text">
-                                Только строчные буквы, цифры и дефисы. Автоматически генерируется из названия.
-                            </div>
-                            <@spring.showErrors "<br>" "error text-danger"/>
-                        </div>
-
-                        <!-- Контент -->
-                        <div class="form-group">
-                            <label for="content" class="form-label">
-                                <i class="fas fa-file-text me-2 text-primary"></i>
-                                Содержание поста
-                            </label>
-                            <@spring.formTextarea
-                            "post.content"
-                            'id="content" class="form-control" rows="15"'
-                            />
-                            <div class="form-text">
-                                Используйте панель инструментов для форматирования текста
-                            </div>
-                            <@spring.showErrors "<br>" "error text-danger"/>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attachments" class="form-label">
-                                <i class="fas fa-paperclip me-2 text-primary"></i>
-                                Прикрепленные файлы (опционально)
-                            </label>
-                            <input
-                                    type="file"
-                                    class="form-control"
-                                    id="attachments"
-                                    name="attachments"
-                                    multiple
-                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z,.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.mp3,.wav,.flac,.mp4,.avi,.mkv,.mov">
-                            <div class="form-text">
-                                📎 Поддерживаемые файлы: документы, изображения, архивы, аудио, видео<br>
-                                💡 Изображения можно вставлять в текст через редактор или прикреплять как файлы
-                            </div>
-                            <div id="filePreview" class="mt-3"></div>
-                        </div>
-
-                        <!-- Кнопки действий -->
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-save me-2"></i>
-                                Создать пост
-                            </button>
-
-                            <button type="button" class="btn btn-outline-primary btn-lg" id="previewBtn">
-                                <i class="fas fa-eye me-2"></i>
-                                Предварительный просмотр
-                            </button>
-
-                            <a href="/posts" class="btn btn-outline-danger btn-lg">
-                                <i class="fas fa-times me-2"></i>
-                                Отмена
+        <!-- Переводы (вкладки) -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <#list createPostDto.post.postTranslations?sort_by("languageCode") as trans>
+                        <li class="nav-item">
+                            <a class="nav-link <#if trans?is_first>active</#if>"
+                               data-bs-toggle="tab"
+                               href="#lang-${trans.languageCode}">
+                                ${languages[trans.languageCode]}
                             </a>
-                        </div>
-                    </form>
-                </div>
+                        </li>
+                    </#list>
+                </ul>
             </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно предварительного просмотра -->
-    <div class="modal fade" id="previewModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Предварительный просмотр</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="previewContent">
-                        <h1 id="previewTitle" class="mb-3"></h1>
-                        <div id="previewBody"></div>
+            <div class="card-body tab-content">
+                <@spring.bind "createPostDto.post.postTranslations"/>
+                <#if spring.status.error>
+                    <div class="alert alert-warning mb-3">
+                        <#list spring.status.errorMessages as error>${error}</#list>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </#if>
+
+                <#list createPostDto.post.postTranslations as trans>
+                    <div class="tab-pane translation-tab <#if trans?is_first>active</#if>" id="lang-${trans.languageCode}">
+                        <@spring.bind "createPostDto.post.postTranslations[${trans?index}].title"/>
+                        <div class="mb-3">
+                            <label class="form-label">Заголовок (необязательно)</label>
+                            <input type="text"
+                                   class="form-control <#if spring.status.error>is-invalid</#if>"
+                                   name="post.postTranslations[${trans?index}].title"
+                                   value="${spring.status.value!''}">
+                            <#if spring.status.error>
+                                <div class="invalid-feedback">
+                                    <#list spring.status.errorMessages as error>${error}</#list>
+                                </div>
+                            </#if>
+                        </div>
+
+                        <@spring.bind "createPostDto.post.postTranslations[${trans?index}].content"/>
+                        <div class="mb-3">
+                            <label class="form-label">Содержание (необязательно)</label>
+                            <textarea class="form-control <#if spring.status.error>is-invalid</#if>"
+                                      name="post.postTranslations[${trans?index}].content"
+                                      rows="10">${spring.status.value!''}</textarea>
+                            <#if spring.status.error>
+                                <div class="invalid-feedback">
+                                    <#list spring.status.errorMessages as error>${error}</#list>
+                                </div>
+                            </#if>
+                        </div>
+                        <input type="hidden" name="post.postTranslations[${trans?index}].languageCode" value="${trans.languageCode}">
+                    </div>
+                </#list>
+            </div>
+        </div>
+
+        <!-- Основные поля -->
+        <div class="row">
+            <div class="col-md-6">
+                <@spring.bind "createPostDto.post.typeId"/>
+                <div class="mb-3">
+                    <label class="form-label">Тип поста</label>
+                    <select class="form-select <#if spring.status.error>is-invalid</#if>" name="post.typeId">
+                        <option value="">-- Выберите тип --</option>
+                        <#list postTypes as type>
+                            <option value="${type.id}" <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
+                                ${type.postTypeTranslations?filter(t -> t.languageCode == 'ru')?first.translation}
+                            </option>
+                        </#list>
+                    </select>
+                    <#if spring.status.error>
+                        <div class="invalid-feedback">
+                            <#list spring.status.errorMessages as error>${error}</#list>
+                        </div>
+                    </#if>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.tiny.cloud/1/z66zloybrfzhb552oyl9fmnwcuplxmajqn017ne4zn5zg457/tinymce/6/tinymce.min.js"
-            referrerpolicy="origin"></script>
-    <script src="/static/js/post-create.js"></script>
-</@main.layout>
+        <!-- Файлы -->
+        <div class="mb-3">
+            <label class="form-label">Главное изображение</label>
+            <input type="file" class="form-control" name="image" accept="image/*">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Вложения</label>
+            <input type="file" class="form-control" name="attachments" multiple>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Создать пост</button>
+            <a href="/posts" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Активация вкладок переводов
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Скрыть все вкладки
+            document.querySelectorAll('.translation-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранную
+            const targetTab = document.querySelector(this.getAttribute('href'));
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Активировать ссылку
+            document.querySelectorAll('.nav-link').forEach(navLink => {
+                navLink.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+
+    // Предварительный просмотр изображения
+    document.querySelector('input[name="image"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.getElementById('image-preview');
+                if (!preview) {
+                    preview = document.createElement('img');
+                    preview.id = 'image-preview';
+                    preview.className = 'img-thumbnail mt-2';
+                    preview.style.maxWidth = '200px';
+                    e.target.parentNode.appendChild(preview);
+                }
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

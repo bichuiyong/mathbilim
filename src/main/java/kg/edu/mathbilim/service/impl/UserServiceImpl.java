@@ -7,14 +7,14 @@ import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.UserMapper;
-import kg.edu.mathbilim.model.reference.user_type.UserType;
+import kg.edu.mathbilim.model.user.user_type.UserType;
 import kg.edu.mathbilim.model.reference.Role;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.UserRepository;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.util.CommonUtilities;
+import kg.edu.mathbilim.util.UrlUtil;
 import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -213,7 +213,7 @@ public class UserServiceImpl implements UserService {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
         updateResetPasswordToken(email, token);
-        String resetPasswordLink = CommonUtilities.getSiteURL(request) + "/auth/reset_password?token=" + token;
+        String resetPasswordLink = UrlUtil.getSiteURL(request) + "/auth/reset_password?token=" + token;
         emailService.sendEmail(email, resetPasswordLink);
     }
 
@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
         user.setIsEmailVerified(false);
         userRepository.saveAndFlush(user);
 
-        String verificationLink = CommonUtilities.getSiteURL(request) + "/auth/verify-email?token=" + token;
+        String verificationLink = UrlUtil.getSiteURL(request) + "/auth/verify-email?token=" + token;
         emailService.sendVerificationEmail(email, verificationLink);
     }
 
@@ -286,7 +286,7 @@ public class UserServiceImpl implements UserService {
         user.setEmailVerificationToken(token);
         userRepository.saveAndFlush(user);
 
-        String verificationLink = CommonUtilities.getSiteURL(request) + "/auth/verify-email?token=" + token;
+        String verificationLink = UrlUtil.getSiteURL(request) + "/auth/verify-email?token=" + token;
         emailService.sendVerificationEmail(email, verificationLink);
     }
 
