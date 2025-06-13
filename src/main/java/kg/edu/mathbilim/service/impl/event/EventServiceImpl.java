@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl.event;
 
+import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
@@ -23,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -57,6 +56,7 @@ public class EventServiceImpl implements EventService {
         if (query == null || query.isEmpty()) {
             return getPage(() -> eventRepository.findAll(pageable));
         }
+//        return getPage(() -> eventRepository.findByQuery(query, pageable));
         return getPage(() -> eventRepository.findAll(pageable));
     }
 
@@ -70,58 +70,31 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventDto create(EventDto eventDto, MultipartFile mainImage, MultipartFile[] attachments, List<Long> organizationIds) {
+    public EventDto create(CreateEventDto createEventDto) {
+        EventDto eventDto = createEventDto.getEvent();
         eventDto.setUser(userService.getAuthUser());
         eventDto.setStatus(ContentStatus.PENDING_REVIEW);
 
         Event event = eventMapper.toEntity(eventDto);
         Event savedEvent = eventRepository.save(event);
+        Long savedEventId = savedEvent.getId();
 
-        Set<EventTranslationDto> filledTranslations = eventDto.getEventTranslations().stream()
-                .filter(translation ->
-                        translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&
-                                translation.getContent() != null && !translation.getContent().trim().isEmpty())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        List<EventTranslationDto> translations = eventDto.getEventTranslations();
+        setEventTranslations(translations, savedEventId);
 
+        MultipartFile mainImage = createEventDto.getImage() != null && createEventDto.getImage().isEmpty() ? null : createEventDto.getImage();
+        uploadMainImage(mainImage, savedEvent);
 
-        eventTranslationService.saveTranslations(savedEvent.getId(), filledTranslations);
+        MultipartFile[] attachments = createEventDto.getAttachments() == null ? new MultipartFile[0] : createEventDto.getAttachments();
+        uploadFilesForEvent(attachments, savedEvent);
 
+        List<Long> organizationsIds = createEventDto.getOrganizationIds();
+        setEventOrganizations(organizationsIds, savedEvent);
 
-        if (mainImage != null && !mainImage.isEmpty()) {
-            File mainImageFile = fileService.uploadFileReturnEntity(
-                    mainImage,
-                    "events/" + savedEvent.getId() + "/main"
-            );
-            savedEvent.setMainImage(mainImageFile);
-            log.info("Uploaded main image for event {}", savedEvent.getId());
-        }
+        eventRepository.saveAndFlush(savedEvent);
 
-        if (attachments != null && attachments.length > 0) {
-            Set<File> uploadedFiles = fileService.uploadFilesForEvent(
-                    attachments,
-                    savedEvent
-            );
-            if (!uploadedFiles.isEmpty()) {
-                savedEvent.setFiles(uploadedFiles);
-                log.info("Uploaded {} files for event {}", uploadedFiles.size(), savedEvent.getId());
-            }
-        }
-
-        if (organizationIds != null && !organizationIds.isEmpty()) {
-            Set<Organization> organizations = organizationService.addEventToOrganizations(organizationIds, savedEvent);
-            savedEvent.setOrganizations(organizations);
-            log.info("Added event {} to {} organizations", savedEvent.getId(), organizations.size());
-        }
-
-        Event finalEvent = eventRepository.saveAndFlush(savedEvent);
-        EventDto result = eventMapper.toDto(finalEvent);
-
-        List<EventTranslationDto> savedTranslations = eventTranslationService.getTranslationsByEventId(finalEvent.getId());
-        result.setEventTranslations(Set.copyOf(savedTranslations));
-
-        log.info("Created event with {} translations", savedTranslations.size());
-
-        return result;
+        log.info("Created event with id {}", savedEventId);
+        return eventMapper.toDto(savedEvent);
     }
 
     private Page<EventDto> getPage(Supplier<Page<Event>> supplier, String notFoundMessage) {
@@ -135,5 +108,50 @@ public class EventServiceImpl implements EventService {
 
     private Page<EventDto> getPage(Supplier<Page<Event>> supplier) {
         return getPage(supplier, "Мероприятия не были найдены");
+    }
+
+    private void setEventOrganizations(List<Long> organizationIds, Event event) {
+        boolean isNotEmpty = organizationIds != null && !organizationIds.isEmpty();
+
+        if (isNotEmpty) {
+            List<Organization> organizations = organizationService.addEventToOrganizations(organizationIds, event);
+            event.setOrganizations(organizations);
+            log.info("Added event {} to {} organizations", event.getId(), organizations.size());
+        }
+    }
+
+    private void setEventTranslations(List<EventTranslationDto> translations, Long eventId) {
+        Set<EventTranslationDto> filledTranslations = translations.stream()
+                .filter(translation ->
+                        translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&
+                                translation.getContent() != null && !translation.getContent().trim().isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+
+        eventTranslationService.saveTranslations(eventId, filledTranslations);
+    }
+
+    private void uploadMainImage(MultipartFile mainImage, Event event) {
+        if (mainImage != null && !mainImage.isEmpty()) {
+            File mainImageFile = fileService.uploadFileReturnEntity(
+                    mainImage,
+                    "events/" + event.getId() + "/main"
+            );
+            event.setMainImage(mainImageFile);
+            log.info("Uploaded main image for event {}", event.getId());
+        }
+    }
+
+    private void uploadFilesForEvent(MultipartFile[] attachments, Event event) {
+        if (attachments != null && attachments.length > 0) {
+            List<File> uploadedFiles = fileService.uploadFilesForEvent(
+                    attachments,
+                    event
+            );
+            if (!uploadedFiles.isEmpty()) {
+                event.setFiles(uploadedFiles);
+                log.info("Uploaded {} files for event {}", uploadedFiles.size(), event.getId());
+            }
+        }
     }
 }

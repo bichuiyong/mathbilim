@@ -21,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -52,14 +50,14 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public Set<File> uploadFilesForPost(MultipartFile[] files, Post post) {
-        Set<File> uploadedFiles = new LinkedHashSet<>();
+    public List<File> uploadFilesForPost(MultipartFile[] files, Post post) {
+        List<File> uploadedFiles = new LinkedList<>();
         String context = "posts/";
 
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 File uploadedFile = uploadFileReturnEntity(file, context);
-                uploadedFile.setPosts(new LinkedHashSet<>(Collections.singleton(post)));
+                uploadedFile.setPosts(new LinkedList<>(Collections.singleton(post)));
                 fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
                 log.info("File uploaded for post {}: {}", post.getId(), file.getOriginalFilename());
@@ -71,14 +69,14 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public Set<File> uploadFilesForEvent(MultipartFile[] files, Event event) {
-        Set<File> uploadedFiles = new LinkedHashSet<>();
+    public List<File> uploadFilesForEvent(MultipartFile[] files, Event event) {
+        List<File> uploadedFiles = new LinkedList<>();
         String context = "events/" + event.getId();
 
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 File uploadedFile = uploadFileReturnEntity(file, context);
-                uploadedFile.setEvents(new LinkedHashSet<>(Collections.singleton(event)));
+                uploadedFile.setEvents(new LinkedList<>(Collections.singleton(event)));
                 fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
                 log.info("File uploaded for event {}: {}", event.getId(), file.getOriginalFilename());

@@ -1,20 +1,15 @@
 package kg.edu.mathbilim.dto.event;
 
-import jakarta.validation.constraints.NotBlank;
+import kg.edu.mathbilim.dto.translations.ContentTranslationDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class EventTranslationDto {
+@SuperBuilder
+public class EventTranslationDto extends ContentTranslationDto {
 
     Long eventId;
-
-    private String languageCode;
-
-    private String title;
-
-    private String content;
 }
