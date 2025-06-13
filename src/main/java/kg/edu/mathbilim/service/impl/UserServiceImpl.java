@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
         User user = getEntityByEmail(email);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
         userRepository.saveAndFlush(user);
     }
 
