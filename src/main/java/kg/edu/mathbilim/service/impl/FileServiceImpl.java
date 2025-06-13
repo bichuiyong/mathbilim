@@ -34,6 +34,8 @@ public class FileServiceImpl implements FileService {
     private final S3Service s3Service;
     private final S3Config s3Config;
     private final Tika tika = new Tika();
+    private static final String SUB_DIR="files";
+    private FileUtil fileUtil;
 
     @Override
     public File getEntityById(Long id) {
