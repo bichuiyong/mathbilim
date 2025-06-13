@@ -13,7 +13,7 @@
 
     <div class="container py-4">
         <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-4">
-            <a href="/event/add" class="btn btn-add-event text-white rounded-pill px-4 py-2">
+            <a href="/events/create" class="btn btn-add-event text-white rounded-pill px-4 py-2">
                 <i class="fas fa-plus me-2"></i>Добавить мероприятие
             </a>
         </div>
@@ -22,7 +22,7 @@
             <div class="col-12">
                 <div class="card event-card featured-event shadow-lg"
                      style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80');"
-                     onclick="window.location.href='/event/details'">
+                     onclick="window.location.href='/events/event/1'">
                     <div class="badge event-date px-3 py-2">20 июня</div>
                     <div class="badge event-type-badge badge-олимпиада px-3 py-1">Олимпиада</div>
                     <div class="event-content p-4">
@@ -44,7 +44,7 @@
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card event-card shadow"
                      style="background-image: url('https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80');"
-                     onclick="window.location.href='/event/details'">
+                     onclick="window.location.href='/events/event/1'">
                     <div class="badge event-date px-2 py-1">25 июня</div>
                     <div class="badge event-type-badge badge-семинар px-2 py-1">Семинар</div>
                     <div class="event-content p-3">
@@ -62,7 +62,7 @@
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card event-card shadow"
                      style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80');"
-                     onclick="window.location.href='/event/details'">
+                     onclick="window.location.href='/events/event/1'">
                     <div class="badge event-date px-2 py-1">28 июня</div>
                     <div class="badge event-type-badge badge-лекция px-2 py-1">Лекция</div>
                     <div class="event-content p-3">
@@ -79,7 +79,7 @@
 
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card event-card shadow"
-                     onclick="window.location.href='/event/details'">
+                     onclick="window.location.href='/events/event/1'">
                     <div class="badge event-date px-2 py-1">1 июля</div>
                     <div class="badge event-type-badge badge-олимпиада px-2 py-1">Олимпиада</div>
                     <div class="event-content p-3">
@@ -96,7 +96,7 @@
 
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card event-card shadow"
-                     onclick="window.location.href='/event/details'">
+                     onclick="window.location.href='/events/event/1'">
                     <div class="badge event-date px-2 py-1">5 июля</div>
                     <div class="badge event-type-badge badge-семинар px-2 py-1">Семинар</div>
                     <div class="event-content p-3">

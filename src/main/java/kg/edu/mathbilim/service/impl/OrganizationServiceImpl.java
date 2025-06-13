@@ -5,7 +5,7 @@ import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.OrganizationNotFound;
 import kg.edu.mathbilim.mapper.OrganizationMapper;
-import kg.edu.mathbilim.model.Event;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.repository.OrganizationRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -78,7 +78,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         dto.setStatus(ContentStatus.PENDING_REVIEW);
 
         if (avatarFile != null) {
-            FileDto avatar = fileService.uploadAvatar(avatarFile, userService.getAuthUserEntity());
+            FileDto avatar = fileService.uploadAvatar(avatarFile);
             dto.setAvatar(avatar);
         }
 

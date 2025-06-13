@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.mapper;
 
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.model.User;
 import org.mapstruct.Mapper;
 

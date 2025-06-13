@@ -4,9 +4,9 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.UserDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -51,7 +51,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("types", userTypeService.getAll());
+        model.addAttribute("types", userTypeService.getAllUserTypes());
         return "auth/register";
     }
 
@@ -61,7 +61,7 @@ public class AuthController {
                                       Model model, HttpServletRequest request) {
 
         if (result.hasErrors()) {
-            model.addAttribute("types", userTypeService.getAll());
+            model.addAttribute("types", userTypeService.getAllUserTypes());
             model.addAttribute("errors", result);
             return "auth/register";
         }
@@ -70,7 +70,7 @@ public class AuthController {
             return "redirect:/auth/registration-success";
         } catch (Exception e) {
             model.addAttribute("error", "Ошибка при регистрации: " + e.getMessage());
-            model.addAttribute("types", userTypeService.getAll());
+            model.addAttribute("types", userTypeService.getAllUserTypes());
             return "auth/register";
         }
     }
