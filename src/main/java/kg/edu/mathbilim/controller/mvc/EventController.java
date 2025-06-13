@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.reference.event_type.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
@@ -22,7 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
-    private final EventTypeService eventTypeService;
+    private final TranslationService translationService;
     private final OrganizationService organizationService;
     private final UserService userService;
 
@@ -56,7 +57,7 @@ public class EventController {
         eventDto.setEventTranslations(translations);
 
         model.addAttribute("event", eventDto);
-        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
+        model.addAttribute("eventsTypes", translationService.getEventTypesByLanguage());
         model.addAttribute("organizations", organizationService.getOrganizations(null));
         model.addAttribute("languages", Language.getLanguagesMap());
         model.addAttribute("languageEnum", Language.values());
@@ -75,7 +76,7 @@ public class EventController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", userService.getAuthUser());
-            model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
+            model.addAttribute("eventsTypes", translationService.getEventTypesByLanguage());
             model.addAttribute("organizations", organizationService.getOrganizations(null));
             model.addAttribute("languages", Language.getLanguagesMap());
             model.addAttribute("languageEnum", Language.values());
