@@ -135,87 +135,83 @@
     <h1 class="user-type-title">Добро пожаловать в Math Bilim!</h1>
 
     <#if user??>
-    <p class="welcome-text">
-        Привет, <strong>${user.name!"пользователь"}</strong>!
-        Для персонализации опыта выберите, кто вы:
+        <p class="welcome-text">
+            Привет, <strong>${user.name!"пользователь"}</strong>!
+            Для персонализации опыта выберите, кто вы:
+        </p>
+    </#if>
+
+    <p class="user-type-subtitle">
+        Выбор поможет нам настроить подходящий для вас контент и функции
     </p>
-</#if>
 
-<p class="user-type-subtitle">
-    Выбор поможет нам настроить подходящий для вас контент и функции
-</p>
+    <#if error??>
+        <div class="alert alert-error">
+            <strong>⚠️ Ошибка:</strong> ${error}
+        </div>
+    </#if>
 
-<#if error??>
-<div class="alert alert-error">
-    <strong>⚠️ Ошибка:</strong> ${error}
-</div>
-</#if>
+    <#if message??>
+        <div class="alert alert-success">
+            <strong>✅ Успех:</strong> ${message}
+        </div>
+    </#if>
 
-<#if message??>
-<div class="alert alert-success">
-    <strong>✅ Успех:</strong> ${message}
-</div>
-</#if>
+    <form action="/auth/select-user-type" method="post" id="userTypeForm">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-<form action="/auth/select-user-type" method="post" id="userTypeForm">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <div class="user-type-grid">
+            <#if userTypes?? && userTypes?has_content>
+                <#list userTypes as userType>
+                    <label class="user-type-card" for="type_${userType.id}">
+                        <input type="radio"
+                               name="userTypeId"
+                               value="${userType.id}"
+                               id="type_${userType.id}"
+                               class="user-type-radio"
+                               required>
 
-    <div class="user-type-grid">
+                        <span class="user-type-icon">
+                            <#assign typeName = (userType.userTypeTranslations[0].translation)!"">
+                            <#switch typeName>
+                                <#case "Школьник">🎓<#break>
+                                <#case "Студент">📚<#break>
+                                <#case "Преподаватель">👨‍🏫<#break>
+                                <#case "Исследователь">🔍<#break>
+                                <#default>👤<#break>
+                            </#switch>
+                        </span>
+
+                        <div class="user-type-name">
+                            ${(userType.userTypeTranslations[0].translation)!"Тип не определен"}
+                        </div>
+
+                        <div class="user-type-description">
+                            <#assign typeName = (userType.userTypeTranslations[0].translation)!"">
+                            <#switch typeName>
+                                <#case "Школьник">Изучаю математику в школе<#break>
+                                <#case "Студент">Изучаю математику в университете<#break>
+                                <#case "Преподаватель">Преподаю математику<#break>
+                                <#case "Исследователь">Интересуюсь математикой<#break>
+                                <#default>Пользователь платформы<#break>
+                            </#switch>
+                        </div>
+                    </label>
+                </#list>
+            <#else>
+                <div style="grid-column: 1 / -1; text-align: center; color: #7f8c8d;">
+                    <p>Типы пользователей не найдены.</p>
+                    <p><a href="/auth/login">Вернуться к авторизации</a></p>
+                </div>
+            </#if>
+        </div>
+
         <#if userTypes?? && userTypes?has_content>
-        <#list userTypes as userType>
-        <label class="user-type-card" for="type_${userType.id}">
-            <input type="radio"
-                   name="userTypeId"
-                   value="${userType.id}"
-                   id="type_${userType.id}"
-                   class="user-type-radio"
-                   required>
-
-            <span class="user-type-icon">
-                                <#switch userType.name>
-                                    <#case "SCHOOLBOY">🎓<#break>
-                                    <#case "STUDENT">📚<#break>
-                                    <#case "TEACHER">👨‍🏫<#break>
-                                    <#case "EXPLORER">🔍<#break>
-                                    <#default>👤<#break>
-                                </#switch>
-            </span>
-
-            <div class="user-type-name">
-                <#switch userType.name>
-                <#case "SCHOOLBOY">Школьник<#break>
-                <#case "STUDENT">Студент<#break>
-                <#case "TEACHER">Преподаватель<#break>
-                <#case "EXPLORER">Исследователь<#break>
-                <#default>${userType.name}<#break>
-            </#switch>
-    </div>
-
-    <div class="user-type-description">
-        <#switch userType.name>
-        <#case "SCHOOLBOY">Изучаю математику в школе<#break>
-        <#case "STUDENT">Изучаю математику в университете<#break>
-        <#case "TEACHER">Преподаю математику<#break>
-        <#case "EXPLORER">Интересуюсь математикой<#break>
-        <#default>Пользователь платформы<#break>
-    </#switch>
-    </div>
-    </label>
-</#list>
-<#else>
-<div style="grid-column: 1 / -1; text-align: center; color: #7f8c8d;">
-    <p>Типы пользователей не найдены.</p>
-    <p><a href="/auth/login">Вернуться к авторизации</a></p>
-</div>
-</#if>
-</div>
-
-<#if userTypes?? && userTypes?has_content>
-<button type="submit" class="submit-button" id="submitBtn" disabled>
-    Продолжить
-</button>
-</#if>
-</form>
+            <button type="submit" class="submit-button" id="submitBtn" disabled>
+                Продолжить
+            </button>
+        </#if>
+    </form>
 </div>
 
 <script>
@@ -224,7 +220,7 @@
     const cards = document.querySelectorAll('.user-type-card');
 
     radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
+        radio.addEventListener('change', function () {
             cards.forEach(card => card.classList.remove('selected'));
 
             if (this.checked) {
@@ -237,7 +233,7 @@
     });
 
     cards.forEach(card => {
-        card.addEventListener('click', function() {
+        card.addEventListener('click', function () {
             const radio = this.querySelector('input[type="radio"]');
             if (radio) {
                 radio.checked = true;

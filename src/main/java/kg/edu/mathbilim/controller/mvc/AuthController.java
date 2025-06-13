@@ -8,13 +8,17 @@ import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("auth")
@@ -22,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 public class AuthController {
     private final UserService userService;
     private final UserTypeService userTypeService;
+    private final LocaleResolver localeResolver;
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -49,9 +54,11 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(Model model, HttpServletRequest request) {
+        Locale locale = localeResolver.resolveLocale(request);
+
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("types", userTypeService.getAllUserTypes());
+        model.addAttribute("types", userTypeService.getUserTypesByLanguage(locale.getLanguage()));
         return "auth/register";
     }
 
@@ -59,9 +66,10 @@ public class AuthController {
     public String processRegistration(@ModelAttribute("userDto") @Valid UserDto userDto,
                                       BindingResult result,
                                       Model model, HttpServletRequest request) {
+        Locale localeContext = localeResolver.resolveLocale(request);
 
         if (result.hasErrors()) {
-            model.addAttribute("types", userTypeService.getAllUserTypes());
+            model.addAttribute("types", userTypeService.getUserTypesByLanguage(localeContext.getLanguage()));
             model.addAttribute("errors", result);
             return "auth/register";
         }
@@ -70,7 +78,7 @@ public class AuthController {
             return "redirect:/auth/registration-success";
         } catch (Exception e) {
             model.addAttribute("error", "Ошибка при регистрации: " + e.getMessage());
-            model.addAttribute("types", userTypeService.getAllUserTypes());
+            model.addAttribute("types", userTypeService.getUserTypesByLanguage(localeContext.getLanguage()));
             return "auth/register";
         }
     }
