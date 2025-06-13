@@ -4,7 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.dto.user.UserEditDto;

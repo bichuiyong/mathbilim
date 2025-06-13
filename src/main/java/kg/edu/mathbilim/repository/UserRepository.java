@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.repository;
 
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

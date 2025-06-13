@@ -9,9 +9,7 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.post.Post;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -48,11 +46,11 @@ public class File {
     private String s3Link;
 
     @OneToMany(mappedBy = "file")
-    private Set<Book> books = new LinkedHashSet<>();
+    private List<Book> books = new ArrayList<>();
 
     @ManyToMany(mappedBy = "files")
-    private Set<Event> events = new LinkedHashSet<>();
+    private List<Event> events = new ArrayList<>();
 
     @ManyToMany(mappedBy = "files")
-    private Set<Post> posts = new HashSet<>();
+    private List<Post> posts = new ArrayList<>();
 }

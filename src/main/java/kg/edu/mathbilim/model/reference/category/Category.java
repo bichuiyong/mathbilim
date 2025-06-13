@@ -3,8 +3,8 @@ package kg.edu.mathbilim.model.reference.category;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -19,6 +19,6 @@ public class Category {
     private Integer id;
 
     @OneToMany(mappedBy = "category")
-    private Set<CategoryTranslation> categoryTranslations = new LinkedHashSet<>();
+    private List<CategoryTranslation> categoryTranslations = new ArrayList<>();
 
 }

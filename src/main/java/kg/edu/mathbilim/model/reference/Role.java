@@ -1,12 +1,10 @@
 package kg.edu.mathbilim.model.reference;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "roles")
@@ -33,8 +31,8 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
-    private Set<Authority> authorities = new HashSet<>();
+    private List<Authority> authorities = new ArrayList<>();
 
     @OneToMany(mappedBy = "role")
-    private Set<User> users = new LinkedHashSet<>();
+    private List<User> users = new ArrayList<>();
 }

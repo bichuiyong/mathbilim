@@ -3,8 +3,8 @@ package kg.edu.mathbilim.model.reference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "authorities")
@@ -26,5 +26,5 @@ public class Authority {
     private String name;
 
     @ManyToMany(mappedBy = "authorities")
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 }

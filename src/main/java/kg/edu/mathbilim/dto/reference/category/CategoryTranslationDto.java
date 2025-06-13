@@ -1,20 +1,14 @@
 package kg.edu.mathbilim.dto.reference.category;
 
-import jakarta.validation.constraints.NotBlank;
+import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CategoryTranslationDto {
-
+@SuperBuilder
+public class CategoryTranslationDto extends TypeTranslationDto {
     Integer categoryId;
-
-    @NotBlank
-    private String languageCode;
-
-    @NotBlank
-    private String translation;
 }
