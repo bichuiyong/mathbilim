@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.Metadata;
 import kg.edu.mathbilim.mapper.UserMapper;
 import kg.edu.mathbilim.service.interfaces.BookService;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.reference.category.CategoryService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -24,9 +25,9 @@ import java.util.List;
 @RequestMapping("books")
 public class BookController {
     private final BookService bookService;
-    private final CategoryService categoryService;
     private final FileService fileService;
     private final UserService userService;
+    private final TranslationService translationService;
 
     @GetMapping
     public String books(Model model) {
@@ -41,7 +42,7 @@ public class BookController {
 
     @GetMapping("/create")
     public String create(Model model) {
-        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book", new BookDto());
         model.addAttribute("metadataKeysEnum", Metadata.values());
 
@@ -56,7 +57,7 @@ public class BookController {
                           BindingResult bindingResult,
                           Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("categories", translationService.getCategoriesByLanguage());
             return "books/create-book";
         }
 
@@ -82,7 +83,7 @@ public class BookController {
     @GetMapping("{id}/update")
     public String update(Model model,
                          @PathVariable long id) {
-        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book", bookService.getById(id));
         model.addAttribute("metadataKeysEnum", Metadata.values());
 
@@ -99,7 +100,7 @@ public class BookController {
                              BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("categories", translationService.getCategoriesByLanguage());
             return "books/update-book";
         }
 
