@@ -1,0 +1,533 @@
+// ==========================================
+// MATHBILIM.KG - ОСНОВНЫЕ СТИЛИ ПЛАТФОРМЫ
+// ==========================================
+
+// Основные цвета
+$primary-blue: #2563eb;
+$secondary-blue: #3b82f6;
+$light-blue: #dbeafe;
+$white: #ffffff;
+$light-gray: #f8fafc;
+$text-dark: #1e293b;
+$text-gray: #64748b;
+$border-gray: #e2e8f0;
+$success: #10b981;
+$warning: #f59e0b;
+$error: #ef4444;
+
+// Дополнительные цвета
+$hover-blue: #1d4ed8;
+$background-section: #f1f5f9;
+
+// Общие настройки
+$border-radius: 8px;
+$transition: 0.3s ease;
+$box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// ==========================================
+// ГЛОБАЛЬНЫЕ СТИЛИ
+// ==========================================
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: $text-dark;
+  background-color: $white;
+  margin: 0;
+  padding: 0;
+}
+
+// ==========================================
+// НАВИГАЦИЯ
+// ==========================================
+
+.navbar-container {
+  background: $white;
+  box-shadow: $box-shadow;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0.75rem 2rem;
+}
+
+// Кнопка toggler
+.navbar-toggler {
+  border: 2px solid $border-gray;
+  padding: 0.25rem 0.5rem;
+  transition: all $transition;
+
+  &:focus {
+    box-shadow: none;
+    border-color: $primary-blue;
+  }
+
+  &:hover {
+    border-color: $primary-blue;
+    background-color: $light-blue;
+  }
+
+  .navbar-toggler-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-size: 100%;
+  }
+}
+
+.navbar-top {
+  .nav-link {
+    color: $text-gray;
+    margin: 0 1rem;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+  }
+}
+
+.navbar-bottom {
+  .nav-link {
+    color: $text-dark;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 0.75rem;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+  }
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: $primary-blue;
+  text-decoration: none;
+  transition: color $transition;
+
+  &:hover {
+    color: $hover-blue;
+  }
+}
+
+.auth-buttons {
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid $border-gray;
+    background: $white;
+    color: $text-gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all $transition;
+    margin-left: 0.5rem;
+
+    &:hover {
+      border-color: $primary-blue;
+      color: $primary-blue;
+      background: $light-blue;
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.language-switcher {
+  .lang-btn {
+    color: $text-gray;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+    font-size: 0.9rem;
+
+    &:hover,
+    &.active {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+
+    &:not(:last-child)::after {
+      content: "|";
+      margin: 0 0.5rem;
+      color: $border-gray;
+    }
+  }
+}
+
+// Мобильные стили для языков
+.language-switcher-mobile {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+
+  .lang-btn-mobile {
+    color: $text-gray;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover,
+    &.active {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+
+    &:not(:last-child)::after {
+      content: "|";
+      margin: 0 0.3rem;
+      color: $border-gray;
+    }
+  }
+}
+
+// Мобильное меню
+.navbar-mobile-content {
+  padding: 1rem 1rem;
+
+  .mobile-menu-section {
+    padding: 1rem 0;
+    border-bottom: 1px solid $border-gray;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu-title {
+      color: $text-gray;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      padding: 0 1rem;
+    }
+  }
+
+  .navbar-nav {
+    .nav-item {
+      margin: 0;
+    }
+
+    .nav-link {
+      color: $text-dark;
+      padding: 0.75rem 1rem;
+      font-weight: 500;
+      transition: all $transition;
+      border-radius: 0;
+
+      &:hover,
+      &:focus {
+        background-color: $light-gray;
+        color: $primary-blue;
+      }
+    }
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+// ==========================================
+// КНОПКИ
+// ==========================================
+
+.btn-primary {
+  background-color: $primary-blue;
+  color: $white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: $border-radius;
+  transition: all $transition;
+  border: none $primary-blue;
+
+  &:hover {
+    background-color: $hover-blue;
+    border-color: $hover-blue;
+    transform: translateY(-1px);
+    box-shadow: $box-shadow-lg;
+  }
+
+  &:focus {
+    background-color: $hover-blue;
+    border-color: $hover-blue;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  }
+}
+
+.btn-outline-primary {
+  border: 2px solid $primary-blue;
+  color: $primary-blue;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: $border-radius;
+  transition: all $transition;
+  background: transparent;
+
+  &:hover {
+    background-color: $primary-blue;
+    border-color: $primary-blue;
+    color: $white;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  }
+}
+
+.btn-secondary {
+  background-color: $light-gray;
+  color: $text-dark;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: $border-radius;
+  transition: all $transition;
+  border: none $light-gray;
+
+  &:hover {
+    background-color: $border-gray;
+    border-color: $border-gray;
+  }
+}
+
+// ==========================================
+// КАРТОЧКИ
+// ==========================================
+
+.card {
+  border: 1px solid $border-gray;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  transition: all $transition;
+  background: $white;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-lg;
+  }
+}
+
+.card-header {
+  background: $light-gray;
+  border-bottom: 1px solid $border-gray;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-footer {
+  background: $light-gray;
+  border-top: 1px solid $border-gray;
+  padding: 0.75rem 1.25rem;
+}
+
+// ==========================================
+// ФОРМЫ
+// ==========================================
+
+.form-control {
+  border: 1px solid $border-gray;
+  border-radius: $border-radius;
+  padding: 0.75rem 1rem;
+  transition: all $transition;
+
+  &:focus {
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  }
+}
+
+.form-label {
+  font-weight: 600;
+  color: $text-dark;
+  margin-bottom: 0.5rem;
+}
+
+// ==========================================
+// АЛЕРТЫ
+// ==========================================
+
+.alert {
+  border-radius: $border-radius;
+  border: none;
+
+  &.alert-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: darken($success, 20%);
+  }
+
+  &.alert-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: darken($warning, 20%);
+  }
+
+  &.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: darken($error, 20%);
+  }
+
+  &.alert-info {
+    background-color: $light-blue;
+    color: darken($primary-blue, 20%);
+  }
+}
+
+// ==========================================
+// ФУТЕР
+// ==========================================
+
+.footer {
+  background: $text-dark;
+  color: $white;
+  padding: 3rem 0 1rem;
+  margin-top: 4rem;
+
+  h5 {
+    color: $white;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color $transition;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    color: $white;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all $transition;
+    margin-right: 0.5rem;
+
+    &:hover {
+      background: $primary-blue;
+      color: $white;
+    }
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    margin-top: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+}
+
+// ==========================================
+// УТИЛИТЫ
+// ==========================================
+
+.text-primary {
+  color: $primary-blue !important;
+}
+
+.bg-light-blue {
+  background-color: $light-blue !important;
+}
+
+.border-radius {
+  border-radius: $border-radius !important;
+}
+
+.transition {
+  transition: all $transition !important;
+}
+
+// Утилита для gap в flexbox
+.gap-2 {
+  gap: 0.5rem !important;
+}
+
+// ==========================================
+// АДАПТИВНОСТЬ
+// ==========================================
+
+@media (max-width: 991px) {
+  .navbar-container {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  // Скрываем collapse content по умолчанию
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: $white;
+    border-top: 1px solid $border-gray;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 1.2rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .footer {
+    .col-md-6 {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+// Фикс для Bootstrap navbar на больших экранах
+@media (min-width: 992px) {
+  .navbar-collapse.d-lg-none {
+    display: none !important;
+  }
+
+  .d-lg-none .language-switcher-mobile {
+    display: none;
+  }
+}
