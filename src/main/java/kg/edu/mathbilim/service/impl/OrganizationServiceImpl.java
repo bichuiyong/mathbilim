@@ -55,13 +55,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional
     @Override
-    public Set<Organization> addEventToOrganizations(List<Long> organizationIds, Event event) {
-        Set<Organization> organizations = new LinkedHashSet<>();
+    public List<Organization> addEventToOrganizations(List<Long> organizationIds, Event event) {
+        List<Organization> organizations = new LinkedList<>();
 
         for (Long orgId : organizationIds) {
             Organization organization = getEntityById(orgId);
 
-            organization.setEvents(new LinkedHashSet<>(Collections.singleton(event)));
+            organization.setEvents(new LinkedList<>(Collections.singleton(event)));
             organizationRepository.saveAndFlush(organization);
             organizations.add(organization);
 

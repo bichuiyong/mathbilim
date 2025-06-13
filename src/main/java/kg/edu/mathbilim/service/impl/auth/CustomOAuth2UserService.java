@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl.auth;
 
 
-import kg.edu.mathbilim.model.CustomOAuth2User;
+import kg.edu.mathbilim.model.user.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

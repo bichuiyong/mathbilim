@@ -7,7 +7,7 @@ import kg.edu.mathbilim.model.post.Post;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.util.List;
 
 public interface FileService {
 
@@ -18,10 +18,10 @@ public interface FileService {
     boolean existsById(Long fileId);
 
     @Transactional
-    Set<File> uploadFilesForPost(MultipartFile[] files, Post post);
+    List<File> uploadFilesForPost(MultipartFile[] files, Post post);
 
     @Transactional
-    Set<File> uploadFilesForEvent(MultipartFile[] files, Event event);
+    List<File> uploadFilesForEvent(MultipartFile[] files, Event event);
 
     @Transactional
     FileDto uploadAvatar(MultipartFile avatarFile);
