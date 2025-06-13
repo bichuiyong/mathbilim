@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.reference.user_type;
+package kg.edu.mathbilim.model.user.user_type;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -4,7 +4,7 @@ import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
 import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.reference.user_type.UserTypeMapper;
-import kg.edu.mathbilim.model.reference.user_type.UserType;
+import kg.edu.mathbilim.model.user.user_type.UserType;
 import kg.edu.mathbilim.repository.reference.user_type.UserTypeRepository;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeTranslationService;
@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +45,7 @@ public class UserTypeServiceImpl implements UserTypeService {
         return userTypeRepository.findAll().stream()
                 .map(userType -> {
                     UserTypeDto dto = userTypeMapper.toDto(userType);
-                    dto.setUserTypeTranslations(Set.of(userTypeTranslationService.getTranslation(userType.getId(), languageCode)));
+                    dto.setUserTypeTranslations(List.of(userTypeTranslationService.getTranslation(userType.getId(), languageCode)));
                     return dto;
                 })
                 .toList();
@@ -62,14 +60,14 @@ public class UserTypeServiceImpl implements UserTypeService {
         UserTypeDto savedDto = userTypeMapper.toDto(savedUserType);
 
         if (userTypeDto.getUserTypeTranslations() != null && !userTypeDto.getUserTypeTranslations().isEmpty()) {
-            Set<UserTypeTranslationDto> savedTranslations = userTypeDto
+            List<UserTypeTranslationDto> savedTranslations = userTypeDto
                     .getUserTypeTranslations()
                     .stream()
                     .map(translation -> {
                         translation.setUserTypeId(savedUserType.getId());
                         return userTypeTranslationService.createTranslation(translation);
                     })
-                    .collect(Collectors.toSet());
+                    .toList();
             savedDto.setUserTypeTranslations(savedTranslations);
         }
 
@@ -84,14 +82,14 @@ public class UserTypeServiceImpl implements UserTypeService {
         if (userTypeDto.getUserTypeTranslations() != null) {
             userTypeTranslationService.deleteAllTranslationsByUserTypeId(id);
 
-            Set<UserTypeTranslationDto> savedTranslations =
+            List<UserTypeTranslationDto> savedTranslations =
                     userTypeDto.getUserTypeTranslations()
                             .stream()
                             .map(translation -> {
                                 translation.setUserTypeId(id);
                                 return userTypeTranslationService.createTranslation(translation);
                             })
-                            .collect(Collectors.toSet());
+                            .toList();
 
             dto.setUserTypeTranslations(savedTranslations);
             return dto;

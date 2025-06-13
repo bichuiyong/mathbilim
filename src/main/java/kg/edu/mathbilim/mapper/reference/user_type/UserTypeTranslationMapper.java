@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.mapper.reference.user_type;
 
 import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
-import kg.edu.mathbilim.model.reference.user_type.UserTypeTranslation;
-import kg.edu.mathbilim.model.reference.user_type.UserTypeTranslationId;
+import kg.edu.mathbilim.model.user.user_type.UserTypeTranslation;
+import kg.edu.mathbilim.model.user.user_type.UserTypeTranslationId;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

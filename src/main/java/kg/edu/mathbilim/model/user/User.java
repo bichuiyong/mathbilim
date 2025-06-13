@@ -1,9 +1,10 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.reference.user_type.UserType;
+import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.user.user_type.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.test.Test;
 import lombok.*;

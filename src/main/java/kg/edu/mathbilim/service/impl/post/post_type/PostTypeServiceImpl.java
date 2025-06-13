@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class PostTypeServiceImpl implements PostTypeService {
         return postTypeRepository.findAll().stream()
                 .map(postType -> {
                     PostTypeDto dto = postTypeMapper.toDto(postType);
-                    dto.setPostTypeTranslations(Set.of(postTypeTranslationService.getTranslation(postType.getId(), languageCode)));
+                    dto.setPostTypeTranslations(List.of(postTypeTranslationService.getTranslation(postType.getId(), languageCode)));
                     return dto;
                 })
                 .toList();
@@ -61,14 +59,14 @@ public class PostTypeServiceImpl implements PostTypeService {
         PostTypeDto savedDto = postTypeMapper.toDto(savedPostType);
 
         if (postTypeDto.getPostTypeTranslations() != null && !postTypeDto.getPostTypeTranslations().isEmpty()) {
-            Set<PostTypeTranslationDto> savedTranslations = postTypeDto
+            List<PostTypeTranslationDto> savedTranslations = postTypeDto
                     .getPostTypeTranslations()
                     .stream()
                     .map(translation -> {
                         translation.setPostTypeId(savedPostType.getId());
                         return postTypeTranslationService.createTranslation(translation);
                     })
-                    .collect(Collectors.toSet());
+                    .toList();
             savedDto.setPostTypeTranslations(savedTranslations);
         }
 
@@ -83,14 +81,14 @@ public class PostTypeServiceImpl implements PostTypeService {
         if (postTypeDto.getPostTypeTranslations() != null) {
             postTypeTranslationService.deleteAllTranslationsByPostTypeId(id);
 
-            Set<PostTypeTranslationDto> savedTranslations =
+            List<PostTypeTranslationDto> savedTranslations =
                     postTypeDto.getPostTypeTranslations()
                             .stream()
                             .map(translation -> {
                                 translation.setPostTypeId(id);
                                 return postTypeTranslationService.createTranslation(translation);
                             })
-                            .collect(Collectors.toSet());
+                            .toList();
 
             dto.setPostTypeTranslations(savedTranslations);
             return dto;

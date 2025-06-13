@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.user;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

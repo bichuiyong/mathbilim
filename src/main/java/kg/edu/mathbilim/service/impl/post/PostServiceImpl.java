@@ -19,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Service
@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(post);
 
         if (attachments != null && attachments.length > 0) {
-            Set<File> uploadedFiles = fileService.uploadFilesForPost(
+            List<File> uploadedFiles = fileService.uploadFilesForPost(
                     attachments,
                     savedPost
             );

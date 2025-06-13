@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.model.reference;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.User;
+import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 
 import java.util.*;
