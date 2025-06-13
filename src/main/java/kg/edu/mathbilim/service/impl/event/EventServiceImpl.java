@@ -56,6 +56,7 @@ public class EventServiceImpl implements EventService {
         if (query == null || query.isEmpty()) {
             return getPage(() -> eventRepository.findAll(pageable));
         }
+//        return getPage(() -> eventRepository.findByQuery(query, pageable));
         return getPage(() -> eventRepository.findAll(pageable));
     }
 
@@ -70,11 +71,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public EventDto create(CreateEventDto createEventDto) {
-        MultipartFile[] attachments = createEventDto.getAttachments() == null ? new MultipartFile[0] : createEventDto.getAttachments();
-        MultipartFile mainImage = createEventDto.getImage() != null && createEventDto.getImage().isEmpty() ? null : createEventDto.getImage();
-        List<Long> organizationsIds = createEventDto.getOrganizationIds();
         EventDto eventDto = createEventDto.getEvent();
-
         eventDto.setUser(userService.getAuthUser());
         eventDto.setStatus(ContentStatus.PENDING_REVIEW);
 
@@ -85,8 +82,13 @@ public class EventServiceImpl implements EventService {
         List<EventTranslationDto> translations = eventDto.getEventTranslations();
         setEventTranslations(translations, savedEventId);
 
+        MultipartFile mainImage = createEventDto.getImage() != null && createEventDto.getImage().isEmpty() ? null : createEventDto.getImage();
         uploadMainImage(mainImage, savedEvent);
+
+        MultipartFile[] attachments = createEventDto.getAttachments() == null ? new MultipartFile[0] : createEventDto.getAttachments();
         uploadFilesForEvent(attachments, savedEvent);
+
+        List<Long> organizationsIds = createEventDto.getOrganizationIds();
         setEventOrganizations(organizationsIds, savedEvent);
 
         eventRepository.saveAndFlush(savedEvent);

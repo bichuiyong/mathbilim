@@ -1,16 +1,16 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.post.post_type.PostTypeService;
-import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller("mvcPost")
 @RequestMapping("posts")
@@ -18,28 +18,30 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
     private final PostService postService;
     private final PostTypeService postTypeService;
-    private final UserService userService;
+
+    @ModelAttribute
+    public void addCommonAttributes(Model model) {
+        model.addAttribute("postTypes", postTypeService.getPostTypesByLanguage("ru"));
+        model.addAttribute("languages", Language.getLanguagesMap());
+        model.addAttribute("languageEnum", Language.values());
+    }
 
     @GetMapping("create")
     public String createPost(Model model) {
-        model.addAttribute("user", userService.getAuthUser());
-        model.addAttribute("post", new PostDto());
-        model.addAttribute("postTypes", postTypeService.getAllPostTypes());
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .post(PostDto.builder().build())
+                .build();
+        model.addAttribute("createPostDto", createPostDto);
         return "media/post-create";
     }
 
     @PostMapping("create")
-    public String createPost(@ModelAttribute("post") @Valid PostDto post,
-                             BindingResult bindingResult,
-                             @RequestParam(required = false) MultipartFile[] attachments,
-                             Model model) {
+    public String createPost(@ModelAttribute("createPostDto") @Valid CreatePostDto post,
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", userService.getAuthUser());
-            model.addAttribute("postTypes", postTypeService.getAllPostTypes());
             return "media/post-create";
         }
-        if (attachments == null) attachments = new MultipartFile[0];
-        postService.createPost(post, attachments);
+        postService.createPost(post);
         return "redirect:/posts/";
     }
 
