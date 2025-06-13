@@ -5,7 +5,7 @@ import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.User;
-import kg.edu.mathbilim.model.reference.post_type.PostType;
+import kg.edu.mathbilim.model.post.post_type.PostType;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;

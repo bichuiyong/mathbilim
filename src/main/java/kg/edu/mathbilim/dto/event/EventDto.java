@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.reference.event_type.EventTypeDto;
+import kg.edu.mathbilim.dto.event.event_type.EventTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;

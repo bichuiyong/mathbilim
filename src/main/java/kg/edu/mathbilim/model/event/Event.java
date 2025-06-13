@@ -8,7 +8,7 @@ import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.model.User;
-import kg.edu.mathbilim.model.reference.event_type.EventType;
+import kg.edu.mathbilim.model.event.event_type.EventType;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;

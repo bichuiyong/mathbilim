@@ -2,9 +2,8 @@ package kg.edu.mathbilim.dto.post;
 
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.reference.post_type.PostTypeDto;
+import kg.edu.mathbilim.dto.post.post_type.PostTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 

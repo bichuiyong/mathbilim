@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.mapper.reference.user_type;
 
-import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
+import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
 import kg.edu.mathbilim.model.reference.user_type.UserType;
 import org.mapstruct.Mapper;
 

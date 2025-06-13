@@ -5,7 +5,7 @@ import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
-import kg.edu.mathbilim.service.interfaces.reference.event_type.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.event.event_type.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -66,10 +66,10 @@ public class EventController {
 
     @PostMapping("create")
     public String createEvent(@ModelAttribute("event") @Valid EventDto event,
-                              BindingResult bindingResult,
                               @RequestParam(required = false) MultipartFile mainImageMp,
                               @RequestParam(required = false) MultipartFile[] attachments,
                               @RequestParam(required = false) Long[] organizationIds,
+                              BindingResult bindingResult,
                               Model model) {
 
 

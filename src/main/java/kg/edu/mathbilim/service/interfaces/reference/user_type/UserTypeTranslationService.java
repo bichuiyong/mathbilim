@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.service.interfaces.reference.user_type;
 
-import kg.edu.mathbilim.dto.reference.user_type.UserTypeTranslationDto;
+import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
 import kg.edu.mathbilim.model.reference.user_type.UserTypeTranslation;
 import org.springframework.transaction.annotation.Transactional;
 
