@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.dto.event;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.OrganizationDto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +16,9 @@ public class CreateEventDto {
     @Valid
     EventDto event;
 
-    MultipartFile mainImage;
+    MultipartFile image;
 
     MultipartFile[] attachments;
 
-    List<OrganizationDto> organizations;
+    List<Long> organizationIds;
 }

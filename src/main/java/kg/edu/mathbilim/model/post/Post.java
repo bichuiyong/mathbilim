@@ -12,9 +12,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -75,9 +73,9 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "file_id")
     )
     @Builder.Default
-    private Set<File> files = new HashSet<>();
+    private List<File> files = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private Set<PostTranslation> postTranslations = new LinkedHashSet<>();
+    private List<PostTranslation> postTranslations = new ArrayList<>();
 
 }

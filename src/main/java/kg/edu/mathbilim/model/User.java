@@ -12,8 +12,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -69,7 +69,7 @@ public class User {
     private Instant updatedAt;
 
     @OneToMany(mappedBy = "user")
-    private Set<Test> tests = new LinkedHashSet<>();
+    private List<Test> tests = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "type_id")

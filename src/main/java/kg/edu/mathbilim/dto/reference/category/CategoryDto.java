@@ -2,7 +2,7 @@ package kg.edu.mathbilim.dto.reference.category;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,5 +12,5 @@ import java.util.Set;
 public class CategoryDto {
     private Integer id;
 
-    private Set<CategoryTranslationDto> categoryTranslations;
+    private List<CategoryTranslationDto> categoryTranslations;
 }

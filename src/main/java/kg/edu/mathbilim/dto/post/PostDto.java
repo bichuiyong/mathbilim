@@ -8,8 +8,8 @@ import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,8 +45,8 @@ public class PostDto {
 
     private FileDto mainImage;
 
-    Set<FileDto> files = new LinkedHashSet<>();
+    List<FileDto> files = new ArrayList<>();
 
-    private Set<PostTranslationDto> postTranslations;
+    private List<PostTranslationDto> postTranslations;
 
 }

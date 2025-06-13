@@ -15,9 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -67,7 +65,7 @@ public class Test {
     private User user;
 
     @OneToMany(mappedBy = "test")
-    private Set<TestChoice> testChoices = new LinkedHashSet<>();
+    private List<TestChoice> testChoices = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)

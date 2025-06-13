@@ -2,7 +2,7 @@ package kg.edu.mathbilim.dto.event.event_type;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,5 +12,5 @@ import java.util.Set;
 public class EventTypeDto {
     private Integer id;
 
-    private Set<EventTypeTranslationDto> eventTypeTranslations;
+    private List<EventTypeTranslationDto> eventTypeTranslations;
 }

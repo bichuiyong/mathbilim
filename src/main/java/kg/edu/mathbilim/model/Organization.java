@@ -12,8 +12,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -70,6 +70,6 @@ public class Organization {
     private Instant updatedAt;
 
     @ManyToMany(mappedBy = "organizations")
-    private Set<Event> events = new LinkedHashSet<>();
+    private List<Event> events = new ArrayList<>();
 
 }

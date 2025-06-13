@@ -3,8 +3,8 @@ package kg.edu.mathbilim.model.post.post_type;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "post_types")
@@ -19,5 +19,5 @@ public class PostType {
     private Integer id;
 
     @OneToMany(mappedBy = "postType")
-    private Set<PostTypeTranslation> postTypeTranslations = new LinkedHashSet<>();
+    private List<PostTypeTranslation> postTypeTranslations = new ArrayList<>();
 }

@@ -3,8 +3,8 @@ package kg.edu.mathbilim.model.reference.user_type;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +19,6 @@ public class UserType {
     private Integer id;
 
     @OneToMany(mappedBy = "userType")
-    private Set<UserTypeTranslation> userTypeTranslations = new LinkedHashSet<>();
+    private List<UserTypeTranslation> userTypeTranslations = new ArrayList<>();
 
 }

@@ -15,9 +15,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -82,15 +80,15 @@ public class Event {
     @JoinTable(name = "event_files",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "file_id"))
-    private Set<File> files = new LinkedHashSet<>();
+    private List<File> files = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "event_organizations",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "organization_id"))
-    private Set<Organization> organizations = new LinkedHashSet<>();
+    private List<Organization> organizations = new ArrayList<>();
 
     @OneToMany(mappedBy = "event")
-    private Set<EventTranslation> eventTranslations = new LinkedHashSet<>();
+    private List<EventTranslation> eventTranslations = new ArrayList<>();
 
 }

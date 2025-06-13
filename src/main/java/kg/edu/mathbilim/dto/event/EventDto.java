@@ -4,17 +4,15 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.event.event_type.EventTypeDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslation;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -38,9 +36,8 @@ public class EventDto {
     private LocalDateTime endDate;
 
     @NotNull
-    private EventTypeDto type;
+    private Long typeId;
 
-    @NotNull
     private UserDto user;
 
     @Builder.Default
@@ -62,7 +59,8 @@ public class EventDto {
     private Boolean isOffline;
 
     @Builder.Default
-    private Set<FileDto> files = new LinkedHashSet<>();
+    private List<FileDto> files = new ArrayList<>();
 
-    private Set<EventTranslationDto> eventTranslations;
+    @AtLeastOneTranslation
+    private List<EventTranslationDto> eventTranslations;
 }

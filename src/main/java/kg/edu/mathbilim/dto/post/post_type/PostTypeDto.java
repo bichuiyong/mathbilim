@@ -3,7 +3,7 @@ package kg.edu.mathbilim.dto.post.post_type;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,6 +13,6 @@ import java.util.Set;
 public class PostTypeDto {
     private Integer id;
 
-    private Set<PostTypeTranslationDto> postTypeTranslations;
+    private List<PostTypeTranslationDto> postTypeTranslations;
 
 }

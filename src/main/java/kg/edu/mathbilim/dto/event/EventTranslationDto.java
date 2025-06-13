@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto.event;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter

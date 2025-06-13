@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,5 +12,5 @@ import java.util.Set;
 public class UserTypeDto {
     private Integer id;
 
-    private Set<UserTypeTranslationDto> userTypeTranslations;
+    private List<UserTypeTranslationDto> userTypeTranslations;
 }

@@ -3,8 +3,8 @@ package kg.edu.mathbilim.model.event.event_type;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "event_types")
@@ -19,5 +19,5 @@ public class EventType {
     private Integer id;
 
     @OneToMany(mappedBy = "eventType")
-    private Set<EventTypeTranslation> eventTypeTranslations = new LinkedHashSet<>();
+    private List<EventTypeTranslation> eventTypeTranslations = new ArrayList<>();
 }
