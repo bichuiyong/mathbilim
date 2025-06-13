@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.OrganizationDto;
-import kg.edu.mathbilim.model.Event;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.Organization;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

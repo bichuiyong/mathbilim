@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.controller.mvc;
 
-import kg.edu.mathbilim.dto.UserDto;
-import kg.edu.mathbilim.service.interfaces.reference.RoleService;
-import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
+import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
+import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +20,7 @@ public class AdminController {
     public String index(Model model) {
         model.addAttribute("userDto", new UserDto());
         model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("types", userTypeService.getAll());
+        model.addAttribute("types", userTypeService.getAllUserTypes());
         return "admin/admin";
     }
 }

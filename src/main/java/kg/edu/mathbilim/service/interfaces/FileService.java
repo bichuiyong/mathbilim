@@ -1,38 +1,36 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.model.Event;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.Post;
-import kg.edu.mathbilim.model.User;
-import org.springframework.data.domain.Page;
+import kg.edu.mathbilim.model.post.Post;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
 public interface FileService {
+
+    File getEntityById(Long id);
+
     FileDto getById(Long id);
 
-    Page<FileDto> getFilePage(String query, int page, int size, String sortBy, String sortDirection);
-
-    Page<FileDto> getUserFiles(User user, String query,
-                               int page, int size,
-                               String sortBy, String sortDirection);
+    boolean existsById(Long fileId);
 
     @Transactional
-    Set<File> uploadFilesForEvent(MultipartFile[] files, Event event, User user);
-
-    FileDto uploadAvatar(MultipartFile avatarFile, User user);
+    Set<File> uploadFilesForPost(MultipartFile[] files, Post post);
 
     @Transactional
-    File uploadFileReturnEntity(MultipartFile multipartFile, String context, User user);
+    Set<File> uploadFilesForEvent(MultipartFile[] files, Event event);
 
     @Transactional
-    FileDto uploadFile(MultipartFile multipartFile, String context, User user);
+    FileDto uploadAvatar(MultipartFile avatarFile);
 
     @Transactional
-    Set<File> uploadFilesForPost(MultipartFile[] files, Post post, User user);
+    File uploadFileReturnEntity(MultipartFile multipartFile, String context);
+
+    @Transactional
+    FileDto uploadFile(MultipartFile multipartFile, String context);
 
     @Transactional
     FileDto updateFile(Long fileId, MultipartFile newFile);
@@ -41,8 +39,4 @@ public interface FileService {
     void deleteFile(Long fileId);
 
     byte[] downloadFile(Long fileId);
-
-    boolean existsById(Long fileId);
-
-    File getEntityById(Long id);
 }

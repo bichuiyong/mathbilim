@@ -1,13 +1,12 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.dto.reference.category.CategoryDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 @Setter

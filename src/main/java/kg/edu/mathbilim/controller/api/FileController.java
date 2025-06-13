@@ -1,17 +1,14 @@
 package kg.edu.mathbilim.controller.api;
 
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.model.User;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,27 +27,15 @@ public class FileController {
     @PostMapping()
     public ResponseEntity<FileDto> uploadFile(
             @RequestBody MultipartFile file,
-            @RequestParam(value = "context", defaultValue = "general") String context,
-            @AuthenticationPrincipal User user) {
+            @RequestParam(value = "context", defaultValue = "general") String context) {
 
-        FileDto fileDto = fileService.uploadFile(file, context, user);
+        FileDto fileDto = fileService.uploadFile(file, context);
         return ResponseEntity.status(HttpStatus.CREATED).body(fileDto);
     }
 
     @GetMapping("/{fileId}")
     public ResponseEntity<FileDto> getFile(@PathVariable Long fileId) {
         return ResponseEntity.ofNullable(fileService.getById(fileId));
-    }
-
-    @GetMapping("/my")
-    public ResponseEntity<Page<FileDto>> getUserFiles(@AuthenticationPrincipal User user,
-                                                      @RequestParam(required = false, defaultValue = "1") int page,
-                                                      @RequestParam(required = false, defaultValue = "10") int size,
-                                                      @RequestParam(required = false) String query,
-                                                      @RequestParam(required = false, defaultValue = "name") String sortBy,
-                                                      @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return ResponseEntity.ofNullable(fileService.getUserFiles(user, query, page, size, sortBy, sortDirection));
-
     }
 
     @GetMapping("/{fileId}/download")
@@ -97,12 +82,11 @@ public class FileController {
     @PostMapping("/multiple")
     public ResponseEntity<List<FileDto>> uploadMultipleFiles(
             @RequestBody MultipartFile[] files,
-            @RequestParam(value = "context", defaultValue = "general") String context,
-            @AuthenticationPrincipal User user) {
+            @RequestParam(value = "context", defaultValue = "general") String context) {
 
 
         List<FileDto> uploadedFiles = Stream.of(files)
-                .map(file -> fileService.uploadFile(file, context, user))
+                .map(file -> fileService.uploadFile(file, context))
                 .toList();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFiles);
