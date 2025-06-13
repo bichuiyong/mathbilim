@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
-    private final UserTypeService userTypeService;
+    private final TranslationService translationService;
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -51,7 +52,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("types", userTypeService.getAllUserTypes());
+        model.addAttribute("types", translationService.getUserTypesByLanguage());
         return "auth/register";
     }
 
@@ -61,7 +62,7 @@ public class AuthController {
                                       Model model, HttpServletRequest request) {
 
         if (result.hasErrors()) {
-            model.addAttribute("types", userTypeService.getAllUserTypes());
+            model.addAttribute("types", translationService.getUserTypesByLanguage());
             model.addAttribute("errors", result);
             return "auth/register";
         }
@@ -70,7 +71,7 @@ public class AuthController {
             return "redirect:/auth/registration-success";
         } catch (Exception e) {
             model.addAttribute("error", "Ошибка при регистрации: " + e.getMessage());
-            model.addAttribute("types", userTypeService.getAllUserTypes());
+            model.addAttribute("types", translationService.getUserTypesByLanguage());
             return "auth/register";
         }
     }

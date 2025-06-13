@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
@@ -41,8 +42,8 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto) {
-//        userService.createUser(userDto);
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
+        userService.createUser(userDto, request);
         return ResponseEntity.ok().build();
     }
 

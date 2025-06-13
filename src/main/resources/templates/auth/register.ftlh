@@ -66,7 +66,7 @@
                                 <select class="account-type-dropdown" id="type" name="type.id">
                                     <#list types as type>
                                     <option value="${type.id}">
-                                        ${type.name}
+                                        ${type.userTypeTranslations[0].translation}
                                     </option>
                                 </#list>
                                 </select>

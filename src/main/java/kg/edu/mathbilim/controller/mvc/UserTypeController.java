@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class UserTypeController {
     private final UserService userService;
-    private final UserTypeService userTypeService;
+    private final TranslationService translationService;
 
     @GetMapping("/select-user-type")
     public String selectUserTypePage(Authentication authentication, Model model) {
@@ -30,7 +30,7 @@ public class UserTypeController {
             return "redirect:/";
         }
 
-        var userTypes = userTypeService.getAllUserTypes();
+        var userTypes = translationService.getUserTypesByLanguage();
         model.addAttribute("userTypes", userTypes);
         model.addAttribute("user", user);
 
