@@ -59,7 +59,7 @@
                                         <select class="account-type-dropdown" id="type" name="typeId">
                                             <#list types as type>
                                                 <option value="${type.id}" <#if userEditDto.typeId == type.id>selected</#if>>
-                                                    ${type.name}
+                                                    ${type.userTypeTranslations[0].translation}
                                                 </option>
                                             </#list>
                                         </select>
