@@ -3,6 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class AdminController {
     private final RoleService roleService;
-    private final UserTypeService userTypeService;
+    private final TranslationService translationService;
 
     @GetMapping
     public String index(Model model) {
         model.addAttribute("userDto", new UserDto());
         model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("types", userTypeService.getAllUserTypes());
+        model.addAttribute("types", translationService.getUserTypesByLanguage());
         return "admin/admin";
     }
 

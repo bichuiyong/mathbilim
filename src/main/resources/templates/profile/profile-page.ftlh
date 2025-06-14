@@ -18,7 +18,7 @@
                     <div class="profile-role mb-3">
                         🎯
                         <#if user.type?? && user.type?has_content>
-                            ${user.type.name}
+                            ${user.type.userTypeTranslations[0].translation}
                         <#else>
                             Администратор / Модератор
                         </#if>
