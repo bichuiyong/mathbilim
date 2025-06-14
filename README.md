@@ -1,57 +1,81 @@
 # MathBilim - образовательная платформа
 
-## Требования для запуска
-- Java 21 - https://docs.fabricmc.net/ru_ru/players/installing-java/windows
-- PostgreSQL -https://selectel.ru/blog/tutorials/ustanovka-postgresql-15-windows/
-- Git - https://docs.github.com/ru/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop
-## Установка и запуск
+## ⚙ Требования для запуска
 
-1.Создайте папку куда вы будете клонировать проект
+- [Java 21](https://docs.fabricmc.net/ru_ru/players/installing-java/windows)
+- [PostgresQL](https://selectel.ru/blog/tutorials/ustanovka-postgresql-15-windows/)
+- [Git](https://docs.github.com/ru/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
-2.Перейди в папку через консоль
-cd ~/projects
+---
 
-3.С клонируйте репоситорий
+## <h1>🛠 Установка и запуск</h1>
+
+<h3>1. Создай папку, куда будешь клонировать проект.</h3>
+
+<h3>2. Далее перейди в эту папку с помощью командной строки <br> (если папка на рабочем столе не забудьте выполнить cd ~/Desktop):</h3>
+
+```
+cd <ваша папка> 
+```
+
+<h3>3. Клонируй репозиторий:</h3>
+
+```
 git clone https://github.com/aishkoy/mathbilim.git
+```
+<h3>4. Зайди в папку с проектом:</h3>
 
-4.Перейдите к папке репозитория
+```
 cd mathbilim
+```
+<h3>5. Перейди на ветку dev:</h3>
 
-5.Перейдите к ветке dev
+```
 git checkout dev
+```
+<h3>6. Запусти сборку jar:</h3>
 
-6.Запустите сборку jar
+
+✅ В Windows:
+```
+.\mvnw clean package -DskipTests
+```
+✅ В Mac:
+```
 ./mvnw clean package -DskipTests
+```
+<h3>7. Далее перейди в папку target:</h3>
 
-7.Дальше в проекте у вас появится папка target, добавьте в нее файл без расширения с названием .env
-его содержимое (вручную или через консоль):
-
+```
 cd target
+```
+<h3>8. В папке target нужно создать файл без расширения, с содержимым:</h3>
 
-(Через консоль: 
-touch .env
-nano .env )
+```
+AWS_ACCESS_KEY_ID=<ваш AWS_ACCESS_KEY_ID>
+AWS_SECRET_ACCESS_KEY=<ваш AWS_SECRET_ACCESS_KEY>
+AWS_REGION=<ваш AWS_REGION>
+AWS_S3_BUCKET_NAME=<ваш AWS_S3_BUCKET_NAME>
 
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=
-AWS_S3_BUCKET_NAME=
+DB_URL=<ваш url базы>
+DB_USERNAME=<ваш логин к базе>
+DB_PASSWORD=<ваш пароль к базе>
 
-DB_URL=url баззы (пример: jdbc:postgresql://localhost:5432/postgres)
-DB_USERNAME=название вашей баззы данных
-DB_PASSWORD=пароль
+GOOGLE_CLIENT_ID=<ваш Google Client ID>
+GOOGLE_CLIENT_SECRET=<ваш Google Client Secret>
 
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
+RESET_EMAIL=<ваш email>
+RESET_PASSWORD=<ваш password>
 
-(ctrl x + y)
+```
 
-8.Дальше выполните команду запуска jar:
+<h3>9. Запусти приложение командой:</h3>
+
+```
 java -jar mathbilim-0.0.1-SNAPSHOT.jar
+```
 
-если все сделано правильно файл запустится, перейдите в браузере по ссылке
-http://localhost:9999/ в браузере
+🔹 Главная страница: http://localhost:9999/
 
-для просмотра имеющихся апи: http://localhost:9999/swagger-ui/index.html
+🔹 API документация (Swagger): http://localhost:9999/swagger-ui/index.html
 
-(не забудьте завершать процесс (незнаю как на маке))
