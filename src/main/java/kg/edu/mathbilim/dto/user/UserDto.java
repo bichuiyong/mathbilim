@@ -53,6 +53,5 @@ public class UserDto {
     private RoleDto role;
 
     @NotNull(message = "Выберите тип аккаунта")
-    @Valid
     private UserTypeDto type;
 }
