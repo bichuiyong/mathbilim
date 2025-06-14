@@ -10,10 +10,12 @@ $white: #ffffff;
 $light-gray: #f8fafc;
 $text-dark: #1e293b;
 $text-gray: #64748b;
+$text-muted: #9ca3af;
 $border-gray: #e2e8f0;
 $success: #10b981;
 $warning: #f59e0b;
 $error: #ef4444;
+$primary-color: #2563eb;
 
 // Дополнительные цвета
 $hover-blue: #1d4ed8;
@@ -24,6 +26,8 @@ $border-radius: 8px;
 $transition: 0.3s ease;
 $box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 $box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
 
 // ==========================================
 // ГЛОБАЛЬНЫЕ СТИЛИ
@@ -84,7 +88,7 @@ body {
     margin: 0 1rem;
     text-decoration: none;
     font-weight: 500;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 0.75rem;
     border-radius: $border-radius;
     transition: all $transition;
 
@@ -102,7 +106,7 @@ body {
     font-weight: 600;
     margin: 0 0.75rem;
     font-size: 1.1rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.25rem 1rem;
     border-radius: $border-radius;
     transition: all $transition;
 
@@ -456,6 +460,311 @@ body {
 }
 
 // ==========================================
+// ГЛАВНАЯ СТРАНИЦА - HERO SECTION
+// ==========================================
+
+.hero-section {
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, $light-gray 0%, $border-gray 100%);
+  border-radius: $border-radius;
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: $text-dark;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    color: $text-gray;
+    margin-bottom: 2rem;
+  }
+
+  .hero-buttons {
+    .btn {
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      @media (max-width: 991px) {
+        margin: 0.75rem 1rem;
+      }
+    }
+  }
+
+  .hero-image {
+    .img-fluid {
+      border-radius: $border-radius;
+    }
+  }
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - АНОНСЫ
+// ==========================================
+
+.announcement-icon {
+  font-size: 1.5rem;
+  color: $warning;
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - ЗАГОЛОВКИ СЕКЦИЙ
+// ==========================================
+
+.section-header {
+  h3 {
+    font-weight: 700;
+    color: $text-dark;
+    border-bottom: 3px solid $primary-blue;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - КАРУСЕЛЬ
+// ==========================================
+
+.carousel {
+  .carousel-image {
+    height: 550px;
+    object-fit: cover;
+  }
+
+  .carousel-caption {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: $border-radius;
+    padding: 1.5rem;
+
+    .caption-content {
+      h5 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: $white;
+      }
+
+      p {
+        color: $border-gray;
+      }
+    }
+  }
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - НОВОСТИ С СКРОЛОМ
+// ==========================================
+
+.news-section {
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin: 1rem 0;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.news-footer {
+  text-align: center;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.news-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid $border-gray;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .news-date {
+    color: $text-gray;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+
+    .news-stats {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .news-content {
+    font-weight: 600;
+    line-height: 1.4;
+    color: $text-dark;
+    margin-bottom: 0;
+  }
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - БЫСТРЫЙ ДОСТУП
+// ==========================================
+
+.quick-access-section {
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    background: $primary-blue;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: $white;
+    font-size: 1.5rem;
+  }
+
+  .card {
+    text-align: center;
+
+    h4 {
+      color: $text-dark;
+      font-weight: 700;
+      margin: 1rem 0 0.5rem;
+    }
+
+    p {
+      color: $text-gray;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - СОБЫТИЯ
+// ==========================================
+
+.events-section {
+  position: relative;
+
+  .events-scroll-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .events-scroll-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .event-card-wrapper {
+    flex: 0 0 calc(25.333% - 1rem);
+    min-width: 320px;
+
+    @media (max-width: 1200px) {
+      flex: 0 0 calc(50% - 0.75rem);
+    }
+
+    @media (max-width: 768px) {
+      flex: 0 0 calc(100% - 0.5rem);
+    }
+  }
+
+  .event-card {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all $transition;
+
+    &:hover {
+      .event-image {
+        img {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    .event-image {
+      position: relative;
+      margin: 1rem;
+      height: 240px;
+      overflow: hidden;
+      border-radius: $border-radius $border-radius 0 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform $transition;
+      }
+
+      .event-date-overlay {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: $primary-blue;
+        color: $white;
+        padding: 0.5rem 0.75rem;
+        border-radius: $border-radius;
+        text-align: center;
+        box-shadow: $box-shadow;
+
+        .event-day {
+          display: block;
+          font-size: 1.25rem;
+          font-weight: 700;
+          line-height: 1;
+        }
+
+        .event-month {
+          display: block;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .event-content {
+      padding: 0 1.5rem;
+
+      h5 {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: $text-dark;
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+// ==========================================
 // УТИЛИТЫ
 // ==========================================
 
@@ -478,6 +787,164 @@ body {
 // Утилита для gap в flexbox
 .gap-2 {
   gap: 0.5rem !important;
+}
+
+// ==========================================
+// ГЛАВНАЯ СТРАНИЦА - СЕКЦИЯ БЛОГА
+// ==========================================
+
+.blog-section {
+  .blog-masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 200px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 992px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .blog-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: $border-radius;
+    text-decoration: none;
+    display: block;
+    transition: all $transition;
+    box-shadow: $box-shadow;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: $box-shadow-lg;
+
+      img {
+        transform: scale(1.05);
+      }
+
+      .blog-overlay {
+        opacity: 1;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition;
+    }
+
+    .blog-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      color: $white;
+      opacity: 0.9;
+      transition: opacity $transition;
+
+      @media (min-width: 768px) {
+        opacity: 0;
+      }
+    }
+
+    .blog-category {
+      background: $primary-blue;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
+    }
+
+    .blog-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+      color: $white;
+    }
+
+    .blog-excerpt {
+      font-size: 0.875rem;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .blog-date {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    // Grid item sizes
+    &-large {
+      grid-column: span 2;
+      grid-row: span 2;
+
+      @media (max-width: 991px) {
+        grid-column: span 1;
+        grid-row: span 1;
+      }
+
+      .blog-title {
+        font-size: 1rem;
+      }
+
+      .blog-excerpt {
+        -webkit-line-clamp: 1;
+        font-size: 0.8rem;
+      }
+    }
+
+
+    &-small {
+      grid-column: span 1;
+      grid-row: span 1;
+
+      .blog-title {
+        font-size: 1rem;
+      }
+
+      .blog-excerpt {
+        -webkit-line-clamp: 1;
+        font-size: 0.8rem;
+      }
+    }
+
+    &-tall {
+      grid-column: span 1;
+      grid-row: span 2;
+
+      @media (max-width: 767px) {
+        grid-row: span 1;
+      }
+
+      .blog-excerpt {
+        -webkit-line-clamp: 2;
+      }
+    }
+  }
 }
 
 // ==========================================
@@ -518,6 +985,53 @@ body {
     .col-md-6 {
       margin-bottom: 2rem;
     }
+  }
+
+  // Главная страница - мобильные стили
+  .hero-section {
+    padding: 2rem 1rem;
+
+    .hero-title {
+      font-size: 2rem;
+    }
+  }
+
+  .announcement-banner {
+    .d-flex {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .announcement-action {
+      margin-top: 1rem;
+    }
+  }
+
+  .events-section {
+    .event-card {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .carousel {
+    .carousel-image {
+      height: 250px;
+    }
+  }
+
+  // Новости на мобильных устройствах
+  .news-section {
+    height: auto;
+    max-height: 400px;
+  }
+
+  .news-container {
+    max-height: 300px;
+  }
+
+  .news-footer {
+    padding-top: 0.75rem;
   }
 }
 

@@ -85,10 +85,10 @@
                                         </a>
                                     </#if>
                                 <#else>
-                                    <a href="/login" class="btn-icon" title="Войти">
+                                    <a href="/auth/login" class="btn-icon" title="Войти">
                                         <i class="fas fa-sign-in-alt"></i>
                                     </a>
-                                    <a href="/register" class="btn-icon" title="Регистрация">
+                                    <a href="/auth/register" class="btn-icon" title="Регистрация">
                                         <i class="fas fa-user-plus"></i>
                                     </a>
                                 </#if>
@@ -215,6 +215,7 @@
                         <li class="mb-2"><a href="/publications" class="footer-link">Публикации</a></li>
                         <li class="mb-2"><a href="/blog" class="footer-link">Блог</a></li>
                         <li class="mb-2"><a href="/events" class="footer-link">Мероприятия</a></li>
+                        <li class="mb-2"><a href="/news" class="footer-link">Новости</a></li>
                     </ul>
                 </div>
 
@@ -222,7 +223,6 @@
                     <h5>Информация</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="/about" class="footer-link">О нас</a></li>
-                        <li class="mb-2"><a href="/news" class="footer-link">Новости</a></li>
                         <li class="mb-2"><a href="/privacy" class="footer-link">Политика конфиденциальности</a></li>
                         <li class="mb-2"><a href="/terms" class="footer-link">Условия использования</a></li>
                         <li class="mb-2"><a href="/help" class="footer-link">Помощь</a></li>
