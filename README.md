@@ -49,7 +49,7 @@ git checkout dev
 ```
 cd target
 ```
-<h3>8. В папке target нужно создать файл без расширения, с содержимым:</h3>
+<h3>8. В папке target нужно создать файл c названием .env без расширения, с содержимым:</h3>
 
 ```
 AWS_ACCESS_KEY_ID=<ваш AWS_ACCESS_KEY_ID>
