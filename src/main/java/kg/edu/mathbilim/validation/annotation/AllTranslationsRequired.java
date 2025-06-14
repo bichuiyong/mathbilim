@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = AllTranslationsRequiredValidator.class)
 public @interface AllTranslationsRequired {
     String message() default "Все переводы должны быть заполнены";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

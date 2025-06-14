@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.reference.user_type.UserTypeDto;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
 import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Controller
 @RequestMapping("admin")
@@ -29,6 +28,7 @@ public class AdminController {
         model.addAttribute("types", userTypeService.getAllUserTypes());
         return "admin/admin";
     }
+
     @GetMapping("create-userType")
     public String createUserType(Model model) {
         model.addAttribute("userTypeDto", new UserTypeDto());

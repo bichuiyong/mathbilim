@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = AtLeastOneTranslationRequiredValidator.class)
 public @interface AtLeastOneTranslationRequired {
     String message() default "Должен быть заполнен хотя бы один перевод";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
