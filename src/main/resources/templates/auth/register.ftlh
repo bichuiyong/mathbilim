@@ -63,15 +63,12 @@
                         <div class="mb-4">
                             <label for="type" class="form-label">Account Type</label>
                             <div class="account-type-select">
-                                <select class="account-type-dropdown" id="type" name="type">
-                                    <option value="">-- выберите тип аккаунта --</option>
+                                <select class="account-type-dropdown" id="type" name="type.id">
                                     <#list types as type>
-                                        <#list type.userTypeTranslations as t>
-                                            <option value="${type.id}">
-                                                ${t.translation}
-                                            </option>
-                                        </#list>
-                                    </#list>
+                                    <option value="${type.id}">
+                                        ${type.userTypeTranslations[0].translation}
+                                    </option>
+                                </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
