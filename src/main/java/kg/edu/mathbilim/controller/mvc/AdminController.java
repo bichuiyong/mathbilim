@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminController {
     private final RoleService roleService;
     private final TranslationService translationService;
+    private final UserTypeService userTypeService;
 
     @GetMapping
     public String index(Model model) {
