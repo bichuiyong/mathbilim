@@ -63,12 +63,15 @@
                         <div class="mb-4">
                             <label for="type" class="form-label">Account Type</label>
                             <div class="account-type-select">
-                                <select class="account-type-dropdown" id="type" name="type.id">
+                                <select class="account-type-dropdown" id="type" name="type">
+                                    <option value="">-- выберите тип аккаунта --</option>
                                     <#list types as type>
-                                    <option value="${type.id}">
-                                        ${type.name}
-                                    </option>
-                                </#list>
+                                        <#list type.userTypeTranslations as t>
+                                            <option value="${type.id}">
+                                                ${t.translation}
+                                            </option>
+                                        </#list>
+                                    </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
@@ -76,7 +79,9 @@
                                 <div class="error">${errors.getFieldError("type.id").defaultMessage}</div>
                             </#if>
                         </div>
-
+                        <div>
+                            <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
+                        </div>
                         <button class="login-btn" type="submit">
                             <i class="bi bi-person-plus me-2"></i>
                             Register

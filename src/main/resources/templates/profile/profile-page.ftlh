@@ -17,12 +17,13 @@
                     <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
                     <div class="profile-role mb-3">
                         🎯
-                        <#if user.type?? && user.type?has_content>
-                            ${user.type.name}
+                        <#if user.type?? && user.type.userTypeTranslations?? && (user.type.userTypeTranslations?size > 0)>
+                            ${user.type.userTypeTranslations[2].translation}
                         <#else>
                             Администратор / Модератор
                         </#if>
                     </div>
+
                     <div class="row justify-content-center justify-content-md-start">
                         <div class="col-4 col-md-auto text-center px-2 px-md-3">
                             <span class="metric-value d-block">24</span>
