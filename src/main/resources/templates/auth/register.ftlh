@@ -1,103 +1,221 @@
 <#import "../layout.ftlh" as main>
-<@main.layout ; spring>
-    <link rel="stylesheet" href="../static/scss/main.css">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="login-card">
-                    <div class="login-header">
-                        <div class="icon">
-                            <i class="bi bi-person-plus"></i>
+<#import "/spring.ftl" as spring>
+
+<@main.layout "Регистрация">
+    <div class="container my-5">
+        <div class="row justify-content-center align-items-center min-vh-50">
+            <div class="col-md-10 col-lg-8">
+                <div class="row g-0 shadow-lg rounded overflow-hidden">
+                    <!-- Левая панель с информацией -->
+                    <div class="col-lg-5 bg-primary text-white p-5 d-flex flex-column justify-content-center">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-graduation-cap mb-3" style="font-size: 4rem;"></i>
+                            <h2 class="fw-bold">Добро пожаловать!</h2>
                         </div>
-                        <h2>Registration</h2>
-                        <p>Create your account</p>
+                        <p class="mb-4 text-center opacity-90">
+                            Присоединяйтесь к сообществу MathBilim и откройте для себя мир математического образования
+                        </p>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-check-circle me-3"></i>
+                                <span>Доступ к олимпиадным задачам</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-check-circle me-3"></i>
+                                <span>Интерактивные тесты</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle me-3"></i>
+                                <span>Образовательные материалы</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <#if error?? && errorMessage??>
-                        <div class="alert alert-danger alert-custom mb-4" role="alert">
-                            <strong>${errorMessage}</strong>
-                        </div>
-                    </#if>
+                    <!-- Правая панель с формой -->
+                    <div class="col-lg-7 bg-white p-5">
+                        <h3 class="mb-4 fw-bold text-dark">Создать аккаунт</h3>
 
-                    <form action="/auth/register" method="post">
-                        <#if _csrf??>
-                            <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>
+                        <#if error??>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                ${error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
                         </#if>
 
-                        <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <div class="input-wrapper">
-                                <@spring.formInput "userDto.name" 'type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter your first name"'/>
-                                <i class="bi bi-person input-icon"></i>
+                        <form action="/auth/register" method="post">
+                            <@main.csrf/>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label small text-muted">Имя</label>
+                                    <@spring.bind "userDto.name"/>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0 bg-white">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </span>
+                                        <input type="text"
+                                               class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
+                                               id="name"
+                                               name="${spring.status.expression}"
+                                               value="${spring.stringStatusValue}"
+                                               placeholder="Введите имя"
+                                               >
+                                        <#if spring.status.errorMessages?has_content>
+                                            <div class="invalid-feedback">
+                                                <#list spring.status.errorMessages as error>
+                                                    ${error}
+                                                </#list>
+                                            </div>
+                                        </#if>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="surname" class="form-label small text-muted">Фамилия</label>
+                                    <@spring.bind "userDto.surname"/>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0 bg-white">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </span>
+                                        <input type="text"
+                                               class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
+                                               id="surname"
+                                               name="${spring.status.expression}"
+                                               value="${spring.stringStatusValue}"
+                                               placeholder="Введите фамилию"
+                                               >
+                                        <#if spring.status.errorMessages?has_content>
+                                            <div class="invalid-feedback">
+                                                <#list spring.status.errorMessages as error>
+                                                    ${error}
+                                                </#list>
+                                            </div>
+                                        </#if>
+                                    </div>
+                                </div>
                             </div>
-                            <@spring.showErrors '<div class="error">' "</div>"/>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <div class="input-wrapper">
-                                <@spring.formInput "userDto.surname" 'type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter your last name"'/>
-                                <i class="bi bi-person input-icon"></i>
+                            <div class="mb-3">
+                                <label for="email" class="form-label small text-muted">Email адрес</label>
+                                <@spring.bind "userDto.email"/>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 bg-white">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    <input type="email"
+                                           class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
+                                           id="email"
+                                           name="${spring.status.expression}"
+                                           value="${spring.stringStatusValue}"
+                                           placeholder="example@email.com"
+                                           >
+                                    <#if spring.status.errorMessages?has_content>
+                                        <div class="invalid-feedback">
+                                            <#list spring.status.errorMessages as error>
+                                                ${error}
+                                            </#list>
+                                        </div>
+                                    </#if>
+                                </div>
                             </div>
-                            <@spring.showErrors '<div class="error">' "</div>"/>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <div class="input-wrapper">
-                                <@spring.formInput "userDto.email" 'type="email" id="email" name="email" class="form-control" placeholder="example@email.com"'/>
-                                <i class="bi bi-envelope input-icon"></i>
+                            <div class="mb-3">
+                                <label for="password" class="form-label small text-muted">Пароль</label>
+                                <@spring.bind "userDto.password"/>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 bg-white">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password"
+                                           class="form-control border-start-0 border-end-0 ${(spring.status.error)?then('is-invalid', '')}"
+                                           id="password"
+                                           name="${spring.status.expression}"
+                                           placeholder="Минимум 6 символов"
+                                           >
+                                    <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <#if spring.status.errorMessages?has_content>
+                                        <div class="invalid-feedback">
+                                            <#list spring.status.errorMessages as error>
+                                                ${error}
+                                            </#list>
+                                        </div>
+                                    </#if>
+                                </div>
                             </div>
-                            <@spring.showErrors "<br>" "error text-danger"/>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-wrapper">
-                                <@spring.formPasswordInput "userDto.password" 'type="password" id="password" name="password" class="form-control" placeholder="Create a strong password"'/>
-                                <i class="bi bi-lock input-icon"></i>
+                            <div class="mb-4">
+                                <label for="typeId" class="form-label small text-muted">Тип аккаунта</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 bg-white">
+                                        <i class="fas fa-user-tag text-muted"></i>
+                                    </span>
+                                    <select class="form-control border-start-0"
+                                            id="typeId"
+                                            name="type.id"
+                                            >
+                                        <option value="">Выберите тип аккаунта</option>
+                                        <#list types as type>
+                                            <option value="${type.id}">
+                                                ${type.userTypeTranslations[0].translation}
+                                            </option>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <#if errors?? && errors.hasFieldErrors("type.id")>
+                                    <div class="text-danger small mt-1">
+                                        ${errors.getFieldError("type.id").defaultMessage}
+                                    </div>
+                                </#if>
                             </div>
-                            <@spring.showErrors "<br>" "error text-danger"/>
-                        </div>
 
-                        <div class="mb-4">
-                            <label for="type" class="form-label">Account Type</label>
-                            <div class="account-type-select">
-                                <select class="account-type-dropdown" id="type" name="type.id">
-                                    <#list types as type>
-                                    <option value="${type.id}">
-                                        ${type.userTypeTranslations[0].translation}
-                                    </option>
-                                </#list>
-                                </select>
-                                <i class="bi bi-chevron-down dropdown-icon"></i>
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary py-3">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Зарегистрироваться
+                                </button>
                             </div>
-                            <#if errors?? && errors.hasFieldErrors("type.id")>
-                                <div class="error">${errors.getFieldError("type.id").defaultMessage}</div>
-                            </#if>
+                        </form>
+
+                        <div class="text-center">
+                            <div class="d-flex align-items-center my-4">
+                                <hr class="flex-grow-1">
+                                <span class="mx-3 text-muted small">или</span>
+                                <hr class="flex-grow-1">
+                            </div>
+
+                            <a href="/oauth2/authorization/google" class="btn btn-outline-secondary w-100 mb-3">
+                                <img src="https://www.google.com/favicon.ico" width="20" height="20" class="me-2">
+                                Продолжить с Google
+                            </a>
+
+                            <p class="mb-0 small text-muted">
+                                Уже есть аккаунт?
+                                <a href="/auth/login" class="text-primary fw-bold">Войти</a>
+                            </p>
                         </div>
-
-                        <button class="login-btn" type="submit">
-                            <i class="bi bi-person-plus me-2"></i>
-                            Register
-                        </button>
-                    </form>
-
-                    <div class="auth-footer">
-                        <p>Already have an account? <a href="/auth/login">Sign In</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <#if error?? && errorMessage??>
-        <script>
-            window.onload = function () {
-                const alert = document.getElementById('errorAlert');
-                alert.classList.add('visible');
-                setTimeout(() => alert.classList.remove('visible'), 5000);
-            };
-        </script>
-    </#if>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
 </@main.layout>
