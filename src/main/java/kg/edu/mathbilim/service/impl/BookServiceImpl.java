@@ -9,7 +9,7 @@ import kg.edu.mathbilim.mapper.BookMapper;
 import kg.edu.mathbilim.model.Book;
 import kg.edu.mathbilim.repository.BookRepository;
 import kg.edu.mathbilim.service.interfaces.BookService;
-import kg.edu.mathbilim.service.interfaces.reference.category.CategoryService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

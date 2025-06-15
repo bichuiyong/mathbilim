@@ -23,7 +23,6 @@
                             Администратор / Модератор
                         </#if>
                     </div>
-
                     <div class="row justify-content-center justify-content-md-start">
                         <div class="col-4 col-md-auto text-center px-2 px-md-3">
                             <span class="metric-value d-block">24</span>
