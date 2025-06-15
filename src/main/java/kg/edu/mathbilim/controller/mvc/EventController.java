@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.CaptchaResponseDto;
 import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
@@ -8,19 +9,28 @@ import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 
 @Controller("mvcEvent")
 @RequestMapping("events")
 @RequiredArgsConstructor
 public class EventController {
+    private static final String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
     private final EventService eventService;
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
+    private final RestTemplate restTemplate;
+
+    @Value("${recaptcha.secret}")
+    private String secret;
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
@@ -53,10 +63,16 @@ public class EventController {
     }
 
     @PostMapping("create")
-    public String createEvent(@ModelAttribute("createEventDto")
-                              @Valid CreateEventDto createEventDto,
-                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+    public String createEvent(@ModelAttribute("createEventDto") @Valid CreateEventDto createEventDto,
+                              BindingResult bindingResult,
+                              @RequestParam("g-recaptcha-response") String captchaResponse
+    ) {
+
+        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
+        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
+
+        assert response != null;
+        if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
             return "events/event-create";
         }
 
