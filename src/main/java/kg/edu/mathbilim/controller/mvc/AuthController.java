@@ -4,25 +4,39 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.CaptchaResponseDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 
 @Controller
 @RequestMapping("auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
     private final UserService userService;
     private final TranslationService translationService;
+
+
+    @Value("${recaptcha.secret}")
+    private String secret;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -59,7 +73,15 @@ public class AuthController {
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("userDto") @Valid UserDto userDto,
                                       BindingResult result,
-                                      Model model, HttpServletRequest request) {
+                                      Model model, HttpServletRequest request,
+                                      @RequestParam("g-recaptcha-response") String captchaResponse) {
+        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
+        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
+
+        assert response != null;
+        if (!response.getSuccess()) {
+            return "auth/register";
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("types", translationService.getUserTypesByLanguage());

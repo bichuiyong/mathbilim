@@ -184,6 +184,9 @@ tinymce:
     strict-type-checking: true
     quarantine-suspicious: true
 
+recaptcha:
+  secret: ${RECAPTCHA_SECRET_KEY}
+
 logging:
   level:
     root: info

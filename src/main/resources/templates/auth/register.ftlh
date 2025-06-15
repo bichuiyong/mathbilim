@@ -76,7 +76,9 @@
                                 <div class="error">${errors.getFieldError("type.id").defaultMessage}</div>
                             </#if>
                         </div>
-
+                        <div>
+                            <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
+                        </div>
                         <button class="login-btn" type="submit">
                             <i class="bi bi-person-plus me-2"></i>
                             Register
