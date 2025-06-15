@@ -48,127 +48,64 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="name" class="form-label small text-muted">Имя</label>
-                                    <@spring.bind "userDto.name"/>
-                                    <div class="input-group">
-                                        <span class="input-group-text border-end-0 bg-white">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </span>
-                                        <input type="text"
-                                               class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
-                                               id="name"
-                                               name="${spring.status.expression}"
-                                               value="${spring.stringStatusValue}"
-                                               placeholder="Введите имя"
-                                               >
-                                        <#if spring.status.errorMessages?has_content>
-                                            <div class="invalid-feedback">
-                                                <#list spring.status.errorMessages as error>
-                                                    ${error}
-                                                </#list>
-                                            </div>
-                                        </#if>
-                                    </div>
+                                    <label for="name" class="form-label small text-muted">
+                                        <i class="fas fa-user text-muted me-1"></i>
+                                        Имя *
+                                    </label>
+                                    <@spring.formInput "userDto.name", "class='form-control' id='name' placeholder='Введите имя'", "text"/>
+                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="surname" class="form-label small text-muted">Фамилия</label>
-                                    <@spring.bind "userDto.surname"/>
-                                    <div class="input-group">
-                                        <span class="input-group-text border-end-0 bg-white">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </span>
-                                        <input type="text"
-                                               class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
-                                               id="surname"
-                                               name="${spring.status.expression}"
-                                               value="${spring.stringStatusValue}"
-                                               placeholder="Введите фамилию"
-                                               >
-                                        <#if spring.status.errorMessages?has_content>
-                                            <div class="invalid-feedback">
-                                                <#list spring.status.errorMessages as error>
-                                                    ${error}
-                                                </#list>
-                                            </div>
-                                        </#if>
-                                    </div>
+                                    <label for="surname" class="form-label small text-muted">
+                                        <i class="fas fa-user text-muted me-1"></i>
+                                        Фамилия *
+                                    </label>
+                                    <@spring.formInput "userDto.surname", "class='form-control' id='surname' placeholder='Введите фамилию'", "text"/>
+                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label small text-muted">Email адрес</label>
-                                <@spring.bind "userDto.email"/>
-                                <div class="input-group">
-                                    <span class="input-group-text border-end-0 bg-white">
-                                        <i class="fas fa-envelope text-muted"></i>
-                                    </span>
-                                    <input type="email"
-                                           class="form-control border-start-0 ${(spring.status.error)?then('is-invalid', '')}"
-                                           id="email"
-                                           name="${spring.status.expression}"
-                                           value="${spring.stringStatusValue}"
-                                           placeholder="example@email.com"
-                                           >
-                                    <#if spring.status.errorMessages?has_content>
-                                        <div class="invalid-feedback">
-                                            <#list spring.status.errorMessages as error>
-                                                ${error}
-                                            </#list>
-                                        </div>
-                                    </#if>
-                                </div>
+                                <label for="email" class="form-label small text-muted">
+                                    <i class="fas fa-envelope text-muted me-1"></i>
+                                    Email адрес *
+                                </label>
+                                <@spring.formInput "userDto.email", "class='form-control' id='email' placeholder='example@email.com'", "email"/>
+                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label small text-muted">Пароль</label>
-                                <@spring.bind "userDto.password"/>
+                                <label for="password" class="form-label small text-muted">
+                                    <i class="fas fa-lock text-muted me-1"></i>
+                                    Пароль *
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text border-end-0 bg-white">
-                                        <i class="fas fa-lock text-muted"></i>
-                                    </span>
-                                    <input type="password"
-                                           class="form-control border-start-0 border-end-0 ${(spring.status.error)?then('is-invalid', '')}"
-                                           id="password"
-                                           name="${spring.status.expression}"
-                                           placeholder="Минимум 6 символов"
-                                           >
+                                    <@spring.formInput "userDto.password", "class='form-control border-end-0' id='password' placeholder='Минимум 6 символов'", "password"/>
                                     <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <#if spring.status.errorMessages?has_content>
-                                        <div class="invalid-feedback">
-                                            <#list spring.status.errorMessages as error>
-                                                ${error}
-                                            </#list>
-                                        </div>
-                                    </#if>
                                 </div>
+                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
                             </div>
 
                             <div class="mb-4">
-                                <label for="typeId" class="form-label small text-muted">Тип аккаунта</label>
-                                <div class="input-group">
-                                    <span class="input-group-text border-end-0 bg-white">
-                                        <i class="fas fa-user-tag text-muted"></i>
-                                    </span>
-                                    <select class="form-control border-start-0"
-                                            id="typeId"
-                                            name="type.id"
-                                            >
-                                        <option value="">Выберите тип аккаунта</option>
-                                        <#list types as type>
-                                            <option value="${type.id}">
-                                                ${type.userTypeTranslations[0].translation}
-                                            </option>
-                                        </#list>
-                                    </select>
-                                </div>
-                                <#if errors?? && errors.hasFieldErrors("type.id")>
-                                    <div class="text-danger small mt-1">
-                                        ${errors.getFieldError("type.id").defaultMessage}
-                                    </div>
-                                </#if>
+                                <label for="typeId" class="form-label small text-muted">
+                                    <i class="fas fa-user-tag text-muted me-1"></i>
+                                    Тип аккаунта *
+                                </label>
+
+                                <#assign typeMap = {}>
+                                <#list types as type>
+                                    <#assign typeMap = typeMap + {type.id?string: type.userTypeTranslations[0].translation}>
+                                </#list>
+
+                                <@spring.formSingleSelect
+                                "userDto.type.id",
+                                typeMap,
+                                'class="form-control" id="typeId"'
+                                />
+                                <@spring.showErrors '<br>', 'text-danger small mt-1'/>
                             </div>
 
                             <div class="d-grid mb-3">

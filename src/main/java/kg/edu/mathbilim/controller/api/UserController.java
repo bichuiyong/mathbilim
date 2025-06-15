@@ -41,6 +41,7 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
         userService.createUser(userDto, request);

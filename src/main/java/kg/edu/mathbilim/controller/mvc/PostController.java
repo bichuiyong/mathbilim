@@ -5,7 +5,7 @@ import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
-import kg.edu.mathbilim.service.interfaces.post.post_type.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

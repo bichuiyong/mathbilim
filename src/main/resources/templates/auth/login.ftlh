@@ -52,7 +52,7 @@
                                        id="username"
                                        name="username"
                                        placeholder="example@email.com"
-                                       required
+                                       
                                        autofocus>
                                 <i class="fas fa-envelope position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                             </div>
@@ -69,7 +69,7 @@
                                        id="password"
                                        name="password"
                                        placeholder="••••••••"
-                                       required>
+                                       >
                                 <i class="fas fa-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                                 <button class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-muted p-0"
                                         type="button"

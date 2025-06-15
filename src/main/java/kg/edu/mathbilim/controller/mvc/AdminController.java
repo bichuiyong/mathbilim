@@ -2,8 +2,7 @@ package kg.edu.mathbilim.controller.mvc;
 
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
-import kg.edu.mathbilim.service.interfaces.reference.role.RoleService;
-import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
+import kg.edu.mathbilim.service.interfaces.reference.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -5,7 +5,7 @@ import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
-import kg.edu.mathbilim.service.interfaces.event.event_type.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
