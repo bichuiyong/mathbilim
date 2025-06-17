@@ -6,7 +6,6 @@ import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -18,11 +17,15 @@ public class BookDto {
 
     private String name;
 
+    private String authors;
+
+    private String isbn;
+
+    private String description;
+
     private FileDto file;
 
     private CategoryDto category;
-
-    private Map<String, String> metadata;
 
     private Instant createdAt;
 

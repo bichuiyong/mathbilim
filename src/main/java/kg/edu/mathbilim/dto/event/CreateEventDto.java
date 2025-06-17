@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CreateEventDto {
-
     @Valid
     EventDto event;
 

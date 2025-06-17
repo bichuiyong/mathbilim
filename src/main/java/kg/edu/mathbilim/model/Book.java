@@ -10,10 +10,8 @@ import kg.edu.mathbilim.model.reference.category.Category;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -33,6 +31,18 @@ public class Book {
     @Column(name = "name", nullable = false, length = 500)
     private String name;
 
+    @Size(max = 255)
+    @Column(name = "authors")
+    private String authors;
+
+    @Size(max = 20)
+    @Column(name = "isbn", length = 20)
+    private String isbn;
+
+    @Size(max = 300)
+    @Column(name = "description", length = 300)
+    private String description;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -43,12 +53,6 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-    @ColumnDefault("'{}'")
-    @Column(name = "metadata")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> metadata;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -56,7 +60,6 @@ public class Book {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
-
 
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
@@ -71,5 +74,4 @@ public class Book {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "approved_by")
     private User approvedBy;
-
 }
