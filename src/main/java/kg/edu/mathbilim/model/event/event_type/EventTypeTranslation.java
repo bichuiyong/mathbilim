@@ -16,7 +16,7 @@ public class EventTypeTranslation {
 
     @MapsId("eventTypeId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "event_type_id", nullable = false)
+    @JoinColumn(name = "type_id", nullable = false)
     private EventType eventType;
 
     @Size(max = 100)

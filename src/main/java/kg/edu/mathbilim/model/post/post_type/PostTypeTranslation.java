@@ -16,7 +16,7 @@ public class PostTypeTranslation {
 
     @MapsId("postTypeId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_type_id", nullable = false)
+    @JoinColumn(name = "type_id", nullable = false)
     private PostType postType;
 
     @Size(max = 100)
