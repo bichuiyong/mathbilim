@@ -96,6 +96,10 @@ app:
         temp: "temp/"
 
 spring:
+  telegram:
+    bot-name: "@Mathbilimbot"
+    bot-token: ${TGBOTKEY}
+
   application:
     name: "Math Bilim"
     version: 1.0.2

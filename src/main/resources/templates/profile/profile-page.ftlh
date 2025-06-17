@@ -9,12 +9,16 @@
             <div class="row align-items-center position-relative" style="z-index: 2;">
                 <div class="col-12 col-md-auto text-center text-md-start mb-3 mb-md-0">
                     <div class="avatar mx-auto mx-md-0">
-                        ${user.name?substring(0, 1)}${user.surname?substring(0, 1)}
+                        <#if user.name?? && user.surname??>
+                        ${user.name?substring(0, 1)!"X"}${user.surname?substring(0, 1)!"X"}
+                            <#else>
+                            XX
+                        </#if>
                         <div class="online-indicator"></div>
                     </div>
                 </div>
                 <div class="col-12 col-md text-center text-md-start">
-                    <h1 class="profile-name mb-2">${user.name} ${user.surname}</h1>
+                    <h1 class="profile-name mb-2">${user.name} ${user.surname!""}</h1>
                     <div class="profile-role mb-3">
                         🎯
                         <#if user.type?? && user.type?has_content>

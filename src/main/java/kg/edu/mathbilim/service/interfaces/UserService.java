@@ -13,6 +13,12 @@ import java.io.UnsupportedEncodingException;
 
 public interface UserService {
 
+    void createTelegramUser(Long userId, String name, String surname);
+
+    boolean existsTelegramUser(String userId);
+
+    User findByTelegramId(String telegramId);
+
     User getEntityById(Long userId);
 
     UserDto getDtoById(Long id);

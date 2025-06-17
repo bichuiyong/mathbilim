@@ -28,7 +28,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/auth/telegram/callback")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+
                 .httpBasic(Customizer.withDefaults())
 
                 .oauth2Login(oauth -> oauth

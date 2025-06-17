@@ -52,6 +52,22 @@ public class AuthUserDetailsService implements UserDetailsService {
         );
     }
 
+    public UserDetails loadUserByTelegram(String telegramId) throws UsernameNotFoundException {
+        Long userId = Long.parseLong(telegramId);
+        User user = userRepository.findByTelegramId(userId).orElseThrow(() -> new UsernameNotFoundException(telegramId));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getEnabled(),
+                true,
+                true,
+                true,
+                getAuthorities(user.getRole())
+
+        );
+    }
+
     private Collection<GrantedAuthority> getAuthorities(Role roles) {
         return getGrantedAuthorities(getPrivileges(roles));
     }

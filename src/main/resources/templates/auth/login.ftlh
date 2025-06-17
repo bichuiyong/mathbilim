@@ -112,6 +112,17 @@
                         </a>
                     </div>
 
+                    <div class="d-grid mb-4">
+                        <div class="btn btn-lg btn-light border">
+                        <script async src="https://telegram.org/js/telegram-widget.js?22"
+                                data-telegram-login="Mathbilimbot"
+                                data-size="medium"
+                                data-auth-url="https://usable-selected-bird.ngrok-free.app/auth/telegram/callback"
+                                data-request-access="write">
+                        </script>
+                        </div>
+                    </div>
+
                     <p class="text-center mb-0 text-muted">
                         Нет аккаунта?
                         <a href="/auth/register" class="text-primary fw-bold text-decoration-none">Зарегистрироваться</a>

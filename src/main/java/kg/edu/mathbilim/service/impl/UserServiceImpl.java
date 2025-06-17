@@ -47,6 +47,36 @@ public class UserServiceImpl implements UserService {
     private final EmailServiceImpl emailService;
 
     @Override
+    @Transactional
+    public void createTelegramUser(Long userId, String name, String surname) {
+        User user = User.builder()
+                .name(name)
+                .email("telegram_" + userId + "@notEmail.com")
+                .role(roleService.getRoleByName("USER"))
+                .password(passwordEncoder.encode("telegram"+userId+"password"))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .surname(surname)
+                .telegramId(userId)
+                .enabled(true)
+                .isEmailVerified(false)
+                .build();
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean existsTelegramUser(String userId) {
+        Long telegramId = Long.parseLong(userId);
+        return userRepository.existsByTelegramId(telegramId);
+    }
+
+    @Override
+    public User findByTelegramId(String telegramId) {
+        Long userId = Long.parseLong(telegramId);
+        return userRepository.findByTelegramId(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
     public User getEntityById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -83,7 +113,6 @@ public class UserServiceImpl implements UserService {
             log.error("Failed to send verification email to: {}", user.getEmail(), e);
         }
     }
-
 
     @Override
     public void edit(UserEditDto userDto, String email) {

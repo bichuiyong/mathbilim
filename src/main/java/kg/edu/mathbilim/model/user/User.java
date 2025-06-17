@@ -87,4 +87,5 @@ public class User {
     @JoinColumn(name = "avatar")
     private File avatar;
 
+    private Long telegramId;
 }
