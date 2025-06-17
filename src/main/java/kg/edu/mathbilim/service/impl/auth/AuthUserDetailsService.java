@@ -45,6 +45,16 @@ public class AuthUserDetailsService implements UserDetailsService {
         );
     }
 
+    private void validateUser(User user) {
+        if (!Boolean.TRUE.equals(user.getIsEmailVerified())) {
+            throw new DisabledException("Email не подтвержден. Проверьте почту и перейдите по ссылке подтверждения.");
+        }
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new DisabledException("Аккаунт заблокирован. Обратитесь к администратору.");
+        }
+    }
+
     public UserDetails loadUserByTelegram(String telegramId) throws UsernameNotFoundException {
         Long userId = Long.parseLong(telegramId);
         User user = userRepository.findByTelegramId(userId).orElseThrow(() -> new UsernameNotFoundException(telegramId));
