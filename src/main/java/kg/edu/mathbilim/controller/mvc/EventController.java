@@ -6,10 +6,9 @@ import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
-import kg.edu.mathbilim.service.interfaces.event.event_type.EventTypeService;
+import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collection;
 import java.util.Collections;
 
 
@@ -25,16 +23,14 @@ import java.util.Collections;
 @RequestMapping("events")
 @RequiredArgsConstructor
 public class EventController {
-    private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
+    private static final String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
     private final EventService eventService;
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
+    private final RestTemplate restTemplate;
 
     @Value("${recaptcha.secret}")
     private String secret;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
@@ -76,11 +72,7 @@ public class EventController {
         CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
 
         assert response != null;
-        if (!response.getSuccess()) {
-            return "events/event-create";
-        }
-
-        if (bindingResult.hasErrors() || !response.getSuccess()) {
+        if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
             return "events/event-create";
         }
 

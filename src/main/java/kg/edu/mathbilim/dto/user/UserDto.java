@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto.user;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.reference.RoleDto;
@@ -21,7 +20,7 @@ public class UserDto {
     @NotBlank(message = "Имя обязательно")
     private String name;
 
-    FileDto avatar;
+    private FileDto avatar;
 
     private String surname;
 
