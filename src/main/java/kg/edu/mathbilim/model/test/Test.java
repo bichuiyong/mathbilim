@@ -6,7 +6,6 @@ import kg.edu.mathbilim.enums.TestStatus;
 import kg.edu.mathbilim.enums.converter.TestStatusConverter;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.user.User;
-import kg.edu.mathbilim.model.reference.category.Category;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -29,10 +28,6 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @NotNull
     @Column(name = "metadata", nullable = false)

@@ -12,4 +12,11 @@ public interface PostService {
     void delete(Long id);
 
     PostDto createPost(CreatePostDto postDto);
+
+    Page<PostDto> getUserPosts(Long userId, String query, int page, int size, String sortBy, String sortDirection);
+
+
+    void togglePostApproving(Long id);
+
+    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 }

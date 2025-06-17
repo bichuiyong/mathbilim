@@ -187,6 +187,7 @@ public class AuthController {
         var userTypes = translationService.getUserTypesByLanguage();
         model.addAttribute("userTypes", userTypes);
         model.addAttribute("user", user);
+        model.addAttribute("email", email);
 
         return "auth/select-user-type";
     }
@@ -210,7 +211,7 @@ public class AuthController {
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",
-                    "Ошибка при выборе типа пользователя");
+                    "Ошибка при выборе типа пользователя: " + e.getMessage());
             return "redirect:/auth/select-user-type";
         }
     }
