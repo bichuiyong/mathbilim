@@ -18,9 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @Service
@@ -57,27 +54,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto createBook(BookDto bookDto, List<String> keys, List<String> values) {
+    public BookDto createBook(BookDto bookDto) {
         CategoryDto category = categoryService.getCategoryById(bookDto.getCategory().getId());
-        Map<String, String> metadata = new HashMap<>();
-        for (int i = 0; i < keys.size(); i++) {
-            String key = keys.get(i);
-            String value = i < values.size() ? values.get(i) : "";
-            if (key != null && !key.isBlank()) {
-                metadata.put(key, value);
-            }
-        }
         bookDto.setCategory(category);
-        bookDto.setMetadata(metadata);
         bookDto.setCreatedAt(Instant.now());
         bookDto.setUpdatedAt(Instant.now());
         bookDto.setStatus(ContentStatus.PENDING_REVIEW);
 
-
         log.info("Created Book with id {}", bookDto.getId());
         return bookMapper.toDto(bookRepository.save(bookMapper.toEntity(bookDto)));
     }
-
 
 
     private Page<BookDto> getPage(Supplier<Page<Book>> supplier, String notFoundMessage) {

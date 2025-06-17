@@ -39,8 +39,10 @@ public class ProfileController {
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
                 .typeId(userDto.getType().getId())
+                .avatar(userDto.getAvatar())
                 .build();
         model.addAttribute("types", translationService.getUserTypesByLanguage());
+        model.addAttribute("editingUser", userDto);
         model.addAttribute("userEditDto", userEditDto);
         return "profile/profile-edit";
     }
@@ -48,7 +50,6 @@ public class ProfileController {
     @PostMapping("edit")
     public String profileEdit(@Valid @ModelAttribute(name = "userEditDto") UserEditDto userEditDto, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("userEditDto", userEditDto);
             model.addAttribute("types", translationService.getUserTypesByLanguage());
             model.addAttribute("errors", bindingResult);
             return "profile/profile-edit";

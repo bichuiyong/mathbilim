@@ -3,7 +3,6 @@ package kg.edu.mathbilim.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
@@ -47,6 +46,36 @@ public class UserServiceImpl implements UserService {
     private final EmailServiceImpl emailService;
 
     @Override
+    @Transactional
+    public void createTelegramUser(Long userId, String name, String surname) {
+        User user = User.builder()
+                .name(name)
+                .email("telegram_" + userId + "@notEmail.com")
+                .role(roleService.getRoleByName("USER"))
+                .password(passwordEncoder.encode("telegram"+userId+"password"))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .surname(surname)
+                .telegramId(userId)
+                .enabled(true)
+                .isEmailVerified(false)
+                .build();
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean existsTelegramUser(String userId) {
+        Long telegramId = Long.parseLong(userId);
+        return userRepository.existsByTelegramId(telegramId);
+    }
+
+    @Override
+    public User findByTelegramId(String telegramId) {
+        Long userId = Long.parseLong(telegramId);
+        return userRepository.findByTelegramId(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
     public User getEntityById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -83,7 +112,6 @@ public class UserServiceImpl implements UserService {
             log.error("Failed to send verification email to: {}", user.getEmail(), e);
         }
     }
-
 
     @Override
     public void edit(UserEditDto userDto, String email) {
@@ -191,18 +219,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserEditByAdminDto userDto, Long userId) {
+    public void updateUser(UserEditDto userDto, Long userId) {
         User user = getEntityById(userId);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
         user.setRole(roleService.getRoleByName(userDto.getRole().getName().toUpperCase()));
-        user.setType(userTypeService.getUserTypeEntity(userDto.getType().getId()));
+        user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
         userRepository.saveAndFlush(user);
     }
 
+    @Override
+    public UserDto createOAuthUser(UserDto userDto) {
+        if (existsByEmail(userDto.getEmail())) {
+            throw new IllegalStateException("Пользователь уже существует: " + userDto.getEmail());
+        }
+
+        User user = User.builder()
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .role(roleService.getRoleByName("USER"))
+                .isEmailVerified(true)
+                .enabled(true)
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
+
     private void updateResetPasswordToken(String email, String token) {
-        User user = userRepository.findByEmail(email).
-                orElseThrow(UserNotFoundException::new);
+        User user = getEntityByEmail(email);
 
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
@@ -229,8 +278,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(Long userId, String password) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        User user = getEntityById(userId);
 
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
@@ -238,12 +286,9 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
     }
 
-
-
     @Override
     public void generateEmailVerificationToken(HttpServletRequest request, String email) throws MessagingException, UnsupportedEncodingException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
+        User user = getEntityByEmail(email);
 
         String token = UUID.randomUUID().toString();
 
@@ -257,25 +302,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean verifyEmail(String token) {
-        User user = userRepository.findByEmailVerificationToken(token)
-                .orElse(null);
-
-        if (user == null) {
-            return false;
-        }
+        User user = getEntityByEmailVerificationToken(token);
 
         user.setIsEmailVerified(true);
         user.setEmailVerificationToken(null);
         userRepository.saveAndFlush(user);
-
         return true;
     }
 
     @Override
     public void resendVerificationEmail(HttpServletRequest request, String email)
             throws MessagingException, UnsupportedEncodingException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
+        User user = getEntityByEmail(email);
 
         if (Boolean.TRUE.equals(user.getIsEmailVerified())) {
             throw new IllegalStateException("Email уже верифицирован");
@@ -290,21 +328,20 @@ public class UserServiceImpl implements UserService {
         emailService.sendVerificationEmail(email, verificationLink);
     }
 
+    private User getEntityByEmailVerificationToken(String token) {
+        return userRepository.findByEmailVerificationToken(token)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
     @Override
     public UserDto getUserByEmailVerificationToken(String token) {
-        User user = userRepository.findByEmailVerificationToken(token)
-                .orElseThrow(UserNotFoundException::new);
-
-        return userMapper.toDto(user);
+        return userMapper.toDto(getEntityByEmailVerificationToken(token));
     }
 
     @Override
     public boolean isEmailVerified(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
+        User user = getEntityByEmail(email);
 
         return Boolean.TRUE.equals(user.getIsEmailVerified());
     }
-
-
 }

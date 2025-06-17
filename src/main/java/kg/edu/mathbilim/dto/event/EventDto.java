@@ -51,7 +51,9 @@ public class EventDto {
     @Builder.Default
     private Instant updatedAt = Instant.now();
 
-    private Map<String, Object> metadata;
+    private String address; // если оффлайн
+
+    private String url; // если онлайн
 
     private ContentStatus status;
 
