@@ -164,6 +164,7 @@ spring:
 
 tinymce:
   upload:
+#    TODO ПОМЕНЯТЬ ЭНДПОИНТЫ ДЛЯ TINYMCE (АИША)
     images:
       endpoint: "/api/upload/tinymce/image"
       max-size: 5242880
@@ -189,6 +190,9 @@ recaptcha:
 
 logging:
   level:
+    kg.edu.mathbilim.service.impl.auth: DEBUG
+    kg.edu.mathbilim.handler: DEBUG
+    org.springframework.security.oauth2: DEBUG
     root: info
     org:
       springframework:

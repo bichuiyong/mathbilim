@@ -41,7 +41,7 @@ public class StaticController {
         return ResponseEntity.ofNullable(categoryService.getAllCategories());
     }
 
-    @GetMapping("users")
+    @GetMapping("user-types")
     public ResponseEntity<List<UserTypeDto>> getAllUserTypes() {
         return ResponseEntity.ofNullable(userTypeService.getAllUserTypes());
     }

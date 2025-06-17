@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.config;
 
-import kg.edu.mathbilim.service.impl.auth.AuthUserDetailsService;
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
+import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +9,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -19,49 +16,26 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-    private final AuthUserDetailsService userService;
     private final CustomOAuth2UserService oauthUserService;
+    private final OAuth2LoginSuccessHandler oauthSuccessHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, UserDetailsService userDetailsService) throws Exception {
-        http
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+
                 .httpBasic(Customizer.withDefaults())
 
                 .oauth2Login(oauth -> oauth
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userConfig -> userConfig
                                 .userService(oauthUserService))
-                        .successHandler((request, response, authentication) -> {
-                            String email = null;
-                            String fullName = null;
-
-                            if (authentication.getPrincipal() instanceof OidcUser) {
-                                OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
-                                email = oidcUser.getEmail();
-                                fullName = oidcUser.getFullName();
-                            }
-                            else if (authentication.getPrincipal() instanceof OAuth2User) {
-                                OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-                                email = oauth2User.getAttribute("email");
-                                fullName = oauth2User.getAttribute("name");
-                            }
-
-                            if (email != null) {
-                                boolean isNewUser = userService.processOAuthPostLogin(email, fullName);
-
-                                if (isNewUser) {
-                                    response.sendRedirect("/auth/select-user-type");
-                                } else {
-                                    response.sendRedirect("/");
-                                }
-                            } else {
-                                response.sendRedirect("/auth/login?error=true");
-                            }
-                        })
+                        .successHandler(oauthSuccessHandler)
+                        .failureUrl("/auth/login?error=oauth_failed")
                 )
 
                 .formLogin(login -> login
@@ -73,19 +47,35 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login")
+                        .logoutSuccessUrl("/auth/login?logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .permitAll())
 
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/posts/create/**", "/organizations/create/**").authenticated()
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
-                        .requestMatchers("/posts/create/**").authenticated()
-                        .requestMatchers("/books/create/**").authenticated()
-                        .requestMatchers("/books/update/**").authenticated()
-                        .anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**", "/api/users/**").hasAuthority("ADMIN")
 
-        return http.build();
+                        .requestMatchers(
+                                "/posts/create/**",
+                                "/organizations/create/**",
+                                "/books/create/**",
+                                "/books/update/**",
+                                "/profile/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                "/auth/**",
+                                "/",
+                                "/about",
+                                "/static/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/error"
+                        ).permitAll()
+
+                        .anyRequest().permitAll()
+                )
+                .build();
     }
 }
-

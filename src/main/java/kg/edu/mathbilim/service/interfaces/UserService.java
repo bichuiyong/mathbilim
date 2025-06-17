@@ -3,7 +3,6 @@ package kg.edu.mathbilim.service.interfaces;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
 import kg.edu.mathbilim.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,5 +59,7 @@ public interface UserService {
 
     boolean isEmailVerified(String email);
 
-    void updateUser(UserEditByAdminDto userDto, Long userId);
+    void updateUser(UserEditDto userDto, Long userId);
+
+    UserDto createOAuthUser(UserDto userDto);
 }
