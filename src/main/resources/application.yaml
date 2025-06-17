@@ -2,10 +2,6 @@ server:
   port: 9999
 
 app:
-  oauth:
-    default-password: "${OAUTH_DEFAULT_PASSWORD:#{T(java.util.UUID).randomUUID().toString()}}"
-    default-role: "${OAUTH_DEFAULT_ROLE:USER}"
-
   storage:
     access-key: ${AWS_ACCESS_KEY_ID}
     secret-key: ${AWS_SECRET_ACCESS_KEY}
