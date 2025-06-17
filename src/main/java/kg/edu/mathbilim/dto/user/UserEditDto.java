@@ -2,12 +2,16 @@ package kg.edu.mathbilim.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.reference.RoleDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEditDto {
@@ -17,6 +21,12 @@ public class UserEditDto {
     private String surname;
 
     @NotNull(message = "Выберите тип аккаунта")
-    @Positive(message = "Выберите тип аккаунта")
     private Integer typeId;
+
+    private FileDto avatar;
+
+    private RoleDto role;
+
+    @Builder.Default
+    private Instant updatedAt = Instant.now();
 }
