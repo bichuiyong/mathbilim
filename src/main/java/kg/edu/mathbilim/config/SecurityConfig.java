@@ -26,6 +26,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/auth/telegram/callback")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
                 .httpBasic(Customizer.withDefaults())

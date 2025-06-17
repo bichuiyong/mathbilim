@@ -45,14 +45,20 @@ public class AuthUserDetailsService implements UserDetailsService {
         );
     }
 
-    private void validateUser(User user) {
-        if (!Boolean.TRUE.equals(user.getIsEmailVerified())) {
-            throw new DisabledException("Email не подтвержден. Проверьте почту и перейдите по ссылке подтверждения.");
-        }
+    public UserDetails loadUserByTelegram(String telegramId) throws UsernameNotFoundException {
+        Long userId = Long.parseLong(telegramId);
+        User user = userRepository.findByTelegramId(userId).orElseThrow(() -> new UsernameNotFoundException(telegramId));
 
-        if (!Boolean.TRUE.equals(user.getEnabled())) {
-            throw new DisabledException("Аккаунт заблокирован. Обратитесь к администратору.");
-        }
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getEnabled(),
+                true,
+                true,
+                true,
+                getAuthorities(user.getRole())
+
+        );
     }
 
     private Collection<GrantedAuthority> getAuthorities(Role role) {
