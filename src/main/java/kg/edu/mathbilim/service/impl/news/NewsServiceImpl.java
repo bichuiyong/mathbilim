@@ -4,7 +4,7 @@ import kg.edu.mathbilim.dto.news.CreateNewsDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.mapper.UserMapper;
+import kg.edu.mathbilim.mapper.user.UserMapper;
 import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.mapper.news.NewsTranslationMapper;
 import kg.edu.mathbilim.model.File;

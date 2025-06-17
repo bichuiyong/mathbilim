@@ -33,7 +33,7 @@ public class NewsController {
         return "media/news";
     }
 
-    @GetMapping()
+    @GetMapping("detail")
     public String news(
             @RequestParam("id") long id,
             Model model
