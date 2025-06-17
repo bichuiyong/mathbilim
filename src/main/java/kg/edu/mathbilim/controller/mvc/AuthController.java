@@ -4,39 +4,26 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.CaptchaResponseDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.reference.user_type.UserTypeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 
 @Controller
 @RequestMapping("auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
     private final UserService userService;
     private final TranslationService translationService;
-
-
-    @Value("${recaptcha.secret}")
-    private String secret;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
 
     @GetMapping("login")
     public String login(@RequestParam(name = "error", required = false) Boolean error,
@@ -73,15 +60,7 @@ public class AuthController {
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("userDto") @Valid UserDto userDto,
                                       BindingResult result,
-                                      Model model, HttpServletRequest request,
-                                      @RequestParam("g-recaptcha-response") String captchaResponse) {
-        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
-        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
-
-        assert response != null;
-        if (!response.getSuccess()) {
-            return "auth/register";
-        }
+                                      Model model, HttpServletRequest request) {
 
         if (result.hasErrors()) {
             model.addAttribute("types", translationService.getUserTypesByLanguage());
@@ -190,5 +169,49 @@ public class AuthController {
             model.addAttribute("message", "Invalid Token");
         }
         return "auth/message";
+    }
+
+    @GetMapping("/select-user-type")
+    public String selectUserTypePage(Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/auth/login";
+        }
+
+        String email = authentication.getName();
+        var user = userService.getUserByEmail(email);
+
+        if (user != null && user.getType() != null) {
+            return "redirect:/";
+        }
+
+        var userTypes = translationService.getUserTypesByLanguage();
+        model.addAttribute("userTypes", userTypes);
+        model.addAttribute("user", user);
+
+        return "auth/select-user-type";
+    }
+
+    @PostMapping("/select-user-type")
+    public String selectUserType(@RequestParam("userTypeId") Integer userTypeId,
+                                 Authentication authentication,
+                                 RedirectAttributes redirectAttributes) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            String email = authentication.getName();
+            userService.setUserType(email, userTypeId);
+
+            redirectAttributes.addFlashAttribute("message",
+                    "Тип пользователя успешно выбран!");
+            return "redirect:/";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Ошибка при выборе типа пользователя");
+            return "redirect:/auth/select-user-type";
+        }
     }
 }

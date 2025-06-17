@@ -6,9 +6,8 @@ import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
-import kg.edu.mathbilim.service.interfaces.post.post_type.PostTypeService;
+import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,16 +21,14 @@ import java.util.Collections;
 @RequestMapping("posts")
 @RequiredArgsConstructor
 public class PostController {
-    private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
+    private static final String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
     private final PostService postService;
     private final PostTypeService postTypeService;
+    private final RestTemplate restTemplate;
 
 
     @Value("${recaptcha.secret}")
     private String secret;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
@@ -58,11 +55,7 @@ public class PostController {
         CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
 
         assert response != null;
-        if (!response.getSuccess()) {
-            return "events/event-create";
-        }
-
-        if (bindingResult.hasErrors() || !response.getSuccess()) {
+        if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
             return "media/post-create";
         }
         postService.createPost(post);
@@ -70,17 +63,17 @@ public class PostController {
     }
 
     @GetMapping("news")
-    public String news(Model model) {
+    public String news() {
         return "media/news-page";
     }
 
     @GetMapping("publications")
-    public String publications(Model model) {
+    public String publications() {
         return "media/publication-page";
     }
 
     @GetMapping("blog")
-    public String blog(Model model) {
+    public String blog() {
         return "media/blog";
     }
 }

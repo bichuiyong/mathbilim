@@ -1,250 +1,163 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор типа пользователя - Math Bilim</title>
-    <link rel="stylesheet" href="/static/css/layout.css">
-    <link rel="stylesheet" href="/static/scss/main.css">
+<#import "../layout.ftlh" as main>
+
+<@main.layout "Выбор типа аккаунта">
+    <div class="container my-5">
+        <div class="row justify-content-center align-items-center min-vh-50">
+            <div class="col-md-10 col-lg-8">
+                <div class="text-center mb-5">
+                    <div class="d-inline-block position-relative mb-3">
+                        <img src="https://www.google.com/favicon.ico"
+                             width="60"
+                             height="60"
+                             class="rounded-circle shadow"
+                             alt="Google">
+                        <div class="position-absolute bottom-0 end-0">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+                                 style="width: 24px; height: 24px;">
+                                <i class="fas fa-check" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold mb-2">Добро пожаловать в MathBilim!</h2>
+                    <p class="text-muted fs-5">Выберите, как вы хотите использовать платформу</p>
+                </div>
+
+                <form action="/auth/select-user-type" method="post">
+                    <@main.csrf/>
+
+                    <div class="row g-4 mb-5">
+                        <#list userTypes as type>
+                            <div class="col-md-6">
+                                <label class="account-type-option h-100" for="type${type.id}">
+                                    <input class="form-check-input d-none"
+                                           type="radio"
+                                           name="userTypeId"
+                                           id="type${type.id}"
+                                           value="${type.id}"
+                                           required>
+
+                                    <div class="account-type-card h-100 p-4 rounded-3 border position-relative overflow-hidden">
+                                        <!-- Фоновый градиент при выборе -->
+                                        <div class="selected-gradient position-absolute top-0 start-0 w-100 h-100"></div>
+
+                                        <div class="position-relative">
+                                            <!-- Иконка в зависимости от типа -->
+                                            <div class="mb-3">
+                                                <#if type.userTypeTranslations[0].translation?contains("Ученик") || type.userTypeTranslations[0].translation?contains("Student")>
+                                                    <i class="fas fa-user-graduate text-primary" style="font-size: 2.5rem;"></i>
+                                                <#elseif type.userTypeTranslations[0].translation?contains("Учитель") || type.userTypeTranslations[0].translation?contains("Teacher")>
+                                                    <i class="fas fa-chalkboard-teacher text-primary" style="font-size: 2.5rem;"></i>
+                                                <#elseif type.userTypeTranslations[0].translation?contains("Родитель") || type.userTypeTranslations[0].translation?contains("Parent")>
+                                                    <i class="fas fa-user-friends text-primary" style="font-size: 2.5rem;"></i>
+                                                <#else>
+                                                    <i class="fas fa-user text-primary" style="font-size: 2.5rem;"></i>
+                                                </#if>
+                                            </div>
+
+                                            <h4 class="mb-2">${type.userTypeTranslations[0].translation}</h4>
+
+                                            <!-- Примерное описание для каждого типа -->
+                                            <p class="text-muted mb-3">
+                                                <#if type.userTypeTranslations[0].translation?contains("Ученик") || type.userTypeTranslations[0].translation?contains("Student")>
+                                                    Доступ к тестам, олимпиадным задачам и учебным материалам
+                                                <#elseif type.userTypeTranslations[0].translation?contains("Учитель") || type.userTypeTranslations[0].translation?contains("Teacher")>
+                                                    Создание тестов, отслеживание прогресса учеников, методические материалы
+                                                <#elseif type.userTypeTranslations[0].translation?contains("Родитель") || type.userTypeTranslations[0].translation?contains("Parent")>
+                                                    Контроль успеваемости, уведомления о прогрессе ребенка
+                                                <#else>
+                                                    Полный доступ к функциям платформы
+                                                </#if>
+                                            </p>
+
+                                            <!-- Чекбокс индикатор -->
+                                            <div class="selection-indicator position-absolute top-0 end-0 p-3">
+                                                <div class="rounded-circle border-2 border-secondary d-flex align-items-center justify-content-center"
+                                                     style="width: 24px; height: 24px;">
+                                                    <i class="fas fa-check text-white" style="font-size: 0.75rem; display: none;"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </#list>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5" disabled id="continueBtn">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Продолжить
+                        </button>
+
+                        <p class="text-muted mt-3 mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Вы сможете изменить тип аккаунта позже в настройках профиля
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <style>
-        .user-type-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-type-title {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-
-        .user-type-subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 40px;
-            font-size: 16px;
-        }
-
-        .user-type-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .user-type-card {
-            border: 2px solid #ecf0f1;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
+        .account-type-option {
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .user-type-card:hover {
-            border-color: #3498db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-        }
-
-        .user-type-card.selected {
-            border-color: #2980b9;
-            background: #ebf3fd;
-        }
-
-        .user-type-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
             display: block;
         }
 
-        .user-type-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
+        .account-type-card {
+            transition: all 0.3s ease;
+            background: white;
+            border-color: #e2e8f0 !important;
         }
 
-        .user-type-description {
-            font-size: 14px;
-            color: #7f8c8d;
-            line-height: 1.4;
+        .account-type-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #2563eb !important;
         }
 
-        .user-type-radio {
-            position: absolute;
+        .selected-gradient {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
             opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
         }
 
-        .submit-button {
-            width: 100%;
-            padding: 15px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        input[type="radio"]:checked ~ .account-type-card {
+            border-color: #2563eb !important;
+            border-width: 2px;
         }
 
-        .submit-button:hover:not(:disabled) {
-            background: #2980b9;
+        input[type="radio"]:checked ~ .account-type-card .selected-gradient {
+            opacity: 1;
         }
 
-        .submit-button:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
+        input[type="radio"]:checked ~ .account-type-card .selection-indicator > div {
+            background-color: #2563eb;
+            border-color: #2563eb !important;
         }
 
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #34495e;
+        input[type="radio"]:checked ~ .account-type-card .selection-indicator i {
+            display: block !important;
         }
 
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .alert-error {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-        }
-
-        .alert-success {
-            background: #efe;
-            border: 1px solid #cfc;
-            color: #3c3;
+        .min-vh-50 {
+            min-height: 50vh;
         }
     </style>
-</head>
-<body>
-<div class="user-type-container">
-    <h1 class="user-type-title">Добро пожаловать в Math Bilim!</h1>
 
-    <#if user??>
-    <p class="welcome-text">
-        Привет, <strong>${user.name!"пользователь"}</strong>!
-        Для персонализации опыта выберите, кто вы:
-    </p>
-</#if>
+    <script>
+        // Активация кнопки при выборе
+        const radioButtons = document.querySelectorAll('input[name="userTypeId"]');
+        const continueBtn = document.getElementById('continueBtn');
 
-<p class="user-type-subtitle">
-    Выбор поможет нам настроить подходящий для вас контент и функции
-</p>
-
-<#if error??>
-<div class="alert alert-error">
-    <strong>⚠️ Ошибка:</strong> ${error}
-</div>
-</#if>
-
-<#if message??>
-<div class="alert alert-success">
-    <strong>✅ Успех:</strong> ${message}
-</div>
-</#if>
-
-<form action="/auth/select-user-type" method="post" id="userTypeForm">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-
-    <div class="user-type-grid">
-        <#if userTypes?? && userTypes?has_content>
-        <#list userTypes as userType>
-        <label class="user-type-card" for="type_${userType.id}">
-            <input type="radio"
-                   name="userTypeId"
-                   value="${userType.id}"
-                   id="type_${userType.id}"
-                   class="user-type-radio"
-                   required>
-
-            <span class="user-type-icon">
-                                <#switch userType.name>
-                                    <#case "SCHOOLBOY">🎓<#break>
-                                    <#case "STUDENT">📚<#break>
-                                    <#case "TEACHER">👨‍🏫<#break>
-                                    <#case "EXPLORER">🔍<#break>
-                                    <#default>👤<#break>
-                                </#switch>
-            </span>
-
-            <div class="user-type-name">
-                <#switch userType.name>
-                <#case "SCHOOLBOY">Школьник<#break>
-                <#case "STUDENT">Студент<#break>
-                <#case "TEACHER">Преподаватель<#break>
-                <#case "EXPLORER">Исследователь<#break>
-                <#default>${userType.name}<#break>
-            </#switch>
-    </div>
-
-    <div class="user-type-description">
-        <#switch userType.name>
-        <#case "SCHOOLBOY">Изучаю математику в школе<#break>
-        <#case "STUDENT">Изучаю математику в университете<#break>
-        <#case "TEACHER">Преподаю математику<#break>
-        <#case "EXPLORER">Интересуюсь математикой<#break>
-        <#default>Пользователь платформы<#break>
-    </#switch>
-    </div>
-    </label>
-</#list>
-<#else>
-<div style="grid-column: 1 / -1; text-align: center; color: #7f8c8d;">
-    <p>Типы пользователей не найдены.</p>
-    <p><a href="/auth/login">Вернуться к авторизации</a></p>
-</div>
-</#if>
-</div>
-
-<#if userTypes?? && userTypes?has_content>
-<button type="submit" class="submit-button" id="submitBtn" disabled>
-    Продолжить
-</button>
-</#if>
-</form>
-</div>
-
-<script>
-    const radioButtons = document.querySelectorAll('input[name="userTypeId"]');
-    const submitBtn = document.getElementById('submitBtn');
-    const cards = document.querySelectorAll('.user-type-card');
-
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
-            cards.forEach(card => card.classList.remove('selected'));
-
-            if (this.checked) {
-                this.closest('.user-type-card').classList.add('selected');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    continueBtn.disabled = false;
                 }
-            }
+            });
         });
-    });
-
-    cards.forEach(card => {
-        card.addEventListener('click', function() {
-            const radio = this.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-                radio.dispatchEvent(new Event('change'));
-            }
-        });
-    });
-</script>
-</body>
-</html>
+    </script>
+</@main.layout>

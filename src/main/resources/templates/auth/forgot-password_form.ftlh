@@ -1,75 +1,106 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
-    <link rel="stylesheet" href="/static/scss/main.css">
-    <title>Забыли пароль - MathBilim</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    <div class="verification-page">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card verification-card">
-                        <div class="card-body">
-                            <div class="text-center mb-4">
-                                <div class="verification-icon primary">
-                                    <i class="fas fa-key"></i>
+<@main.layout "Восстановление пароля">
+    <div class="container my-5">
+        <div class="row justify-content-center align-items-center min-vh-50">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="bg-white rounded shadow-lg overflow-hidden">
+                    <!-- Верхняя часть с градиентом -->
+                    <div class="bg-primary text-white p-4 text-center"
+                         style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);">
+                        <i class="fas fa-key mb-3" style="font-size: 3rem;"></i>
+                        <h3 class="mb-0">Восстановление пароля</h3>
+                    </div>
+
+                    <!-- Основной контент -->
+                    <div class="p-4 p-md-5">
+                        <#if error??>
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <div>${error}</div>
+                            </div>
+                        </#if>
+
+                        <#if message??>
+                            <div class="alert alert-success" role="alert">
+                                <div class="d-flex align-items-start">
+                                    <i class="fas fa-check-circle me-2 mt-1"></i>
+                                    <div>
+                                        <strong>Письмо отправлено!</strong><br>
+                                        ${message}
+                                    </div>
                                 </div>
-                                <h2 class="verification-title primary">Забыли пароль?</h2>
+                            </div>
+                        </#if>
+
+                        <p class="text-muted mb-4">
+                            Введите email адрес, который вы использовали при регистрации.
+                            Мы отправим вам инструкции по восстановлению пароля.
+                        </p>
+
+                        <form action="/auth/forgot-password" method="post">
+                            <@main.csrf/>
+
+                            <div class="mb-4">
+                                <label for="email" class="form-label small text-muted">Email адрес</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    <input type="email"
+                                           class="form-control border-start-0"
+                                           id="email"
+                                           name="email"
+                                           placeholder="example@email.com"
+                                           required
+                                           autofocus>
+                                </div>
+                                <small class="text-muted">Мы отправим ссылку для сброса на этот адрес</small>
                             </div>
 
-                            <#if error??>
-                                <div class="alert alert-danger">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    ${error}
-                                </div>
-                            </#if>
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Отправить инструкции
+                                </button>
+                            </div>
+                        </form>
 
-                            <#if message??>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    ${message}
-                                </div>
-                            </#if>
-
-                            <p class="verification-text text-center">
-                                Введите ваш email адрес и мы отправим вам ссылку для восстановления пароля.
-                            </p>
-
-                            <form action="/auth/forgot-password" method="post">
-                                <#if _csrf??>
-                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                           value="${(_csrf.token)!'csrf-token'}"/>
-                                </#if>
-
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">
-                                        <i class="fas fa-envelope me-2"></i>
-                                        Email адрес
-                                    </label>
-                                    <input type="email" name="email" id="email" class="form-control"
-                                           placeholder="Введите ваш email" required autofocus/>
-                                </div>
-
-                                <div class="d-grid mb-3">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-paper-plane me-2"></i>
-                                        Отправить ссылку для восстановления
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="text-center mt-4">
-                                <a href="/auth/login" class="text-decoration-none">
-                                    <i class="fas fa-arrow-left me-2"></i>
+                        <div class="text-center">
+                            <p class="mb-2">
+                                <a href="/auth/login" class="text-muted text-decoration-none">
+                                    <i class="fas fa-arrow-left me-1"></i>
                                     Вернуться к входу
                                 </a>
-                            </div>
+                            </p>
+                            <p class="mb-0 small text-muted">
+                                Вспомнили пароль?
+                                <a href="/auth/login" class="text-primary fw-bold text-decoration-none">Войти</a>
+                            </p>
                         </div>
+                    </div>
+
+                    <!-- Нижняя информационная панель -->
+                    <div class="bg-light p-3 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Ссылка для восстановления действительна 24 часа
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .input-group-lg .form-control,
+        .input-group-lg .input-group-text {
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+    </style>
 </@main.layout>
