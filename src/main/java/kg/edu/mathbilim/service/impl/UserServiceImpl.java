@@ -129,6 +129,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    @Override
     public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         if (query == null || query.isEmpty()) {

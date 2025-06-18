@@ -28,6 +28,8 @@ public interface UserService {
 
     void edit(UserEditDto userDto, String email);
 
+    User findByEmail(String email);
+
     Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection);
 
     @Transactional
