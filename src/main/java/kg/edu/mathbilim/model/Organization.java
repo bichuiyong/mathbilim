@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.event.Event;
+import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -72,5 +73,9 @@ public class Organization {
 
     @ManyToMany(mappedBy = "organizations")
     private List<Event> events = new ArrayList<>();
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
+
 
 }
