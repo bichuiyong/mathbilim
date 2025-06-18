@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashSet;
@@ -34,7 +35,6 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-    private final PostTranslationService translationService;
 
     private final UserService userService;
     private final FileService fileService;
@@ -50,13 +50,40 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<PostDto> getUserPosts(Long userId, String query, int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        if (query == null || query.isEmpty()) {
+            return getPage(() -> postRepository.getPostByUser_Id(userId, pageable));
+        }
+        return getPage(() -> postRepository.getUserPostsWithQuery(userId, query, pageable));
+    }
+
+    @Transactional
+    @Override
+    public void togglePostApproving(Long id) {
+        Post post = getEntityById(id);
+        ContentStatus status = post.getStatus().equals(ContentStatus.APPROVED) ? ContentStatus.REJECTED : ContentStatus.APPROVED;
+        post.setStatus(status);
+        postRepository.save(post);
+    }
+
+    @Override
+    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection) {
+        ContentStatus contentStatus = ContentStatus.fromName(status);
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        if (query == null || query.isEmpty()) {
+            return getPage(() -> postRepository.getPostsByStatus(contentStatus, pageable));
+        }
+        return getPage(() -> postRepository.getPostsByStatusWithQuery(contentStatus, query, pageable));
+    }
+
+    @Override
     public Page<PostDto> getPostPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         if (query == null || query.isEmpty()) {
             return getPage(() -> postRepository.findAll(pageable));
         }
-//        return getPage(() -> postRepository.findByQuery(query, pageable));
-        return getPage(() -> postRepository.findAll(pageable));
+        return getPage(() -> postRepository.findByQuery(query, pageable));
     }
 
     @Override

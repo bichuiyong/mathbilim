@@ -33,4 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailVerificationToken(String resetPasswordToken);
 
+    Optional<User> findByTelegramId(Long telegramId);
+
+    boolean existsByTelegramId(Long telegramId);
 }

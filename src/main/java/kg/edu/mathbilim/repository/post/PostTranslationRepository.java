@@ -22,4 +22,10 @@ public interface PostTranslationRepository extends JpaRepository<PostTranslation
     @Modifying
     @Query("DELETE FROM PostTranslation pt WHERE pt.id.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
+
+    @Query("""
+            SELECT COUNT(t) > 0 FROM PostTranslation t
+            WHERE t.post.id = :postId AND t.id.languageCode = :languageCode
+            """)
+    boolean existsTranslation(@Param("postId") Long postId, @Param("languageCode") String languageCode);
 }

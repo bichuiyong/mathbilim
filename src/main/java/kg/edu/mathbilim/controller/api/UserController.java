@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.api;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.dto.user.UserEditByAdminDto;
+import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Void> blockUser(@PathVariable Long id) {
+    public ResponseEntity<Void> toggleUser(@PathVariable Long id) {
         userService.toggleUserBlocking(id);
         return ResponseEntity.ok().build();
     }
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateUser(@RequestBody @Valid UserEditByAdminDto userDto, @PathVariable Long id) {
+    public ResponseEntity<Void> updateUser(@RequestBody @Valid UserEditDto userDto, @PathVariable Long id) {
         userService.updateUser(userDto, id);
         return ResponseEntity.ok().build();
     }
