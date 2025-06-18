@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.enums.converter.FileTypeConverter;
 import kg.edu.mathbilim.model.event.Event;
+import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.post.Post;
 import lombok.*;
 
@@ -53,4 +54,7 @@ public class File {
 
     @ManyToMany(mappedBy = "files")
     private List<Post> posts = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "files")
+    private List<News> news = new ArrayList<>();
 }

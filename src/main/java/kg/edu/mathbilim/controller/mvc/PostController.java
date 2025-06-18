@@ -62,10 +62,6 @@ public class PostController {
         return "redirect:/posts/";
     }
 
-    @GetMapping("news")
-    public String news() {
-        return "media/news-page";
-    }
 
     @GetMapping("publications")
     public String publications() {
