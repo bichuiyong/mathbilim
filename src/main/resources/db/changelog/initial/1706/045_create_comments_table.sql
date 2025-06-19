@@ -1,7 +1,7 @@
 -- changelog Nikita 045 create comments Table
 
 create table comments(
-    id bigint primary key,
+    id bigserial primary key,
     author_id bigint not null ,
     constraint fk_comments_author_id foreign key (author_id)
         references users(id)

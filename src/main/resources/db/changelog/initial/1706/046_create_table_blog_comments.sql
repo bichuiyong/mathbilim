@@ -1,7 +1,7 @@
 -- changelog Nikita 046 create table blog comments
 
 create table blog_comments(
-    id bigint primary key,
+    id bigserial primary key,
     comment_id bigint not null,
     constraint fk_blog_comment_id foreign key (comment_id)
         references comments(id)

@@ -1,14 +1,12 @@
 package kg.edu.mathbilim.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.model.user.User;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 
@@ -16,8 +14,12 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "comments")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -32,10 +34,12 @@ public class Comment {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @UpdateTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;

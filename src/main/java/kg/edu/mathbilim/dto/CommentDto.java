@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import kg.edu.mathbilim.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,6 +16,7 @@ public class CommentDto {
 
     private UserDto author;
 
+    @NotBlank(message = "Комментарий не должен быть пустым")
     private String content;
 
     @Builder.Default

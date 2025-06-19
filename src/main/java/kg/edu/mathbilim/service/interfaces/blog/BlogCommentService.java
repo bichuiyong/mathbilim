@@ -8,4 +8,8 @@ public interface BlogCommentService {
     List<BlogCommentDto> getBlogCommentByBlogId(Long blogId);
 
     void createBlogComment(BlogCommentDto blogCommentDto);
+
+    void deleteBlogComment(Long blogCommentId);
+
+    void updateBlogComment(BlogCommentDto blogCommentDto);
 }

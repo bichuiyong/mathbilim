@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "blog_comments")
 public class BlogComment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

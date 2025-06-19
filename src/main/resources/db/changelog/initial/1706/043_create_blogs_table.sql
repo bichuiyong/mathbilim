@@ -1,7 +1,7 @@
 -- changelog Nikita: 043 create blogs table
 
 create table blogs(
-    id bigint primary key ,
+    id bigserial primary key ,
     creator_id bigint not null,
     constraint fk_blog_creator_id foreign key (creator_id)
         references users(id)
