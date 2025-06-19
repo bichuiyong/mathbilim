@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -57,16 +58,17 @@ public class BlogServiceImpl implements BlogService {
     public BlogDto getById(Long id) {
         return blogMapper.toDto(findBlogById(id));
     }
-
+    @Transactional
     @Override
     public void deleteById(Long id) {
         if (Boolean.TRUE.equals(existsBlogById(id))) {
             blogRepository.deleteById(id);
+            log.info("Deleted blog with id: {}", id);
         } else {
             throw new BlogNotFoundException();
         }
     }
-
+    @Transactional
     @Override
     public BlogDto createBlog(CreateBlogDto createBlogDto) {
         BlogDto blogDto = createBlogDto.getBlog();
@@ -99,8 +101,9 @@ public class BlogServiceImpl implements BlogService {
         log.info("Получено {} блогов на странице", page.getSize());
         return page.map(blogMapper::toDto);
     }
-
-    private void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId) {
+    @Transactional
+    @Override
+    public void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId) {
         Set<BlogTranslationDto> filledTranslations = translations.stream()
                 .filter(translation ->
                         translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&

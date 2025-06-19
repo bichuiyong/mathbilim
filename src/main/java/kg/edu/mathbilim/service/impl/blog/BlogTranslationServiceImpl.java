@@ -81,6 +81,6 @@ public class BlogTranslationServiceImpl implements BlogTranslationService {
         id.setLanguageCode(languageCode);
 
         return blogTranslationRepository.findById(id)
-                .orElseThrow(() -> new TranslationNotFoundException("Перевод для этого поста не был найден"));
+                .orElseThrow(() -> new TranslationNotFoundException("Перевод для этого блога не был найден"));
     }
 }

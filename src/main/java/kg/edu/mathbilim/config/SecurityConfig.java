@@ -5,6 +5,7 @@ import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +29,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/auth/telegram/callback")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .httpBasic(Customizer.withDefaults())
 
@@ -80,6 +82,8 @@ public class SecurityConfig {
                         .requestMatchers("/posts/create/**", "/organizations/create/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/users/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/blogComments/").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/blogs/").authenticated()
                         .requestMatchers("/posts/create/**").authenticated()
                         .requestMatchers("/books/create/**").authenticated()
                         .requestMatchers("/books/update/**").authenticated()
