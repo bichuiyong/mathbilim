@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("blogComments")
+@RequestMapping("api/blogComments")
 @RequiredArgsConstructor
 public class BlogCommentController {
     private final BlogCommentService blogCommentService;
