@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
+import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 
@@ -58,4 +59,8 @@ public class Olympiad {
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OlympiadContact> contacts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
+
 }
