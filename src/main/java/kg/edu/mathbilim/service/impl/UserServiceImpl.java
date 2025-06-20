@@ -226,7 +226,27 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Override
+    public UserDto createOAuthUser(UserDto userDto) {
+        if (existsByEmail(userDto.getEmail())) {
+            throw new IllegalStateException("Пользователь уже существует: " + userDto.getEmail());
+        }
 
+        User user = User.builder()
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .role(roleService.getRoleByName("USER"))
+                .isEmailVerified(true)
+                .enabled(true)
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
     @Override
     public void updatePassword(Long userId, String password) {
         User user = userRepository.findById(userId)
