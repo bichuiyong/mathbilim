@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.interfaces;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.post.Post;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,9 @@ public interface FileService {
 
     @Transactional
     List<File> uploadFilesForEvent(MultipartFile[] files, Event event);
+
+    @Transactional
+    List<File> uploadFilesForNews(MultipartFile[] files, News news);
 
     @Transactional
     FileDto uploadAvatar(MultipartFile avatarFile);

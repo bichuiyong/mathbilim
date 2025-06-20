@@ -8,6 +8,7 @@ import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.FileMapper;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.FileRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -80,6 +81,24 @@ public class FileServiceImpl implements FileService {
                 fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
                 log.info("File uploaded for event {}: {}", event.getId(), file.getOriginalFilename());
+            }
+        }
+
+        return uploadedFiles;
+    }
+    @Transactional
+    @Override
+    public List<File> uploadFilesForNews(MultipartFile[] files, News news) {
+        List<File> uploadedFiles = new LinkedList<>();
+        String context = "news/";
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                File uploadedFile = uploadFileReturnEntity(file, context);
+                uploadedFile.setNews(new LinkedList<>(Collections.singleton(news)));
+                fileRepository.saveAndFlush(uploadedFile);
+                uploadedFiles.add(uploadedFile);
+                log.info("File uploaded for post {}: {}", news.getId(), file.getOriginalFilename());
             }
         }
 

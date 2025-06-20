@@ -3,6 +3,7 @@ package kg.edu.mathbilim.model.event;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.File;
@@ -11,7 +12,6 @@ import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.model.event.event_type.EventType;
 import lombok.*;
 import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -59,10 +59,6 @@ public class Event {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "metadata")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> metadata;
-
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
     private ContentStatus status;
@@ -90,5 +86,13 @@ public class Event {
 
     @OneToMany(mappedBy = "event")
     private List<EventTranslation> eventTranslations = new ArrayList<>();
+
+    @Size(max = 255)
+    @Column(name = "address")
+    private String address;
+
+    @Size(max = 255)
+    @Column(name = "url")
+    private String url;
 
 }

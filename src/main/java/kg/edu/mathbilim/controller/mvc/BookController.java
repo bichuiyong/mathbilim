@@ -16,8 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @Controller("mvcBook")
 @RequiredArgsConstructor
 @RequestMapping("books")
@@ -50,8 +48,6 @@ public class BookController {
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
                           @RequestParam MultipartFile attachments,
-                          @RequestParam("metadataKeys") List<String> keys,
-                          @RequestParam("metadataValues") List<String> values,
                           BindingResult bindingResult,
                           Model model) {
         if (bindingResult.hasErrors()) {
@@ -64,7 +60,7 @@ public class BookController {
 
         book.setFile(fileService.uploadFile(attachments, "books"));
         book.setUser(user);
-        bookService.createBook(book, keys, values);
+        bookService.createBook(book);
         return "redirect:/books";
     }
 
@@ -93,8 +89,6 @@ public class BookController {
                              @ModelAttribute("book") @Valid BookDto book,
                              @RequestParam MultipartFile attachments,
                              @RequestParam(value = "context", defaultValue = "general") String context,
-                             @RequestParam("metadataKeys") List<String> keys,
-                             @RequestParam("metadataValues") List<String> values,
                              BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
@@ -108,9 +102,7 @@ public class BookController {
         book.setFile(fileService.uploadFile(attachments, context));
         book.setUser(user);
         book.setId(id);
-        bookService.createBook(book, keys, values);
+        bookService.createBook(book);
         return "redirect:/books";
-
-
     }
 }
