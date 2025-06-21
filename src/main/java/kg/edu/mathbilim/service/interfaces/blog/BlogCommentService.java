@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.interfaces.blog;
 
 import kg.edu.mathbilim.dto.blog.BlogCommentDto;
 import kg.edu.mathbilim.model.blog.BlogComment;
+import kg.edu.mathbilim.model.blog.BlogCommentId;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ public interface BlogCommentService {
     List<BlogCommentDto> getBlogCommentByBlogId(Long blogId);
 
     void createBlogComment(BlogCommentDto blogCommentDto);
+
+    BlogCommentId getBlogCommentId(Long blogId, Long commentId);
 
     void deleteBlogComment(Long blogCommentId);
 

@@ -3,11 +3,11 @@ package kg.edu.mathbilim.service.impl.blog;
 import kg.edu.mathbilim.dto.blog.BlogCommentDto;
 import kg.edu.mathbilim.exception.nsee.BlogCommentNotFoundException;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
-import kg.edu.mathbilim.exception.nsee.CommentNotFoundException;
 import kg.edu.mathbilim.exception.nsee.UnauthorizedAccessException;
 import kg.edu.mathbilim.mapper.blog.BlogCommentMapper;
 import kg.edu.mathbilim.model.Comment;
 import kg.edu.mathbilim.model.blog.BlogComment;
+import kg.edu.mathbilim.model.blog.BlogCommentId;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.blog.BlogCommentRepository;
 import kg.edu.mathbilim.service.interfaces.CommentService;
@@ -50,6 +50,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                             .build()
             );
             BlogComment blogComment = blogCommentMapper.toEntity(blogCommentDto);
+            blogComment.setId(getBlogCommentId(blogCommentDto.getBlogId(), comment.getId()));
             blogComment.setComment(comment);
             blogCommentRepository.save(blogComment);
             log.info("Created blog comment for blog {}, user {}", blogCommentDto.getBlogId(), commentAuthor.getEmail());
@@ -57,6 +58,15 @@ public class BlogCommentServiceImpl implements BlogCommentService {
             throw new BlogNotFoundException();
         }
 
+    }
+
+    @Override
+    public BlogCommentId getBlogCommentId(Long blogId, Long commentId) {
+        BlogCommentId id = new BlogCommentId();
+        id.setBlogId(blogId);
+        id.setCommentId(commentId);
+
+        return id;
     }
     @Transactional
     @Override
