@@ -54,6 +54,8 @@ public interface UserService {
 
     UserDto getUserByResetPasswordToken(String token);
 
+    UserDto createOAuthUser(UserDto userDto);
+
     void updatePassword(Long userId, String password);
 
     void generateEmailVerificationToken(HttpServletRequest request, String email) throws MessagingException, UnsupportedEncodingException;
@@ -68,6 +70,4 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
-
-    UserDto createOAuthUser(UserDto userDto);
 }
