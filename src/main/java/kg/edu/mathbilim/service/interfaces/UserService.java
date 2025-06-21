@@ -70,6 +70,4 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
-
-    UserDto createOAuthUser(UserDto userDto);
 }
