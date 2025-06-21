@@ -2,6 +2,8 @@ package kg.edu.mathbilim.config;
 
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
+import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
+import kg.edu.mathbilim.service.impl.auth.UserTypeHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +23,12 @@ public class SecurityConfig {
     private final CustomOAuth2UserService oauthUserService;
     private final OAuth2LoginSuccessHandler oauthSuccessHandler;
     private final UserTypeHandler userTypeHandler;
+    private final UserEmailHandler userEmailHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))

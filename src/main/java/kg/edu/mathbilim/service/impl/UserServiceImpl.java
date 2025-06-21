@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
@@ -44,6 +45,27 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final UserTypeService userTypeService;
     private final EmailServiceImpl emailService;
+
+    @Override
+    public boolean userEmailIsNotReal(String email) {
+        return email.endsWith("notEmail.com");
+    }
+
+    @Override
+    public void newUserEmail(String email, UserEmailDto userEmailDto, HttpServletRequest request) {
+        UserType userType = userTypeService.getUserTypeEntity(userEmailDto.getType());
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        user.setEmail(userEmailDto.getEmail());
+        user.setType(userType);
+        user.setUpdatedAt(Instant.now());
+        userRepository.save(user);
+        try {
+            generateEmailVerificationToken(request, user.getEmail());
+            log.info("Verification email sent to: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send verification email to: {}", user.getEmail(), e);
+        }
+    }
 
     @Override
     @Transactional
