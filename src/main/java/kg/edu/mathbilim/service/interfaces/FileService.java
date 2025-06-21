@@ -31,6 +31,9 @@ public interface FileService {
     FileDto uploadAvatar(MultipartFile avatarFile);
 
     @Transactional
+    File uploadAvatarReturnEntity(MultipartFile avatarFile);
+
+    @Transactional
     File uploadFileReturnEntity(MultipartFile multipartFile, String context);
 
     @Transactional
