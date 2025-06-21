@@ -15,70 +15,69 @@
                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
-                <div class="bg-white rounded shadow-sm p-4">
-                    <div class="mb-4">
-                        <h5 class="mb-3">1. Ваш email</h5>
-                        <div class="position-relative mb-3">
-                            <@spring.formInput "userEmailDto.email"
-                            "class='form-control form-control-lg ps-5'
+                    <div class="bg-white rounded shadow-sm p-4">
+                        <div class="mb-4">
+                            <h5 class="mb-3">1. Ваш email</h5>
+                            <div class="position-relative mb-3">
+                                <@spring.formInput "userEmailDto.email"
+                                "class='form-control form-control-lg ps-5'
                              placeholder='example@gmail.com'",
-                            'email'/>
-                            <i class="fas fa-envelope position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                                'email'/>
+                                <i class="fas fa-envelope position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                            </div>
+                            <@spring.showErrors '<br>', 'text-danger small mt-1'/>
                         </div>
-                        <@spring.showErrors '<br>', 'text-danger small mt-1'/>
-                    </div>
 
-                    <div>
-                        <h5 class="mb-3">2. Тип аккаунта</h5>
-                        <div class="row g-3 mb-4">
-                            <#list userTypes as type>
-                                <div class="col-md-6">
-                                    <label class="account-type-option h-100" for="type${type.id}">
-                                        <input class="form-check-input d-none"
-                                               type="radio"
-                                               name="type"
-                                               id="type${type.id}"
-                                               value="${type.id}"
-                                               required>
-                                        <div class="account-type-card h-100 p-3 rounded border">
-                                            <div class="d-flex align-items-center">
-                                                <div class="me-3">
-                                                    <#if type.userTypeTranslations[0].translation?contains("Ученик")>
-                                                        <i class="fas fa-user-graduate text-primary fs-4"></i>
-                                                    <#elseif type.userTypeTranslations[0].translation?contains("Учитель")>
-                                                        <i class="fas fa-chalkboard-teacher text-primary fs-4"></i>
-                                                    <#else>
-                                                        <i class="fas fa-user text-primary fs-4"></i>
-                                                    </#if>
-                                                </div>
-                                                <div>
-                                                    <h6 class="mb-1">${type.userTypeTranslations[0].translation}</h6>
-                                                    <p class="text-muted small mb-0">
+                        <div>
+                            <h5 class="mb-3">2. Тип аккаунта</h5>
+                            <div class="row g-3 mb-4">
+                                <#list userTypes as type>
+                                    <div class="col-md-6 d-flex">
+                                        <label class="account-type-option w-100" for="type${type.id}">
+                                            <input class="form-check-input d-none"
+                                                   type="radio"
+                                                   name="type"
+                                                   id="type${type.id}"
+                                                   value="${type.id}"
+                                                   required>
+                                            <div class="account-type-card h-100 p-3 rounded border d-flex flex-column">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <div class="me-3">
                                                         <#if type.userTypeTranslations[0].translation?contains("Ученик")>
-                                                            Доступ к учебным материалам
+                                                            <i class="fas fa-user-graduate text-primary fs-4"></i>
                                                         <#elseif type.userTypeTranslations[0].translation?contains("Учитель")>
-                                                            Создание тестов и отслеживание прогресса
+                                                            <i class="fas fa-chalkboard-teacher text-primary fs-4"></i>
                                                         <#else>
-                                                            Полный доступ к платформе
+                                                            <i class="fas fa-user text-primary fs-4"></i>
                                                         </#if>
-                                                    </p>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1">${type.userTypeTranslations[0].translation}</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            <#if type.userTypeTranslations[0].translation?contains("Ученик")>
+                                                                Доступ к учебным материалам
+                                                            <#elseif type.userTypeTranslations[0].translation?contains("Учитель")>
+                                                                Создание тестов и отслеживание прогресса
+                                                            <#else>
+                                                                Полный доступ к платформе
+                                                            </#if>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </#list>
+                                        </label>
+                                    </div>
+                                </#list>
+                            </div>
+                        </div>
 
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-check me-2"></i>
+                                Завершить регистрацию
+                            </button>
                         </div>
                     </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-check me-2"></i>
-                            Завершить регистрацию
-                        </button>
-                    </div>
-                </div>
                 </form>
             </div>
         </div>
