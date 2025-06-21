@@ -1,0 +1,39 @@
+package kg.edu.mathbilim.model.blog;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Hibernate;
+
+import java.util.Objects;
+
+@Getter
+@Setter
+@Embeddable
+public class BlogCommentId implements java.io.Serializable {
+    private static final long serialVersionUID = -8324176707923669447L;
+    @NotNull
+    @Column(name = "comment_id", nullable = false)
+    private Long commentId;
+
+    @NotNull
+    @Column(name = "blog_id", nullable = false)
+    private Long blogId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        BlogCommentId entity = (BlogCommentId) o;
+        return Objects.equals(this.commentId, entity.commentId) &&
+                Objects.equals(this.blogId, entity.blogId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(commentId, blogId);
+    }
+
+}

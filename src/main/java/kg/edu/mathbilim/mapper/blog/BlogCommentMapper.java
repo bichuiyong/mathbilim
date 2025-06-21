@@ -7,7 +7,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BlogCommentMapper {
-    @Mapping(target = "comment.id", source = "id")
+    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "comment.id", source = "id")
     @Mapping(target = "comment.content", source = "content")
     @Mapping(target = "comment.createdAt", source = "createdAt")
     @Mapping(target = "comment.updatedAt", source = "updatedAt")
@@ -15,7 +16,8 @@ public interface BlogCommentMapper {
     @Mapping(target = "blog.id", source = "blogId")
     BlogComment toEntity(BlogCommentDto blogComment);
 
-    @Mapping(source = "comment.id", target = "id")
+    @Mapping(target = "id", ignore = true)
+//    @Mapping(source = "comment.id", target = "id")
     @Mapping(source = "comment.content", target = "content")
     @Mapping(source = "comment.createdAt", target = "createdAt")
     @Mapping(source = "comment.updatedAt", target = "updatedAt")
