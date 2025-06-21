@@ -2,7 +2,7 @@ package kg.edu.mathbilim.model.news;
 
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.abstracts.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class NewsTranslation extends TranslationContent {
+public class NewsTranslation extends ContentTranslation {
     @EmbeddedId
     private NewsTranslationId id;
 

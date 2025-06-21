@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.model.event;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.abstracts.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "event_translations")
-public class EventTranslation  extends TranslationContent {
+public class EventTranslation  extends ContentTranslation {
     @EmbeddedId
     private EventTranslationId id;
 

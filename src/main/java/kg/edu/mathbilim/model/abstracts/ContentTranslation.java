@@ -4,10 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @MappedSuperclass
@@ -16,13 +14,14 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-public abstract class TranslationContent {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public abstract class ContentTranslation {
     @Size(max = 500)
     @NotNull
     @Column(name = "title", nullable = false, length = 500)
-    protected String title;
+    String title;
 
     @NotNull
     @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
-    protected String content;
+    String content;
 }

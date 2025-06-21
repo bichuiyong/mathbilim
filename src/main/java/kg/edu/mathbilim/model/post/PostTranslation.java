@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
-import kg.edu.mathbilim.model.abstracts.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostTranslation extends TranslationContent {
+public class PostTranslation extends ContentTranslation {
     @EmbeddedId
     private PostTranslationId id;
 
