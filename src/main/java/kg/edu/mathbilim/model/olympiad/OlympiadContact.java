@@ -1,30 +1,30 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Entity
 @Table(name = "olympiad_contacts")
-public class OlympiadContact {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class OlympiadContact{
 
-    @Column
-    private String info;
+    @EmbeddedId
+    private OlympiadContactKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @MapsId("olympiadId")
     @JoinColumn(name = "olympiad_id", nullable = false)
     private Olympiad olympiad;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne
+    @MapsId("contactTypeId")
+    @JoinColumn(name = "contact_type_id", nullable = false)
+    private ContactType contactType;
 
+    private String info;
 }

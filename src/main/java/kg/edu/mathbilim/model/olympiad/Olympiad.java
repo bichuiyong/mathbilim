@@ -22,7 +22,7 @@ public class Olympiad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String title;
 
     @Column(name = "info")
@@ -55,7 +55,7 @@ public class Olympiad {
     private List<OlympiadStage> stages = new ArrayList<>();
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OlympiadContactInfo> contactInfos = new ArrayList<>();
+    private List<OlympiadContact> contactInfos = new ArrayList<>();
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
