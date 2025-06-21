@@ -37,7 +37,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
-                        <#list newsDto.news.newsTranslations?sort_by("languageCode") as trans>
+                        <#list newsDto.news.newsTranslations as trans>
                             <li class="nav-item">
                                 <a class="nav-link <#if trans?is_first>active</#if>"
                                    data-bs-toggle="tab"
