@@ -1,14 +1,11 @@
 package kg.edu.mathbilim.dto.news;
 
 
-import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.post.PostTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.Language;
-import kg.edu.mathbilim.model.news.News;
-import kg.edu.mathbilim.model.news.NewsTranslationId;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
 
@@ -16,7 +13,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -24,32 +20,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NewsDto {
-    private Long id;
-
-
-    private UserDto user;
-
-
-    @Builder.Default
-    private Instant createdAt = Instant.now();
-
-    @Builder.Default
-    private Instant updatedAt = Instant.now();
-
-    @Builder.Default
-    private Long viewCount = 0L;
-
-
-    private FileDto mainImage;
-
-    List<FileDto> files = new ArrayList<>();
+public class NewsDto extends ContentDto {
+    
+    List<FileDto> newsFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired
     @Builder.Default
     private List<NewsTranslationDto> newsTranslations = createDefaultTranslations();
-
-    private String formattedDate;
 
     private static List<NewsTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
@@ -61,5 +38,23 @@ public class NewsDto {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public UserDto getApprovedBy() {
+        return null; 
+    }
 
+    @Override
+    public void setApprovedBy(UserDto approvedBy) {
+        // Игнорируем, так как поля нет в таблице
+    }
+
+    @Override
+    public ContentStatus getStatus() {
+        return null; // Поле отсутствует в News
+    }
+
+    @Override
+    public void setStatus(ContentStatus status) {
+        // Игнорируем, так как поля нет в таблице
+    }
 }

@@ -3,15 +3,14 @@ package kg.edu.mathbilim.dto.event;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,14 +19,12 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @ValidDateTimeRange(
         startDateTimeField = "startDate",
         endDateTimeField = "endDate"
 )
-public class EventDto {
-    private Long id;
-
+public class EventDto extends ContentDto {
     @NotNull
     @Future
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -40,35 +37,19 @@ public class EventDto {
     @NotNull
     private Long typeId;
 
-    private UserDto user;
-
-    @Builder.Default
-    private UserDto approvedBy = null;
-
-    @Builder.Default
-    private Instant createdAt = Instant.now();
-
-    @Builder.Default
-    private Instant updatedAt = Instant.now();
-
     private String address; // если оффлайн
 
     private String url; // если онлайн
-
-    private ContentStatus status;
-
-    private FileDto mainImage;
 
     @NotNull
     private Boolean isOffline;
 
     @Builder.Default
-    private List<FileDto> files = new ArrayList<>();
+    private List<FileDto> eventFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired
     @Builder.Default
     private List<EventTranslationDto> eventTranslations = createDefaultTranslations();
-
 
     private static List<EventTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
