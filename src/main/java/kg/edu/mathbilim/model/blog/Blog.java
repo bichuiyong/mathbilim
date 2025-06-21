@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -35,7 +36,7 @@ public class Blog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "approved_id")
+    @JoinColumn(name = "approved_by")
     private User approved;
 
     @Convert(converter = ContentStatusConverter.class)
@@ -59,6 +60,11 @@ public class Blog {
     @ColumnDefault("0")
     @Column(name = "share_count", nullable = false)
     private Long shareCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "main_image_id")
+    private File mainImage;
 
     @OneToMany(mappedBy = "blog")
     private List<BlogComment> blogComments = new ArrayList<>();

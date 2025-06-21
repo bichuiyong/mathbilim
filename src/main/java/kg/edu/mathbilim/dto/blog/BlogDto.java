@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 public class BlogDto {
     private Long id;
 
-    @NotNull
-    private Long typeId;
 
     private UserDto creator;
 

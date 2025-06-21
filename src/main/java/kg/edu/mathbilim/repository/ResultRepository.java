@@ -13,18 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
-    List<Result> findByFiles(File files);
+    List<Result> findByFile(File files);
 
     List<Result> findByOlympiad(Olympiad olympiad);
 
     List<Result> findByUser(User user);
 
     List<Result> findByUserIsNull();
-
-    @Query("SELECT r FROM Result r JOIN FETCH r.files JOIN FETCH r.olympiad WHERE r.id = :id")
-    Optional<Result> findByIdWithAssociations(@Param("id") Long id);
-
-    @Query("SELECT r FROM Result r WHERE r.createdAt BETWEEN :startDate AND :endDate")
-    List<Result> findByCreatedAtBetween(@Param("startDate") LocalDateTime startDate,
-                                        @Param("endDate") LocalDateTime endDate);
 }

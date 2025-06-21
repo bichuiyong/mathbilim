@@ -2,17 +2,15 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.CaptchaResponseDto;
+import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.CreateBlogDto;
-import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -31,7 +29,7 @@ public class BlogController {
 
 
     @PostMapping("create")
-    public String createBlog(@ModelAttribute("createBlogDto") @Valid CreateBlogDto blogDto,
+    public String createBlog(@ModelAttribute("blogDto") @Valid CreateBlogDto blogDto,
                              BindingResult bindingResult,
                              @RequestParam("g-recaptcha-response") String captchaResponse) {
 
@@ -40,10 +38,19 @@ public class BlogController {
 
         assert response != null;
         if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
-            return "blogs/blog-create";
+            return "media/blog-create";
         }
         blogService.createBlog(blogDto);
         return "redirect:/blogs/";
+    }
+
+    @GetMapping("create")
+    public String createBlog(Model model) {
+        CreateBlogDto blogDto = CreateBlogDto.builder()
+                .blog(BlogDto.builder().build())
+                .build();
+        model.addAttribute("blogDto", blogDto);
+        return "media/blog-create";
     }
 
 }

@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.advice;
 
+import kg.edu.mathbilim.controller.mvc.BlogController;
 import kg.edu.mathbilim.controller.mvc.NewsController;
 import kg.edu.mathbilim.controller.mvc.PostController;
 import kg.edu.mathbilim.enums.Language;
@@ -8,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice(assignableTypes = {PostController.class, NewsController.class})
+@ControllerAdvice(assignableTypes = {PostController.class, NewsController.class, BlogController.class})
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
