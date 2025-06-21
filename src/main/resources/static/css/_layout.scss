@@ -1,0 +1,268 @@
+// ==========================================
+// ЛЕЙАУТ
+// ==========================================
+
+// ==========================================
+// НАВИГАЦИЯ
+// ==========================================
+
+.navbar-container {
+  background: $white;
+  box-shadow: $box-shadow;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0.75rem 2rem;
+}
+
+// Кнопка toggler
+.navbar-toggler {
+  border: 2px solid $border-gray;
+  padding: 0.25rem 0.5rem;
+  transition: all $transition;
+
+  &:focus {
+    box-shadow: none;
+    border-color: $primary-blue;
+  }
+
+  &:hover {
+    border-color: $primary-blue;
+    background-color: $light-blue;
+  }
+
+  .navbar-toggler-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-size: 100%;
+  }
+}
+
+.navbar-top {
+  .nav-link {
+    color: $text-gray;
+    margin: 0 1rem;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+  }
+}
+
+.navbar-bottom {
+  .nav-link {
+    color: $text-dark;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 0.75rem;
+    font-size: 1.1rem;
+    padding: 0.25rem 1rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+  }
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: $primary-blue;
+  text-decoration: none;
+  transition: color $transition;
+
+  &:hover {
+    color: $hover-blue;
+  }
+}
+
+.auth-buttons {
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid $border-gray;
+    background: $white;
+    color: $text-gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all $transition;
+    margin-left: 0.5rem;
+
+    &:hover {
+      border-color: $primary-blue;
+      color: $primary-blue;
+      background: $light-blue;
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.language-switcher {
+  .lang-btn {
+    color: $text-gray;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+    font-size: 0.9rem;
+
+    &:hover,
+    &.active {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+
+    &:not(:last-child)::after {
+      content: "|";
+      margin: 0 0.5rem;
+      color: $border-gray;
+    }
+  }
+}
+
+// Мобильные стили для языков
+.language-switcher-mobile {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+
+  .lang-btn-mobile {
+    color: $text-gray;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    border-radius: $border-radius;
+    transition: all $transition;
+
+    &:hover,
+    &.active {
+      color: $primary-blue;
+      background-color: $light-blue;
+    }
+
+    &:not(:last-child)::after {
+      content: "|";
+      margin: 0 0.3rem;
+      color: $border-gray;
+    }
+  }
+}
+
+// Мобильное меню
+.navbar-mobile-content {
+  padding: 1rem 1rem;
+
+  .mobile-menu-section {
+    padding: 1rem 0;
+    border-bottom: 1px solid $border-gray;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu-title {
+      color: $text-gray;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      padding: 0 1rem;
+    }
+  }
+
+  .navbar-nav {
+    .nav-item {
+      margin: 0;
+    }
+
+    .nav-link {
+      color: $text-dark;
+      padding: 0.75rem 1rem;
+      font-weight: 500;
+      transition: all $transition;
+      border-radius: 0;
+
+      &:hover,
+      &:focus {
+        background-color: $light-gray;
+        color: $primary-blue;
+      }
+    }
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+// ==========================================
+// ФУТЕР
+// ==========================================
+
+.footer {
+  background: $text-dark;
+  color: $white;
+  padding: 3rem 0 1rem;
+  margin-top: 4rem;
+
+  h5 {
+    color: $white;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color $transition;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    color: $white;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all $transition;
+    margin-right: 0.5rem;
+
+    &:hover {
+      background: $primary-blue;
+      color: $white;
+    }
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    margin-top: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+}
