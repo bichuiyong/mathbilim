@@ -68,7 +68,7 @@
 
                         <hr>
 
-                        <a href="/profile/edit" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-edit me-2"></i>Редактировать профиль
                         </a>
                     </div>
