@@ -8,9 +8,6 @@
         <meta charset="UTF-8">
         <title>Создать событие</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-                async defer>
-        </script>
         <style>
             .translation-tab {
                 display: none;
@@ -183,10 +180,6 @@
             <div class="mb-3">
                 <label class="form-label">Вложения</label>
                 <input type="file" class="form-control" name="attachments" multiple>
-            </div>
-
-            <div>
-                <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">Создать</button>

@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.CaptchaResponseDto;
 import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
@@ -15,9 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
-
 
 @Controller("mvcEvent")
 @RequestMapping("events")
@@ -64,15 +60,10 @@ public class EventController {
 
     @PostMapping("create")
     public String createEvent(@ModelAttribute("createEventDto") @Valid CreateEventDto createEventDto,
-                              BindingResult bindingResult,
-                              @RequestParam("g-recaptcha-response") String captchaResponse
+                              BindingResult bindingResult
     ) {
 
-        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
-        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
-
-        assert response != null;
-        if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
+        if (bindingResult.hasErrors()) {
             return "events/event-create";
         }
 
