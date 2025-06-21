@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.reference.category;
+package kg.edu.mathbilim.dto.event;
 
 import kg.edu.mathbilim.validation.annotation.AllTranslationsRequired;
 import lombok.*;
@@ -10,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryDto {
+public class EventTypeDto {
     private Integer id;
 
     @AllTranslationsRequired
-    private List<CategoryTranslationDto> categoryTranslations;
+    private List<EventTypeTranslationDto> eventTypeTranslations;
 }

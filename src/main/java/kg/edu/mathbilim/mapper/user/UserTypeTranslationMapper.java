@@ -1,8 +1,7 @@
 package kg.edu.mathbilim.mapper.user;
 
-import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslation;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslationId;
+import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
+import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

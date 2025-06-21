@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.reference.category;
+package kg.edu.mathbilim.model.reference;
 
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;

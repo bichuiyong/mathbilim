@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model;
+package kg.edu.mathbilim.model.abstracts;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

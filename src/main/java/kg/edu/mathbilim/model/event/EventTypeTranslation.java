@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.event.event_type;
+package kg.edu.mathbilim.model.event;
 
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;

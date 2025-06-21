@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.post.post_type;
+package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;

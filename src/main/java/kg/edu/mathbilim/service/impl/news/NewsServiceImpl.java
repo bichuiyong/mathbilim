@@ -119,7 +119,7 @@ public class NewsServiceImpl implements NewsService {
 
         NewsDto incomingDto = dto.getNews();
 
-        existing.setUser(userMapper.toEntity(userService.getAuthUser()));
+        existing.setCreator(userMapper.toEntity(userService.getAuthUser()));
         existing.setUpdatedAt(Instant.now());
 
         setPostTranslations(incomingDto.getNewsTranslations(), id);
@@ -176,7 +176,7 @@ public class NewsServiceImpl implements NewsService {
         if (attachments.length > 0) {
             List<File> uploadedFiles = fileService.uploadFilesForNews(attachments, savedNews);
             if (!uploadedFiles.isEmpty()) {
-                savedNews.setFiles(uploadedFiles);
+                savedNews.setNewsFiles(uploadedFiles);
                 newsRepository.saveAndFlush(savedNews);
                 log.info("Uploaded {} files for post {}", uploadedFiles.size(), savedNews.getId());
             }

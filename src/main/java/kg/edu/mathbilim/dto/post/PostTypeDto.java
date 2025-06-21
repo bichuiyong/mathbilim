@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.post.post_type;
+package kg.edu.mathbilim.dto.post;
 
 
 import kg.edu.mathbilim.validation.annotation.AllTranslationsRequired;

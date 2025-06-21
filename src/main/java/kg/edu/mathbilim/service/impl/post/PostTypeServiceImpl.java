@@ -1,10 +1,10 @@
 package kg.edu.mathbilim.service.impl.post;
 
-import kg.edu.mathbilim.dto.post.post_type.PostTypeDto;
-import kg.edu.mathbilim.dto.post.post_type.PostTypeTranslationDto;
+import kg.edu.mathbilim.dto.post.PostTypeDto;
+import kg.edu.mathbilim.dto.post.PostTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostTypeMapper;
-import kg.edu.mathbilim.model.post.post_type.PostType;
+import kg.edu.mathbilim.model.post.PostType;
 import kg.edu.mathbilim.repository.post.PostTypeRepository;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeTranslationService;

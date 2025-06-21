@@ -5,7 +5,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.model.abstracts.Content;
-import kg.edu.mathbilim.model.reference.category.Category;
+import kg.edu.mathbilim.model.reference.Category;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;

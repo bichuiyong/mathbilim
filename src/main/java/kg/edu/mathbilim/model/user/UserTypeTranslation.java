@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.user.user_type;
+package kg.edu.mathbilim.model.user;
 
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;

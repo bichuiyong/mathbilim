@@ -3,7 +3,6 @@ package kg.edu.mathbilim.model.post;
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.Content;
-import kg.edu.mathbilim.model.post.post_type.PostType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;

@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.repository.post;
 
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslation;
+import kg.edu.mathbilim.model.post.PostTypeTranslation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

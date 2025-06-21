@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.user.user_type;
+package kg.edu.mathbilim.dto.reference;
 
 import kg.edu.mathbilim.validation.annotation.AllTranslationsRequired;
 import lombok.*;
@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserTypeDto {
+public class CategoryDto {
     private Integer id;
 
     @AllTranslationsRequired
-    private List<UserTypeTranslationDto> userTypeTranslations;
+    private List<CategoryTranslationDto> categoryTranslations;
 }

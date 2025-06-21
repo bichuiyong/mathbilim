@@ -7,13 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
-public class BlogCommentId implements java.io.Serializable {
+public class BlogCommentId implements Serializable {
+    @Serial
     private static final long serialVersionUID = -8324176707923669447L;
+
     @NotNull
     @Column(name = "comment_id", nullable = false)
     private Long commentId;

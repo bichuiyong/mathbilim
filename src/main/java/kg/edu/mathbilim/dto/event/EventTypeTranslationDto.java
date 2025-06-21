@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.user.user_type;
+package kg.edu.mathbilim.dto.event;
 
 import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class UserTypeTranslationDto extends TypeTranslationDto {
-    private Integer userTypeId;
+public class EventTypeTranslationDto extends TypeTranslationDto {
+    private Integer eventTypeId;
 }

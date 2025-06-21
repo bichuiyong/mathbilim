@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;

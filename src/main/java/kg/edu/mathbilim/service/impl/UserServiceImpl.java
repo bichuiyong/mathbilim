@@ -6,7 +6,7 @@ import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.user.UserRepository;

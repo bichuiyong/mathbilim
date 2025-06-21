@@ -1,9 +1,8 @@
 
 package kg.edu.mathbilim.mapper.event;
 
-import kg.edu.mathbilim.dto.event.event_type.EventTypeTranslationDto;
-import kg.edu.mathbilim.model.event.event_type.EventTypeTranslation;
-import kg.edu.mathbilim.model.event.event_type.EventTypeTranslationId;
+import kg.edu.mathbilim.dto.event.EventTypeTranslationDto;
+import kg.edu.mathbilim.model.event.EventTypeTranslation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

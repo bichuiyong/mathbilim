@@ -1,10 +1,10 @@
 package kg.edu.mathbilim.service.impl.reference;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
-import kg.edu.mathbilim.dto.reference.category.CategoryTranslationDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.dto.reference.CategoryTranslationDto;
 import kg.edu.mathbilim.exception.nsee.CategoryNotFoundException;
-import kg.edu.mathbilim.mapper.reference.category.CategoryMapper;
-import kg.edu.mathbilim.model.reference.category.Category;
+import kg.edu.mathbilim.mapper.reference.CategoryMapper;
+import kg.edu.mathbilim.model.reference.Category;
 import kg.edu.mathbilim.repository.reference.CategoryRepository;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryTranslationService;

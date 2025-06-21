@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.Content;
 import kg.edu.mathbilim.model.Organization;
-import kg.edu.mathbilim.model.event.event_type.EventType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

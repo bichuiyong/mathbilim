@@ -1,8 +1,7 @@
-package kg.edu.mathbilim.mapper.reference.category;
+package kg.edu.mathbilim.mapper.reference;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryTranslationDto;
-import kg.edu.mathbilim.model.reference.category.CategoryTranslation;
-import kg.edu.mathbilim.model.reference.category.CategoryTranslationId;
+import kg.edu.mathbilim.dto.reference.CategoryTranslationDto;
+import kg.edu.mathbilim.model.reference.CategoryTranslation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.reference.category;
+package kg.edu.mathbilim.dto.post;
 
 import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CategoryTranslationDto extends TypeTranslationDto {
-    Integer categoryId;
+public class PostTypeTranslationDto extends TypeTranslationDto {
+    private Integer postTypeId;
 }

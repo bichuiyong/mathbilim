@@ -1,9 +1,7 @@
 package kg.edu.mathbilim.model.event;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.TranslationContent;
 import lombok.Getter;
 import lombok.Setter;
 

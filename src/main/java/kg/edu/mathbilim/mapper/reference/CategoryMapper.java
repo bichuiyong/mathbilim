@@ -1,7 +1,7 @@
-package kg.edu.mathbilim.mapper.reference.category;
+package kg.edu.mathbilim.mapper.reference;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
-import kg.edu.mathbilim.model.reference.category.Category;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.model.reference.Category;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

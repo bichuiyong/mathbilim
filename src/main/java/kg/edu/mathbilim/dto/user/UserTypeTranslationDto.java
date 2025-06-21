@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.post.post_type;
+package kg.edu.mathbilim.dto.user;
 
 import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
 import lombok.*;
@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class PostTypeTranslationDto extends TypeTranslationDto {
-    private Integer postTypeId;
+public class UserTypeTranslationDto extends TypeTranslationDto {
+    private Integer userTypeId;
 }

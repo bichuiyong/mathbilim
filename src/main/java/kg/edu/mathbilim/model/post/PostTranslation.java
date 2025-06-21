@@ -1,15 +1,12 @@
 package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.TranslationContent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.apache.tomcat.websocket.Transformation;
 
 @Getter
 @Setter

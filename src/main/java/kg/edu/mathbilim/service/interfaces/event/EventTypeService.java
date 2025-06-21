@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.event;
 
 
-import kg.edu.mathbilim.dto.event.event_type.EventTypeDto;
+import kg.edu.mathbilim.dto.event.EventTypeDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

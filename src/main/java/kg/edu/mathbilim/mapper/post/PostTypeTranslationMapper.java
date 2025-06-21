@@ -1,8 +1,7 @@
 package kg.edu.mathbilim.mapper.post;
 
-import kg.edu.mathbilim.dto.post.post_type.PostTypeTranslationDto;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslation;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslationId;
+import kg.edu.mathbilim.dto.post.PostTypeTranslationDto;
+import kg.edu.mathbilim.model.post.PostTypeTranslation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

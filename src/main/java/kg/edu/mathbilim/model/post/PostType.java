@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.model.event.event_type;
+package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "event_types")
+@Table(name = "post_types")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EventType {
+public class PostType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(mappedBy = "eventType")
-    @Builder.Default
-    private List<EventTypeTranslation> eventTypeTranslations = new ArrayList<>();
+    @OneToMany(mappedBy = "postType")
+    private List<PostTypeTranslation> postTypeTranslations = new ArrayList<>();
 }

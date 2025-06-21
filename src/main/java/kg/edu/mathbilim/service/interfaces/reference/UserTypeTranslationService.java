@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.reference;
 
-import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslation;
+import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
+import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

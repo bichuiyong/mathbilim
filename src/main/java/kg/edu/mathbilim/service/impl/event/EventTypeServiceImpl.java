@@ -1,10 +1,10 @@
 package kg.edu.mathbilim.service.impl.event;
 
-import kg.edu.mathbilim.dto.event.event_type.EventTypeDto;
-import kg.edu.mathbilim.dto.event.event_type.EventTypeTranslationDto;
+import kg.edu.mathbilim.dto.event.EventTypeDto;
+import kg.edu.mathbilim.dto.event.EventTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventTypeMapper;
-import kg.edu.mathbilim.model.event.event_type.EventType;
+import kg.edu.mathbilim.model.event.EventType;
 import kg.edu.mathbilim.repository.event.EventTypeRepository;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeTranslationService;
