@@ -33,8 +33,8 @@ public class PostController {
     @ModelAttribute
     public void addCommonAttributes(Model model) {
         model.addAttribute("postTypes", postTypeService.getPostTypesByLanguage("ru"));
-        model.addAttribute("languages", Language.getLanguagesMap());
-        model.addAttribute("languageEnum", Language.values());
+//        model.addAttribute("languages", Language.getLanguagesMap());
+//        model.addAttribute("languageEnum", Language.values());
     }
 
     @GetMapping("create")
