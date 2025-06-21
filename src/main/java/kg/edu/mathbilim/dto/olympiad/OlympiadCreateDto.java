@@ -26,10 +26,6 @@ public class OlympiadCreateDto {
     @Size(max = 1000, message = "Правила олимпиады не должны превышать 1000 символов")
     private String rules;
 
-    @NotEmpty(message = "Предмет обязателен")
-    @Size(max = 100, message = "Название предмета не должно превышать 100 символов")
-    private String subject;
-
     @NotNull(message = "Дата начала обязательна")
     private LocalDate startDate;
 
