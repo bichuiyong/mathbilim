@@ -32,6 +32,7 @@ public class Result {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "file_id", nullable = false)
     private File file;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
