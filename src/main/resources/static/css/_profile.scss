@@ -379,17 +379,6 @@
   }
 }
 
-// Действия формы
-.profile-edit-actions {
-  background: $light-gray;
-  margin: -1.25rem -1.25rem -1.25rem -1.25rem;
-  padding: 1.25rem;
-  border-radius: 0 0 $border-radius $border-radius;
-
-  .btn {
-    min-width: 140px;
-  }
-}
 
 // ==========================================
 // АДАПТИВНОСТЬ ДЛЯ ПРОФИЛЯ
@@ -440,8 +429,8 @@
   .profile-avatar-container-edit {
     .profile-avatar-edit-preview,
     .profile-avatar-placeholder-edit {
-      width: 100px;
-      height: 100px;
+      width: 150px;
+      height: 150px;
     }
   }
 
@@ -474,57 +463,6 @@
       .col-md-6,
       .col-md-8 {
         margin-bottom: 0.5rem;
-      }
-    }
-  }
-
-  // Списки контента на мобильных
-  .content-list,
-  .users-list {
-    .content-item,
-    .user-item {
-      padding: 1rem;
-
-      .content-header {
-        flex-direction: column;
-        align-items: flex-start;
-
-        .content-actions {
-          margin-left: 0;
-          margin-top: 0.75rem;
-          width: 100%;
-
-          .btn {
-            flex: 1;
-          }
-        }
-      }
-
-      .content-meta {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .user-actions {
-        margin-left: 0;
-        margin-top: 0.75rem;
-        width: 100%;
-
-        .btn {
-          flex: 1;
-        }
-      }
-    }
-
-    .user-item {
-      .d-flex {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .user-avatar,
-      .user-avatar-placeholder {
-        margin: 0 auto 1rem auto;
       }
     }
   }

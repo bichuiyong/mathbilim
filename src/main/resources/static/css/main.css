@@ -995,16 +995,6 @@ body {
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
-.profile-edit-actions {
-  background: #f8fafc;
-  margin: -1.25rem -1.25rem -1.25rem -1.25rem;
-  padding: 1.25rem;
-  border-radius: 0 0 8px 8px;
-}
-.profile-edit-actions .btn {
-  min-width: 140px;
-}
-
 @media (max-width: 768px) {
   .profile-card .profile-avatar-container .profile-avatar,
   .profile-card .profile-avatar-container .profile-avatar-placeholder {
@@ -1034,8 +1024,8 @@ body {
   }
   .profile-avatar-container-edit .profile-avatar-edit-preview,
   .profile-avatar-container-edit .profile-avatar-placeholder-edit {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
   }
   .profile-edit-actions .d-flex {
     flex-direction: column;
@@ -1070,65 +1060,6 @@ body {
   .users-filters .row.g-2 .col-md-6,
   .users-filters .row.g-2 .col-md-8 {
     margin-bottom: 0.5rem;
-  }
-  .content-list .content-item,
-  .content-list .user-item,
-  .users-list .content-item,
-  .users-list .user-item {
-    padding: 1rem;
-  }
-  .content-list .content-item .content-header,
-  .content-list .user-item .content-header,
-  .users-list .content-item .content-header,
-  .users-list .user-item .content-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .content-list .content-item .content-header .content-actions,
-  .content-list .user-item .content-header .content-actions,
-  .users-list .content-item .content-header .content-actions,
-  .users-list .user-item .content-header .content-actions {
-    margin-left: 0;
-    margin-top: 0.75rem;
-    width: 100%;
-  }
-  .content-list .content-item .content-header .content-actions .btn,
-  .content-list .user-item .content-header .content-actions .btn,
-  .users-list .content-item .content-header .content-actions .btn,
-  .users-list .user-item .content-header .content-actions .btn {
-    flex: 1;
-  }
-  .content-list .content-item .content-meta,
-  .content-list .user-item .content-meta,
-  .users-list .content-item .content-meta,
-  .users-list .user-item .content-meta {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .content-list .content-item .user-actions,
-  .content-list .user-item .user-actions,
-  .users-list .content-item .user-actions,
-  .users-list .user-item .user-actions {
-    margin-left: 0;
-    margin-top: 0.75rem;
-    width: 100%;
-  }
-  .content-list .content-item .user-actions .btn,
-  .content-list .user-item .user-actions .btn,
-  .users-list .content-item .user-actions .btn,
-  .users-list .user-item .user-actions .btn {
-    flex: 1;
-  }
-  .content-list .user-item .d-flex,
-  .users-list .user-item .d-flex {
-    flex-direction: column;
-    text-align: center;
-  }
-  .content-list .user-item .user-avatar,
-  .content-list .user-item .user-avatar-placeholder,
-  .users-list .user-item .user-avatar,
-  .users-list .user-item .user-avatar-placeholder {
-    margin: 0 auto 1rem auto;
   }
   .card-header-tabs {
     flex-wrap: wrap;
@@ -1353,10 +1284,6 @@ body {
     padding-top: 0.75rem;
   }
   .profile-card .profile-avatar-container .profile-avatar,
-  .profile-card .profile-avatar-container .profile-avatar-placeholder {
-    width: 100px;
-    height: 100px;
-  }
   .profile-card .profile-avatar-container .profile-avatar-edit {
     width: 30px;
     height: 30px;
