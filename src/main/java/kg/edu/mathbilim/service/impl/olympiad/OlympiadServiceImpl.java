@@ -35,7 +35,6 @@ public class OlympiadServiceImpl implements OlympiadService {
         olympiad.setRules(olympiadCreateDto.getRules());
         olympiad.setCreatedAt(LocalDateTime.now());
         olympiad.setUpdatedAt(LocalDateTime.now());
-        olympiad.setSubject(olympiadCreateDto.getSubject());
         olympiad.setStartDate(olympiadCreateDto.getStartDate());
         olympiad.setEndDate(olympiadCreateDto.getEndDate());
         olympiad.setStatus(OlympiadStatus.PENDING);
