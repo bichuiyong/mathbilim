@@ -88,4 +88,8 @@ public class User {
     private File avatar;
 
     private Long telegramId;
+
+    @Column(name = "subscribed_to_notifications")
+    private Boolean subscribed = true;
+
 }
