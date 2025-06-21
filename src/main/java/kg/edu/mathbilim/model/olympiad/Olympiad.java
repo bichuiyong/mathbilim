@@ -39,9 +39,6 @@ public class Olympiad {
     @Column(name = "rules")
     private String rules;
 
-    @Column(nullable = false, length = 100)
-    private String subject;
-
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
@@ -58,7 +55,7 @@ public class Olympiad {
     private List<OlympiadStage> stages = new ArrayList<>();
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OlympiadContact> contacts = new ArrayList<>();
+    private List<OlympiadContactInfo> contactInfos = new ArrayList<>();
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();

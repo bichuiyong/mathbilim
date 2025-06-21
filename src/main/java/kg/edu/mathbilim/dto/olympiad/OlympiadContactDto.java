@@ -2,6 +2,7 @@ package kg.edu.mathbilim.dto.olympiad;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.dto.ContactTypeDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,8 @@ public class OlympiadContactDto {
     private String info;
 
     private OlympiadDto olympiad;
+
+    private ContactTypeDto contactDto;
 
     private LocalDateTime createdAt;
 

@@ -24,14 +24,8 @@ public class OlympiadStage {
     @JoinColumn(name = "olympiad_id", nullable = false)
     private Olympiad olympiad;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
     @Column(name = "stage_order", nullable = false)
     private Integer stageOrder;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "registration_start")
     private LocalDate registrationStart;
@@ -39,14 +33,11 @@ public class OlympiadStage {
     @Column(name = "registration_end")
     private LocalDate registrationEnd;
 
-    @Column(name = "event_start_date", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate eventStartDate;
 
-    @Column(name = "event_end_date", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate eventEndDate;
-
-    @Column(name = "location")
-    private String location;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
