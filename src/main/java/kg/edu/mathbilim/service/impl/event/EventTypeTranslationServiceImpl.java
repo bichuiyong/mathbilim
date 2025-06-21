@@ -4,7 +4,6 @@ import kg.edu.mathbilim.dto.event.event_type.EventTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventTypeTranslationMapper;
 import kg.edu.mathbilim.model.event.event_type.EventTypeTranslation;
-import kg.edu.mathbilim.model.event.event_type.EventTypeTranslationId;
 import kg.edu.mathbilim.repository.event.EventTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeTranslationService;
 import lombok.RequiredArgsConstructor;

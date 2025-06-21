@@ -4,7 +4,6 @@ import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.user.UserTypeTranslationMapper;
 import kg.edu.mathbilim.model.user.user_type.UserTypeTranslation;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslationId;
 import kg.edu.mathbilim.repository.user.UserTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeTranslationService;
 import lombok.RequiredArgsConstructor;

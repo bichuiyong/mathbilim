@@ -1,27 +1,25 @@
 package kg.edu.mathbilim.model.event.event_type;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "event_type_translations")
-public class EventTypeTranslation {
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class EventTypeTranslation extends TypeTranslation {
     @EmbeddedId
-    private EventTypeTranslationId id;
+    TranslationId id;
 
-    @MapsId("eventTypeId")
+    @MapsId("typeId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "type_id", nullable = false)
-    private EventType eventType;
-
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "translation", nullable = false, length = 100)
-    private String translation;
-
+    EventType eventType;
 }

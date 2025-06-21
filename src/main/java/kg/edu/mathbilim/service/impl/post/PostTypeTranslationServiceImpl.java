@@ -4,7 +4,6 @@ import kg.edu.mathbilim.dto.post.post_type.PostTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostTypeTranslationMapper;
 import kg.edu.mathbilim.model.post.post_type.PostTypeTranslation;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslationId;
 import kg.edu.mathbilim.repository.post.PostTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeTranslationService;
 import lombok.RequiredArgsConstructor;

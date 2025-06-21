@@ -4,7 +4,6 @@ import kg.edu.mathbilim.dto.reference.category.CategoryTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.reference.category.CategoryTranslationMapper;
 import kg.edu.mathbilim.model.reference.category.CategoryTranslation;
-import kg.edu.mathbilim.model.reference.category.CategoryTranslationId;
 import kg.edu.mathbilim.repository.reference.CategoryTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryTranslationService;
 import lombok.RequiredArgsConstructor;

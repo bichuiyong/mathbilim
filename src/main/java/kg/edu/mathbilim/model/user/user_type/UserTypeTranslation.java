@@ -1,27 +1,25 @@
 package kg.edu.mathbilim.model.user.user_type;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "user_type_translations")
-public class UserTypeTranslation {
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class UserTypeTranslation extends TypeTranslation{
     @EmbeddedId
-    private UserTypeTranslationId id;
+    TranslationId id;
 
-    @MapsId("userTypeId")
+    @MapsId("typeId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_type_id", nullable = false)
     private UserType userType;
-
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "translation", nullable = false, length = 50)
-    private String translation;
-
 }
