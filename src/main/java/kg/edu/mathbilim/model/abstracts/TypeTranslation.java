@@ -21,11 +21,6 @@ import java.io.Serializable;
 public abstract class TypeTranslation implements Serializable {
 
     @NotNull
-    @Size(min = 2, max = 2)
-    @Column(name = "language_code", nullable = false, length = 2)
-    String languageCode;
-
-    @NotNull
     @Size(max = 100)
     @Column(name = "translation", nullable = false, length = 100)
     String translation;
@@ -39,6 +34,8 @@ public abstract class TypeTranslation implements Serializable {
         @Column(name = "type_id")
         Integer typeId;
 
+        @NotNull
+        @Size(min = 2, max = 2)
         @Column(name = "language_code", length = 2)
         String languageCode;
     }

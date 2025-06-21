@@ -2,11 +2,12 @@ package kg.edu.mathbilim.model.test;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,17 +16,18 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "test_choices")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestChoice {
     @EmbeddedId
-    private TestChoiceId id;
+    TestChoiceId id;
 
     @MapsId("testId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "test_id", nullable = false)
-    private Test test;
+    Test test;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "answered_at")
-    private Instant answeredAt;
+    LocalDateTime answeredAt;
 }

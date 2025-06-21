@@ -17,10 +17,10 @@ public interface PostTypeTranslationRepository extends JpaRepository<PostTypeTra
     @Query("SELECT ptt FROM PostTypeTranslation ptt WHERE ptt.postType.id = :postTypeId")
     List<PostTypeTranslation> findByPostTypeId(@Param("postTypeId") Integer postTypeId);
 
-    @Query("SELECT ptt FROM PostTypeTranslation ptt WHERE ptt.languageCode = :languageCode")
+    @Query("SELECT ptt FROM PostTypeTranslation ptt WHERE ptt.translationId.languageCode = :languageCode")
     List<PostTypeTranslation> findByLanguageCode(@Param("languageCode") String languageCode);
 
-    @Query("SELECT ptt FROM PostTypeTranslation ptt WHERE ptt.postType.id = :postTypeId AND ptt.languageCode = :languageCode")
+    @Query("SELECT ptt FROM PostTypeTranslation ptt WHERE ptt.postType.id = :postTypeId AND ptt.translationId.languageCode = :languageCode")
     Optional<PostTypeTranslation> findByPostTypeIdAndLanguageCode(@Param("postTypeId") Integer postTypeId,
                                                                   @Param("languageCode") String languageCode);
 
@@ -29,7 +29,7 @@ public interface PostTypeTranslationRepository extends JpaRepository<PostTypeTra
     void deleteByPostTypeId(@Param("postTypeId") Integer postTypeId);
 
     @Query("SELECT CASE WHEN COUNT(ptt) > 0 THEN true ELSE false END FROM PostTypeTranslation ptt " +
-            "WHERE ptt.postType.id = :postTypeId AND ptt.languageCode = :languageCode")
+            "WHERE ptt.postType.id = :postTypeId AND ptt.translationId.languageCode = :languageCode")
     boolean existsByPostTypeIdAndLanguageCode(@Param("postTypeId") Integer postTypeId,
                                               @Param("languageCode") String languageCode);
 }

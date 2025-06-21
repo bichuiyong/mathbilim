@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.reference;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @OneToMany(mappedBy = "category")
-    private List<CategoryTranslation> categoryTranslations = new ArrayList<>();
+    List<CategoryTranslation> categoryTranslations = new ArrayList<>();
 
 }

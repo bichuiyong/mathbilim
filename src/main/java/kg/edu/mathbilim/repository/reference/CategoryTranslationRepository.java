@@ -17,10 +17,10 @@ public interface CategoryTranslationRepository extends JpaRepository<CategoryTra
     @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.category.id = :categoryId")
     List<CategoryTranslation> findByCategoryId(@Param("categoryId") Integer categoryId);
 
-    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.languageCode = :languageCode")
+    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.id.languageCode = :languageCode")
     List<CategoryTranslation> findByLanguageCode(@Param("languageCode") String languageCode);
 
-    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.category.id = :categoryId AND ct.languageCode = :languageCode")
+    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.category.id = :categoryId AND ct.id.languageCode = :languageCode")
     Optional<CategoryTranslation> findByCategoryIdAndLanguageCode(@Param("categoryId") Integer categoryId,
                                                                   @Param("languageCode") String languageCode);
 
@@ -29,7 +29,7 @@ public interface CategoryTranslationRepository extends JpaRepository<CategoryTra
     void deleteByCategoryId(@Param("categoryId") Integer categoryId);
 
     @Query("SELECT CASE WHEN COUNT(ct) > 0 THEN true ELSE false END FROM CategoryTranslation ct " +
-            "WHERE ct.category.id = :categoryId AND ct.languageCode = :languageCode")
+            "WHERE ct.category.id = :categoryId AND ct.id.languageCode = :languageCode")
     boolean existsByCategoryIdAndLanguageCode(@Param("categoryId") Integer categoryId,
                                               @Param("languageCode") String languageCode);
 }

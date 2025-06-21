@@ -3,22 +3,24 @@ package kg.edu.mathbilim.dto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookDto extends ContentDto {
-    private String name;
+    String name;
 
-    private String authors;
+    String authors;
 
-    private String isbn;
+    String isbn;
 
-    private String description;
+    String description;
 
-    private FileDto file;
+    FileDto file;
 
-    private CategoryDto category;
+    CategoryDto category;
 }

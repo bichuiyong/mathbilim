@@ -17,5 +17,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             """)
     Page<Book> findByQuery(@Param("query") String query, Pageable pageable);
 
-    Optional<Book> findByIdAndUserId(Long id, Long user);
+    Optional<Book> findByIdAndCreatorId(Long id, Long user);
 }

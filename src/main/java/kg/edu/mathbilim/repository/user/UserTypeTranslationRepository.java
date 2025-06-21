@@ -17,10 +17,10 @@ public interface UserTypeTranslationRepository extends JpaRepository<UserTypeTra
     @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId")
     List<UserTypeTranslation> findByUserTypeId(@Param("userTypeId") Integer userTypeId);
 
-    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.languageCode = :languageCode")
+    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.id.languageCode = :languageCode")
     List<UserTypeTranslation> findByLanguageCode(@Param("languageCode") String languageCode);
 
-    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId AND utt.languageCode = :languageCode")
+    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId AND utt.id.languageCode = :languageCode")
     Optional<UserTypeTranslation> findByUserTypeIdAndLanguageCode(@Param("userTypeId") Integer userTypeId,
                                                                   @Param("languageCode") String languageCode);
 
@@ -29,7 +29,7 @@ public interface UserTypeTranslationRepository extends JpaRepository<UserTypeTra
     void deleteByUserTypeId(@Param("userTypeId") Integer userTypeId);
 
     @Query("SELECT CASE WHEN COUNT(utt) > 0 THEN true ELSE false END FROM UserTypeTranslation utt " +
-            "WHERE utt.userType.id = :userTypeId AND utt.languageCode = :languageCode")
+            "WHERE utt.userType.id = :userTypeId AND utt.id.languageCode = :languageCode")
     boolean existsByUserTypeIdAndLanguageCode(@Param("userTypeId") Integer userTypeId,
                                               @Param("languageCode") String languageCode);
 }

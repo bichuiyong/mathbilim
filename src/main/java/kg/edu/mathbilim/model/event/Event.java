@@ -8,6 +8,7 @@ import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.Content;
 import kg.edu.mathbilim.model.Organization;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -20,42 +21,43 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event extends Content {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id")
-    private EventType type;
+    EventType type;
 
     @NotNull
     @Column(name = "is_offline", nullable = false)
-    private Boolean isOffline;
+    Boolean isOffline;
 
     @ManyToMany
     @JoinTable(name = "event_organizations",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "organization_id"))
-    private List<Organization> organizations = new ArrayList<>();
+    List<Organization> organizations = new ArrayList<>();
 
     @OneToMany(mappedBy = "event")
-    private List<EventTranslation> eventTranslations = new ArrayList<>();
+    List<EventTranslation> eventTranslations = new ArrayList<>();
 
     @Size(max = 255)
     @Column(name = "address")
-    private String address;
+    String address;
 
     @Size(max = 255)
     @Column(name = "url")
-    private String url;
+    String url;
 
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    LocalDateTime endDate;
 
     @ManyToMany
     @JoinTable(name = "event_files",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "file_id"))
-    private List<File> eventFiles = new ArrayList<>();
+    List<File> eventFiles = new ArrayList<>();
 }

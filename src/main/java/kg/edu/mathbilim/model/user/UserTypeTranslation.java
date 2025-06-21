@@ -21,5 +21,5 @@ public class UserTypeTranslation extends TypeTranslation{
     @MapsId("typeId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_type_id", nullable = false)
-    private UserType userType;
+    UserType userType;
 }

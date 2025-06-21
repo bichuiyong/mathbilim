@@ -24,8 +24,8 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
         AtomicInteger order = new AtomicInteger(1);
         dto.getStages().forEach(s -> {
             OlympiadStage stage = OlympiadStage.builder()
-                    .eventStartDate(s.getEventStartDate())
-                    .eventEndDate(s.getEventEndDate())
+                    .startDate(s.getEventStartDate())
+                    .endDate(s.getEventEndDate())
                     .registrationStart(s.getRegistrationStart())
                     .registrationEnd(s.getRegistrationEnd())
                     .olympiad(olympiad)

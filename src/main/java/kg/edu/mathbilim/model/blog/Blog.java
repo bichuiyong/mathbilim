@@ -19,12 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Blog extends Content {
-    @ManyToMany
-    @JoinTable(name = "blog_comments",
-            joinColumns = @JoinColumn(name = "blog_id"),
-            inverseJoinColumns = @JoinColumn(name = "comment_id"))
-    private List<Comment> comments = new ArrayList<>();
-
     @OneToMany(mappedBy = "blog")
-    private List<BlogTranslation> blogTranslations = new ArrayList<>();
+    List<BlogTranslation> blogTranslations = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "blogs")
+    List<Comment> comments = new ArrayList<>();
 }

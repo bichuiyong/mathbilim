@@ -8,6 +8,7 @@ import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,34 +25,35 @@ import java.util.stream.Collectors;
         startDateTimeField = "startDate",
         endDateTimeField = "endDate"
 )
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventDto extends ContentDto {
     @NotNull
     @Future
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime startDate;
+    LocalDateTime startDate;
 
     @Future
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime endDate;
+    LocalDateTime endDate;
 
     @NotNull
-    private Long typeId;
+    Long typeId;
 
-    private String address; // если оффлайн
+    String address; // если оффлайн
 
-    private String url; // если онлайн
+    String url; // если онлайн
 
     @NotNull
-    private Boolean isOffline;
+    Boolean isOffline;
 
     @Builder.Default
-    private List<FileDto> eventFiles = new ArrayList<>();
+    List<FileDto> eventFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    private List<EventTranslationDto> eventTranslations = createDefaultTranslations();
+    List<EventTranslationDto> eventTranslations = createDefaultTranslations();
 
-    private static List<EventTranslationDto> createDefaultTranslations() {
+    static List<EventTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
                 .map(lang -> EventTranslationDto.builder()
                         .languageCode(lang.getCode())

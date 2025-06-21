@@ -2,10 +2,8 @@ package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.ContentTranslation;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -15,14 +13,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostTranslation extends ContentTranslation {
     @EmbeddedId
-    private PostTranslationId id;
+    PostTranslationId id;
 
     @MapsId("postId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
-
+    Post post;
 
 }

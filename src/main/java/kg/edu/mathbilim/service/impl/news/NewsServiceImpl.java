@@ -25,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,9 +46,6 @@ public class NewsServiceImpl implements NewsService {
         NewsDto newsDto = newsMapper.toDto(
                 newsRepository.findById(id).orElseThrow(
                         ()-> new NoSuchElementException("No News found with id: " + id)));
-        newsDto.setFormattedDate(
-                newsDto.getCreatedAt().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-        );
         newsDto.setNewsTranslations(ensureAllTranslations(newsDto.getNewsTranslations()));
         return newsDto;
 
@@ -66,21 +61,14 @@ public class NewsServiceImpl implements NewsService {
     public List<NewsDto> getNews(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         List<NewsDto> newsDtos = newsRepository.findAll(pageable).stream().map(newsMapper::toDto).toList();
-        newsDtos.forEach(obj -> {
-            String formattedDate = obj.getCreatedAt()
-                    .atZone(ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("dd.MM"));
-            obj.setFormattedDate(formattedDate);
-        });
         return newsDtos;
-
     }
 
 
 
     @Override
     public void deleteById(UserDto userDto, Long id) {
-        News news = newsRepository.findByIdAndUserId(id, userDto.getId()).orElseThrow(
+        News news = newsRepository.findByIdAndCreatorId(id, userDto.getId()).orElseThrow(
                 () -> new NoSuchElementException("No News found with id: " + id)
         );
         newsRepository.delete(news);
@@ -90,7 +78,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public NewsDto createNews(CreateNewsDto createNewsDto) {
         NewsDto newsDto1 = createNewsDto.getNews();
-        newsDto1.setUser(userService.getAuthUser());
+        newsDto1.setCreator(userService.getAuthUser());
 
         News news = newsMapper.toEntity(newsDto1);
         News savedNews = newsRepository.save(news);
@@ -120,7 +108,7 @@ public class NewsServiceImpl implements NewsService {
         NewsDto incomingDto = dto.getNews();
 
         existing.setCreator(userMapper.toEntity(userService.getAuthUser()));
-        existing.setUpdatedAt(Instant.now());
+        existing.setUpdatedAt(LocalDateTime.now());
 
         setPostTranslations(incomingDto.getNewsTranslations(), id);
 

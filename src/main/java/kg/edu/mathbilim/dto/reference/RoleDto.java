@@ -1,14 +1,16 @@
 package kg.edu.mathbilim.dto.reference;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleDto {
-    private Integer id;
+    Integer id;
 
-    private String name;
+    String name;
 }

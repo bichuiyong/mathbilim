@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @OneToMany(mappedBy = "postType")
-    private List<PostTypeTranslation> postTypeTranslations = new ArrayList<>();
+    List<PostTypeTranslation> postTypeTranslations = new ArrayList<>();
 }

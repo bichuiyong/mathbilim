@@ -5,28 +5,30 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.validation.annotation.UniqueEmail;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    private Long id;
+    Long id;
 
     @NotBlank(message = "Имя обязательно")
-    private String name;
+    String name;
 
-    private FileDto avatar;
+    FileDto avatar;
 
-    private String surname;
+    String surname;
 
     @NotBlank(message = "Email обязателен")
     @Email(message = "Неверный формат email")
     @UniqueEmail
-    private String email;
+    String email;
 
     @NotBlank
     @Size(min = 6, max = 24, message = "Длина должна быть >= 6 и <= 24")
@@ -34,22 +36,22 @@ public class UserDto {
             regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$",
             message = "Should contain at least one uppercase letter and one number"
     )
-    private String password;
+    String password;
 
     @Builder.Default
-    private Boolean enabled = true;
+    Boolean enabled = true;
 
     @Builder.Default
-    private Boolean isEmailVerified = false;
+    Boolean isEmailVerified = false;
 
     @Builder.Default
-    private Instant createdAt = Instant.now();
+    LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
-    private Instant updatedAt = Instant.now();
+    LocalDateTime updatedAt = LocalDateTime.now();
 
-    private RoleDto role;
+    RoleDto role;
 
     @NotNull(message = "Выберите тип аккаунта")
-    private UserTypeDto type;
+    UserTypeDto type;
 }

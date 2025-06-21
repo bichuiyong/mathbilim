@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Arrays;
@@ -15,13 +16,14 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogDto extends ContentDto {
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    private List<BlogTranslationDto> blogTranslations = createDefaultTranslations();
+    List<BlogTranslationDto> blogTranslations = createDefaultTranslations();
 
-    private static List<BlogTranslationDto> createDefaultTranslations() {
+    static List<BlogTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
                 .map(lang -> BlogTranslationDto.builder()
                         .languageCode(lang.getCode())

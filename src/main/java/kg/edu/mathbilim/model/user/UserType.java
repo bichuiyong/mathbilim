@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_types")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    Integer id;
 
     @OneToMany(mappedBy = "userType")
-    private List<UserTypeTranslation> userTypeTranslations = new ArrayList<>();
+    List<UserTypeTranslation> userTypeTranslations = new ArrayList<>();
 
 }

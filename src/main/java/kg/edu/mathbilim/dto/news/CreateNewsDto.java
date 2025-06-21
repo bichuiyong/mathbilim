@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.dto.news;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.post.PostDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -10,9 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateNewsDto {
     @Valid
-    private NewsDto news;
+    NewsDto news;
 
     MultipartFile image;
 

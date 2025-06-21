@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.post;
 import kg.edu.mathbilim.dto.post.PostTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostTypeTranslationMapper;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import kg.edu.mathbilim.model.post.PostTypeTranslation;
 import kg.edu.mathbilim.repository.post.PostTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeTranslationService;
@@ -51,7 +52,7 @@ public class PostTypeTranslationServiceImpl implements PostTypeTranslationServic
     public PostTypeTranslationDto createTranslation(PostTypeTranslationDto dto) {
         PostTypeTranslation translation = pttMapper.toEntity(dto);
         pttRepository.save(translation);
-        log.info("Save translation to language {}: {}", translation.getId().getLanguageCode(), translation.getTranslation());
+        log.info("Save translation to language {}: {}", translation.getTranslationId().getLanguageCode(), translation.getTranslation());
         return dto;
     }
 
@@ -74,8 +75,8 @@ public class PostTypeTranslationServiceImpl implements PostTypeTranslationServic
     @Override
     @Transactional
     public void deleteTranslation(Integer postTypeId, String languageCode) {
-        PostTypeTranslationId id = new PostTypeTranslationId();
-        id.setPostTypeId(postTypeId);
+        TypeTranslation.TranslationId id = new TypeTranslation.TranslationId();
+        id.setTypeId(postTypeId);
         id.setLanguageCode(languageCode);
         pttRepository.deleteById(id);
     }

@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl.olympiad;
 
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
-import kg.edu.mathbilim.model.olympiad.ContactType;
+import kg.edu.mathbilim.model.ContactType;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadContact;
 import kg.edu.mathbilim.repository.ContactTypeRepository;

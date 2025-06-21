@@ -5,28 +5,30 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.reference.RoleDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserEditDto {
     @NotBlank(message = "Имя не может быть пустым")
-    private String name;
+    String name;
 
-    private String surname;
+    String surname;
 
     @NotNull(message = "Выберите тип аккаунта")
-    private Integer typeId;
+    Integer typeId;
 
-    private FileDto avatar;
+    FileDto avatar;
 
-    private RoleDto role;
+    RoleDto role;
 
     @Builder.Default
-    private Instant updatedAt = Instant.now();
+    LocalDateTime updatedAt = LocalDateTime.now();
 }

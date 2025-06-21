@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.dto.olympiad;
 
 import kg.edu.mathbilim.dto.user.UserDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,24 +10,28 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadDto {
-    private Long id;
+    Long id;
 
-    private String title;
+    String title;
 
-    private String info;
+    String info;
 
-    private UserDto creator;
+    UserDto creator;
 
-    private String rules;
+    String rules;
 
-    private String subject;
+    String subject;
 
-    private LocalDate startDate;
+    LocalDate startDate;
 
-    private LocalDate endDate;
+    LocalDate endDate;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    LocalDateTime updatedAt = LocalDateTime.now();
 }

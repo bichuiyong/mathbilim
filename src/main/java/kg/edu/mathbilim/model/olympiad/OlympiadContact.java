@@ -1,30 +1,40 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.model.ContactType;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-
-@Builder
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "olympiad_contacts")
-public class OlympiadContact{
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class OlympiadContact {
     @EmbeddedId
-    private OlympiadContactKey id;
+    OlympiadContactId id;
 
-    @ManyToOne
     @MapsId("olympiadId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "olympiad_id", nullable = false)
-    private Olympiad olympiad;
+    Olympiad olympiad;
 
-    @ManyToOne
     @MapsId("contactTypeId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "contact_type_id", nullable = false)
-    private ContactType contactType;
+    ContactType contactType;
 
-    private String info;
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "info", nullable = false)
+    String info;
 }

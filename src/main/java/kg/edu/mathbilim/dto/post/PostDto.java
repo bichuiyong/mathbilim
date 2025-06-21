@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -18,17 +19,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostDto extends ContentDto {
     @NotNull
-    private Long typeId;
+    Long typeId;
 
     List<FileDto> postFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    private List<PostTranslationDto> postTranslations = createDefaultTranslations();
+    List<PostTranslationDto> postTranslations = createDefaultTranslations();
 
-    private static List<PostTranslationDto> createDefaultTranslations() {
+    static List<PostTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
                 .map(lang -> PostTranslationDto.builder()
                         .languageCode(lang.getCode())

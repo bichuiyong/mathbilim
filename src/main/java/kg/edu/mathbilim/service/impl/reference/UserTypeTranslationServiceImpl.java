@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.reference;
 import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.user.UserTypeTranslationMapper;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import kg.edu.mathbilim.repository.user.UserTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeTranslationService;
@@ -74,8 +75,8 @@ public class UserTypeTranslationServiceImpl implements UserTypeTranslationServic
     @Override
     @Transactional
     public void deleteTranslation(Integer userTypeId, String languageCode) {
-        UserTypeTranslationId id = new UserTypeTranslationId();
-        id.setUserTypeId(userTypeId);
+        TypeTranslation.TranslationId id = new TypeTranslation.TranslationId();
+        id.setTypeId(userTypeId);
         id.setLanguageCode(languageCode);
         uttRepository.deleteById(id);
     }

@@ -7,11 +7,12 @@ import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.test.Test;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,68 +24,69 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
 
     @Size(max = 100)
     @Column(name = "name", nullable = false, length = 100)
-    private String name;
+    String name;
 
     @Size(max = 100)
     @Column(name = "surname", length = 100)
-    private String surname;
+    String surname;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)
-    private String email;
+    String email;
 
     @Size(max = 255)
     @Column(name = "password")
-    private String password;
+    String password;
 
     @NotNull
     @ColumnDefault("true")
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
+    Boolean enabled;
 
     @Column(name = "is_email_verified")
-    private Boolean isEmailVerified;
+    Boolean isEmailVerified;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    Role role;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
-    private Instant createdAt;
+    LocalDateTime createdAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user")
-    private List<Test> tests = new ArrayList<>();
+    List<Test> tests = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "type_id")
-    private UserType type;
+    UserType type;
 
     @Column(name = "password_reset_token")
-    private String resetPasswordToken;
+    String resetPasswordToken;
 
     @Column(name = "email_verification_token")
-    private String emailVerificationToken;
+    String emailVerificationToken;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "avatar")
-    private File avatar;
+    File avatar;
 
-    private Long telegramId;
+    Long telegramId;
 }
