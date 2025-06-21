@@ -4,13 +4,13 @@ import kg.edu.mathbilim.dto.news.CreateNewsDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.mapper.user.UserMapper;
 import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.mapper.news.NewsTranslationMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.news.NewsTranslation;
-import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.news.NewsRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -19,7 +19,6 @@ import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,10 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,10 +45,15 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsDto getNewsById(Long id) {
-        return newsMapper.toDto(
+        NewsDto newsDto = newsMapper.toDto(
                 newsRepository.findById(id).orElseThrow(
-                        ()-> new NoSuchElementException("No News found with id: " + id))
+                        ()-> new NoSuchElementException("No News found with id: " + id)));
+        newsDto.setFormattedDate(
+                newsDto.getCreatedAt().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
         );
+        newsDto.setNewsTranslations(ensureAllTranslations(newsDto.getNewsTranslations()));
+        return newsDto;
+
     }
 
     @Override
@@ -58,6 +61,21 @@ public class NewsServiceImpl implements NewsService {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         return PaginationUtil.getPage(() -> newsRepository.findAll(pageable), newsMapper::toDto);
     }
+
+    @Override
+    public List<NewsDto> getNews(int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        List<NewsDto> newsDtos = newsRepository.findAll(pageable).stream().map(newsMapper::toDto).toList();
+        newsDtos.forEach(obj -> {
+            String formattedDate = obj.getCreatedAt()
+                    .atZone(ZoneId.systemDefault())
+                    .format(DateTimeFormatter.ofPattern("dd.MM"));
+            obj.setFormattedDate(formattedDate);
+        });
+        return newsDtos;
+
+    }
+
 
 
     @Override
@@ -78,7 +96,7 @@ public class NewsServiceImpl implements NewsService {
         News savedNews = newsRepository.save(news);
         Long id = savedNews.getId();
 
-        List<NewsTranslationDto> translationDtos = newsDto1.getNewsTranslationDto();
+        List<NewsTranslationDto> translationDtos = newsDto1.getNewsTranslations();
         setPostTranslations(translationDtos, id);
 
         MultipartFile mainImage = createNewsDto.getImage() != null && createNewsDto.getImage().isEmpty() ? null : createNewsDto.getImage();
@@ -104,7 +122,7 @@ public class NewsServiceImpl implements NewsService {
         existing.setUser(userMapper.toEntity(userService.getAuthUser()));
         existing.setUpdatedAt(Instant.now());
 
-        setPostTranslations(incomingDto.getNewsTranslationDto(), id);
+        setPostTranslations(incomingDto.getNewsTranslations(), id);
 
         MultipartFile newImage = dto.getImage();
         if (newImage != null && !newImage.isEmpty()) {
@@ -163,6 +181,28 @@ public class NewsServiceImpl implements NewsService {
                 log.info("Uploaded {} files for post {}", uploadedFiles.size(), savedNews.getId());
             }
         }
+    }
+
+    public List<NewsTranslationDto> ensureAllTranslations(List<NewsTranslationDto> existing) {
+        if (existing == null) {
+            existing = new ArrayList<>();
+        }
+        Set<String> existingLangs = existing.stream()
+                .map(NewsTranslationDto::getLanguageCode)
+                .collect(Collectors.toSet());
+        for (Language lang : Language.values()) {
+            if (!existingLangs.contains(lang.getCode())) {
+                existing.add(
+                        NewsTranslationDto.builder()
+                                .languageCode(lang.getCode())
+                                .title("")
+                                .content("")
+                                .build()
+                );
+            }
+        }
+
+        return existing;
     }
 
 

@@ -1,6 +1,8 @@
 package kg.edu.mathbilim.model.news;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.File;
@@ -8,9 +10,7 @@ import kg.edu.mathbilim.model.post.PostTranslation;
 import kg.edu.mathbilim.model.post.post_type.PostType;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,10 +34,11 @@ public class News {
     @JoinColumn(name = "creator_id")
     private User user;
 
+    @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_time")
     private Instant createdAt;
-
+    @UpdateTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_time")
     private Instant updatedAt;

@@ -18,7 +18,7 @@ public class PaginationUtil {
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
-        return PageRequest.of(page - 1, size, Sort.by(direction, sortBy.toLowerCase()));
+        return PageRequest.of(page - 1, size, Sort.by(direction, sortBy));
     }
 
     public static   <E, D> Page<D> getPage(Supplier<Page<E>> supplier,
