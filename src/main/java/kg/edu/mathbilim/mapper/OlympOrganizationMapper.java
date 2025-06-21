@@ -8,8 +8,12 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OlympOrganizationMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "olympiad", ignore = true)      // вручную устанавливаем
-    @Mapping(target = "organization", ignore = true)  // вручную устанавливаем
+
+    @Mapping(target = "olympiadId", source = "olympiad.id")
+    @Mapping(target = "organizationId", source = "organization.id")
+    OlympOrganizationDto toDto(OlympiadOrganization olympiadOrganization);
+
+    @Mapping(target = "olympiad", ignore = true)
+    @Mapping(target = "organization", ignore = true)
     OlympiadOrganization toEntity(OlympOrganizationDto dto);
 }
