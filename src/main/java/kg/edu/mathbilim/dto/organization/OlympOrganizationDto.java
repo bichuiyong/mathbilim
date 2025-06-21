@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class OlympOrganizationDto {
-    private Integer olympiadId;
+    private Long olympiadId;
     private Long organizationId;
 }

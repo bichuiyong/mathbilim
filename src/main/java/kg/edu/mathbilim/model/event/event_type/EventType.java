@@ -19,5 +19,6 @@ public class EventType {
     private Integer id;
 
     @OneToMany(mappedBy = "eventType")
+    @Builder.Default
     private List<EventTypeTranslation> eventTypeTranslations = new ArrayList<>();
 }
