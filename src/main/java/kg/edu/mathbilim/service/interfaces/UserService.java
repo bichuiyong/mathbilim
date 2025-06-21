@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public interface UserService {
 
@@ -70,4 +71,18 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
+
+    UserDto createOAuthUser(UserDto userDto);
+
+    void registerChatId(Long userId, Long chatId);
+
+    boolean hasChatId(Long userId);
+
+    List<Long> getSubscribedChatIds();
+
+    void unsubscribe(Long chatId);
+
+    void subscribe(Long chatId);
+
+    boolean isSubscribed(Long chatId);
 }
