@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -31,10 +32,10 @@ public class NewsDto {
 
 
     @Builder.Default
-    private Instant createdTime = Instant.now();
+    private Instant createdAt = Instant.now();
 
     @Builder.Default
-    private Instant updatedTime = Instant.now();
+    private Instant updatedAt = Instant.now();
 
     @Builder.Default
     private Long viewCount = 0L;
@@ -46,7 +47,9 @@ public class NewsDto {
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    private List<NewsTranslationDto> newsTranslationDto = createDefaultTranslations();
+    private List<NewsTranslationDto> newsTranslations = createDefaultTranslations();
+
+    private String formattedDate;
 
     private static List<NewsTranslationDto> createDefaultTranslations() {
         return Arrays.stream(Language.values())
@@ -57,4 +60,6 @@ public class NewsDto {
                         .build())
                 .collect(Collectors.toList());
     }
+
+
 }

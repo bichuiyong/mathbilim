@@ -4,8 +4,11 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.model.news.News;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = NewsTranslationMapper.class)
 public interface NewsMapper {
+
     NewsDto toDto(News news);
+
+
     News toEntity(NewsDto newsDto);
 }

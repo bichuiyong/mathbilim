@@ -20,13 +20,13 @@
     </head>
     <body>
     <div class="container mt-5">
-        <h2>Создание поста</h2>
-        <form action="/posts/create" method="post" enctype="multipart/form-data">
+        <h2>Создание новости</h2>
+        <form action="/news/create" method="post" enctype="multipart/form-data">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 
             <#if bindingResult?? && bindingResult.hasErrors()>
                 <div class="alert alert-danger">
-                    <@spring.bind "createPostDto"/>
+                    <@spring.bind "newsDto"/>
                     <#list spring.status.errorMessages as error>
                         <div>${error}</div>
                     </#list>
@@ -37,7 +37,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
-                        <#list createPostDto.post.postTranslations?sort_by("languageCode") as trans>
+                        <#list newsDto.news.newsTranslations as trans>
                             <li class="nav-item">
                                 <a class="nav-link <#if trans?is_first>active</#if>"
                                    data-bs-toggle="tab"
@@ -49,22 +49,22 @@
                     </ul>
                 </div>
                 <div class="card-body tab-content">
-                    <@spring.bind "createPostDto.post.postTranslations"/>
+                    <@spring.bind "newsDto.news.newsTranslations"/>
                     <#if spring.status.error>
                         <div class="alert alert-warning mb-3">
                             <#list spring.status.errorMessages as error>${error}</#list>
                         </div>
                     </#if>
 
-                    <#list createPostDto.post.postTranslations as trans>
+                    <#list newsDto.news.newsTranslations as trans>
                         <div class="tab-pane translation-tab <#if trans?is_first>active</#if>"
                              id="lang-${trans.languageCode}">
-                            <@spring.bind "createPostDto.post.postTranslations[${trans?index}].title"/>
+                            <@spring.bind "newsDto.news.newsTranslations[${trans?index}].title"/>
                             <div class="mb-3">
                                 <label class="form-label">Заголовок (необязательно)</label>
                                 <input type="text"
                                        class="form-control <#if spring.status.error>is-invalid</#if>"
-                                       name="post.postTranslations[${trans?index}].title"
+                                       name="news.newsTranslations[${trans?index}].title"
                                        value="${spring.status.value!''}">
                                 <#if spring.status.error>
                                     <div class="invalid-feedback">
@@ -73,11 +73,11 @@
                                 </#if>
                             </div>
 
-                            <@spring.bind "createPostDto.post.postTranslations[${trans?index}].content"/>
+                            <@spring.bind "newsDto.news.newsTranslations[${trans?index}].content"/>
                             <div class="mb-3">
                                 <label class="form-label">Содержание (необязательно)</label>
                                 <textarea class="form-control <#if spring.status.error>is-invalid</#if>"
-                                          name="post.postTranslations[${trans?index}].content"
+                                          name="news.newsTranslations[${trans?index}].content"
                                           rows="10">${spring.status.value!''}</textarea>
                                 <#if spring.status.error>
                                     <div class="invalid-feedback">
@@ -85,36 +85,13 @@
                                     </div>
                                 </#if>
                             </div>
-                            <input type="hidden" name="post.postTranslations[${trans?index}].languageCode"
+                            <input type="hidden" name="news.newsTranslations[${trans?index}].languageCode"
                                    value="${trans.languageCode}">
                         </div>
                     </#list>
                 </div>
             </div>
 
-            <!-- Основные поля -->
-            <div class="row">
-                <div class="col-md-6">
-                    <@spring.bind "createPostDto.post.typeId"/>
-                    <div class="mb-3">
-                        <label class="form-label">Тип поста</label>
-                        <select class="form-select <#if spring.status.error>is-invalid</#if>" name="post.typeId">
-                            <option value="">-- Выберите тип --</option>
-                            <#list postTypes as type>
-                                <option value="${type.id}"
-                                        <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
-                                    ${type.postTypeTranslations?filter(t -> t.languageCode == 'ru')?first.translation}
-                                </option>
-                            </#list>
-                        </select>
-                        <#if spring.status.error>
-                            <div class="invalid-feedback">
-                                <#list spring.status.errorMessages as error>${error}</#list>
-                            </div>
-                        </#if>
-                    </div>
-                </div>
-            </div>
 
             <!-- Файлы -->
             <div class="mb-3">
@@ -133,8 +110,8 @@
 
             <!-- Кнопки -->
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Создать пост</button>
-                <a href="/posts" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary">Создать новость</button>
+                <a href="/news" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
