@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.event;
 import kg.edu.mathbilim.dto.event.EventTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TranslationNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventTypeTranslationMapper;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import kg.edu.mathbilim.model.event.EventTypeTranslation;
 import kg.edu.mathbilim.repository.event.EventTypeTranslationRepository;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeTranslationService;
@@ -74,8 +75,8 @@ public class EventTypeTranslationServiceImpl implements EventTypeTranslationServ
     @Override
     @Transactional
     public void deleteTranslation(Integer eventTypeId, String languageCode) {
-        EventTypeTranslationId id = new EventTypeTranslationId();
-        id.setEventTypeId(eventTypeId);
+        TypeTranslation.TranslationId id = new TypeTranslation.TranslationId();
+        id.setTypeId(eventTypeId);
         id.setLanguageCode(languageCode);
         ettRepository.deleteById(id);
     }

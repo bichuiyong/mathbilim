@@ -37,7 +37,7 @@ public abstract class TypeTranslation implements Serializable {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class TranslationId implements Serializable {
         @Column(name = "type_id")
-        Long typeId;
+        Integer typeId;
 
         @Column(name = "language_code", length = 2)
         String languageCode;
