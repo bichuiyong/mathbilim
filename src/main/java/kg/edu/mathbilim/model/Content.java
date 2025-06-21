@@ -23,7 +23,7 @@ public abstract class Content {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",  nullable = false)
 
     protected Long id;
 
@@ -33,7 +33,7 @@ public abstract class Content {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     protected User user;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

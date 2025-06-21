@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
 import kg.edu.mathbilim.model.user.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -19,6 +18,9 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "blogs")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
