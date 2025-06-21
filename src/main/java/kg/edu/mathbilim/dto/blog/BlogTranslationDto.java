@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto.blog;
 
-import kg.edu.mathbilim.dto.translations.ContentTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.ContentTranslationDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

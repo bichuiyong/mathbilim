@@ -1,4 +1,4 @@
-package kg.edu.mathbilim.dto.translations;
+package kg.edu.mathbilim.dto.abstracts;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,8 @@
 package kg.edu.mathbilim.dto.user;
 
-import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.TypeTranslationDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -9,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(callSuper = true)
 public class UserTypeTranslationDto extends TypeTranslationDto {
-    private Integer userTypeId;
+    Integer userTypeId;
 }

@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto.event;
 
-import kg.edu.mathbilim.dto.translations.ContentTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.ContentTranslationDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

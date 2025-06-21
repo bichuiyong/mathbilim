@@ -1,7 +1,8 @@
 package kg.edu.mathbilim.dto.post;
 
-import kg.edu.mathbilim.dto.translations.TypeTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.TypeTranslationDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -9,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostTypeTranslationDto extends TypeTranslationDto {
-    private Integer postTypeId;
+    Integer postTypeId;
 }
