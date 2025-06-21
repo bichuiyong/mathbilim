@@ -2,13 +2,13 @@ package kg.edu.mathbilim.service.impl.blog;
 
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.blog.CreateBlogDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.repository.blog.BlogRepository;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,6 +35,7 @@ public class BlogServiceImpl implements BlogService {
     private final BlogMapper blogMapper;
     private final UserService userService;
     private final BlogTranslationService blogTranslationService;
+    private final FileService fileService;
 
     @Override
     public Blog findBlogById(Long id) {
@@ -58,6 +60,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogDto getById(Long id) {
         return blogMapper.toDto(findBlogById(id));
     }
+
     @Transactional
     @Override
     public void deleteById(Long id) {
@@ -68,10 +71,10 @@ public class BlogServiceImpl implements BlogService {
             throw new BlogNotFoundException();
         }
     }
+
     @Transactional
     @Override
-    public BlogDto createBlog(CreateBlogDto createBlogDto) {
-        BlogDto blogDto = createBlogDto.getBlog();
+    public BlogDto createBlog(BlogDto blogDto, MultipartFile multipartFile) {
         blogDto.setCreator(userService.getAuthUser());
         blogDto.setStatus(ContentStatus.PENDING_REVIEW);
 
@@ -101,6 +104,7 @@ public class BlogServiceImpl implements BlogService {
         log.info("Получено {} блогов на странице", page.getSize());
         return page.map(blogMapper::toDto);
     }
+
     @Transactional
     @Override
     public void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId) {

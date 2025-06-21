@@ -1,56 +1,42 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.CaptchaResponseDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
-import kg.edu.mathbilim.dto.blog.CreateBlogDto;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller("mvcBlog")
-@RequestMapping("blogs")
+@RequestMapping("/blog")
 @RequiredArgsConstructor
 public class BlogController {
     private final BlogService blogService;
-    private final RestTemplate restTemplate;
 
-    private static final String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
-    @Value("${recaptcha.secret}")
-    private String secret;
-
-
-
-    @PostMapping("create")
-    public String createBlog(@ModelAttribute("blogDto") @Valid CreateBlogDto blogDto,
-                             BindingResult bindingResult,
-                             @RequestParam("g-recaptcha-response") String captchaResponse) {
-
-        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
-        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
-
-        assert response != null;
-        if (bindingResult.hasErrors() || Boolean.FALSE.equals(response.getSuccess())) {
-            return "media/blog-create";
-        }
-        blogService.createBlog(blogDto);
-        return "redirect:/blogs/";
-    }
-
-    @GetMapping("create")
-    public String createBlog(Model model) {
-        CreateBlogDto blogDto = CreateBlogDto.builder()
-                .blog(BlogDto.builder().build())
-                .build();
+    @GetMapping("/create")
+    public String createBlogForm(Model model) {
+        BlogDto blogDto = BlogDto.builder().build();
         model.addAttribute("blogDto", blogDto);
-        return "media/blog-create";
+        return "blog/blog-create";
     }
 
+    @PostMapping("/create")
+    public String createBlog(
+            @ModelAttribute("blogDto") @Valid BlogDto blogDto,
+            BindingResult bindingResult,
+            @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("blogDto", blogDto);
+            return "blog/blog-create";
+        }
+
+        BlogDto createdBlog = blogService.createBlog(blogDto, mpMainImage);
+        return "redirect:/blog/" + createdBlog.getId();
+
+    }
 }
