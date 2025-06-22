@@ -5,83 +5,45 @@ import kg.edu.mathbilim.mapper.news.NewsTranslationMapper;
 import kg.edu.mathbilim.model.news.NewsTranslation;
 import kg.edu.mathbilim.model.news.NewsTranslationId;
 import kg.edu.mathbilim.repository.news.NewsTranslationRepository;
+import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslationService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
-public class NewsTranslationServiceImpl implements NewsTranslationService {
-    private final NewsTranslationRepository repository;
-    private final NewsTranslationMapper mapper;
+public class NewsTranslationServiceImpl extends AbstractTranslationService<
+        NewsTranslationDto, NewsTranslation, NewsTranslationId,
+        NewsTranslationRepository, NewsTranslationMapper
+        > implements NewsTranslationService {
 
-
-    @Transactional
-    @Override
-    public void saveTranslations(Long id, Set<NewsTranslationDto> translations) {
-        if (translations == null || translations.isEmpty()) {
-            return;
-        }
-
-        for (NewsTranslationDto translation : translations) {
-            if (translation.getTitle() != null && !translation.getTitle().trim().isEmpty()
-                    && translation.getContent() != null && !translation.getContent().trim().isEmpty()) {
-                translation.setNewsId(id);
-                upsertTranslation(translation);
-            }
-        }
-
-        log.info("Saved {} translations for post {}", translations.size(), id);
+    public NewsTranslationServiceImpl(NewsTranslationRepository repository, NewsTranslationMapper mapper) {
+        super(repository, mapper);
     }
+
     @Override
-    public NewsTranslationDto upsertTranslation(NewsTranslationDto dto) {
+    protected NewsTranslationId createTranslationId(Long entityId, String languageCode) {
         NewsTranslationId id = new NewsTranslationId();
-        id.setNewsId(dto.getNewsId());
-        id.setLanguageCode(dto.getLanguageCode());
-
-        boolean exists = repository.existsById(id);
-
-        if (exists) {
-            return updateTranslation(dto.getNewsId(), dto.getLanguageCode(), dto.getTitle(), dto.getContent());
-        } else {
-            return createTranslation(dto);
-        }
+        id.setNewsId(entityId);
+        id.setLanguageCode(languageCode);
+        return id;
     }
 
-    @Transactional
     @Override
-    public NewsTranslationDto updateTranslation(Long newsId, String languageCode, String title, String content) {
-        NewsTranslation newsTranslation = getTranslationEntity(newsId, languageCode);
-        newsTranslation.setTitle(title);
-        newsTranslation.setContent(content);
-        NewsTranslation newsTranslation1 =  repository.save(newsTranslation);
-        log.info("Updated {} translation for post {}", newsTranslation1, newsId);
-        return mapper.toDto(newsTranslation1);
+    protected void setEntityId(NewsTranslationDto dto, Long entityId) {
+        dto.setNewsId(entityId);
     }
 
-    @Transactional
     @Override
-    public NewsTranslationDto createTranslation(NewsTranslationDto dto) {
-        NewsTranslation newsTranslation =  repository.save(mapper.toEntity(dto));
-        log.info("Saved {} translation for post {}", dto.getNewsId(), dto.getLanguageCode());
-        return  mapper.toDto(newsTranslation);
+    protected String getEntityName() {
+        return "news";
     }
 
-    private NewsTranslation getTranslationEntity(Long id, String languageCode) {
-        NewsTranslationId newsTranslationId = new NewsTranslationId();
-        newsTranslationId.setNewsId(id);
-        newsTranslationId.setLanguageCode(languageCode);
-
-        return repository.findById(newsTranslationId).orElseThrow(
-                () -> new NoSuchElementException("No translation found for id: " + id)
-        );
+    @Override
+    protected Long getEntityIdFromDto(NewsTranslationDto dto) {
+        return dto.getNewsId();
     }
 
-
+    @Override
+    protected void deleteAllTranslationsByEntityIdImpl(Long entityId) {
+        repository.deleteByNews_Id(entityId);
+    }
 }

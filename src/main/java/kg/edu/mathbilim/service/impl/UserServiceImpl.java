@@ -36,6 +36,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static kg.edu.mathbilim.util.PaginationUtil.getPage;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -143,9 +145,9 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         if (query == null || query.isEmpty()) {
-            return getPage(() -> userRepository.findAll(pageable));
+            return getPage(() -> userRepository.findAll(pageable), userMapper::toDto);
         }
-        return getPage(() -> userRepository.findByQuery(query, pageable));
+        return getPage(() -> userRepository.findByQuery(query, pageable), userMapper::toDto);
     }
 
     @Transactional
@@ -154,20 +156,6 @@ public class UserServiceImpl implements UserService {
         User user = getEntityById(userId);
         user.setEnabled(!user.getEnabled().equals(Boolean.TRUE));
         userRepository.save(user);
-    }
-
-
-    private Page<UserDto> getPage(Supplier<Page<User>> supplier, String notFoundMessage) {
-        Page<User> userPage = supplier.get();
-        if (userPage.isEmpty()) {
-            throw new UserNotFoundException(notFoundMessage);
-        }
-        log.info("Получено {} пользователей на странице", userPage.getSize());
-        return userPage.map(userMapper::toDto);
-    }
-
-    private Page<UserDto> getPage(Supplier<Page<User>> supplier) {
-        return getPage(supplier, "Пользователи не были найдены");
     }
 
     @Override
@@ -366,7 +354,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isEmailVerified(String email) {
         User user = getEntityByEmail(email);
-
         return Boolean.TRUE.equals(user.getIsEmailVerified());
     }
 }
