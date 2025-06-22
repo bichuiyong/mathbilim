@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.repository.blog;
 
-import kg.edu.mathbilim.dto.blog.DisplayBlogDto;
+import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRepository<Blog> {
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.blog.DisplayBlogDto(
+        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
             b.id,
             b.creator.id,
             b.createdAt, 
@@ -36,11 +36,11 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
         WHERE b.id = :blogId 
         AND bt.id.languageCode = :languageCode
     """)
-    Optional<DisplayBlogDto> findDisplayBlogById(@Param("blogId") Long blogId,
-                                                 @Param("languageCode") String languageCode);
+    Optional<DisplayContentDto> findDisplayBlogById(@Param("blogId") Long blogId,
+                                                    @Param("languageCode") String languageCode);
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.blog.DisplayBlogDto(
+        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
             b.id,
             b.creator.id,
             b.createdAt, 
@@ -60,11 +60,11 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
         AND bt.title != ''
         ORDER BY b.createdAt DESC
     """)
-    Page<DisplayBlogDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,
+    Page<DisplayContentDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,
                                                        Pageable pageable);
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.blog.DisplayBlogDto(
+        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
             b.id,
             b.creator.id,
             b.createdAt, 
@@ -85,7 +85,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
         AND bt.title != ''
         ORDER BY b.viewCount DESC, b.createdAt DESC
     """)
-    List<DisplayBlogDto> findRelatedBlogs(@Param("excludeId") Long excludeId,
+    List<DisplayContentDto> findRelatedBlogs(@Param("excludeId") Long excludeId,
                                           @Param("languageCode") String languageCode,
                                           Pageable pageable);
 

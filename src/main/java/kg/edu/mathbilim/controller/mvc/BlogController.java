@@ -2,8 +2,8 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
-import kg.edu.mathbilim.dto.blog.DisplayBlogDto;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class BlogController {
                            Model model) {
 
         blogService.incrementViewCount(id);
-        DisplayBlogDto blog = blogService.getDisplayBlogById(id);
+        DisplayContentDto blog = blogService.getDisplayBlogById(id);
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);

@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.service.impl.blog;
 
+import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.blog.DisplayBlogDto;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
@@ -82,17 +82,17 @@ public class BlogServiceImpl extends
         return LocaleContextHolder.getLocale().getLanguage();
     }
 
-    public DisplayBlogDto getDisplayBlogById(Long id) {
+    public DisplayContentDto getDisplayBlogById(Long id) {
         return repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
     }
 
-    public Page<DisplayBlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
+    public Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         return repository.findAllDisplayBlogsByLanguage(getCurrentLanguage(), pageable);
     }
 
-    public List<DisplayBlogDto> getRelatedBlogs(Long excludeId, int limit) {
+    public List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return repository.findRelatedBlogs(excludeId, getCurrentLanguage(), pageable);
     }

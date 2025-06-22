@@ -47,14 +47,14 @@ public class NewsController {
                 .news(NewsDto.builder().build())
                 .build();
         model.addAttribute(newsDto, createNewsDto);
-        return "media/create_news";
+        return "news/news-create";
     }
 
     @PostMapping("create")
     public String createNewsPost(@Valid @ModelAttribute("newsDto") CreateNewsDto newsDto,
                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "media/create_news";
+            return "news/news-create";
         }
         newsService.create(newsDto);
         return redirect;

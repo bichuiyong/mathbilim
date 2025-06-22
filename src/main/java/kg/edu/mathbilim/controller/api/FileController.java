@@ -147,4 +147,24 @@ public class FileController {
                     .body(Map.of("error", "Ошибка загрузки видео"));
         }
     }
+
+    @PostMapping("/tinymce/document")
+    public ResponseEntity<Map<String, String>> uploadDocumentForTinyMCE(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 10 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер документа не должен превышать 10MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/documents");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("location", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки видео"));
+        }
+    }
 }
