@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.mapper.event;
 
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
+import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.event.EventTranslation;
 import kg.edu.mathbilim.model.event.EventTranslationId;
 import org.mapstruct.AfterMapping;
@@ -9,7 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface EventTranslationMapper {
+public interface EventTranslationMapper extends BaseMapper<EventTranslation, EventTranslationDto> {
 
     @Mapping(source = "id.languageCode", target = "languageCode")
     @Mapping(source = "id.eventId", target = "eventId")
