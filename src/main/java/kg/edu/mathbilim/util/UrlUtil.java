@@ -10,4 +10,10 @@ public class UrlUtil {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
     }
+
+    public static String getBaseURL(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() +
+                (request.getServerPort() != 80 && request.getServerPort() != 443 ?
+                        ":" + request.getServerPort() : "");
+    }
 }

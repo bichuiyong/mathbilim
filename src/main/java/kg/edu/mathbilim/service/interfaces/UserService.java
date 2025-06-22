@@ -7,6 +7,7 @@ import kg.edu.mathbilim.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.dto.user.UserEditDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 
@@ -26,7 +27,7 @@ public interface UserService {
 
     void createUser(UserDto userDto, HttpServletRequest request);
 
-    void edit(UserEditDto userDto, String email);
+    void edit(UserEditDto userDto);
 
     User findByEmail(String email);
 
@@ -70,4 +71,8 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
+
+    void setUserAvatar(Long userId, MultipartFile file);
+
+    UserEditDto getEditUserById(Long id);
 }

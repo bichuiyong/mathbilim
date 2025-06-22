@@ -1,27 +1,21 @@
 package kg.edu.mathbilim.service.interfaces.blog;
 
+import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.blog.CreateBlogDto;
-import kg.edu.mathbilim.model.blog.Blog;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface BlogService {
-    Blog findBlogById(Long id);
+public interface BlogService extends BaseTranslatableService<BlogDto, BlogTranslationDto> {
+    BlogDto create(@Valid BlogDto blogDto, MultipartFile mainImage);
 
-    Boolean existsBlogById(Long id);
+    DisplayContentDto getDisplayBlogById(Long id);
 
-    Page<BlogDto> getBlogPage(String query, int page, int size, String sortBy, String sortDirection);
+    Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
 
-    BlogDto getById(Long id);
-
-    void deleteById(Long id);
-
-    BlogDto createBlog(CreateBlogDto blogDto);
-
-    @Transactional
-    void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId);
+    List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit);
 }

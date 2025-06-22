@@ -1,114 +1,509 @@
+<#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-<@main.layout>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/scss/main.css">
-    <section class="hero-section py-5">
-        <div class="container">
-            <div class="hero-content">
-                <div class="mb-4">
-                    <a href="/events" class="btn btn-back">
-                        <i class="fas fa-arrow-left me-2"></i>Назад к мероприятиям
-                    </a>
+
+<@main.layout title="${event.title!'Мероприятие'} - MathBilim.kg">
+    <#if event.description??>
+        <meta name="description" content="${event.description}">
+    </#if>
+    <#if event.mainImage??>
+        <meta property="og:image" content="/api/files/${event.mainImage.id}/view">
+        <meta name="twitter:image" content="/api/files/${event.mainImage.id}/view">
+    </#if>
+    <meta property="og:title" content="${event.title!'Мероприятие'} - MathBilim.kg">
+    <meta property="og:description" content="${event.description!''}">
+    <meta property="og:url" content="${shareUrl!''}">
+    <meta property="og:type" content="event">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${event.title!'Мероприятие'} - MathBilim.kg">
+    <meta name="twitter:description" content="${event.description!''}">
+
+    <div class="blog-view-container">
+        <article class="blog-article">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-xl-7">
+                        <header class="blog-header">
+                            <!-- Метаинформация -->
+                            <div class="blog-meta">
+                                <div class="event-type-badge">
+                                    <i class="fas fa-tag me-1"></i>
+                                    ${eventType.eventTypeTranslations[0].translation}
+                                </div>
+
+                                <time class="event-date" datetime="${event.startDate}">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    ${event.startDate}
+                                </time>
+
+                                <#if event.endDate??>
+                                    <time class="event-end-date" datetime="${event.endDate}">
+                                        <i class="fas fa-clock me-2"></i>
+                                        до ${event.endDate}
+                                    </time>
+                                </#if>
+
+                                <div class="event-location-badge">
+                                    <#if event.isOffline>
+                                        <i class="fas fa-map-marker-alt me-1"></i>Офлайн
+                                    <#else>
+                                        <i class="fas fa-globe me-1"></i>Онлайн
+                                    </#if>
+                                </div>
+
+                                <#if event.creator?? && event.creator.id??>
+                                    <span class="event-author-compact" data-author-id="${event.creator.id}">
+                                        <i class="fas fa-user me-2"></i>
+                                        <span class="author-name">Загрузка...</span>
+                                    </span>
+                                </#if>
+
+                                <div class="event-stats">
+                                    <span class="stat-item">
+                                        <i class="fas fa-eye me-1"></i>
+                                        ${event.viewCount}
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="fas fa-share me-1"></i>
+                                        ${event.shareCount}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <h1 class="event-title">${event.title}</h1>
+
+                            <!-- Локация -->
+                            <#if (event.isOffline && event.address??) || (!event.isOffline && event.url??)>
+                                <div class="event-location">
+                                    <#if event.isOffline && event.address??>
+                                        <div class="location-info offline">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            <span class="location-text">${event.address}</span>
+                                        </div>
+                                    <#elseif !event.isOffline && event.url??>
+                                        <div class="location-info online">
+                                            <i class="fas fa-globe me-2"></i>
+                                            <span class="location-text">Онлайн мероприятие</span>
+                                            <a href="${event.url}"
+                                               target="_blank"
+                                               class="btn btn-primary ms-2">
+                                                <i class="fas fa-external-link-alt me-1"></i> Присоединиться
+                                            </a>
+                                        </div>
+                                    </#if>
+                                </div>
+                            </#if>
+                        </header>
+
+                        <#if event.mainImage??>
+                            <div class="event-main-image">
+                                <img src="/api/files/${event.mainImage.id}/view"
+                                     alt="${event.title}"
+                                     class="img-fluid rounded shadow-sm">
+                            </div>
+                        </#if>
+
+                        <div class="event-content">
+                            ${event.content?no_esc}
+                        </div>
+
+                        <!-- Организаторы -->
+                        <#if organizations?? && organizations?size gt 0>
+                            <div class="event-organizers">
+                                <h3>Организаторы</h3>
+                                <div class="organizers-list">
+                                    <#list organizations as org>
+                                        <div class="organizer-item">
+                                            <#if org.avatar??>
+                                                <img src="/api/files/${org.avatar.id}/view"
+                                                     alt="${org.name}"
+                                                     class="organizer-avatar">
+                                            <#else>
+                                                <div class="organizer-avatar placeholder">
+                                                    <i class="fas fa-building"></i>
+                                                </div>
+                                            </#if>
+                                            <div class="organizer-info">
+                                                <h4 class="organizer-name">${org.name}</h4>
+                                                <p class="organizer-description">${org.description}</p>
+                                                <#if org.url??>
+                                                    <a href="${org.url}" target="_blank" class="organizer-link">
+                                                        <i class="fas fa-external-link-alt me-1"></i>Сайт
+                                                    </a>
+                                                </#if>
+                                            </div>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </#if>
+
+                        <!-- Дополнительные файлы -->
+                        <#if event.eventFiles?? && event.eventFiles?size gt 0>
+                            <div class="event-files">
+                                <h3>Дополнительные материалы</h3>
+                                <div class="files-list">
+                                    <#list event.eventFiles as file>
+                                        <a href="/api/files/${file.id}/download"
+                                           class="file-item"
+                                           target="_blank">
+                                            <i class="fas fa-file me-2"></i>
+                                            <span class="file-name">${file.originalName}</span>
+                                            <span class="file-size">(${file.formattedSize})</span>
+                                        </a>
+                                    </#list>
+                                </div>
+                            </div>
+                        </#if>
+
+                        <div class="blog-actions">
+                            <div class="social-share">
+                                <span class="share-label">Поделиться в:</span>
+                                <div class="social-buttons">
+                                    <a href="#" onclick="shareToFacebook(); return false;" class="social-btn facebook">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" onclick="shareToTwitter(); return false;" class="social-btn twitter">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" onclick="shareToTelegram(); return false;" class="social-btn telegram">
+                                        <i class="fab fa-telegram-plane"></i>
+                                    </a>
+                                    <a href="#" onclick="shareToWhatsApp(); return false;" class="social-btn whatsapp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                    <a href="#" onclick="copyLink(); return false;" class="social-btn copy-link" id="copyLinkBtn">
+                                        <i class="fas fa-link"></i>
+                                        <span class="copy-feedback">Скопировано!</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="display-4 fw-bold mb-3">Республиканская Олимпиада по Математике 2025</h1>
-                <p class="lead mb-0">Главное математическое событие года для школьников и студентов Кыргызстана</p>
             </div>
-        </div>
-    </section>
+        </article>
 
-    <div class="container pb-5">
-        <div class="event-detail-card">
-            <div class="event-header">
-                <div class="event-badge badge-олимпиада">Олимпиада</div>
-                <h2 class="h3 fw-bold mb-3">Добро пожаловать на Республиканскую Олимпиаду по Математике 2025!</h2>
-
-                <div class="event-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <div>
-                            <strong>15 июня 2025</strong><br>
-                            <small>Суббота, 10:00 - 17:00</small>
+        <div class="blog-navigation">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-xl-7">
+                        <div class="nav-actions">
+                            <a href="/events" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>К списку мероприятий
+                            </a>
+                            <a href="/events/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Создать мероприятие
+                            </a>
                         </div>
                     </div>
-                    <div class="meta-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <strong>Кыргызский Национальный Университет</strong><br>
-                            <small>Бишкек, Кыргызстан</small>
-                        </div>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-users"></i>
-                        <div>
-                            <strong>Оффлайн</strong><br>
-                            <small>До 300 участников</small>
-                        </div>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-user-tie"></i>
-                        <div>
-                            <strong>Ассоциация Математиков Кыргызстана</strong><br>
-                            <small>Организатор</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="event-content">
-                <div class="source-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Источник:</strong> Министерство образования и науки КР
-                </div>
-
-                <div class="event-description">
-                    <p>Республиканская Олимпиада по Математике — это ежегодное интеллектуальное соревнование для
-                        талантливых школьников и студентов со всей страны. В 2025 году олимпиада пройдёт в Бишкеке на
-                        базе КНУ.</p>
-
-                    <h3>Что вас ждет:</h3>
-                    <ul>
-                        <li><strong>3 конкурсных тура</strong>: алгебра, геометрия, комбинаторика и теория чисел</li>
-                        <li><strong>Мастер-классы</strong> от известных математиков Кыргызстана</li>
-                        <li><strong>Награждение победителей</strong> дипломами, медалями и ценными призами</li>
-                        <li><strong>Сертификаты участия</strong> всем финалистам</li>
-                    </ul>
-
-                    <h3>Категории участников:</h3>
-                    <ul>
-                        <li>7-9 классы</li>
-                        <li>10-11 классы</li>
-                        <li>Студенты 1-2 курсов</li>
-                    </ul>
-
-                    <h3>Почему стоит участвовать:</h3>
-                    <ul>
-                        <li>Проверка своих знаний среди лучших математиков страны</li>
-                        <li>Возможность попасть в сборную Кыргызстана на международные олимпиады</li>
-                        <li>Приятные бонусы: книги, грамоты, памятные подарки</li>
-                    </ul>
-
-                    <p><strong>Участие бесплатное!</strong> Регистрация обязательна до 10 июня 2025 года.</p>
-
-                    <p>Организаторы обеспечивают участников питанием, а также проездом для финалистов из регионов.</p>
-                </div>
-            </div>
-
-            <div class="register-section">
-                <h3 class="h4 fw-bold mb-3">Готовы проверить свои математические способности?</h3>
-                <p class="mb-4">Зарегистрируйтесь сейчас и станьте участником главной олимпиады Кыргызстана!</p>
-                <a href="#" class="btn btn-register" target="_blank">
-                    <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
-                </a>
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <i class="fas fa-clock me-1"></i>
-                        Регистрация займет не более 2 минут
-                    </small>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/components/content-view/AuthorManager.js"></script>
+    <script src="/static/js/components/content-view/SocialShareManager.js"></script>
+    <script src="/static/js/components/content-view/ContentViewManager.js"></script>
+    <script src="/static/js/components/content-view/BaseContentViewManager.js"></script>
+
+    <script src="/static/js/event/EventViewManager.js"></script>
+
+    <script>
+        window.eventData = {
+            id: ${event.id},
+            title: '${event.title?js_string}',
+            shareUrl: '${shareUrl?js_string}',
+            description: '${event.description?js_string!""}',
+            startDate: '${event.startDate}',
+            <#if event.endDate??>endDate: '${event.endDate}',</#if>
+            isOffline: ${event.isOffline?c},
+            <#if event.address??>address: '${event.address?js_string}',</#if>
+            <#if event.url??>url: '${event.url?js_string}'</#if>
+        };
+    </script>
+
+    <style>
+        .event-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .event-type-badge,
+        .event-location-badge {
+            background: #2563eb;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .event-location-badge {
+            background: #10b981;
+        }
+
+        .event-date,
+        .event-end-date {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-date i,
+        .event-end-date i {
+            color: #2563eb;
+        }
+
+        .event-author-compact {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-author-compact i {
+            color: #2563eb;
+        }
+
+        .event-author-compact .author-name {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .event-author-compact .author-name:hover {
+            color: #2563eb;
+        }
+
+        .event-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            color: #64748b;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-item i {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        .event-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Локация */
+        .event-location {
+            margin-bottom: 2rem;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .location-info.offline {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .location-info.online {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Организаторы */
+        .event-organizers {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .organizers-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .organizer-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .organizer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .organizer-avatar.placeholder {
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .organizer-name {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .organizer-description {
+            margin: 0 0 0.5rem 0;
+            color: #64748b;
+        }
+
+        .organizer-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        /* Файлы */
+        .event-files {
+            margin: 3rem 0;
+        }
+
+        .files-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #1e293b;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-item:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .file-size {
+            margin-left: auto;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .social-share {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
+        .social-btn.facebook { background: #1877f2; }
+        .social-btn.twitter { background: #1da1f2; }
+        .social-btn.telegram { background: #0088cc; }
+        .social-btn.whatsapp { background: #25d366; }
+        .social-btn.copy-link { background: #6b7280; position: relative; }
+
+        .copy-feedback {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #374151;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .social-btn.copied .copy-feedback {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .event-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .event-title {
+                font-size: 2rem;
+            }
+
+
+            .social-share {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .event-title {
+                font-size: 1.75rem;
+            }
+
+            .event-meta {
+                gap: 0.75rem;
+            }
+
+            .event-date,
+            .event-end-date,
+            .event-author-compact {
+                font-size: 0.85rem;
+            }
+
+            .stat-item {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+
 </@main.layout>

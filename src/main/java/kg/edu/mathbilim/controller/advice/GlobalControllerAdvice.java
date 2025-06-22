@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
-
     @ModelAttribute
     public void addCommonAttributes(Model model) {
         model.addAttribute("languages", Language.getLanguagesMap());

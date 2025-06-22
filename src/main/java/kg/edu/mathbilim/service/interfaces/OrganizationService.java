@@ -13,6 +13,8 @@ public interface OrganizationService {
 
     List<OrganizationDto> getOrganizations(String query);
 
+    List<OrganizationDto> getByIds(List<Long> ids);
+
     @Transactional
     List<Organization> addEventToOrganizations(List<Long> organizationIds, Event event);
 

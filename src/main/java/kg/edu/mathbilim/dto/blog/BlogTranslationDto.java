@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogTranslationDto extends ContentTranslationDto {
+
     Long blogId;
 
 }

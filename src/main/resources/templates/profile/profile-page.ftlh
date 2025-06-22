@@ -19,15 +19,12 @@
                     <div class="card-body text-center">
                         <div class="profile-avatar-container mb-3">
                             <#if user.avatar??>
-                                <img src="/api/files/${user.avatar.id}" alt="Аватар" class="profile-avatar">
+                                <img src="/api/files/${user.avatar.id}/download" alt="Аватар" class="profile-avatar">
                             <#else>
                                 <div class="profile-avatar-placeholder">
                                     <i class="fas fa-user"></i>
                                 </div>
                             </#if>
-                            <button class="btn btn-sm btn-primary profile-avatar-edit" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                                <i class="fas fa-camera"></i>
-                            </button>
                         </div>
 
                         <h4 class="mb-1">${user.name!} ${user.surname!}</h4>
@@ -68,7 +65,7 @@
 
                         <hr>
 
-                        <a href="/profile/edit" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-edit me-2"></i>Редактировать профиль
                         </a>
                     </div>
@@ -263,38 +260,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Модальное окно для загрузки аватара -->
-    <div class="modal fade" id="avatarModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Загрузить аватар</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="avatarForm" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="avatarFile" class="form-label">Выберите изображение</label>
-                            <input type="file" class="form-control" id="avatarFile" accept="image/*" required>
-                            <div class="form-text">Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 5MB</div>
-                        </div>
-                        <div id="avatarPreview" class="text-center" style="display: none;">
-                            <img src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload me-2"></i>Загрузить
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Подключение JavaScript -->
-    <script src="/static/js/profile.js"></script>
 
 </@main.layout>

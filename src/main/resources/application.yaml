@@ -145,7 +145,6 @@ spring:
           starttls:
             enable: true
             required: true
-
   security:
     user:
       name: email
@@ -179,29 +178,6 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
-
-tinymce:
-  upload:
-#    TODO ПОМЕНЯТЬ ЭНДПОИНТЫ ДЛЯ TINYMCE (АИША)
-    images:
-      endpoint: "/api/upload/tinymce/image"
-      max-size: 5242880
-      allowed-extensions: [ "jpg", "jpeg", "png", "gif", "webp" ]
-
-    documents:
-      endpoint: "/api/upload/tinymce/file"
-      max-size: 26214400
-      allowed-extensions: [ "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx" ]
-
-    media:
-      endpoint: "/api/upload/tinymce/media"
-      max-size: 104857600
-      allowed-extensions: [ "mp4", "avi", "mov", "mp3", "wav" ]
-
-  security:
-    virus-scanning: false
-    strict-type-checking: true
-    quarantine-suspicious: true
 
 recaptcha:
   secret: ${RECAPTCHA_SECRET_KEY}

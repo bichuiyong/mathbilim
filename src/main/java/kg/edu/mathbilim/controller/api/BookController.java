@@ -19,7 +19,7 @@ public class BookController {
                                                      @RequestParam(required = false) String query,
                                                      @RequestParam(required = false, defaultValue = "name") String sortBy,
                                                      @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return ResponseEntity.ofNullable(bookService.getBookPage(query, page, size, sortBy, sortDirection));
+        return ResponseEntity.ofNullable(bookService.getPage(query, page, size, sortBy, sortDirection));
     }
 
     @GetMapping("{id}")
@@ -29,7 +29,7 @@ public class BookController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-//        bookService.delete(id);
+        bookService.delete(id);
         return ResponseEntity.ok().build();
     }
 }
