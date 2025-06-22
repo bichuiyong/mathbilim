@@ -148,8 +148,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-    <!-- Подключение наших скриптов -->
-    <script src="/static/js/blog-create.js"></script>
+    <script src="/static/js/components/content-create/ImageCropManager.js"></script>
+    <script src="/static/js/components/content-create/TinyMCEManager.js"></script>
+    <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
+    <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
+    <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
+
+    <script src="/static/js/blog/BlogCreateManager.js"></script>
 
     <style>
         /* Стили для кропа */

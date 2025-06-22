@@ -2,20 +2,15 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout title="${blog.title!'Блог'} - MathBilim.kg">
-    <#if pageDescription??>
-        <meta name="description" content="${blog.description}">
-    </#if>
     <#if pageImage??>
         <meta property="og:image" content="/api/files/${blog.mainImage.id}/view">
         <meta name="twitter:image" content="/api/files/${blog.mainImage.id}/view">
     </#if>
     <meta property="og:title" content="${blog.title!'Блог'} - MathBilim.kg">
-    <meta property="og:description" content="${blog.description!''}">
     <meta property="og:url" content="${shareUrl!''}">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${blog.title!'Блог'} - MathBilim.kg">
-    <meta name="twitter:description" content="${blog.description!''}">
 
     <div class="blog-view-container">
         <!-- Хлебные крошки -->
@@ -120,14 +115,18 @@
         </div>
     </div>
 
-    <script src="/static/js/blog-view.js"></script>
+
+    <script src="/static/js/components/content-view/AuthorManager.js"></script>
+    <script src="/static/js/components/content-view/SocialShareManager.js"></script>
+    <script src="/static/js/components/content-view/ContentViewManager.js"></script>
+    <script src="/static/js/components/content-view/BaseContentViewManager.js"></script>
+    <script src="/static/js/blog/BlogViewManager.js"></script>
 
     <script>
         window.blogData = {
             id: ${blog.id},
             title: '${blog.title?js_string}',
             shareUrl: '${shareUrl?js_string}',
-            description: '${blog.description?js_string}'
         };
     </script>
 
