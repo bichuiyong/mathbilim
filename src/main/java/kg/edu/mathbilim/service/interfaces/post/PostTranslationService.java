@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.service.interfaces.post;
 
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
-import kg.edu.mathbilim.model.post.PostTranslation;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,8 +9,6 @@ import java.util.Set;
 
 public interface PostTranslationService extends BaseTranslationService<PostTranslationDto> {
     List<PostTranslationDto> getTranslationsByPostId(Long postId);
-
-    PostTranslation getTranslationEntity(Long postId, String languageCode);
 
     PostTranslationDto getTranslation(Long postId, String languageCode);
 
@@ -28,9 +25,6 @@ public interface PostTranslationService extends BaseTranslationService<PostTrans
 
     @Transactional
     void deleteTranslation(Long postId, String languageCode);
-
-    @Transactional
-    void deleteAllTranslationsByPostId(Long postId);
 
     boolean existsTranslation(Long postId, String languageCode);
 
