@@ -10,4 +10,8 @@ public interface BaseContentService<D> {
     void delete(Long id);
 
     boolean existsById(Long id);
+
+    void incrementViewCount(Long id);
+
+    void incrementShareCount(Long id);
 }

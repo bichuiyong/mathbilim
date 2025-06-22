@@ -66,20 +66,18 @@ public class BlogServiceImpl extends
         return createBase(blogDto, multipartFile, null);
     }
 
+    @Override
     @Transactional
     public void incrementViewCount(Long id) {
         repository.incrementViewCount(id);
         log.debug("View count incremented for blog {}", id);
     }
 
+    @Override
     @Transactional
     public void incrementShareCount(Long id) {
         repository.incrementShareCount(id);
         log.debug("Share count incremented for blog {}", id);
-    }
-
-    public String getCurrentLanguage() {
-        return LocaleContextHolder.getLocale().getLanguage();
     }
 
     public DisplayContentDto getDisplayBlogById(Long id) {

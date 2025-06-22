@@ -14,6 +14,7 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,6 +134,22 @@ public abstract class AbstractContentService<
 
         log.info("Created {} with id {}", getEntityName(), savedEntityId);
         return mapper.toDto(savedEntity);
+    }
+
+    public String getCurrentLanguage() {
+        return LocaleContextHolder.getLocale().getLanguage();
+    }
+
+    @Transactional
+    public void incrementViewCount(Long id) {
+        repository.incrementViewCount(id);
+        log.debug("View count incremented for blog {}", id);
+    }
+
+    @Transactional
+    public void incrementShareCount(Long id) {
+        repository.incrementShareCount(id);
+        log.debug("Share count incremented for blog {}", id);
     }
 
     protected abstract void handleTranslations(D dto, Long entityId);

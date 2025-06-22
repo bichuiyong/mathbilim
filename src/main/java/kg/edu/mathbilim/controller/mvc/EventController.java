@@ -1,12 +1,15 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.event.CreateEventDto;
+import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
+import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,10 +38,26 @@ public class EventController {
         return "events/event-list";
     }
 
-    @GetMapping("event/{id}")
-    public String eventDetail(@PathVariable Long id, Model model) {
-        EventDto event = eventService.getById(id);
+    @GetMapping("/{id}")
+    public String viewEvent(@PathVariable Long id,
+                            HttpServletRequest request,
+                            Model model) {
+
+        eventService.incrementViewCount(id);
+        DisplayEventDto event = eventService.getDisplayEventById(id);
+
+        model.addAttribute("eventType", eventTypeService.getEventTypeById(event.getTypeId()));
+
+        if (event.getOrganizationIds() != null && !event.getOrganizationIds().isEmpty()) {
+            model.addAttribute("organizations",
+                    organizationService.getByIds(event.getOrganizationIds()));
+        }
+
+        String shareUrl = UrlUtil.getBaseURL(request) + "/events/" + id;
+
         model.addAttribute("event", event);
+        model.addAttribute("shareUrl", shareUrl);
+
         return "events/event-details";
     }
 

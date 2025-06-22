@@ -7,6 +7,7 @@ import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
+import kg.edu.mathbilim.validation.annotation.ValidEventLocation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -24,25 +25,26 @@ import java.util.*;
         startDateTimeField = "startDate",
         endDateTimeField = "endDate"
 )
+@ValidEventLocation
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventDto extends ContentDto {
-    @NotNull
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull(message = "Дата начала мероприятия обязательна")
+    @Future(message = "Дата начала мероприятия должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime startDate;
 
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Future(message = "Дата окончания должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime endDate;
 
-    @NotNull
+    @NotNull(message = "Необходимо выбрать тип мероприятия")
     Long typeId;
 
     String address; // если оффлайн
 
     String url; // если онлайн
 
-    @NotNull
+    @NotNull(message = "Необходимо указать тип мероприятия (онлайн/офлайн)")
     Boolean isOffline;
 
     @Builder.Default

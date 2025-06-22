@@ -11,4 +11,8 @@ public interface BaseContentRepository<T extends AdminContent> extends JpaReposi
     default Page<T> findByQuery(String query, Pageable pageable) {
         return findAll(pageable);
     }
+
+    void incrementViewCount(Long id);
+
+    void incrementShareCount(Long id);
 }

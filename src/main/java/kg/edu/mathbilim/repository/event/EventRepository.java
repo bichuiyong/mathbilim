@@ -1,8 +1,15 @@
 package kg.edu.mathbilim.repository.event;
 
+import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventRepository extends BaseContentRepository<Event> {
@@ -11,4 +18,46 @@ public interface EventRepository extends BaseContentRepository<Event> {
 //            "LOWER(e.content) LIKE LOWER(CONCAT('%', :query, '%'))")
 //    Page<Event> findByQuery(@Param("query") String query, Pageable pageable);
 
+    @Modifying
+    @Query("UPDATE Event b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
+    void incrementViewCount(@Param("blogId") Long blogId);
+
+    @Modifying
+    @Query("UPDATE Event b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
+    void incrementShareCount(@Param("blogId") Long blogId);
+
+    @Query("""
+                SELECT new kg.edu.mathbilim.dto.event.DisplayEventDto(
+                    e.id,
+                    e.creator.id,
+                    e.createdAt, 
+                    e.updatedAt, 
+                    e.viewCount, 
+                    e.shareCount,
+                    e.mainImage.id,
+                    e.approvedBy.id,
+                    e.status,
+                    et.title, 
+                    et.content,
+                    e.startDate,
+                    e.endDate,
+                    e.type.id,
+                    e.address,
+                    e.url,
+                    e.isOffline
+                )
+                FROM Event e 
+                JOIN e.eventTranslations et 
+                WHERE e.id = :eventId 
+                AND et.id.languageCode = :languageCode
+            """)
+    Optional<DisplayEventDto> findDisplayEventById(@Param("eventId") Long eventId,
+                                                   @Param("languageCode") String languageCode);
+
+    @Query("""
+        SELECT o.id FROM Event e 
+        JOIN e.organizations o 
+        WHERE e.id = :eventId
+    """)
+    List<Long> findOrganizationIdsByEventId(@Param("eventId") Long eventId);
 }

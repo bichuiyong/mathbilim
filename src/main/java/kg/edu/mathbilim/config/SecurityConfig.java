@@ -54,14 +54,19 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(
+                                "/admin/**",
+                                "/news/create/**")
+                        .hasAuthority("ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",
                                 "/organizations/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
-                                "/profile/**"
+                                "/profile/**",
+                                "/blog/create/**",
+                                "/events/create/**"
                         ).authenticated()
 
                         .requestMatchers(
