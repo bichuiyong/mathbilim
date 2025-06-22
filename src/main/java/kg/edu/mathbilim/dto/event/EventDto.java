@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
-import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
 import lombok.*;
@@ -14,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -54,12 +53,10 @@ public class EventDto extends ContentDto {
     List<EventTranslationDto> eventTranslations = createDefaultTranslations();
 
     static List<EventTranslationDto> createDefaultTranslations() {
-        return Arrays.stream(Language.values())
-                .map(lang -> EventTranslationDto.builder()
-                        .languageCode(lang.getCode())
-                        .title("")
-                        .content("")
-                        .build())
-                .collect(Collectors.toList());
+        return TranslationUtil.createDefaultTranslations(languageCode ->
+                EventTranslationDto.builder()
+                        .languageCode(languageCode)
+                        .build()
+        );
     }
 }

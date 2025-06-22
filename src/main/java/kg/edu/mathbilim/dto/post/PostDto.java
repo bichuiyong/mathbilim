@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,12 +32,10 @@ public class PostDto extends ContentDto {
     List<PostTranslationDto> postTranslations = createDefaultTranslations();
 
     static List<PostTranslationDto> createDefaultTranslations() {
-        return Arrays.stream(Language.values())
-                .map(lang -> PostTranslationDto.builder()
-                        .languageCode(lang.getCode())
-                        .title("")
-                        .content("")
-                        .build())
-                .collect(Collectors.toList());
+        return TranslationUtil.createDefaultTranslations(languageCode ->
+                PostTranslationDto.builder()
+                        .languageCode(languageCode)
+                        .build()
+        );
     }
 }
