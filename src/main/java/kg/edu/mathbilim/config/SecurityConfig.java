@@ -3,6 +3,7 @@ package kg.edu.mathbilim.config;
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -18,6 +19,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class SecurityConfig {
     private final CustomOAuth2UserService oauthUserService;
     private final OAuth2LoginSuccessHandler oauthSuccessHandler;
+
+    @Value("${logging.app.remember-me.key:#{T(java.util.UUID).randomUUID().toString()}}")
+    private String rememberMeKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,6 +49,9 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error=true")
                         .defaultSuccessUrl("/profile", true)
                         .permitAll())
+                .rememberMe(rememberMe -> rememberMe
+                        .key(rememberMeKey)
+                        .tokenValiditySeconds(86400*14))
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
