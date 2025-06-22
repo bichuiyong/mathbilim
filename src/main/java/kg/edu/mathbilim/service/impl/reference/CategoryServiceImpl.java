@@ -29,7 +29,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
     }
 
-    private Category getCategoryEntity(Integer id) {
+    @Override
+    public Category getCategoryEntity(Integer id) {
         return categoryRepository.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);
     }

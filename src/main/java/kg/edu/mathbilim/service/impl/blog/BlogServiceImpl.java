@@ -1,116 +1,97 @@
 package kg.edu.mathbilim.service.impl.blog;
 
+import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.blog.CreateBlogDto;
-import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
-import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.repository.blog.BlogRepository;
+import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-@Service
 @Slf4j
-@RequiredArgsConstructor
-public class BlogServiceImpl implements BlogService {
-    private final BlogRepository blogRepository;
-    private final BlogMapper blogMapper;
-    private final UserService userService;
-    private final BlogTranslationService blogTranslationService;
+@Service
+public class BlogServiceImpl extends
+        AbstractTranslatableContentService<
+                Blog,
+                BlogDto,
+                BlogTranslationDto,
+                BlogRepository,
+                BlogMapper,
+                BlogTranslationService
+                >
+        implements BlogService {
 
-    @Override
-    public Blog findBlogById(Long id) {
-        return blogRepository.findById(id).orElseThrow(BlogNotFoundException::new);
+    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService, FileService fileService, BlogTranslationService translationService) {
+        super(repository, mapper, userService, fileService, translationService);
     }
 
     @Override
-    public Boolean existsBlogById(Long id) {
-        return blogRepository.existsById(id);
+    protected RuntimeException getNotFoundException() {
+        return new BlogNotFoundException();
     }
 
     @Override
-    public Page<BlogDto> getBlogPage(String query, int page, int size, String sortBy, String sortDirection) {
+    protected String getEntityName() {
+        return "blog";
+    }
+
+    @Override
+    protected String getFileUploadPath(Blog entity) {
+        return "blogs/" + entity.getId();
+    }
+
+    @Override
+    protected List<BlogTranslationDto> getTranslationsFromDto(BlogDto dto) {
+        return dto.getBlogTranslations();
+    }
+
+    @Transactional
+    public BlogDto create(BlogDto blogDto, MultipartFile multipartFile) {
+        return createBase(blogDto, multipartFile, null);
+    }
+
+    @Override
+    @Transactional
+    public void incrementViewCount(Long id) {
+        repository.incrementViewCount(id);
+        log.debug("View count incremented for blog {}", id);
+    }
+
+    @Override
+    @Transactional
+    public void incrementShareCount(Long id) {
+        repository.incrementShareCount(id);
+        log.debug("Share count incremented for blog {}", id);
+    }
+
+    public DisplayContentDto getDisplayBlogById(Long id) {
+        return repository.findDisplayBlogById(id, getCurrentLanguage())
+                .orElseThrow(this::getNotFoundException);
+    }
+
+    public Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if (query == null || query.isEmpty()) {
-            return getPage(() -> blogRepository.findAll(pageable));
-        }
-        return getPage(() -> blogRepository.findAll(pageable));
+        return repository.findAllDisplayBlogsByLanguage(getCurrentLanguage(), pageable);
     }
 
-    @Override
-    public BlogDto getById(Long id) {
-        return blogMapper.toDto(findBlogById(id));
-    }
-    @Transactional
-    @Override
-    public void deleteById(Long id) {
-        if (Boolean.TRUE.equals(existsBlogById(id))) {
-            blogRepository.deleteById(id);
-            log.info("Deleted blog with id: {}", id);
-        } else {
-            throw new BlogNotFoundException();
-        }
-    }
-    @Transactional
-    @Override
-    public BlogDto createBlog(CreateBlogDto createBlogDto) {
-        BlogDto blogDto = createBlogDto.getBlog();
-        blogDto.setCreator(userService.getAuthUser());
-        blogDto.setStatus(ContentStatus.PENDING_REVIEW);
-
-        Blog blog = blogMapper.toEntity(blogDto);
-        Blog savedBlog = blogRepository.save(blog);
-        Long saveBlogId = savedBlog.getId();
-
-        List<BlogTranslationDto> translations = blogDto.getBlogTranslations();
-        setBlogTranslations(translations, saveBlogId);
-
-        blogRepository.saveAndFlush(blog);
-
-        log.info("Created blog: {}", savedBlog);
-        return blogMapper.toDto(savedBlog);
-
-    }
-
-    private Page<BlogDto> getPage(Supplier<Page<Blog>> supplier) {
-        return getPage(supplier, "Блоги не были найдены");
-    }
-
-    private Page<BlogDto> getPage(Supplier<Page<Blog>> supplier, String notFoundMessage) {
-        Page<Blog> page = supplier.get();
-        if (page.isEmpty()) {
-            throw new FileNotFoundException(notFoundMessage);
-        }
-        log.info("Получено {} блогов на странице", page.getSize());
-        return page.map(blogMapper::toDto);
-    }
-    @Transactional
-    @Override
-    public void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId) {
-        Set<BlogTranslationDto> filledTranslations = translations.stream()
-                .filter(translation ->
-                        translation.getTitle() != null && !translation.getTitle().trim().isEmpty() &&
-                                translation.getContent() != null && !translation.getContent().trim().isEmpty())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-
-        blogTranslationService.saveTranslations(blogId, filledTranslations);
+    public List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return repository.findRelatedBlogs(excludeId, getCurrentLanguage(), pageable);
     }
 }

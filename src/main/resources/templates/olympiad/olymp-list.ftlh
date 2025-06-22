@@ -1,4 +1,4 @@
-<#import "../../layout.ftlh" as main>
+<#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">

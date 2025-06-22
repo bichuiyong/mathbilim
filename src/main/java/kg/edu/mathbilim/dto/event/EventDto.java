@@ -4,9 +4,10 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
-import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
+import kg.edu.mathbilim.validation.annotation.ValidEventLocation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +15,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,25 +25,26 @@ import java.util.stream.Collectors;
         startDateTimeField = "startDate",
         endDateTimeField = "endDate"
 )
+@ValidEventLocation
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventDto extends ContentDto {
-    @NotNull
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull(message = "Дата начала мероприятия обязательна")
+    @Future(message = "Дата начала мероприятия должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime startDate;
 
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Future(message = "Дата окончания должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime endDate;
 
-    @NotNull
+    @NotNull(message = "Необходимо выбрать тип мероприятия")
     Long typeId;
 
     String address; // если оффлайн
 
     String url; // если онлайн
 
-    @NotNull
+    @NotNull(message = "Необходимо указать тип мероприятия (онлайн/офлайн)")
     Boolean isOffline;
 
     @Builder.Default
@@ -54,12 +55,10 @@ public class EventDto extends ContentDto {
     List<EventTranslationDto> eventTranslations = createDefaultTranslations();
 
     static List<EventTranslationDto> createDefaultTranslations() {
-        return Arrays.stream(Language.values())
-                .map(lang -> EventTranslationDto.builder()
-                        .languageCode(lang.getCode())
-                        .title("")
-                        .content("")
-                        .build())
-                .collect(Collectors.toList());
+        return TranslationUtil.createDefaultTranslations(languageCode ->
+                EventTranslationDto.builder()
+                        .languageCode(languageCode)
+                        .build()
+        );
     }
 }

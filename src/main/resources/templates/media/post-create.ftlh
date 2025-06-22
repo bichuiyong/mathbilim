@@ -127,10 +127,6 @@
                 <input type="file" class="form-control" name="attachments" multiple>
             </div>
 
-            <div>
-                <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
-            </div>
-
             <!-- Кнопки -->
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Создать пост</button>

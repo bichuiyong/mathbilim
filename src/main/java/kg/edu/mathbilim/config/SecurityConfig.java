@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
                         .failureUrl("/auth/login?error=true")
-                        .defaultSuccessUrl("/profile", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll())
 
                 .logout(logout -> logout
@@ -54,14 +54,19 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**", "/api/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(
+                                "/admin/**",
+                                "/news/create/**")
+                        .hasAuthority("ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",
                                 "/organizations/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
-                                "/profile/**"
+                                "/profile/**",
+                                "/blog/create/**",
+                                "/events/create/**"
                         ).authenticated()
 
                         .requestMatchers(

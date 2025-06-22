@@ -1,4 +1,4 @@
-<#import "../../layout.ftlh" as main>
+<#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="container mt-4 mb-5">
         <h1 class="mb-4">TSI Programming Contest 2025</h1>

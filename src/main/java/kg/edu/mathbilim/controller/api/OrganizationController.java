@@ -4,10 +4,7 @@ import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +17,10 @@ public class OrganizationController {
     @GetMapping
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(@RequestParam(required = false) String name) {
         return ResponseEntity.ofNullable(organizationService.getOrganizations(name));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<OrganizationDto> getOrganization(@PathVariable Long id) {
+        return ResponseEntity.ofNullable(organizationService.getById(id));
     }
 }

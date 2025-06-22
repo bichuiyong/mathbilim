@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.interfaces.reference;
 
 
 import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.model.reference.Category;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public interface CategoryService {
 
     List<CategoryDto> getAllCategories();
+
+    Category getCategoryEntity(Integer id);
 
     CategoryDto getCategoryById(Integer id);
 

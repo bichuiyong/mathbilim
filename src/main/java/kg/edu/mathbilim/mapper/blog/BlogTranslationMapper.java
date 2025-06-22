@@ -1,12 +1,13 @@
 package kg.edu.mathbilim.mapper.blog;
 
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.blog.BlogTranslation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface BlogTranslationMapper {
+public interface BlogTranslationMapper extends BaseMapper<BlogTranslation, BlogTranslationDto> {
     @Mapping(target = "id.languageCode", source = "languageCode")
     @Mapping(target = "id.blogId", source = "blogId")
     @Mapping(target = "blog.id", source = "blogId")

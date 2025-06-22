@@ -24,7 +24,6 @@ public class TranslationServiceImpl implements TranslationService {
     private final EventTypeService eventTypeService;
     private final PostTypeService postTypeService;
 
-
     public Locale getCurrentLocale() {
         return LocaleContextHolder.getLocale();
     }
