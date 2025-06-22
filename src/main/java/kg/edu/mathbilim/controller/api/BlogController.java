@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("restBlogs")
-@RequestMapping("api/blogs")
+@RequestMapping("api/blog")
 @RequiredArgsConstructor
 public class BlogController {
     private final BlogService blogService;

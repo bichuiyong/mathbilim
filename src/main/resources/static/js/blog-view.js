@@ -1,10 +1,7 @@
-/**
- * Blog View Manager с асинхронной загрузкой данных автора
- */
 class BlogViewManager {
     constructor() {
         this.blogData = window.blogData || {};
-        this.authorCache = new Map(); // Кэш для авторов
+        this.authorCache = new Map();
         this.init();
     }
 
@@ -16,15 +13,10 @@ class BlogViewManager {
         this.setupKeyboardNavigation();
 
         this.loadAuthorData();
-        this.loadRelatedAuthorsData();
     }
 
-    // ==========================================
-    // АСИНХРОННАЯ ЗАГРУЗКА АВТОРА
-    // ==========================================
-
     async loadAuthorData() {
-        const authorContainer = document.querySelector('.blog-author');
+        const authorContainer = document.querySelector('.blog-author-compact');
         const authorId = authorContainer?.getAttribute('data-author-id');
 
         if (!authorId || !authorContainer) {
@@ -33,9 +25,8 @@ class BlogViewManager {
         }
 
         try {
-            this.showAuthorSkeleton(authorContainer);
+            this.showAuthorLoading(authorContainer);
             const authorData = await this.fetchAuthorData(authorId);
-
             this.renderAuthorData(authorContainer, authorData);
 
         } catch (error) {
@@ -69,100 +60,45 @@ class BlogViewManager {
         return authorData;
     }
 
-    showAuthorSkeleton(container) {
-        container.innerHTML = `
-            <div class="author-info">
-                <div class="author-avatar">
-                    <div class="skeleton-avatar"></div>
-                </div>
-                <div class="author-details">
-                    <div class="skeleton-text skeleton-name"></div>
-                    <div class="skeleton-text skeleton-role"></div>
-                </div>
-            </div>
-        `;
+    showAuthorLoading(container) {
+        const authorNameElement = container.querySelector('.author-name');
+        if (authorNameElement) {
+            authorNameElement.textContent = 'Загрузка...';
+            authorNameElement.classList.add('author-loading');
+        }
     }
 
     renderAuthorData(container, authorData) {
-        const profileImageSrc = authorData.avatar
-            ? `/api/files/${authorData.avatar.id}/view`
-            : null;
+        const authorNameElement = container.querySelector('.author-name');
+        if (authorNameElement) {
+            const fullName = [authorData.name, authorData.surname]
+                .filter(part => part && part.trim())
+                .join(' ') || 'Неизвестный автор';
 
-        const fullName = authorData.name + ' ' + authorData.surname? authorData.surname : '';
+            authorNameElement.textContent = fullName;
+            authorNameElement.classList.remove('author-loading');
 
-        container.innerHTML = `
-            <div class="author-info">
-                <div class="author-avatar">
-                    ${profileImageSrc
-            ? `<img src="${profileImageSrc}" 
-                               alt="${fullName}" 
-                               class="avatar-img"
-                               loading="lazy">`
-            : `<div class="avatar-placeholder">${fullName}</div>`
+            if (authorData.authId) {
+                const link = document.createElement('a');
+                link.href = `/users/${authorData.authId}`;
+                link.textContent = fullName;
+                link.className = 'author-name';
+                link.style.textDecoration = 'none';
+
+                authorNameElement.parentNode.replaceChild(link, authorNameElement);
+            }
+
+            container.classList.add('author-loaded');
         }
-                </div>
-                <div class="author-details">
-                    <a href="/users/${authorData.authId}" class="author-name">
-                        ${fullName || 'Неизвестный автор'}
-                    </a>
-                    <span class="author-role">Автор</span>
-                </div>
-            </div>
-        `;
-
-        container.classList.add('author-loaded');
     }
 
     showAuthorError(container) {
-        container.innerHTML = `
-            <div class="author-info">
-                <div class="author-avatar">
-                    <div class="avatar-placeholder error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                </div>
-                <div class="author-details">
-                    <span class="author-name text-muted">Ошибка загрузки автора</span>
-                    <span class="author-role">Автор</span>
-                </div>
-            </div>
-        `;
-    }
-
-    async loadRelatedAuthorsData() {
-        const relatedCards = document.querySelectorAll('.related-card');
-
-        for (const card of relatedCards) {
-            const authorId = card.getAttribute('data-author-id');
-            if (authorId) {
-                try {
-                    const authorData = await this.fetchAuthorData(authorId);
-                    this.renderRelatedAuthorData(card, authorData);
-                } catch (error) {
-                    console.error('Ошибка загрузки автора похожего блога:', error);
-                }
-            }
+        const authorNameElement = container.querySelector('.author-name');
+        if (authorNameElement) {
+            authorNameElement.textContent = 'Ошибка загрузки';
+            authorNameElement.classList.remove('author-loading');
+            authorNameElement.classList.add('author-error');
         }
-    }
-
-    renderRelatedAuthorData(card, authorData) {
-        const authorContainer = card.querySelector('.related-author');
-        if (!authorContainer) return;
-
-        const authorInitial = authorData.fullName
-            ? authorData.fullName.charAt(0).toUpperCase()
-            : '?';
-
-        authorContainer.innerHTML = `
-            <div class="author-avatar-small">
-                ${authorData.profileImage
-            ? `<img src="/api/files/${authorData.profileImage.id}/view" 
-                           alt="${authorData.fullName}">`
-            : `<div class="avatar-placeholder-small">${authorInitial}</div>`
-        }
-            </div>
-            <span class="author-name">${authorData.fullName || 'Неизвестный автор'}</span>
-        `;
     }
 
     getCSRFHeaders() {
@@ -175,11 +111,6 @@ class BlogViewManager {
 
         return {};
     }
-
-    // ==========================================
-    // СОЦИАЛЬНЫЙ ШАРИНГ (оставляем как было)
-    // ==========================================
-
     shareToFacebook() {
         const url = encodeURIComponent(this.blogData.shareUrl);
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
@@ -225,58 +156,66 @@ class BlogViewManager {
     }
 
     async copyLink() {
+        const btn = document.getElementById('copyLinkBtn');
+
         try {
-            await navigator.clipboard.writeText(this.blogData.shareUrl);
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(this.blogData.shareUrl);
+            } else {
+                this.fallbackCopyLink();
+                return;
+            }
+
+            if (btn) {
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
+
             this.showNotification('Ссылка скопирована в буфер обмена!', 'success');
             this.incrementShareCount();
+
         } catch (err) {
+            console.error('Ошибка при копировании:', err);
             this.fallbackCopyLink();
         }
     }
 
     fallbackCopyLink() {
+        const btn = document.getElementById('copyLinkBtn');
         const textArea = document.createElement('textarea');
         textArea.value = this.blogData.shareUrl;
         textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
         document.body.appendChild(textArea);
+        textArea.focus();
         textArea.select();
 
         try {
-            document.execCommand('copy');
-            this.showNotification('Ссылка скопирована в буфер обмена!', 'success');
-            this.incrementShareCount();
+            const successful = document.execCommand('copy');
+            if (successful) {
+                if (btn) {
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }
+
+                this.showNotification('Ссылка скопирована в буфер обмена!', 'success');
+                this.incrementShareCount();
+            } else {
+                throw new Error('Команда копирования не поддерживается');
+            }
         } catch (err) {
+            console.error('Ошибка при копировании:', err);
             this.showNotification('Не удалось скопировать ссылку', 'error');
         }
 
         document.body.removeChild(textArea);
     }
 
-    // ==========================================
-    // МОДАЛЬНОЕ ОКНО ШАРИНГА
-    // ==========================================
-
-    shareBlog() {
-        if (navigator.share) {
-            navigator.share({
-                title: this.blogData.title,
-                text: this.blogData.description,
-                url: this.blogData.shareUrl
-            }).then(() => {
-                this.incrementShareCount();
-            }).catch(() => {
-                this.showShareModal();
-            });
-        } else {
-            this.showShareModal();
-        }
-    }
-
-    showShareModal() {
-        const shareModal = new bootstrap.Modal(document.getElementById('shareModal'));
-        shareModal.show();
-    }
 
     // ==========================================
     // УВЕЛИЧЕНИЕ СЧЕТЧИКА ШАРИНГА

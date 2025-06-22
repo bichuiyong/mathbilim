@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.DisplayBlogDto;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
+import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,11 +27,10 @@ public class BlogController {
     }
 
     @PostMapping("/create")
-    public String createBlog(
-            @ModelAttribute("blogDto") @Valid BlogDto blogDto,
-            BindingResult bindingResult,
-            @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
-            Model model) {
+    public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
+                             BindingResult bindingResult,
+                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
+                             Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("blogDto", blogDto);
@@ -42,32 +42,17 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
-    public String viewBlog(
-            @PathVariable Long id,
-            @RequestParam(value = "lang", defaultValue = "ru") String lang,
-            HttpServletRequest request,
-            Model model) {
+    public String viewBlog(@PathVariable Long id,
+                           HttpServletRequest request,
+                           Model model) {
 
-        DisplayBlogDto blog = blogService.getDisplayBlogById(id, lang);
         blogService.incrementViewCount(id);
-        var relatedBlogs = blogService.getRelatedBlogs(id, lang, 3);
+        DisplayBlogDto blog = blogService.getDisplayBlogById(id);
 
-        String baseUrl = request.getScheme() + "://" + request.getServerName() +
-                (request.getServerPort() != 80 && request.getServerPort() != 443 ?
-                        ":" + request.getServerPort() : "");
-        String shareUrl = baseUrl + "/blog/" + id;
-
+        String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
-        model.addAttribute("currentLang", lang);
-        model.addAttribute("relatedBlogs", relatedBlogs);
         model.addAttribute("shareUrl", shareUrl);
 
-        model.addAttribute("pageTitle", blog.getTitle());
-        model.addAttribute("pageDescription", blog.getDescription());
-        model.addAttribute("pageImage", blog.getMainImage() != null ?
-                "/api/files/" + blog.getMainImage().getId() + "/view" : null);
-
         return "blog/blog";
-
     }
 }

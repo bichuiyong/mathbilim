@@ -49,11 +49,4 @@ public class DisplayBlogDto extends ContentDto {
         return plainText.length() > 160 ?
                 plainText.substring(0, 157) + "..." : plainText;
     }
-
-    public String getExcerpt(int maxLength) {
-        if (content == null) return "";
-        String plainText = content.replaceAll("<[^>]*>", "").trim();
-        return plainText.length() > maxLength ?
-                plainText.substring(0, maxLength - 3) + "..." : plainText;
-    }
 }
