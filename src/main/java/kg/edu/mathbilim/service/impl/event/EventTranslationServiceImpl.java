@@ -9,13 +9,16 @@ import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslationService;
 import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class EventTranslationServiceImpl extends AbstractTranslationService<
-        EventTranslationDto, EventTranslation, EventTranslationId,
-        EventTranslationRepository, EventTranslationMapper
-        > implements EventTranslationService {
+public class EventTranslationServiceImpl extends
+        AbstractTranslationService<
+                EventTranslationDto,
+                EventTranslation,
+                EventTranslationId,
+                EventTranslationRepository,
+                EventTranslationMapper
+                >
+        implements EventTranslationService {
 
     public EventTranslationServiceImpl(EventTranslationRepository repository, EventTranslationMapper mapper) {
         super(repository, mapper);
@@ -47,43 +50,5 @@ public class EventTranslationServiceImpl extends AbstractTranslationService<
     @Override
     protected void deleteAllTranslationsByEntityIdImpl(Long entityId) {
         repository.deleteByEventId(entityId);
-    }
-
-    public List<EventTranslationDto> getTranslationsByEventId(Long eventId) {
-        return repository.findByEventId(eventId)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public EventTranslation getTranslationEntity(Long eventId, String languageCode) {
-        return null;
-    }
-
-    public EventTranslationDto getTranslation(Long eventId, String languageCode) {
-        return mapper.toDto(getTranslationEntity(eventId, languageCode));
-    }
-
-    public List<EventTranslationDto> getTranslationsByLanguage(String languageCode) {
-        return repository.findByIdLanguageCode(languageCode)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    public void deleteTranslation(Long eventId, String languageCode) {
-        EventTranslationId id = createTranslationId(eventId, languageCode);
-        repository.deleteById(id);
-    }
-
-    @Override
-    public void deleteAllTranslationsByEventId(Long eventId) {
-        repository.deleteByEventId(eventId);
-    }
-
-    public boolean existsTranslation(Long eventId, String languageCode) {
-        EventTranslationId id = createTranslationId(eventId, languageCode);
-        return repository.existsById(id);
     }
 }

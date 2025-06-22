@@ -51,9 +51,4 @@ public class BlogTranslationServiceImpl extends
     protected void deleteAllTranslationsByEntityIdImpl(Long entityId) {
         repository.deleteByBlogId(entityId);
     }
-
-    @Override
-    public BlogTranslation getTranslationEntity(Long blogId, String languageCode) {
-        return super.getTranslationEntity(blogId, languageCode);
-    }
 }

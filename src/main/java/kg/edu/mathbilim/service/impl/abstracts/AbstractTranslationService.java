@@ -38,6 +38,21 @@ public abstract class AbstractTranslationService<
                         "Перевод для этого " + getEntityName() + " не был найден"));
     }
 
+    protected T getTranslationDto(Long entityId, String languageCode) {
+        return mapper.toDto(getTranslationEntity(entityId, languageCode));
+    }
+
+    @Transactional
+    public void deleteTranslation(Long entityId, String languageCode) {
+        ID id = createTranslationId(entityId, languageCode);
+        repository.deleteById(id);
+    }
+
+    protected boolean existsTranslation(Long entityId, String languageCode) {
+        ID id = createTranslationId(entityId, languageCode);
+        return repository.existsById(id);
+    }
+
     @Override
     @Transactional
     public void saveTranslations(Long entityId, Set<T> translations) {

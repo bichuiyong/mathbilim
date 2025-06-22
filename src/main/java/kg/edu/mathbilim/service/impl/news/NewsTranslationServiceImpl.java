@@ -10,10 +10,15 @@ import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NewsTranslationServiceImpl extends AbstractTranslationService<
-        NewsTranslationDto, NewsTranslation, NewsTranslationId,
-        NewsTranslationRepository, NewsTranslationMapper
-        > implements NewsTranslationService {
+public class NewsTranslationServiceImpl extends
+        AbstractTranslationService<
+                NewsTranslationDto,
+                NewsTranslation,
+                NewsTranslationId,
+                NewsTranslationRepository,
+                NewsTranslationMapper
+                >
+        implements NewsTranslationService {
 
     public NewsTranslationServiceImpl(NewsTranslationRepository repository, NewsTranslationMapper mapper) {
         super(repository, mapper);

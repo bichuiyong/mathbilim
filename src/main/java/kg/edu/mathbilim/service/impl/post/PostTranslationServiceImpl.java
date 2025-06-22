@@ -12,10 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PostTranslationServiceImpl extends AbstractTranslationService<
-        PostTranslationDto, PostTranslation, PostTranslationId,
-        PostTranslationRepository, PostTranslationMapper
-        > implements PostTranslationService {
+public class PostTranslationServiceImpl extends
+        AbstractTranslationService<
+                PostTranslationDto,
+                PostTranslation,
+                PostTranslationId,
+                PostTranslationRepository,
+                PostTranslationMapper
+                >
+        implements PostTranslationService {
 
     public PostTranslationServiceImpl(PostTranslationRepository repository, PostTranslationMapper mapper) {
         super(repository, mapper);
@@ -47,33 +52,5 @@ public class PostTranslationServiceImpl extends AbstractTranslationService<
     @Override
     protected void deleteAllTranslationsByEntityIdImpl(Long entityId) {
         repository.deleteByPostId(entityId);
-    }
-
-    public List<PostTranslationDto> getTranslationsByPostId(Long postId) {
-        return repository.findByPostId(postId)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    public PostTranslationDto getTranslation(Long postId, String languageCode) {
-        return mapper.toDto(getTranslationEntity(postId, languageCode));
-    }
-
-    public List<PostTranslationDto> getTranslationsByLanguage(String languageCode) {
-        return repository.findByIdLanguageCode(languageCode)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    public void deleteTranslation(Long postId, String languageCode) {
-        PostTranslationId id = createTranslationId(postId, languageCode);
-        repository.deleteById(id);
-    }
-
-    public boolean existsTranslation(Long postId, String languageCode) {
-        PostTranslationId id = createTranslationId(postId, languageCode);
-        return repository.existsById(id);
     }
 }
