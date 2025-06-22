@@ -1,9 +1,9 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
-import kg.edu.mathbilim.dto.event.event_type.EventTypeDto;
-import kg.edu.mathbilim.dto.post.post_type.PostTypeDto;
-import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.dto.event.EventTypeDto;
+import kg.edu.mathbilim.dto.post.PostTypeDto;
+import kg.edu.mathbilim.dto.user.UserTypeDto;
 import kg.edu.mathbilim.enums.*;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;

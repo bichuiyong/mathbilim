@@ -6,7 +6,7 @@ import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.user.UserRepository;
@@ -28,6 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
@@ -52,8 +55,8 @@ public class UserServiceImpl implements UserService {
                 .email("telegram_" + userId + "@notEmail.com")
                 .role(roleService.getRoleByName("USER"))
                 .password(passwordEncoder.encode("telegram"+userId+"password"))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .surname(surname)
                 .telegramId(userId)
                 .enabled(true)
@@ -217,7 +220,7 @@ public class UserServiceImpl implements UserService {
         UserType userType = userTypeService.getUserTypeEntity(userTypeId);
 
         user.setType(userType);
-        user.setUpdatedAt(Instant.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
     }
@@ -271,8 +274,8 @@ public class UserServiceImpl implements UserService {
                 .role(roleService.getRoleByName("USER"))
                 .isEmailVerified(true)
                 .enabled(true)
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
         User savedUser = userRepository.save(user);

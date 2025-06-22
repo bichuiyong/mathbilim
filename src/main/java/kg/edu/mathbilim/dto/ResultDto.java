@@ -1,26 +1,25 @@
 package kg.edu.mathbilim.dto;
 
 import kg.edu.mathbilim.dto.olympiad.OlympiadDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResultDto {
-    private Long id;
+    Long id;
 
-    private UserDto user;
+    FileDto file;
 
-    private FileDto file;
+    OlympiadDto olympiad;
 
-    private OlympiadDto olympiad;
+    LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    LocalDateTime updatedAt = LocalDateTime.now();
 }

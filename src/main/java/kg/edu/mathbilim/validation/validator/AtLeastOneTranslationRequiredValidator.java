@@ -2,7 +2,7 @@ package kg.edu.mathbilim.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import kg.edu.mathbilim.dto.translations.ContentTranslationDto;
+import kg.edu.mathbilim.dto.abstracts.ContentTranslationDto;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import org.springframework.util.StringUtils;
 

@@ -1,39 +1,26 @@
 package kg.edu.mathbilim.dto;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.dto.abstracts.ContentDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import lombok.*;
-
-import java.time.Instant;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookDto {
-    private Long id;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class BookDto extends ContentDto {
+    String name;
 
-    private String name;
+    String authors;
 
-    private String authors;
+    String isbn;
 
-    private String isbn;
+    String description;
 
-    private String description;
+    FileDto file;
 
-    private FileDto file;
-
-    private CategoryDto category;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
-    private ContentStatus status;
-
-    private UserDto user;
-
-    private UserDto approvedBy;
+    CategoryDto category;
 }

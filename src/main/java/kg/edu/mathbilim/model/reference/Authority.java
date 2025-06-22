@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.reference;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +14,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",
             nullable = false)
-    private Integer id;
+    Integer id;
 
     @Column(name = "name",
             nullable = false,
             unique = true)
-    private String name;
+    String name;
 
     @ManyToMany(mappedBy = "authorities")
-    private List<Role> roles = new ArrayList<>();
+    List<Role> roles = new ArrayList<>();
 }

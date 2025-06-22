@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.reference;
 
 
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

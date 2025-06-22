@@ -2,15 +2,9 @@ package kg.edu.mathbilim.model.news;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.TranslationContent;
-import kg.edu.mathbilim.model.post.Post;
-import kg.edu.mathbilim.model.post.PostTranslationId;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -20,14 +14,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class NewsTranslation extends TranslationContent {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class NewsTranslation extends ContentTranslation {
     @EmbeddedId
-    private NewsTranslationId id;
+    NewsTranslationId id;
 
     @MapsId("newsId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "news_id", nullable = false)
-    private News news;
+    News news;
 
 
 }

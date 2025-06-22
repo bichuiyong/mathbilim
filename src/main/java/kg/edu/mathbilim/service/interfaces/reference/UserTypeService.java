@@ -1,8 +1,8 @@
 package kg.edu.mathbilim.service.interfaces.reference;
 
 
-import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.dto.user.UserTypeDto;
+import kg.edu.mathbilim.model.user.UserType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

@@ -1,11 +1,15 @@
 package kg.edu.mathbilim.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContactTypeDto {
-    private Integer id;
-    private String name;
+    Integer id;
+    String name;
 }

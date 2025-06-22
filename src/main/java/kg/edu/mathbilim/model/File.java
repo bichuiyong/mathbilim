@@ -9,6 +9,7 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.post.Post;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.*;
 
@@ -19,42 +20,43 @@ import java.util.*;
 @Builder
 @Entity
 @Table(name = "files")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "filename", nullable = false)
-    private String filename;
+    String filename;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "file_path", nullable = false)
-    private String filePath;
+    String filePath;
 
     @Convert(converter = FileTypeConverter.class)
     @Column(name = "type_id", nullable = false)
-    private FileType type;
+    FileType type;
 
     @Column(name = "size")
-    private Long size;
+    Long size;
 
     @Size(max = 255)
     @Column(name = "s3_link")
-    private String s3Link;
+    String s3Link;
 
     @OneToMany(mappedBy = "file")
-    private List<Book> books = new ArrayList<>();
+    List<Book> books = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "files")
-    private List<Event> events = new ArrayList<>();
+    @ManyToMany(mappedBy = "eventFiles")
+    List<Event> events = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "files")
-    private List<Post> posts = new ArrayList<>();
+    @ManyToMany(mappedBy = "postFiles")
+    List<Post> posts = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "files")
-    private List<News> news = new ArrayList<>();
+    @ManyToMany(mappedBy = "newsFiles")
+    List<News> news = new ArrayList<>();
 }
