@@ -17,84 +17,6 @@ app:
       archive: 50MB
       other: 10MB
 
-    allowed-types:
-      images:
-        - image/jpeg
-        - image/jpg
-        - image/png
-        - image/gif
-        - image/webp
-        - image/svg+xml
-        - image/bmp
-        - image/tiff
-
-      documents:
-        - application/pdf
-        - application/msword
-        - application/vnd.openxmlformats-officedocument.wordprocessingml.document
-        - application/vnd.ms-excel
-        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-        - application/vnd.ms-powerpoint
-        - application/vnd.openxmlformats-officedocument.presentationml.presentation
-        - text/plain
-        - application/rtf
-        - application/vnd.oasis.opendocument.text
-        - application/vnd.oasis.opendocument.spreadsheet
-        - application/vnd.oasis.opendocument.presentation
-
-      videos:
-        - video/mp4
-        - video/avi
-        - video/quicktime
-        - video/x-msvideo
-        - video/webm
-        - video/ogg
-        - video/3gpp
-        - video/x-flv
-        - video/x-ms-wmv
-
-      audios:
-        - audio/mpeg
-        - audio/wav
-        - audio/ogg
-        - audio/aac
-        - audio/flac
-        - audio/x-ms-wma
-        - audio/mp4
-
-      archives:
-        - application/zip
-        - application/x-rar-compressed
-        - application/x-7z-compressed
-        - application/gzip
-        - application/x-tar
-
-      others:
-        - application/json
-        - application/xml
-        - text/csv
-        - text/html
-        - text/css
-        - application/javascript
-
-    folders:
-      events:
-        images: "events/images/"
-        documents: "events/documents/"
-        videos: "events/videos/"
-        files: "events/files/"
-      posts:
-        images: "posts/images/"
-        documents: "posts/documents/"
-        videos: "posts/videos/"
-        files: "posts/files/"
-      users:
-        avatars: "users/avatars/"
-        documents: "users/documents/"
-      general:
-        uploads: "uploads/"
-        temp: "temp/"
-
 spring:
   telegram:
     bot-name: "@Mathbilimbot"
@@ -145,7 +67,6 @@ spring:
           starttls:
             enable: true
             required: true
-
   security:
     user:
       name: email
@@ -179,29 +100,6 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
-
-tinymce:
-  upload:
-#    TODO ПОМЕНЯТЬ ЭНДПОИНТЫ ДЛЯ TINYMCE (АИША)
-    images:
-      endpoint: "/api/upload/tinymce/image"
-      max-size: 5242880
-      allowed-extensions: [ "jpg", "jpeg", "png", "gif", "webp" ]
-
-    documents:
-      endpoint: "/api/upload/tinymce/file"
-      max-size: 26214400
-      allowed-extensions: [ "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx" ]
-
-    media:
-      endpoint: "/api/upload/tinymce/media"
-      max-size: 104857600
-      allowed-extensions: [ "mp4", "avi", "mov", "mp3", "wav" ]
-
-  security:
-    virus-scanning: false
-    strict-type-checking: true
-    quarantine-suspicious: true
 
 recaptcha:
   secret: ${RECAPTCHA_SECRET_KEY}

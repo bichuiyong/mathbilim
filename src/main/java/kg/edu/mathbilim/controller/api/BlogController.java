@@ -32,4 +32,10 @@ public class BlogController {
         blogService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("{id}/share")
+    public ResponseEntity<Void> shareBlog(@PathVariable Long id) {
+        blogService.incrementShareCount(id);
+        return ResponseEntity.ok().build();
+    }
 }

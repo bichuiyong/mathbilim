@@ -35,4 +35,24 @@ public abstract class AdminContentDto {
     Long shareCount = 0L;
 
     FileDto mainImage;
+
+    public void setCreatorId(Long creatorId) {
+        if (creatorId != null) {
+            this.creator = UserDto.builder().id(creatorId).build();
+        }
+    }
+
+    public void setMainImageId(Long mainImageId) {
+        if (mainImageId != null) {
+            this.mainImage = FileDto.builder().id(mainImageId).build();
+        }
+    }
+
+    public Long getCreatorId() {
+        return creator != null ? creator.getId() : null;
+    }
+
+    public Long getMainImageId() {
+        return mainImage != null ? mainImage.getId() : null;
+    }
 }

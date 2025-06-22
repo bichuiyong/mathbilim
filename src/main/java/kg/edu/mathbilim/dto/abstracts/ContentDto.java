@@ -19,4 +19,14 @@ public abstract class ContentDto extends AdminContentDto {
 
     @Builder.Default
     ContentStatus status = ContentStatus.DRAFT;
+
+    public void setApprovedById(Long approvedById) {
+        if (approvedById != null) {
+            this.approvedBy = UserDto.builder().id(approvedById).build();
+        }
+    }
+
+    public Long getApprovedById() {
+        return approvedBy != null ? approvedBy.getId() : null;
+    }
 }
