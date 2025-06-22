@@ -2,7 +2,7 @@ package kg.edu.mathbilim.repository.news;
 
 import kg.edu.mathbilim.model.news.NewsTranslation;
 import kg.edu.mathbilim.model.news.NewsTranslationId;
-import org.springframework.data.jpa.repository.JpaRepository;
+import kg.edu.mathbilim.repository.abstracts.BaseTranslationRepository;
 
-public interface NewsTranslationRepository extends JpaRepository<NewsTranslation, NewsTranslationId> {
+public interface NewsTranslationRepository extends BaseTranslationRepository<NewsTranslation, NewsTranslationId> {
 }

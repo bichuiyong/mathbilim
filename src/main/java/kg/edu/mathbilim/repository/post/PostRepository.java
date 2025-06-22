@@ -2,6 +2,7 @@ package kg.edu.mathbilim.repository.post;
 
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRepository<Post> {
 
     Page<Post> getPostByCreator_Id(Long userId, Pageable pageable);
 
@@ -48,6 +49,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                          String query,
                                          Pageable pageable);
 
+    @Override
     @Query("""
             SELECT DISTINCT p FROM Post p
             LEFT JOIN p.postTranslations t
