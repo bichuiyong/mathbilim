@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**", "/api/users/**").hasAuthority("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",

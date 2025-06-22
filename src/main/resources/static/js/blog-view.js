@@ -1,6 +1,10 @@
+/**
+ * Blog View Manager с асинхронной загрузкой данных автора
+ */
 class BlogViewManager {
     constructor() {
         this.blogData = window.blogData || {};
+        this.authorCache = new Map(); // Кэш для авторов
         this.init();
     }
 
@@ -10,10 +14,170 @@ class BlogViewManager {
         this.initProgressBar();
         this.initBackToTop();
         this.setupKeyboardNavigation();
+
+        this.loadAuthorData();
+        this.loadRelatedAuthorsData();
     }
 
     // ==========================================
-    // СОЦИАЛЬНЫЙ ШАРИНГ
+    // АСИНХРОННАЯ ЗАГРУЗКА АВТОРА
+    // ==========================================
+
+    async loadAuthorData() {
+        const authorContainer = document.querySelector('.blog-author');
+        const authorId = authorContainer?.getAttribute('data-author-id');
+
+        if (!authorId || !authorContainer) {
+            console.log('Автор не найден или ID отсутствует');
+            return;
+        }
+
+        try {
+            this.showAuthorSkeleton(authorContainer);
+            const authorData = await this.fetchAuthorData(authorId);
+
+            this.renderAuthorData(authorContainer, authorData);
+
+        } catch (error) {
+            console.error('Ошибка загрузки данных автора:', error);
+            this.showAuthorError(authorContainer);
+        }
+    }
+
+    async fetchAuthorData(authorId) {
+        if (this.authorCache.has(authorId)) {
+            console.log('Данные автора взяты из кэша:', authorId);
+            return this.authorCache.get(authorId);
+        }
+
+        console.log('Загружаем данные автора с сервера:', authorId);
+
+        const response = await fetch(`/api/users/${authorId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                ...this.getCSRFHeaders()
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const authorData = await response.json();
+        this.authorCache.set(authorId, authorData);
+        return authorData;
+    }
+
+    showAuthorSkeleton(container) {
+        container.innerHTML = `
+            <div class="author-info">
+                <div class="author-avatar">
+                    <div class="skeleton-avatar"></div>
+                </div>
+                <div class="author-details">
+                    <div class="skeleton-text skeleton-name"></div>
+                    <div class="skeleton-text skeleton-role"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderAuthorData(container, authorData) {
+        const profileImageSrc = authorData.avatar
+            ? `/api/files/${authorData.avatar.id}/view`
+            : null;
+
+        const fullName = authorData.name + ' ' + authorData.surname? authorData.surname : '';
+
+        container.innerHTML = `
+            <div class="author-info">
+                <div class="author-avatar">
+                    ${profileImageSrc
+            ? `<img src="${profileImageSrc}" 
+                               alt="${fullName}" 
+                               class="avatar-img"
+                               loading="lazy">`
+            : `<div class="avatar-placeholder">${fullName}</div>`
+        }
+                </div>
+                <div class="author-details">
+                    <a href="/users/${authorData.authId}" class="author-name">
+                        ${fullName || 'Неизвестный автор'}
+                    </a>
+                    <span class="author-role">Автор</span>
+                </div>
+            </div>
+        `;
+
+        container.classList.add('author-loaded');
+    }
+
+    showAuthorError(container) {
+        container.innerHTML = `
+            <div class="author-info">
+                <div class="author-avatar">
+                    <div class="avatar-placeholder error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="author-details">
+                    <span class="author-name text-muted">Ошибка загрузки автора</span>
+                    <span class="author-role">Автор</span>
+                </div>
+            </div>
+        `;
+    }
+
+    async loadRelatedAuthorsData() {
+        const relatedCards = document.querySelectorAll('.related-card');
+
+        for (const card of relatedCards) {
+            const authorId = card.getAttribute('data-author-id');
+            if (authorId) {
+                try {
+                    const authorData = await this.fetchAuthorData(authorId);
+                    this.renderRelatedAuthorData(card, authorData);
+                } catch (error) {
+                    console.error('Ошибка загрузки автора похожего блога:', error);
+                }
+            }
+        }
+    }
+
+    renderRelatedAuthorData(card, authorData) {
+        const authorContainer = card.querySelector('.related-author');
+        if (!authorContainer) return;
+
+        const authorInitial = authorData.fullName
+            ? authorData.fullName.charAt(0).toUpperCase()
+            : '?';
+
+        authorContainer.innerHTML = `
+            <div class="author-avatar-small">
+                ${authorData.profileImage
+            ? `<img src="/api/files/${authorData.profileImage.id}/view" 
+                           alt="${authorData.fullName}">`
+            : `<div class="avatar-placeholder-small">${authorInitial}</div>`
+        }
+            </div>
+            <span class="author-name">${authorData.fullName || 'Неизвестный автор'}</span>
+        `;
+    }
+
+    getCSRFHeaders() {
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+        if (csrfToken && csrfHeader) {
+            return { [csrfHeader]: csrfToken };
+        }
+
+        return {};
+    }
+
+    // ==========================================
+    // СОЦИАЛЬНЫЙ ШАРИНГ (оставляем как было)
     // ==========================================
 
     shareToFacebook() {
@@ -60,17 +224,12 @@ class BlogViewManager {
         );
     }
 
-    // ==========================================
-    // КОПИРОВАНИЕ ССЫЛКИ
-    // ==========================================
-
     async copyLink() {
         try {
             await navigator.clipboard.writeText(this.blogData.shareUrl);
             this.showNotification('Ссылка скопирована в буфер обмена!', 'success');
             this.incrementShareCount();
         } catch (err) {
-            // Fallback для старых браузеров
             this.fallbackCopyLink();
         }
     }
@@ -125,16 +284,10 @@ class BlogViewManager {
 
     async incrementShareCount() {
         try {
-            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
-
             const headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...this.getCSRFHeaders()
             };
-
-            if (csrfToken && csrfHeader) {
-                headers[csrfHeader] = csrfToken;
-            }
 
             await fetch(`/api/blog/${this.blogData.id}/share`, {
                 method: 'POST',
@@ -311,7 +464,7 @@ class BlogViewManager {
                 backToTopBtn.style.display = 'none';
             }
         });
-        // Обработчик клика
+
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
@@ -348,7 +501,7 @@ class BlogViewManager {
 }
 
 // ==========================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ TEMPLATE
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
 // ==========================================
 
 let blogViewManager;

@@ -53,25 +53,15 @@
 
                             <h1 class="blog-title">${blog.title}</h1>
 
-                            <#if blog.creator?? && blog.creator.fullName??>
-                                <div class="blog-author">
+                            <#if blog.creator?? && blog.creator.id??>
+                                <div class="blog-author" data-author-id="${blog.creator.id}">
                                     <div class="author-info">
                                         <div class="author-avatar">
-                                            <#if blog.creator.profileImage??>
-                                                <img src="/api/files/${blog.creator.profileImage.id}/view"
-                                                     alt="${blog.creator.fuprofileImagellName}"
-                                                     class="avatar-img">
-                                            <#else>
-                                                <div class="avatar-placeholder">
-                                                    ${blog.creator.fullName?substring(0, 1)?upper_case}
-                                                </div>
-                                            </#if>
+                                            <div class="skeleton-avatar"></div>
                                         </div>
                                         <div class="author-details">
-                                            <a href="/users/${blog.creator.authId}" class="author-name">
-                                                ${blog.creator.fullName}
-                                            </a>2025-06-22 05:07:37…
-                                            <span class="author-role">Автор</span>
+                                            <div class="skeleton-text skeleton-name"></div>
+                                            <div class="skeleton-text skeleton-role"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -146,13 +136,19 @@
                             <h3 class="related-title">Похожие статьи</h3>
                             <div class="related-grid">
                                 <#list relatedBlogs as relatedBlog>
-                                    <article class="related-card">
+                                    <article class="related-card"
+                                             <#if relatedBlog.creator?? && relatedBlog.creator.id??>data-author-id="${relatedBlog.creator.id}"</#if>>
                                         <a href="/blog/${relatedBlog.id}?lang=${currentLang}" class="related-link">
                                             <#if relatedBlog.mainImage??>
                                                 <div class="related-image">
                                                     <img src="/api/files/${relatedBlog.mainImage.id}/view"
                                                          alt="${relatedBlog.title}"
-                                                         class="img-fluid">
+                                                         class="img-fluid"
+                                                         loading="lazy">
+                                                </div>
+                                            <#else>
+                                                <div class="related-image-placeholder">
+                                                    <i class="fas fa-image"></i>
                                                 </div>
                                             </#if>
                                             <div class="related-content">
@@ -160,6 +156,11 @@
                                                 <time class="related-date">
                                                     ${relatedBlog.createdAt}
                                                 </time>
+                                                <#if relatedBlog.creator?? && relatedBlog.creator.id??>
+                                                    <div class="related-author">
+                                                        <div class="skeleton-author-small"></div>
+                                                    </div>
+                                                </#if>
                                             </div>
                                         </a>
                                     </article>
@@ -234,5 +235,107 @@
             description: '${blog.description?js_string}'
         };
     </script>
+
+    <!-- CSS стили для skeleton loading и асинхронной загрузки -->
+    <style>
+        /* Skeleton loading стили */
+        .skeleton-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-name {
+            width: 120px;
+        }
+
+        .skeleton-role {
+            width: 60px;
+            height: 12px;
+        }
+
+        .skeleton-author-small {
+            height: 20px;
+            width: 100px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Анимация появления загруженного автора */
+        .blog-author {
+            transition: opacity 0.3s ease;
+        }
+
+        .blog-author.author-loaded {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Стили для заглушек */
+        .related-image-placeholder {
+            height: 160px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 2rem;
+        }
+
+        .avatar-placeholder.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Adaptive улучшения для мобильных */
+        @media (max-width: 768px) {
+            .skeleton-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .skeleton-name {
+                width: 100px;
+            }
+
+            .skeleton-role {
+                width: 50px;
+            }
+        }
+    </style>
 
 </@main.layout>
