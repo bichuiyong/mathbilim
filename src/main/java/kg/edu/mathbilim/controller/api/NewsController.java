@@ -17,12 +17,13 @@ public class NewsController {
 
     @GetMapping()
     public ResponseEntity<?> all(
+            @RequestParam(required = false) String query,
             @RequestParam(value = "page",defaultValue = "1") int page,
             @RequestParam(value = "size",defaultValue = "10") int size,
             @RequestParam(value = "sortBy", defaultValue = "createdAt")  String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection
     ) {
 
-        return ResponseEntity.ofNullable(newsService.getNewsPage(page, size, sortBy, sortDirection));
+        return ResponseEntity.ofNullable(newsService.getPage(query,page, size, sortBy, sortDirection));
     }
 }

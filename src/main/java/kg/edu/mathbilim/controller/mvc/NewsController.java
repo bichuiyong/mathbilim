@@ -21,13 +21,14 @@ public class NewsController {
     private final UserService userService;
 
     @GetMapping()
-    public String all(@RequestParam(value = "page", defaultValue = "1") int page,
+    public String all(@RequestParam(required = false) String query,
+                      @RequestParam(value = "page", defaultValue = "1") int page,
                       @RequestParam(value = "size", defaultValue = "10") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                       Model model
     ) {
-        model.addAttribute("news", newsService.getNewsPage(page, size, sortBy, sortDirection));
+        model.addAttribute("news", newsService.getPage(query,page, size, sortBy, sortDirection));
         return "media/news";
     }
 
@@ -36,7 +37,7 @@ public class NewsController {
             @RequestParam("id") long id,
             Model model
     ) {
-        model.addAttribute(newsDto, newsService.getNewsById(id));
+        model.addAttribute(newsDto, newsService.getById(id));
         return "media/news_detail";
     }
 
@@ -55,7 +56,7 @@ public class NewsController {
         if (bindingResult.hasErrors()) {
             return "media/create_news";
         }
-        newsService.createNews(newsDto);
+        newsService.create(newsDto);
         return redirect;
     }
 
@@ -63,7 +64,7 @@ public class NewsController {
     @GetMapping("update")
     public String updateNews(@RequestParam("id") long id,
                              Model model) {
-        model.addAttribute(newsDto, newsService.getNewsById(id));
+        model.addAttribute(newsDto, newsService.getById(id));
         return "media/update_news";
     }
 
@@ -80,7 +81,7 @@ public class NewsController {
 
     @PostMapping("delete")
     public String deleteNews(@RequestParam("id") long id) {
-        newsService.deleteById(userService.getAuthUser(), id);
+        newsService.delete(id);
         return redirect;
     }
 

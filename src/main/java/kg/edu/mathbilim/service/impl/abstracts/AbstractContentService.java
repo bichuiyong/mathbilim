@@ -9,6 +9,7 @@ import kg.edu.mathbilim.model.abstracts.AdminContent;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseContentService;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractContentService<
@@ -26,7 +28,7 @@ public abstract class AbstractContentService<
         D extends AdminContentDto,
         R extends BaseContentRepository<E>,
         M extends BaseMapper<E, D>
-        > {
+        > implements BaseContentService<D> {
 
     protected final R repository;
     protected final M mapper;
@@ -34,7 +36,9 @@ public abstract class AbstractContentService<
     protected final FileService fileService;
 
     protected abstract RuntimeException getNotFoundException();
+
     protected abstract String getEntityName();
+
     protected abstract String getFileUploadPath(E entity);
 
     protected BaseTranslationService<?> getTranslationService() {
@@ -51,6 +55,10 @@ public abstract class AbstractContentService<
     protected E getEntityById(Long id) {
         return repository.findById(id)
                 .orElseThrow(this::getNotFoundException);
+    }
+
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 
     public D getById(Long id) {

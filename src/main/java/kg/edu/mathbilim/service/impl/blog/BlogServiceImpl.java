@@ -26,10 +26,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class BlogServiceImpl extends AbstractTranslatableContentService<
-        Blog, BlogDto, BlogTranslationDto,
-        BlogRepository, BlogMapper, BlogTranslationService
-        > implements BlogService {
+public class BlogServiceImpl extends
+        AbstractTranslatableContentService<
+                Blog,
+                BlogDto,
+                BlogTranslationDto,
+                BlogRepository,
+                BlogMapper,
+                BlogTranslationService
+                >
+        implements BlogService {
 
     public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService, FileService fileService, BlogTranslationService translationService) {
         super(repository, mapper, userService, fileService, translationService);
@@ -56,25 +62,8 @@ public class BlogServiceImpl extends AbstractTranslatableContentService<
     }
 
     @Transactional
-    public BlogDto createBlog(BlogDto blogDto, MultipartFile multipartFile) {
+    public BlogDto create(BlogDto blogDto, MultipartFile multipartFile) {
         return createBase(blogDto, multipartFile, null);
-    }
-
-    public Page<BlogDto> getBlogPage(String query, int page, int size, String sortBy, String sortDirection) {
-        return getPage(query, page, size, sortBy, sortDirection);
-    }
-
-    public Blog findBlogById(Long id) {
-        return getEntityById(id);
-    }
-
-    public Boolean existsBlogById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        delete(id);
     }
 
     @Transactional

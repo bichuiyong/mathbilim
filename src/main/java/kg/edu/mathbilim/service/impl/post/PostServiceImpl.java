@@ -26,10 +26,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class PostServiceImpl extends AbstractTranslatableContentService<
-        Post, PostDto, PostTranslationDto,
-        PostRepository, PostMapper, PostTranslationService
-        > implements PostService {
+public class PostServiceImpl extends
+        AbstractTranslatableContentService<
+                Post,
+                PostDto,
+                PostTranslationDto,
+                PostRepository,
+                PostMapper,
+                PostTranslationService
+                >
+        implements PostService {
 
     public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService) {
         super(repository, mapper, userService, fileService, translationService);
@@ -72,10 +78,6 @@ public class PostServiceImpl extends AbstractTranslatableContentService<
                 createPostDto.getImage(),
                 createPostDto.getAttachments()
         );
-    }
-
-    public Page<PostDto> getPostPage(String query, int page, int size, String sortBy, String sortDirection) {
-        return getPage(query, page, size, sortBy, sortDirection);
     }
 
     @Transactional

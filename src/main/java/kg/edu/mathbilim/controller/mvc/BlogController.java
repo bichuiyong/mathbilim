@@ -37,7 +37,7 @@ public class BlogController {
             return "blog/blog-create";
         }
 
-        BlogDto createdBlog = blogService.createBlog(blogDto, mpMainImage);
+        BlogDto createdBlog = blogService.create(blogDto, mpMainImage);
         return "redirect:/blog/" + createdBlog.getId();
     }
 

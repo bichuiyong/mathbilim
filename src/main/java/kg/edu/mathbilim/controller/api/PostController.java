@@ -29,7 +29,7 @@ public class PostController {
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(required = false, defaultValue = "name") String sortBy,
                                                   @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return ResponseEntity.ofNullable(postService.getPostPage(query, page, size, sortBy, sortDirection));
+        return ResponseEntity.ofNullable(postService.getPage(query, page, size, sortBy, sortDirection));
     }
 
     @GetMapping("by-status")

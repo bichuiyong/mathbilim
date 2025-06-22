@@ -16,7 +16,6 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,17 +26,18 @@ import java.util.*;
 @Service
 public class EventServiceImpl extends
         AbstractTranslatableContentService<
-                Event, EventDto, EventTranslationDto,
-                EventRepository, EventMapper, EventTranslationService
+                Event,
+                EventDto,
+                EventTranslationDto,
+                EventRepository,
+                EventMapper,
+                EventTranslationService
                 >
         implements EventService {
 
     private final OrganizationService organizationService;
 
-    public EventServiceImpl(EventRepository repository, EventMapper mapper,
-                            UserService userService, FileService fileService,
-                            EventTranslationService translationService,
-                            OrganizationService organizationService) {
+    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService) {
         super(repository, mapper, userService, fileService, translationService);
         this.organizationService = organizationService;
     }
@@ -82,15 +82,7 @@ public class EventServiceImpl extends
 
     @Transactional
     public EventDto create(CreateEventDto createEventDto) {
-        return createBase(
-                createEventDto.getEvent(),
-                createEventDto.getImage(),
-                createEventDto.getAttachments()
-        );
-    }
-
-    public Page<EventDto> getEventPage(String query, int page, int size, String sortBy, String sortDirection) {
-        return getPage(query, page, size, sortBy, sortDirection);
+        return createBase(createEventDto.getEvent(), createEventDto.getImage(), createEventDto.getAttachments());
     }
 
     private void setEventOrganizations(List<Long> organizationIds, Event event) {

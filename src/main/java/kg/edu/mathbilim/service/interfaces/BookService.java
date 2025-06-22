@@ -1,15 +1,8 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import org.springframework.data.domain.Page;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseContentService;
 
-public interface BookService {
-    BookDto getById(Long id);
-
-    Page<BookDto> getBookPage(String query, int page, int size, String sortBy, String sortDirection);
-
-    void delete(Long id, UserDto user);
-
+public interface BookService extends BaseContentService<BookDto> {
     BookDto createBook(BookDto bookDto);
 }

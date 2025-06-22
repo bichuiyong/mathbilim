@@ -63,12 +63,8 @@ public class BookController {
     }
 
     @PostMapping("delete")
-    public String delete(
-            @RequestParam Long id,
-            Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDto user = userService.getUserByEmail(email);
-        bookService.delete(id, user);
+    public String delete(@RequestParam Long id) {
+        bookService.delete(id);
         return "redirect:/profile";
     }
 

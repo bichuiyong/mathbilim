@@ -7,6 +7,7 @@ import kg.edu.mathbilim.model.abstracts.AdminContent;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +23,8 @@ public abstract class AbstractTranslatableContentService<
         R extends BaseContentRepository<E>,
         M extends BaseMapper<E, D>,
         TS extends BaseTranslationService<T>
-        > extends AbstractContentService<E, D, R, M> {
+        > extends AbstractContentService<E, D, R, M>
+        implements BaseTranslatableService<D, T> {
 
     protected final TS translationService;
 

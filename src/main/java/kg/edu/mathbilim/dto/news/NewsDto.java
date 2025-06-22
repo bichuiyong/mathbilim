@@ -23,7 +23,7 @@ public class NewsDto extends AdminContentDto {
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    List<NewsTranslationDto> postTranslations = createDefaultTranslations();
+    List<NewsTranslationDto> newsTranslations = createDefaultTranslations();
 
     static List<NewsTranslationDto> createDefaultTranslations() {
         return TranslationUtil.createDefaultTranslations(languageCode ->
