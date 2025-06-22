@@ -576,3 +576,750 @@
     transform: translateY(0);
   }
 }
+
+/* Добавить в blog.scss */
+
+// ==========================================
+// СТРАНИЦА ПРОСМОТРА БЛОГА
+// ==========================================
+
+.blog-view-container {
+  background: $white;
+  min-height: 100vh;
+}
+
+// ==========================================
+// ХЛЕБНЫЕ КРОШКИ
+// ==========================================
+
+.blog-breadcrumb {
+  background: $light-gray;
+  padding: 1rem 0;
+  border-bottom: 1px solid $border-gray;
+
+  .breadcrumb {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+
+    .breadcrumb-item {
+      a {
+        color: $text-gray;
+        text-decoration: none;
+        transition: color $transition;
+
+        &:hover {
+          color: $primary-blue;
+        }
+      }
+
+      &.active {
+        color: $text-dark;
+        font-weight: 500;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+      }
+
+      &:not(.active)::after {
+        content: "/";
+        margin: 0 0.5rem;
+        color: $text-muted;
+      }
+    }
+  }
+}
+
+// ==========================================
+// ЗАГОЛОВОК БЛОГА
+// ==========================================
+
+.blog-article {
+  padding: 3rem 0;
+
+  .blog-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+
+    .blog-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+
+      .blog-date {
+        color: $text-gray;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+
+        i {
+          color: $primary-blue;
+        }
+      }
+
+      .blog-stats {
+        display: flex;
+        gap: 1rem;
+
+        .stat-item {
+          color: $text-gray;
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+
+          i {
+            color: $text-muted;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .blog-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: $text-dark;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    .blog-author {
+      margin-bottom: 1.5rem;
+
+      .author-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+        .author-avatar {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 3px solid $light-blue;
+
+          .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background: $primary-blue;
+            color: $white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+          }
+        }
+
+        .author-details {
+          text-align: left;
+
+          .author-name {
+            display: block;
+            color: $text-dark;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color $transition;
+
+            &:hover {
+              color: $primary-blue;
+            }
+          }
+
+          .author-role {
+            color: $text-gray;
+            font-size: 0.875rem;
+          }
+        }
+      }
+    }
+
+    .blog-language-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .lang-switch {
+        padding: 0.5rem 1rem;
+        border: 2px solid $border-gray;
+        border-radius: 25px;
+        color: $text-gray;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all $transition;
+
+        &:hover {
+          border-color: $primary-blue;
+          color: $primary-blue;
+          background: $light-blue;
+        }
+
+        &.active {
+          border-color: $primary-blue;
+          background: $primary-blue;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// ГЛАВНОЕ ИЗОБРАЖЕНИЕ
+// ==========================================
+
+.blog-main-image {
+  margin-bottom: 3rem;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow-lg;
+    transition: transform $transition;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// ==========================================
+// СОДЕРЖИМОЕ БЛОГА
+// ==========================================
+
+.blog-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: $text-dark;
+  margin-bottom: 3rem;
+
+  // Стили для контента TinyMCE
+  h1, h2, h3, h4, h5, h6 {
+    color: $text-dark;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.875rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
+
+  p {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul, ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  blockquote {
+    border-left: 4px solid $primary-blue;
+    background: $light-blue;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    border-radius: 0 $border-radius $border-radius 0;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: $border-radius;
+    margin: 1.5rem auto;
+    display: block;
+    box-shadow: $box-shadow;
+  }
+
+  video {
+    max-width: 100%;
+    border-radius: $border-radius;
+    margin: 1.5rem auto;
+    display: block;
+    box-shadow: $box-shadow;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: $white;
+    border-radius: $border-radius;
+    overflow: hidden;
+    box-shadow: $box-shadow;
+
+    th, td {
+      padding: 1rem;
+      border: 1px solid $border-gray;
+      text-align: left;
+    }
+
+    th {
+      background: $light-gray;
+      font-weight: 600;
+      color: $text-dark;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(248, 250, 252, 0.5);
+    }
+  }
+
+  code {
+    background: $light-gray;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: $primary-blue;
+  }
+
+  pre {
+    background: $light-gray;
+    padding: 1.5rem;
+    border-radius: $border-radius;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-left: 4px solid $primary-blue;
+
+    code {
+      background: none;
+      padding: 0;
+      color: $text-dark;
+    }
+  }
+
+  a {
+    color: $primary-blue;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all $transition;
+
+    &:hover {
+      border-bottom-color: $primary-blue;
+    }
+  }
+}
+
+// ==========================================
+// ДЕЙСТВИЯ С БЛОГОМ
+// ==========================================
+
+.blog-actions {
+  border-top: 2px solid $border-gray;
+  border-bottom: 2px solid $border-gray;
+  padding: 2rem 0;
+  margin: 3rem 0;
+
+  .action-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    .btn-action {
+      min-width: 140px;
+      font-weight: 500;
+
+      i {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .social-share {
+    text-align: center;
+
+    .share-label {
+      display: block;
+      color: $text-gray;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+
+      .social-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: $white;
+        transition: all $transition;
+        font-size: 1.125rem;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: $box-shadow-lg;
+        }
+
+        &.facebook {
+          background: #1877f2;
+
+          &:hover {
+            background: #166fe5;
+          }
+        }
+
+        &.twitter {
+          background: #1da1f2;
+
+          &:hover {
+            background: #1a91da;
+          }
+        }
+
+        &.telegram {
+          background: #0088cc;
+
+          &:hover {
+            background: #0077b5;
+          }
+        }
+
+        &.whatsapp {
+          background: #25d366;
+
+          &:hover {
+            background: #1ebe57;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// ПОХОЖИЕ БЛОГИ
+// ==========================================
+
+.related-blogs {
+  background: $light-gray;
+  padding: 3rem 0;
+
+  .related-title {
+    text-align: center;
+    color: $text-dark;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-size: 1.75rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+
+    .related-card {
+      background: $white;
+      border-radius: $border-radius;
+      overflow: hidden;
+      box-shadow: $box-shadow;
+      transition: all $transition;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: $box-shadow-lg;
+      }
+
+      .related-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .related-image {
+        height: 160px;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform $transition;
+        }
+      }
+
+      &:hover .related-image img {
+        transform: scale(1.05);
+      }
+
+      .related-content {
+        padding: 1.25rem;
+
+        .related-card-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: $text-dark;
+          margin-bottom: 0.75rem;
+          line-height: 1.4;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .related-date {
+          color: $text-gray;
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// НАВИГАЦИЯ
+// ==========================================
+
+.blog-navigation {
+  padding: 2rem 0;
+  background: $white;
+
+  .nav-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// ==========================================
+// МОДАЛЬНЫЕ ОКНА
+// ==========================================
+
+.share-options {
+  display: grid;
+  gap: 0.75rem;
+
+  .share-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-gray;
+    border-radius: $border-radius;
+    text-decoration: none;
+    color: $text-dark;
+    transition: all $transition;
+
+    &:hover {
+      background: $light-blue;
+      border-color: $primary-blue;
+      color: $primary-blue;
+    }
+
+    i {
+      width: 20px;
+      text-align: center;
+      opacity: 0.8;
+    }
+  }
+}
+
+// ==========================================
+// АДАПТИВНОСТЬ
+// ==========================================
+
+@media (max-width: 768px) {
+  .blog-article {
+    padding: 2rem 0;
+
+    .blog-header {
+      .blog-meta {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .blog-title {
+        font-size: 1.75rem;
+      }
+
+      .blog-author .author-info {
+        flex-direction: column;
+        text-align: center;
+
+        .author-details {
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .blog-content {
+    font-size: 1rem;
+
+    table {
+      font-size: 0.875rem;
+
+      th, td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  }
+
+  .blog-actions {
+    .action-group {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .btn-action {
+        width: 100%;
+      }
+    }
+
+    .social-buttons {
+      gap: 1rem;
+
+      .social-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+      }
+    }
+  }
+
+  .related-blogs {
+    .related-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .blog-breadcrumb {
+    .breadcrumb-item.active {
+      max-width: 200px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .blog-view-container {
+    .container {
+      padding: 0 1rem;
+    }
+  }
+
+  .blog-article {
+    padding: 1.5rem 0;
+  }
+
+  .related-blogs {
+    padding: 2rem 0;
+  }
+
+  .blog-navigation {
+    padding: 1.5rem 0;
+  }
+}
+
+// ==========================================
+// АНИМАЦИИ
+// ==========================================
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blog-article {
+  animation: fadeInUp 0.6s ease;
+}
+
+.related-card {
+  animation: fadeInUp 0.6s ease;
+  animation-delay: 0.1s;
+  animation-fill-mode: both;
+
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+}
+
+// ==========================================
+// ПЕЧАТЬ
+// ==========================================
+
+@media print {
+  .blog-breadcrumb,
+  .blog-actions,
+  .related-blogs,
+  .blog-navigation,
+  .blog-language-switcher {
+    display: none !important;
+  }
+
+  .blog-view-container {
+    background: white !important;
+  }
+
+  .blog-content {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .blog-title {
+    font-size: 18pt;
+    color: black !important;
+  }
+}
