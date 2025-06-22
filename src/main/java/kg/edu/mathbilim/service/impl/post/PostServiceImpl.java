@@ -53,7 +53,7 @@ public class PostServiceImpl implements PostService {
     public Page<PostDto> getUserPosts(Long userId, String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         if (query == null || query.isEmpty()) {
-            return getPage(() -> postRepository.getPostByUser_Id(userId, pageable));
+            return getPage(() -> postRepository.getPostByCreator_Id(userId, pageable));
         }
         return getPage(() -> postRepository.getUserPostsWithQuery(userId, query, pageable));
     }
@@ -95,7 +95,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto createPost(CreatePostDto createPostDto) {
         PostDto postDto = createPostDto.getPost();
-        postDto.setUser(userService.getAuthUser());
+        postDto.setCreator(userService.getAuthUser());
         postDto.setStatus(ContentStatus.PENDING_REVIEW);
 
         Post post = postMapper.toEntity(postDto);
@@ -146,7 +146,7 @@ public class PostServiceImpl implements PostService {
         if (attachments.length > 0) {
             List<File> uploadedFiles = fileService.uploadFilesForPost(attachments, savedPost);
             if (!uploadedFiles.isEmpty()) {
-                savedPost.setFiles(uploadedFiles);
+                savedPost.setPostFiles(uploadedFiles);
                 postRepository.saveAndFlush(savedPost);
                 log.info("Uploaded {} files for post {}", uploadedFiles.size(), savedPost.getId());
             }

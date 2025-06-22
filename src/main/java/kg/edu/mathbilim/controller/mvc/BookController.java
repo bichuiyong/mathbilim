@@ -3,7 +3,6 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.Metadata;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
@@ -40,7 +39,6 @@ public class BookController {
     public String create(Model model) {
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book", new BookDto());
-        model.addAttribute("metadataKeysEnum", Metadata.values());
 
         return "books/create-book";
     }
@@ -59,7 +57,7 @@ public class BookController {
         UserDto user = userService.getUserByEmail(email);
 
         book.setFile(fileService.uploadFile(attachments, "books"));
-        book.setUser(user);
+        book.setCreator(user);
         bookService.createBook(book);
         return "redirect:/books";
     }
@@ -79,7 +77,6 @@ public class BookController {
                          @PathVariable long id) {
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book", bookService.getById(id));
-        model.addAttribute("metadataKeysEnum", Metadata.values());
 
         return "books/update-book";
     }
@@ -100,7 +97,7 @@ public class BookController {
         UserDto user = userService.getUserByEmail(email);
 
         book.setFile(fileService.uploadFile(attachments, context));
-        book.setUser(user);
+        book.setCreator(user);
         book.setId(id);
         bookService.createBook(book);
         return "redirect:/books";

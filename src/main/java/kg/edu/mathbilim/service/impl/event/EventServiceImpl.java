@@ -72,7 +72,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto create(CreateEventDto createEventDto) {
         EventDto eventDto = createEventDto.getEvent();
-        eventDto.setUser(userService.getAuthUser());
+        eventDto.setCreator(userService.getAuthUser());
         eventDto.setStatus(ContentStatus.PENDING_REVIEW);
 
         Event event = eventMapper.toEntity(eventDto);
@@ -149,7 +149,7 @@ public class EventServiceImpl implements EventService {
                     event
             );
             if (!uploadedFiles.isEmpty()) {
-                event.setFiles(uploadedFiles);
+                event.setEventFiles(uploadedFiles);
                 log.info("Uploaded {} files for event {}", uploadedFiles.size(), event.getId());
             }
         }

@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.repository.reference;
 
-import kg.edu.mathbilim.model.reference.category.Category;
+import kg.edu.mathbilim.model.reference.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

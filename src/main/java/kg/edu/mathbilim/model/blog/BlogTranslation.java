@@ -1,24 +1,23 @@
 package kg.edu.mathbilim.model.blog;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.TranslationContent;
-import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "blog_translations")
-public class BlogTranslation extends TranslationContent {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class BlogTranslation extends ContentTranslation {
     @EmbeddedId
-    private BlogTranslationId id;
+    BlogTranslationId id;
 
     @MapsId("blogId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id", nullable = false)
-    private Blog blog;
-
+    Blog blog;
 }

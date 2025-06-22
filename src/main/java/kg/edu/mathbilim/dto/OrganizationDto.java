@@ -5,40 +5,42 @@ import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrganizationDto {
-    private Long id;
+    Long id;
 
     @NotBlank
-    private String name;
+    String name;
 
     @NotBlank
-    private String description;
+    String description;
 
-    private String url;
+    String url;
 
-    private FileDto avatar;
-
-    @NotNull
-    private UserDto creator;
-
-    @Builder.Default
-    private UserDto approvedBy = null;
+    FileDto avatar;
 
     @NotNull
-    @Builder.Default
-    private ContentStatus status = ContentStatus.DRAFT;
+    UserDto creator;
 
     @Builder.Default
-    private Instant createdAt = Instant.now();
+    UserDto approvedBy = null;
+
+    @NotNull
+    @Builder.Default
+    ContentStatus status = ContentStatus.DRAFT;
 
     @Builder.Default
-    private Instant updatedAt = Instant.now();
+    LocalDateTime createdAt = LocalDateTime.now();
+
+    @Builder.Default
+    LocalDateTime updatedAt = LocalDateTime.now();
 }

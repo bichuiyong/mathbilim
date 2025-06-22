@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.post;
 
 
-import kg.edu.mathbilim.dto.post.post_type.PostTypeDto;
+import kg.edu.mathbilim.dto.post.PostTypeDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

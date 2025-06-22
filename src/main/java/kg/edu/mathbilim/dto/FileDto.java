@@ -2,6 +2,7 @@ package kg.edu.mathbilim.dto;
 
 import kg.edu.mathbilim.enums.FileType;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 
 @Getter
@@ -9,16 +10,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileDto {
-    private Long id;
+    Long id;
 
-    private String filename;
+    String filename;
 
-    private String filePath;
+    String filePath;
 
-    private FileType type;
+    FileType type;
 
-    private Long size;
+    Long size;
 
-    private String s3Link;
+    String s3Link;
 }

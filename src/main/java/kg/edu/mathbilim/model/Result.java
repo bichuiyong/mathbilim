@@ -1,11 +1,12 @@
 package kg.edu.mathbilim.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
-import kg.edu.mathbilim.model.user.User;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
@@ -16,30 +17,31 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "results")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Result {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "file_id", nullable = false)
-    private File file;
+    File file;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "olympiad_id", nullable = false)
-    private Olympiad olympiad;
+    Olympiad olympiad;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "user_id", nullable = true)
-    private User user;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
 }

@@ -14,12 +14,12 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Page<Post> getPostByUser_Id(Long userId, Pageable pageable);
+    Page<Post> getPostByCreator_Id(Long userId, Pageable pageable);
 
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
-            WHERE p.user.id = :userId
+            WHERE p.creator.id = :userId
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
             ORDER BY p.createdAt DESC

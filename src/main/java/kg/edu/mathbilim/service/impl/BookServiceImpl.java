@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.reference.category.CategoryDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.function.Supplier;
 
 @Service
@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id, UserDto user) {
-        Book book = bookRepository.findByIdAndUserId(id, user.getId()).orElseThrow(BookNotFoundException::new);
+        Book book = bookRepository.findByIdAndCreatorId(id, user.getId()).orElseThrow(BookNotFoundException::new);
         bookRepository.delete(book);
         log.info("Deleted Book with id {}", id);
     }
@@ -57,8 +57,8 @@ public class BookServiceImpl implements BookService {
     public BookDto createBook(BookDto bookDto) {
         CategoryDto category = categoryService.getCategoryById(bookDto.getCategory().getId());
         bookDto.setCategory(category);
-        bookDto.setCreatedAt(Instant.now());
-        bookDto.setUpdatedAt(Instant.now());
+        bookDto.setCreatedAt(LocalDateTime.now());
+        bookDto.setUpdatedAt(LocalDateTime.now());
         bookDto.setStatus(ContentStatus.PENDING_REVIEW);
 
         log.info("Created Book with id {}", bookDto.getId());

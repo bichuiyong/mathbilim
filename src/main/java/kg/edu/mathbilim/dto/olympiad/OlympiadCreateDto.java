@@ -2,47 +2,50 @@ package kg.edu.mathbilim.dto.olympiad;
 
 import kg.edu.mathbilim.dto.user.UserDto;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadCreateDto {
 
     @NotEmpty(message = "Название олимпиады не должно быть пустым")
     @Size(max = 255, message = "Название олимпиады не должно превышать 255 символов")
-    private String title;
+    String title;
 
     @Size(max = 1000, message = "Информация об олимпиаде не должна превышать 1000 символов")
-    private String info;
+    String info;
 
     @Size(max = 1000, message = "Правила олимпиады не должны превышать 1000 символов")
-    private String rules;
+    String rules;
 
     @NotNull(message = "Дата начала обязательна")
-    private LocalDate startDate;
+    LocalDate startDate;
 
     @NotNull(message = "Дата окончания обязательна")
-    private LocalDate endDate;
+    LocalDate endDate;
 
     @Valid
-    private OlympiadContactDto contact;
+    OlympiadContactDto contact;
 
     @NotNull(message = "Создатель обязателен")
     @Valid
-    private UserDto creator;
+    UserDto creator;
 
     @NotEmpty(message = "Этапы обязательны")
     @Valid
-    private List<OlympiadStageCreateDto> stages;
+    List<OlympiadStageCreateDto> stages;
 
     @Valid
-    private List<OlympiadContactDto> contacts;
+    List<OlympiadContactDto> contacts;
 }

@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.repository.user;
 
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.model.user.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

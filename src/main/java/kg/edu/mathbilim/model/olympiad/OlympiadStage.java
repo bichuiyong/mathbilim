@@ -1,47 +1,59 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "olympiad_stages",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"olympiad_id", "stage_order"}))
+@AllArgsConstructor
+@Table(name = "olympiad_stages")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadStage {
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "olympiad_id", nullable = false)
-    private Olympiad olympiad;
+    Olympiad olympiad;
 
+    @NotNull
     @Column(name = "stage_order", nullable = false)
-    private Integer stageOrder;
+    Integer stageOrder;
 
     @Column(name = "registration_start")
-    private LocalDate registrationStart;
+    LocalDate registrationStart;
 
     @Column(name = "registration_end")
-    private LocalDate registrationEnd;
+    LocalDate registrationEnd;
 
+    @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDate eventStartDate;
+    LocalDate startDate;
 
+    @NotNull
     @Column(name = "end_date", nullable = false)
-    private LocalDate eventEndDate;
+    LocalDate endDate;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
 }

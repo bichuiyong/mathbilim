@@ -3,25 +3,28 @@ package kg.edu.mathbilim.dto;
 import jakarta.validation.constraints.NotBlank;
 import kg.edu.mathbilim.dto.user.UserDto;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
-    private Long id;
+    Long id;
 
-    private UserDto author;
+    UserDto author;
 
     @NotBlank(message = "Комментарий не должен быть пустым")
-    private String content;
+    String content;
 
     @Builder.Default
-    private Instant createdAt = Instant.now();
+    LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
-    private Instant updatedAt = Instant.now();
+    LocalDateTime updatedAt = LocalDateTime.now();
 }

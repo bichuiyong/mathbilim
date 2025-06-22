@@ -1,24 +1,24 @@
 package kg.edu.mathbilim.model.event;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.TranslationContent;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "event_translations")
-public class EventTranslation  extends TranslationContent {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class EventTranslation  extends ContentTranslation {
     @EmbeddedId
-    private EventTranslationId id;
+    EventTranslationId id;
 
     @MapsId("eventId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
-
+    Event event;
 
 }

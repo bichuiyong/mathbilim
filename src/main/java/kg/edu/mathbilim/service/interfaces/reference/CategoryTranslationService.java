@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.reference;
 
-import kg.edu.mathbilim.dto.reference.category.CategoryTranslationDto;
-import kg.edu.mathbilim.model.reference.category.CategoryTranslation;
+import kg.edu.mathbilim.dto.reference.CategoryTranslationDto;
+import kg.edu.mathbilim.model.reference.CategoryTranslation;
 
 import java.util.List;
 

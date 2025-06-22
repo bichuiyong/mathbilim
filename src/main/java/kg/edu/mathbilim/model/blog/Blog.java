@@ -1,75 +1,27 @@
 package kg.edu.mathbilim.model.blog;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.converter.ContentStatusConverter;
-import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.user.User;
+import kg.edu.mathbilim.model.Comment;
+import kg.edu.mathbilim.model.abstracts.Content;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "blogs")
-@Builder
+@SuperBuilder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Blog {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "creator_id", nullable = false)
-    private User creator;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "approved_by")
-    private User approved;
-
-    @Convert(converter = ContentStatusConverter.class)
-    @Column(name = "status_id", nullable = false)
-    private ContentStatus status;
-
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @NotNull
-    @ColumnDefault("0")
-    @Column(name = "view_count", nullable = false)
-    private Long viewCount;
-
-    @NotNull
-    @ColumnDefault("0")
-    @Column(name = "share_count", nullable = false)
-    private Long shareCount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "main_image_id")
-    private File mainImage;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Blog extends Content {
     @OneToMany(mappedBy = "blog")
-    private List<BlogComment> blogComments = new ArrayList<>();
+    List<BlogTranslation> blogTranslations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blog")
-    private List<BlogTranslation> blogTranslations = new ArrayList<>();
-
+    @ManyToMany(mappedBy = "blogs")
+    List<Comment> comments = new ArrayList<>();
 }

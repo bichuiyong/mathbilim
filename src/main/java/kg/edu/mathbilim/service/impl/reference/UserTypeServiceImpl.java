@@ -1,10 +1,10 @@
 package kg.edu.mathbilim.service.impl.reference;
 
-import kg.edu.mathbilim.dto.user.user_type.UserTypeDto;
-import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
+import kg.edu.mathbilim.dto.user.UserTypeDto;
+import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
 import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.user.UserTypeMapper;
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.repository.user.UserTypeRepository;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeTranslationService;

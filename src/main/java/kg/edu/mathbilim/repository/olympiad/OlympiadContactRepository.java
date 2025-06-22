@@ -1,8 +1,10 @@
 package kg.edu.mathbilim.repository.olympiad;
 
 import kg.edu.mathbilim.model.olympiad.OlympiadContact;
-import kg.edu.mathbilim.model.olympiad.OlympiadContactKey;
+import kg.edu.mathbilim.model.olympiad.OlympiadContactId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface OlympiadContactRepository extends JpaRepository<OlympiadContact, OlympiadContactKey> {
+@Repository
+public interface OlympiadContactRepository extends JpaRepository<OlympiadContact, OlympiadContactId> {
 }
