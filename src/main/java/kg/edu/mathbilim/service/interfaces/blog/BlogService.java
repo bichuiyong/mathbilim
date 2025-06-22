@@ -2,7 +2,6 @@ package kg.edu.mathbilim.service.interfaces.blog;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.blog.BlogDto;
-import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
 import kg.edu.mathbilim.dto.blog.DisplayBlogDto;
 import kg.edu.mathbilim.model.blog.Blog;
 import org.springframework.data.domain.Page;
@@ -22,16 +21,13 @@ public interface BlogService {
 
     void deleteById(Long id);
 
-    @Transactional
-    void setBlogTranslations(List<BlogTranslationDto> translations, Long blogId);
-
     BlogDto createBlog(@Valid BlogDto blogDto, MultipartFile mainImage);
 
-    DisplayBlogDto getDisplayBlogById(Long id, String languageCode);
+    DisplayBlogDto getDisplayBlogById(Long id);
 
-    Page<DisplayBlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection, String languageCode);
+    Page<DisplayBlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
 
-    List<DisplayBlogDto> getRelatedBlogs(Long excludeId, String languageCode, int limit);
+    List<DisplayBlogDto> getRelatedBlogs(Long excludeId, int limit);
 
     @Transactional
     void incrementViewCount(Long id);

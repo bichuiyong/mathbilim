@@ -2,12 +2,13 @@ package kg.edu.mathbilim.service.interfaces.post;
 
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.model.post.PostTranslation;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 
-public interface PostTranslationService {
+public interface PostTranslationService extends BaseTranslationService<PostTranslationDto> {
     List<PostTranslationDto> getTranslationsByPostId(Long postId);
 
     PostTranslation getTranslationEntity(Long postId, String languageCode);

@@ -2,12 +2,13 @@ package kg.edu.mathbilim.service.interfaces.event;
 
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.model.event.EventTranslation;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 
-public interface EventTranslationService {
+public interface EventTranslationService extends BaseTranslationService<EventTranslationDto> {
     List<EventTranslationDto> getTranslationsByEventId(Long eventId);
 
     EventTranslation getTranslationEntity(Long eventId, String languageCode);

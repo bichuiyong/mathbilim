@@ -1,11 +1,12 @@
 package kg.edu.mathbilim.service.interfaces.news;
 
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-public interface NewsTranslationService {
+public interface NewsTranslationService extends BaseTranslationService<NewsTranslationDto> {
     @Transactional
    void saveTranslations(Long id, Set<NewsTranslationDto> newsTranslationDtoSet);
 

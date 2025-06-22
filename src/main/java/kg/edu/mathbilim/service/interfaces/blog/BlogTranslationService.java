@@ -2,11 +2,12 @@ package kg.edu.mathbilim.service.interfaces.blog;
 
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
 import kg.edu.mathbilim.model.blog.BlogTranslation;
+import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-public interface BlogTranslationService {
+public interface BlogTranslationService extends BaseTranslationService<BlogTranslationDto> {
     void saveTranslations(Long blogId, Set<BlogTranslationDto> filledTranslations);
 
     @Transactional
