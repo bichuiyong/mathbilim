@@ -203,3 +203,7 @@ logging:
 telegram-bot:
   bot-username: ${TELEGRAM_NAME}
   bot-token: ${TELEGRAM_TOKEN}
+
+  app:
+    remember-me:
+      key: 550e8400-e29b-41d4-a716-446655440000
