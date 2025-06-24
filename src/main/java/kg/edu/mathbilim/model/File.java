@@ -7,6 +7,7 @@ import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.enums.converter.FileTypeConverter;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.news.News;
+import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.post.Post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -59,4 +60,8 @@ public class File {
 
     @ManyToMany(mappedBy = "newsFiles")
     List<News> news = new ArrayList<>();
+
+    @OneToMany(mappedBy = "image")
+    List<Olympiad> olympiads = new ArrayList<>();
+
 }

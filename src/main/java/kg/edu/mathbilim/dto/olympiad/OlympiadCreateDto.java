@@ -5,8 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.model.File;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +33,9 @@ public class OlympiadCreateDto {
 
     @NotNull(message = "Дата начала обязательна")
     LocalDate startDate;
+
+    @NotNull
+    MultipartFile imageFile;
 
     @NotNull(message = "Дата окончания обязательна")
     LocalDate endDate;

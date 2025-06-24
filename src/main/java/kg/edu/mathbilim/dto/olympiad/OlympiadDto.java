@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadDto {
-    Long id;
+    Integer id;
 
     String title;
 
@@ -24,8 +24,6 @@ public class OlympiadDto {
     UserDto creator;
 
     String rules;
-
-    String subject;
 
     LocalDate startDate;
 

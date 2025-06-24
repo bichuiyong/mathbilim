@@ -134,7 +134,7 @@
                                 <a class="nav-link" href="/tests">Тесты</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/olympiads">Олимпиады</a>
+                                <a class="nav-lik" href="olympiad/new">Олимпиады</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/books">Книги</a>

@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
@@ -29,6 +30,10 @@ public class Olympiad {
 
     @Column(name = "info")
     String info;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    File image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)

@@ -19,6 +19,10 @@ import java.security.Principal;
 public class OlympiadController {
     private final OlympiadService olympiadService;
 
+    @GetMapping()
+    public String olympiadPage() {
+        return "olympiad/olymp-list";
+    }
 
     @GetMapping("new")
     public String createOlympiad(Model model) {
