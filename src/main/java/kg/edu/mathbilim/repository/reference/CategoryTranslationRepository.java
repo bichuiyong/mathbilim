@@ -1,35 +1,31 @@
 package kg.edu.mathbilim.repository.reference;
 
-import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import kg.edu.mathbilim.model.reference.CategoryTranslation;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import kg.edu.mathbilim.repository.abstracts.AbstractTypeTranslationRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryTranslationRepository extends JpaRepository<CategoryTranslation, TypeTranslation.TranslationId> {
+public interface CategoryTranslationRepository
+        extends AbstractTypeTranslationRepository<CategoryTranslation> {
 
-    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.category.id = :categoryId")
-    List<CategoryTranslation> findByCategoryId(@Param("categoryId") Integer categoryId);
+    default List<CategoryTranslation> findByCategoryId(Integer categoryId) {
+        return findByTypeId(categoryId);
+    }
 
-    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.id.languageCode = :languageCode")
-    List<CategoryTranslation> findByLanguageCode(@Param("languageCode") String languageCode);
+    default Optional<CategoryTranslation> findByCategoryIdAndLanguageCode(
+            Integer categoryId, String languageCode) {
+        return findByTypeIdAndLanguageCode(categoryId, languageCode);
+    }
 
-    @Query("SELECT ct FROM CategoryTranslation ct WHERE ct.category.id = :categoryId AND ct.id.languageCode = :languageCode")
-    Optional<CategoryTranslation> findByCategoryIdAndLanguageCode(@Param("categoryId") Integer categoryId,
-                                                                  @Param("languageCode") String languageCode);
+    default void deleteByCategoryId(Integer categoryId) {
+        deleteByTypeId(categoryId);
+    }
 
-    @Modifying
-    @Query("DELETE FROM CategoryTranslation ct WHERE ct.category.id = :categoryId")
-    void deleteByCategoryId(@Param("categoryId") Integer categoryId);
-
-    @Query("SELECT CASE WHEN COUNT(ct) > 0 THEN true ELSE false END FROM CategoryTranslation ct " +
-            "WHERE ct.category.id = :categoryId AND ct.id.languageCode = :languageCode")
-    boolean existsByCategoryIdAndLanguageCode(@Param("categoryId") Integer categoryId,
-                                              @Param("languageCode") String languageCode);
+    default boolean existsByCategoryIdAndLanguageCode(
+            Integer categoryId, String languageCode) {
+        return existsByTypeIdAndLanguageCode(categoryId, languageCode);
+    }
 }

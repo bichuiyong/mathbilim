@@ -52,7 +52,7 @@ public class PostTypeTranslationServiceImpl implements PostTypeTranslationServic
     public PostTypeTranslationDto createTranslation(PostTypeTranslationDto dto) {
         PostTypeTranslation translation = pttMapper.toEntity(dto);
         pttRepository.save(translation);
-        log.info("Save translation to language {}: {}", translation.getTranslationId().getLanguageCode(), translation.getTranslation());
+        log.info("Save translation to language {}: {}", translation.getId(), translation.getTranslation());
         return dto;
     }
 

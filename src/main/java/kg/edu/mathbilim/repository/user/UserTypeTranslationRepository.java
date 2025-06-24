@@ -2,6 +2,7 @@ package kg.edu.mathbilim.repository.user;
 
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import kg.edu.mathbilim.model.user.UserTypeTranslation;
+import kg.edu.mathbilim.repository.abstracts.AbstractTypeTranslationRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,24 +13,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserTypeTranslationRepository extends JpaRepository<UserTypeTranslation, TypeTranslation.TranslationId> {
+public interface UserTypeTranslationRepository extends AbstractTypeTranslationRepository<UserTypeTranslation> {
 
-    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId")
-    List<UserTypeTranslation> findByUserTypeId(@Param("userTypeId") Integer userTypeId);
 
-    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.id.languageCode = :languageCode")
-    List<UserTypeTranslation> findByLanguageCode(@Param("languageCode") String languageCode);
+    default List<UserTypeTranslation> findByUserTypeId(Integer userTypeId) {
+        return findByTypeId(userTypeId);
+    }
+    default Optional<UserTypeTranslation> findByUserTypeIdAndLanguageCode(Integer userTypeId,
+                                                                          String languageCode) {
+        return findByTypeIdAndLanguageCode(userTypeId, languageCode);
+    }
 
-    @Query("SELECT utt FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId AND utt.id.languageCode = :languageCode")
-    Optional<UserTypeTranslation> findByUserTypeIdAndLanguageCode(@Param("userTypeId") Integer userTypeId,
-                                                                  @Param("languageCode") String languageCode);
+    default void deleteByUserTypeId(Integer userTypeId) {
+        deleteByTypeId(userTypeId);
+    }
 
-    @Modifying
-    @Query("DELETE FROM UserTypeTranslation utt WHERE utt.userType.id = :userTypeId")
-    void deleteByUserTypeId(@Param("userTypeId") Integer userTypeId);
-
-    @Query("SELECT CASE WHEN COUNT(utt) > 0 THEN true ELSE false END FROM UserTypeTranslation utt " +
-            "WHERE utt.userType.id = :userTypeId AND utt.id.languageCode = :languageCode")
-    boolean existsByUserTypeIdAndLanguageCode(@Param("userTypeId") Integer userTypeId,
-                                              @Param("languageCode") String languageCode);
+    default boolean existsByUserTypeIdAndLanguageCode(Integer userTypeId, String languageCode) {
+        return existsByTypeIdAndLanguageCode(userTypeId, languageCode);
+    }
 }

@@ -1,8 +1,10 @@
 package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
+import kg.edu.mathbilim.model.abstracts.BaseType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +13,9 @@ import java.util.List;
 @Table(name = "post_types")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+@NoArgsConstructor
+public class PostType extends BaseType<PostTypeTranslation> {
 
-    @OneToMany(mappedBy = "postType")
-    List<PostTypeTranslation> postTypeTranslations = new ArrayList<>();
 }

@@ -11,15 +11,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserTypeTranslation extends TypeTranslation{
-    @EmbeddedId
-    TranslationId id;
+public class UserTypeTranslation extends TypeTranslation<UserType> {
+    public UserTypeTranslation() {
+        super();
+    }
 
-    @MapsId("typeId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_type_id", nullable = false)
-    UserType userType;
+//    @EmbeddedId
+//    TranslationId id;
+//
+//    @MapsId("typeId")
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "user_type_id", nullable = false)
+//    UserType userType;
 }
