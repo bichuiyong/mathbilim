@@ -38,8 +38,9 @@ public class PostController {
                                                           @RequestParam(required = false, defaultValue = "10") int size,
                                                           @RequestParam(required = false) String query,
                                                           @RequestParam(required = false, defaultValue = "name") String sortBy,
-                                                          @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return ResponseEntity.ofNullable(postService.getPostsByStatus(status, query, page, size, sortBy, sortDirection));
+                                                          @RequestParam(required = false, defaultValue = "asc") String sortDirection,
+                                                          @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang) {
+        return ResponseEntity.ofNullable(postService.getPostsByStatus(status, query, page, size, sortBy, sortDirection, lang));
     }
 
 
