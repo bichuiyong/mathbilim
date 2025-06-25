@@ -21,15 +21,16 @@ public class PaginationUtil {
         return PageRequest.of(page - 1, size, Sort.by(direction, sortBy));
     }
 
-    public static   <E, D> Page<D> getPage(Supplier<Page<E>> supplier,
-                                   Function<E, D> mapper,
-                                   String notFoundMessage) {
+    public static <E, D> Page<D> getPage(Supplier<Page<E>> supplier,
+                                         Function<E, D> mapper,
+                                         String notFoundMessage) {
         Page<E> page = supplier.get();
         if (page.isEmpty()) {
-            throw new FileNotFoundException(notFoundMessage);
+            return Page.empty(page.getPageable());
         }
         return page.map(mapper);
     }
+
 
     public static  <E, D> Page<D> getPage(Supplier<Page<E>> supplier, Function<E, D> mapper) {
         return getPage(supplier, mapper, "Данные не найдены");
