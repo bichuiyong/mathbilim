@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class UserTypeTranslationDto extends TypeTranslationDto {
     public UserTypeTranslationDto() {

@@ -95,10 +95,11 @@
                                     Тип аккаунта *
                                 </label>
 
-                                <#assign typeMap = {}>
+                                <#assign typeMap = {} />
                                 <#list types as type>
-                                    <#assign typeMap = typeMap + {type.id?string: type.userTypeTranslations[0].translation}>
+                                    <#assign typeMap = typeMap + {type: type.translations[0].translation}>
                                 </#list>
+
 
                                 <@spring.formSingleSelect
                                 "userDto.type.id",

@@ -11,7 +11,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class UserTypeDto extends BaseTypeDto<UserTypeTranslationDto> {
-
+    public UserTypeDto() {
+        super();
+    }
 }
