@@ -10,22 +10,22 @@ import java.util.Optional;
 @Repository
 public interface EventTypeTranslationRepository
         extends AbstractTypeTranslationRepository<EventTypeTranslation> {
+//
+//    default List<EventTypeTranslation> findByEventTypeId(Integer eventTypeId) {
+//        return findByTypeId(eventTypeId);
+//    }
 
-    default List<EventTypeTranslation> findByEventTypeId(Integer eventTypeId) {
-        return findByTypeId(eventTypeId);
-    }
-
-    default Optional<EventTypeTranslation> findByEventTypeIdAndLanguageCode(
-            Integer eventTypeId, String languageCode) {
-        return findByTypeIdAndLanguageCode(eventTypeId, languageCode);
-    }
-
-    default void deleteByEventTypeId(Integer eventTypeId) {
-        deleteByTypeId(eventTypeId);
-    }
-
-    default boolean existsByEventTypeIdAndLanguageCode(
-            Integer eventTypeId, String languageCode) {
-        return existsByTypeIdAndLanguageCode(eventTypeId, languageCode);
-    }
+//    default Optional<EventTypeTranslation> findByEventTypeIdAndLanguageCode(
+//            Integer eventTypeId, String languageCode) {
+//        return findByTypeIdAndLanguageCode(eventTypeId, languageCode);
+//    }
+//
+//    default void deleteByEventTypeId(Integer eventTypeId) {
+//        deleteByTypeId(eventTypeId);
+//    }
+//
+//    default boolean existsByEventTypeIdAndLanguageCode(
+//            Integer eventTypeId, String languageCode) {
+//        return existsByTypeIdAndLanguageCode(eventTypeId, languageCode);
+//    }
 }

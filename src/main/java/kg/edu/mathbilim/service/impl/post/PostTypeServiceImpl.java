@@ -85,7 +85,7 @@ public class PostTypeServiceImpl
     @Override
     protected PostTypeTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return PostTypeTranslationDto.builder()
-                .postTypeId(typeId)
+                .typeId(typeId)
                 .languageCode(languageCode)
                 .translation(translation)
                 .build();
@@ -93,6 +93,6 @@ public class PostTypeServiceImpl
 
     @Override
     protected void setTypeIdInTranslation(PostTypeTranslationDto translationDto, Integer typeId) {
-        translationDto.setPostTypeId(typeId);
+        translationDto.setTypeId(typeId);
     }
 }

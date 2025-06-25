@@ -85,7 +85,7 @@ public class EventTypeServiceImpl
     @Override
     protected EventTypeTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return EventTypeTranslationDto.builder()
-                .eventTypeId(typeId)
+                .typeId(typeId)
                 .languageCode(languageCode)
                 .translation(translation)
                 .build();
@@ -93,6 +93,6 @@ public class EventTypeServiceImpl
 
     @Override
     protected void setTypeIdInTranslation(EventTypeTranslationDto translationDto, Integer typeId) {
-        translationDto.setEventTypeId(typeId);
+        translationDto.setTypeId(typeId);
     }
 }

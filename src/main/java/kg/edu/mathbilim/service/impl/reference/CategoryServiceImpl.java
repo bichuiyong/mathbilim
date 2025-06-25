@@ -88,7 +88,7 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     @Override
     protected CategoryTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return CategoryTranslationDto.builder()
-                .categoryId(typeId)
+                .typeId(typeId)
                 .languageCode(languageCode)
                 .translation(translation)
                 .build();
@@ -96,6 +96,6 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
 
     @Override
     protected void setTypeIdInTranslation(CategoryTranslationDto translationDto, Integer typeId) {
-        translationDto.setCategoryId(typeId);
+        translationDto.setTypeId(typeId);
     }
 }

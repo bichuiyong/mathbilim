@@ -7,11 +7,11 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventTypeTranslationDto extends TypeTranslationDto {
-    Integer eventTypeId;
+    public EventTypeTranslationDto() {
+        super();
+    }
 }

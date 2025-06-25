@@ -16,19 +16,4 @@ import java.util.Optional;
 public interface UserTypeTranslationRepository extends AbstractTypeTranslationRepository<UserTypeTranslation> {
 
 
-    default List<UserTypeTranslation> findByUserTypeId(Integer userTypeId) {
-        return findByTypeId(userTypeId);
-    }
-    default Optional<UserTypeTranslation> findByUserTypeIdAndLanguageCode(Integer userTypeId,
-                                                                          String languageCode) {
-        return findByTypeIdAndLanguageCode(userTypeId, languageCode);
-    }
-
-    default void deleteByUserTypeId(Integer userTypeId) {
-        deleteByTypeId(userTypeId);
-    }
-
-    default boolean existsByUserTypeIdAndLanguageCode(Integer userTypeId, String languageCode) {
-        return existsByTypeIdAndLanguageCode(userTypeId, languageCode);
-    }
 }

@@ -10,22 +10,22 @@ import java.util.Optional;
 @Repository
 public interface CategoryTranslationRepository
         extends AbstractTypeTranslationRepository<CategoryTranslation> {
-
-    default List<CategoryTranslation> findByCategoryId(Integer categoryId) {
-        return findByTypeId(categoryId);
-    }
-
-    default Optional<CategoryTranslation> findByCategoryIdAndLanguageCode(
-            Integer categoryId, String languageCode) {
-        return findByTypeIdAndLanguageCode(categoryId, languageCode);
-    }
-
-    default void deleteByCategoryId(Integer categoryId) {
-        deleteByTypeId(categoryId);
-    }
-
-    default boolean existsByCategoryIdAndLanguageCode(
-            Integer categoryId, String languageCode) {
-        return existsByTypeIdAndLanguageCode(categoryId, languageCode);
-    }
+//
+//    default List<CategoryTranslation> findByCategoryId(Integer categoryId) {
+//        return findByTypeId(categoryId);
+//    }
+//
+//    default Optional<CategoryTranslation> findByCategoryIdAndLanguageCode(
+//            Integer categoryId, String languageCode) {
+//        return findByTypeIdAndLanguageCode(categoryId, languageCode);
+//    }
+//
+//    default void deleteByCategoryId(Integer categoryId) {
+//        deleteByTypeId(categoryId);
+//    }
+//
+//    default boolean existsByCategoryIdAndLanguageCode(
+//            Integer categoryId, String languageCode) {
+//        return existsByTypeIdAndLanguageCode(categoryId, languageCode);
+//    }
 }

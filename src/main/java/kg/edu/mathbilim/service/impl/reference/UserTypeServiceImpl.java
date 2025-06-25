@@ -90,7 +90,7 @@ public class UserTypeServiceImpl
     @Override
     protected UserTypeTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return UserTypeTranslationDto.builder()
-                .userTypeId(typeId)
+                .typeId(typeId)
                 .languageCode(languageCode)
                 .translation(translation)
                 .build();
@@ -98,6 +98,6 @@ public class UserTypeServiceImpl
 
     @Override
     protected void setTypeIdInTranslation(UserTypeTranslationDto translationDto, Integer typeId) {
-        translationDto.setUserTypeId(typeId);
+        translationDto.setTypeId(typeId);
     }
 }
