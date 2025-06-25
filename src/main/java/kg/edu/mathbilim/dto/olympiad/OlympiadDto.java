@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.dto.olympiad;
 
 import kg.edu.mathbilim.dto.OrganizationDto;
+import kg.edu.mathbilim.dto.ResultDto;
 import kg.edu.mathbilim.dto.organization.OlympOrganizationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import lombok.*;

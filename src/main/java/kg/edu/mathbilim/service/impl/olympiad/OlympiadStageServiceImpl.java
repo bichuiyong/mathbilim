@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.service.impl.olympiad;
 
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.ResultDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadStageDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
@@ -54,6 +56,21 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
                         .updatedAt(olympiadStage.getUpdatedAt())
                         .startDate(olympiadStage.getStartDate())
                         .endDate(olympiadStage.getEndDate())
+                        .result(olympiadStage.getResult().stream().map(result -> ResultDto
+                                .builder()
+                                        .id(result.getId())
+                                        .file(new FileDto(
+                                                result.getFile().getId(),
+                                                result.getFile().getFilename(),
+                                                result.getFile().getFilePath(),
+                                                result.getFile().getType(),
+                                                result.getFile().getSize(),
+                                                result.getFile().getS3Link()
+                                        ))
+                                        .createdAt(result.getCreatedAt())
+                                        .updatedAt(result.getUpdatedAt())
+                                .build())
+                                .toList())
                         .build())
                 .toList();
     }

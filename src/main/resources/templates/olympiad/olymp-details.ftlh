@@ -10,24 +10,20 @@
                         type="button" role="tab" aria-controls="stages" aria-selected="true">Этапы проведения</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="archive-tab" data-bs-toggle="tab" data-bs-target="#archive"
-                        type="button" role="tab" aria-controls="archive" aria-selected="false">Архив задач</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials"
-                        type="button" role="tab" aria-controls="materials" aria-selected="false">Материалы</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results"
-                        type="button" role="tab" aria-controls="results" aria-selected="false">Результаты</button>
-            </li>
-            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts"
                         type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="rules-tab" data-bs-toggle="tab" data-bs-target="#rules"
                         type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results"
+                        type="button" role="tab" aria-controls="results" aria-selected="false">Результаты</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#results"
+                        type="button" role="tab" aria-controls="results" aria-selected="false">Организации</button>
             </li>
         </ul>
 
@@ -47,22 +43,6 @@
                     </#if>
                 </ul>
             </div>
-
-
-            <div class="tab-pane fade" id="archive" role="tabpanel" aria-labelledby="archive-tab">
-                <h4>Архив задач</h4>
-                <p><a href="#" class="btn btn-outline-primary" target="_blank">Скачать архив задач (PDF)</a></p>
-            </div>
-
-
-            <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
-                <h4>Подготовительные материалы</h4>
-                <p>
-                    Ознакомьтесь с <a href="#" target="_blank">методическими рекомендациями</a><br>
-                    и <a href="#" target="_blank">примерами задач</a>.
-                </p>
-            </div>
-
 
             <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
                 <h4>Результаты</h4>
@@ -89,6 +69,16 @@
                 </p>
             </div>
 
+            <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+                <h4>Организации</h4>
+                <p>
+                    <#if olympiad.organizations??>
+                        <#list olympiad.organizations as organization>
+                            ${organization.name}
+                        </#list>
+                    </#if>
+                </p>
+            </div>
 
         </div>
     </div>

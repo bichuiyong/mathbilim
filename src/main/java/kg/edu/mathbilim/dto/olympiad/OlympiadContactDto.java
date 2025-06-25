@@ -15,16 +15,11 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadContactDto {
-    Long id;
-
     @NotEmpty(message = "Информация обязательна")
     @Size(max = 1000, message = "Информация не должна превышать 1000 символов")
     String info;
 
-    OlympiadDto olympiad;
-
-    ContactTypeDto contactDto;
-
-    LocalDateTime createdAt;
+    @NotEmpty
+    String contactType;
 
 }

@@ -26,4 +26,10 @@ public class OlympiadController {
         Pageable pageable = PageRequest.of(page,size);
         return ResponseEntity.ofNullable(olympiadService.getAll(pageable));
     }
+
+    @GetMapping("tt")
+    public ResponseEntity<OlympiadDto> getAllOlysdfmps(@RequestParam(defaultValue = "0") long id) {
+
+        return ResponseEntity.ofNullable(olympiadService.getById(id));
+    }
 }

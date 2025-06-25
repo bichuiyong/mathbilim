@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface OlympiadService {
-    void save(OlympiadCreateDto olympiadCreateDto, String email);
-
     Page<OlympListDto> getAll(Pageable pageable);
 
     OlympiadDto getById(long id);

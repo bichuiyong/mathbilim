@@ -35,30 +35,6 @@ public class OlympiadServiceImpl implements OlympiadService {
     private final OrganizationService organizationService;
 
     @Override
-    public void save(OlympiadCreateDto olympiadCreateDto, String email) {
-        User user = userService.findByEmail(email);
-        Olympiad olympiad = new Olympiad();
-
-        olympiad.setTitle(olympiadCreateDto.getTitle());
-        olympiad.setCreator(user);
-        olympiad.setInfo(olympiadCreateDto.getInfo());
-        olympiad.setRules(olympiadCreateDto.getRules());
-        olympiad.setCreatedAt(LocalDateTime.now());
-        olympiad.setUpdatedAt(LocalDateTime.now());
-        olympiad.setStartDate(olympiadCreateDto.getStartDate());
-        olympiad.setEndDate(olympiadCreateDto.getEndDate());
-        olympiadRepository.saveAndFlush(olympiad);
-
-        if (olympiadCreateDto.getStages() != null) {
-            stageService.save(olympiadCreateDto, olympiad);
-        }
-
-        if (olympiadCreateDto.getContacts() != null) {
-            contactService.save(olympiadCreateDto, olympiad);
-        }
-    }
-
-    @Override
     public Page<OlympListDto> getAll(Pageable pageable) {
         return olympiadRepository.findAll(pageable)
                 .map(olympiad -> new OlympListDto(

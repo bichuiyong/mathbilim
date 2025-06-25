@@ -19,27 +19,6 @@ public class OlympiadContactServiceImpl implements OlympiadContactService {
     private final OlympiadContactRepository repository;
     private final ContactTypeRepository contactTypeRepository;
 
-
-    public ContactType toContactTypeEntity(Integer typeId) {
-        return contactTypeRepository.findById(typeId)
-                .orElseThrow(() -> new RuntimeException("No such contact type"));
-    }
-
-    @Override
-    public void save(OlympiadCreateDto dto, Olympiad olympiad) {
-        if (dto.getContacts() == null) return;
-
-        dto.getContacts().forEach(c -> {
-            OlympiadContact contact =
-                    OlympiadContact.builder()
-                            .contactType(toContactTypeEntity(c.getContactDto().getId()))
-                            .olympiad(olympiad)
-                            .info(c.getInfo())
-                            .build();
-            repository.saveAndFlush(contact);
-        });
-    }
-
     @Override
     public List<OlympiadContact> getContactsByOlympId(int olympId) {
         return repository.getByOlympiad_Id(olympId);

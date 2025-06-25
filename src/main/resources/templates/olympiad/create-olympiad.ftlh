@@ -1,362 +1,476 @@
 <#import "../layout.ftlh" as main>
-<#import "/spring.ftl" as spring>
+<#import "spring.ftl" as spring>
 <@main.layout>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --error: #dc2626;
+        }
 
-    <div class="container mt-4 bg-white p-4 rounded shadow-sm" style="color: #0d3b66;">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
-        <form action="/olympiad/new" method="post" novalidate>
-            <@main.csrf/>
-            <div class="form-group mb-3">
-                <label for="title" class="fw-bold text-primary">Название олимпиады</label>
-                <@spring.formInput "olympiad.title" 'id="title" class="form-control form-control-lg"'/>
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--card);
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h1 svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .form-content {
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        label.required::after {
+            content: '*';
+            color: var(--error);
+            margin-left: 0.25rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            position: relative;
+            border: 1px dashed var(--border);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            background-color: #f8fafc;
+            transition: all 0.15s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .file-upload input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .file-upload-label svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn svg {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.5rem;
+        }
+
+        .stages-container {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stage-card {
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: white;
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stage-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .organizers-container {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .organizer-card {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .organizer-card {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Создание новой олимпиады
+        </h1>
+    </header>
+
+    <div class="form-content">
+        <form id="olympiadForm" action="/api/olympiads" method="POST" enctype="multipart/form-data">
+            <div class="grid">
+                <!-- Основная информация -->
+                <div class="form-group full-width">
+                    <label for="title" class="required">Название олимпиады</label>
+                    <input type="text" id="title" name="title" required placeholder="Введите название">
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="info" class="fw-bold text-primary">Описание</label>
-                <@spring.formInput "olympiad.info" 'id="info" class="form-control form-control-lg"' />
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+                <div class="form-group full-width">
+                    <label for="info" class="required">Описание</label>
+                    <textarea id="info" name="info" required placeholder="Подробное описание олимпиады"></textarea>
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="rules" class="fw-bold text-primary">Правила</label>
-                <@spring.formInput "olympiad.rules" 'id="rules" class="form-control form-control-lg"' />
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+                <div class="form-group">
+                    <label for="start_date" class="required">Дата начала</label>
+                    <input type="date" id="start_date" name="start_date" required>
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="subject" class="fw-bold text-primary">Предмет</label>
-                <@spring.formInput "olympiad.subject" 'id="subject" class="form-control form-control-lg"' />
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+                <div class="form-group">
+                    <label for="end_date" class="required">Дата окончания</label>
+                    <input type="date" id="end_date" name="end_date" required>
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="startDate" class="fw-bold text-primary">Дата начала</label>
-                <@spring.formInput "olympiad.startDate" 'id="startDate" class="form-control form-control-lg"' />
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+                <div class="form-group full-width">
+                    <label for="rules" class="required">Правила участия</label>
+                    <textarea id="rules" name="rules" required
+                              placeholder="Условия и требования для участников"></textarea>
                 </div>
-            </div>
 
-            <div class="form-group mb-4">
-                <label for="endDate" class="fw-bold text-primary">Дата окончания</label>
-                <@spring.formInput "olympiad.endDate" 'id="endDate" class="form-control form-control-lg"' />
-                <div class="error-block text-danger small">
-                    <@spring.showErrors "<br>" "custom-error"/>
+                <div class="form-group full-width">
+                    <label>Изображение</label>
+                    <div class="file-upload">
+                        <label class="file-upload-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <span>Перетащите изображение или кликните для загрузки</span>
+                            <span style="color: var(--primary-light); font-size: 0.75rem;">PNG, JPG (макс.
+                                    10MB)</span>
+                        </label>
+                        <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+                    </div>
                 </div>
-            </div>
 
-            <hr class="mb-4"/>
-
-            <h3 class="text-primary mb-3">Этапы олимпиады</h3>
-
-            <div id="stagesContainer">
-                <#if olympiad.stages?? && (olympiad.stages?size > 0)>
-                    <#list olympiad.stages as stage, stageIndex>
-                        <div class="stage-block border border-primary rounded p-3 mb-4" style="background-color: #e8f0fe;" data-stage-index="${stageIndex}">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="text-primary mb-0">Этап ${stageIndex + 1}</h4>
-                                <button type="button" class="btn btn-outline-danger btn-sm remove-stage-btn">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </button>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="stages${stageIndex}_name" class="fw-semibold text-primary">Название этапа</label>
-                                <@spring.formInput "olympiad.stages[${stageIndex}].name" 'id="stages${stageIndex}_name" class="form-control"' />
-                                <div class="error-block text-danger small">
-                                    <@spring.showErrors "<br>" "custom-error"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="stages${stageIndex}_stageOrder" class="fw-semibold text-primary">Порядковый номер</label>
-                                <@spring.formInput "olympiad.stages[${stageIndex}].stageOrder" 'id="stages${stageIndex}_stageOrder" class="form-control"' />
-                                <div class="error-block text-danger small">
-                                    <@spring.showErrors "<br>" "custom-error"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="stages${stageIndex}_description" class="fw-semibold text-primary">Описание этапа</label>
-                                <@spring.formInput "olympiad.stages[${stageIndex}].description" 'id="stages${stageIndex}_description" class="form-control"' />
-                                <div class="error-block text-danger small">
-                                    <@spring.showErrors "<br>" "custom-error"/>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="stages${stageIndex}_registrationStart" class="fw-semibold text-primary">Начало регистрации</label>
-                                        <@spring.formInput "olympiad.stages[${stageIndex}].registrationStart" 'id="stages${stageIndex}_registrationStart" class="form-control" type="date"' />
-                                        <div class="error-block text-danger small">
-                                            <@spring.showErrors "<br>" "custom-error"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="stages${stageIndex}_registrationEnd" class="fw-semibold text-primary">Окончание регистрации</label>
-                                        <@spring.formInput "olympiad.stages[${stageIndex}].registrationEnd" 'id="stages${stageIndex}_registrationEnd" class="form-control" type="date"' />
-                                        <div class="error-block text-danger small">
-                                            <@spring.showErrors "<br>" "custom-error"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="stages${stageIndex}_eventStartDate" class="fw-semibold text-primary">Дата начала этапа</label>
-                                        <@spring.formInput "olympiad.stages[${stageIndex}].eventStartDate" 'id="stages${stageIndex}_eventStartDate" class="form-control" type="date"' />
-                                        <div class="error-block text-danger small">
-                                            <@spring.showErrors "<br>" "custom-error"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="stages${stageIndex}_eventEndDate" class="fw-semibold text-primary">Дата окончания этапа</label>
-                                        <@spring.formInput "olympiad.stages[${stageIndex}].eventEndDate" 'id="stages${stageIndex}_eventEndDate" class="form-control" type="date"' />
-                                        <div class="error-block text-danger small">
-                                            <@spring.showErrors "<br>" "custom-error"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="stages${stageIndex}_location" class="fw-semibold text-primary">Место проведения</label>
-                                <@spring.formInput "olympiad.stages[${stageIndex}].location" 'id="stages${stageIndex}_location" class="form-control"' />
-                                <div class="error-block text-danger small">
-                                    <@spring.showErrors "<br>" "custom-error"/>
-                                </div>
-                            </div>
-                        </div>
-                    </#list>
-                <#else>
-                    <p id="noStagesMessage" class="text-secondary fst-italic">Пока нет этапов. Нажмите кнопку ниже, чтобы добавить.</p>
-                </#if>
-            </div>
-
-            <button type="button" id="addStageBtn" class="btn btn-outline-primary mb-3">
-                <i class="fas fa-plus"></i> Добавить этап
-            </button>
-
-            <div>
-                <button type="submit" class="btn btn-primary">Создать олимпиаду</button>
-            </div>
-        </form>
-
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let stageCounter = <#if olympiad.stages??>${olympiad.stages?size}<#else>0</#if>;
-            const stagesContainer = document.getElementById('stagesContainer');
-            const addStageBtn = document.getElementById('addStageBtn');
-            const noStagesMessage = document.getElementById('noStagesMessage');
-
-            console.log('Инициализация: stageCounter =', stageCounter);
-
-            // Функция для создания HTML блока этапа
-            function createStageHTML(index) {
-                return `
-                    <div class="stage-block border border-primary rounded p-3 mb-4" style="background-color: #e8f0fe;" data-stage-index="${index}">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-primary mb-0">Этап ${index + 1}</h4>
-                            <button type="button" class="btn btn-outline-danger btn-sm remove-stage-btn">
-                                <i class="fas fa-trash"></i> Удалить
+                <!-- Организаторы -->
+                <div class="form-group full-width">
+                    <label>Организаторы</label>
+                    <div id="organizers" class="organizers-container">
+                        <div class="organizer-card">
+                            <input type="text" name="organizers[]" placeholder="Название организации">
+                            <input type="text" name="organizer_contacts[]" placeholder="Контактные данные">
+                            <button type="button" class="btn btn-outline remove-organizer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Удалить
                             </button>
                         </div>
+                    </div>
+                    <button type="button" id="addOrganizer" class="btn btn-outline" style="margin-top: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Добавить организатора
+                    </button>
+                </div>
 
-                        <div class="form-group mb-3">
-                            <label for="stages${index}.name" class="fw-semibold text-primary">Название этапа</label>
-                            <input type="text" id="stages${index}.name" name="stages[${index}].name" class="form-control" value="" />
-                            <div class="error-block text-danger small"></div>
-                        </div>
+                <!-- Контакты -->
+                <div class="form-group full-width">
+                    <label for="contacts" class="required">Контактная информация</label>
+                    <textarea id="contacts" name="contacts" required
+                              placeholder="Email, телефон, адрес для связи"></textarea>
+                </div>
 
-                        <div class="form-group mb-3">
-                            <label for="stages${index}.stageOrder" class="fw-semibold text-primary">Порядковый номер</label>
-                            <input type="number" id="stages${index}.stageOrder" name="stages[${index}].stageOrder" class="form-control" value="${index + 1}" />
-                            <div class="error-block text-danger small"></div>
-                        </div>
+                <!-- Этапы -->
+                <div class="form-group full-width">
+                    <label for="stageCount">Количество этапов</label>
+                    <select id="stageCount" name="stage_count">
+                        <option value="1">1 этап</option>
+                        <option value="2">2 этапа</option>
+                        <option value="3">3 этапа</option>
+                        <option value="4">4 этапа</option>
+                    </select>
 
-                        <div class="form-group mb-3">
-                            <label for="stages${index}.description" class="fw-semibold text-primary">Описание этапа</label>
-                            <textarea id="stages${index}.description" name="stages[${index}].description" class="form-control" rows="3"></textarea>
-                            <div class="error-block text-danger small"></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="stages${index}.registrationStart" class="fw-semibold text-primary">Начало регистрации</label>
-                                    <input type="date" id="stages${index}.registrationStart" name="stages[${index}].registrationStart" class="form-control" />
-                                    <div class="error-block text-danger small"></div>
-                                </div>
+                    <div class="stages-container" id="stagesContainer">
+                        <div class="stage-card">
+                            <div class="stage-header">
+                                <span class="stage-title">Этап 1</span>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="stages${index}.registrationEnd" class="fw-semibold text-primary">Окончание регистрации</label>
-                                    <input type="date" id="stages${index}.registrationEnd" name="stages[${index}].registrationEnd" class="form-control" />
-                                    <div class="error-block text-danger small"></div>
+                            <div class="grid" style="gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="required">Дата начала</label>
+                                    <input type="date" name="stage_start[]" required>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="stages${index}.eventStartDate" class="fw-semibold text-primary">Дата начала этапа</label>
-                                    <input type="date" id="stages${index}.eventStartDate" name="stages[${index}].eventStartDate" class="form-control" />
-                                    <div class="error-block text-danger small"></div>
+                                <div class="form-group">
+                                    <label class="required">Дата окончания</label>
+                                    <input type="date" name="stage_end[]" required>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="stages${index}.eventEndDate" class="fw-semibold text-primary">Дата окончания этапа</label>
-                                    <input type="date" id="stages${index}.eventEndDate" name="stages[${index}].eventEndDate" class="form-control" />
-                                    <div class="error-block text-danger small"></div>
+                                <div class="form-group full-width">
+                                    <label>Описание этапа</label>
+                                    <textarea name="stage_description[]" placeholder="Детали этапа"></textarea>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="form-group mb-3">
-                            <label for="stages${index}.location" class="fw-semibold text-primary">Место проведения</label>
-                            <input type="text" id="stages${index}.location" name="stages[${index}].location" class="form-control" />
-                            <div class="error-block text-danger small"></div>
+            <button type="submit" class="btn btn-primary submit-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                Сохранить олимпиаду
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Динамическое добавление этапов
+    document.getElementById('stageCount').addEventListener('change', function () {
+        const count = parseInt(this.value);
+        const container = document.getElementById('stagesContainer');
+
+        // Очищаем контейнер
+        container.innerHTML = '';
+
+        // Добавляем нужное количество этапов
+        for (let i = 0; i < count; i++) {
+            const stageCard = document.createElement('div');
+            stageCard.className = 'stage-card';
+            stageCard.innerHTML = `
+                    <div class="stage-header">
+                        <span class="stage-title">Этап ${i+1}</span>
+                    </div>
+                    <div class="grid" style="gap: 1rem;">
+                        <div class="form-group">
+                            <label class="required">Дата начала</label>
+                            <input type="date" name="stage_start[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Дата окончания</label>
+                            <input type="date" name="stage_end[]" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Описание этапа</label>
+                            <textarea name="stage_description[]" placeholder="Детали этапа"></textarea>
                         </div>
                     </div>
                 `;
-            }
+            container.appendChild(stageCard);
+        }
+    });
 
-            // Функция для переиндексации всех этапов
-            function reindexStages() {
-                const stageBlocks = stagesContainer.querySelectorAll('.stage-block');
-                console.log('Переиндексация этапов. Найдено блоков:', stageBlocks.length);
+    // Добавление организаторов
+    document.getElementById('addOrganizer').addEventListener('click', function () {
+        const organizersDiv = document.getElementById('organizers');
+        const newOrganizer = document.createElement('div');
+        newOrganizer.className = 'organizer-card';
+        newOrganizer.innerHTML = `
+                <input type="text" name="organizers[]" placeholder="Название организации">
+                <input type="text" name="organizer_contacts[]" placeholder="Контактные данные">
+                <button type="button" class="btn btn-outline remove-organizer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Удалить
+                </button>
+            `;
+        organizersDiv.appendChild(newOrganizer);
 
-                stageBlocks.forEach((block, newIndex) => {
-                    console.log('Обновляем блок с индексом', newIndex);
-
-                    // Обновляем data-атрибут
-                    block.setAttribute('data-stage-index', newIndex);
-
-                    // Обновляем заголовок
-                    const title = block.querySelector('h4');
-                    if (title) {
-                        title.textContent = `Этап ${newIndex + 1}`;
-                    }
-
-                    // Обновляем все input поля
-                    const inputs = block.querySelectorAll('input, textarea');
-                    inputs.forEach(input => {
-                        if (input.name && input.name.includes('stages[')) {
-                            const fieldName = input.name.replace(/stages\[\d+\]/, `stages[${newIndex}]`);
-                            input.name = fieldName;
-                            console.log('Обновлено имя поля:', fieldName);
-                        }
-
-                        if (input.id && input.id.includes('stages')) {
-                            const fieldId = input.id.replace(/stages\d+\./, `stages${newIndex}.`);
-                            input.id = fieldId;
-                        }
-                    });
-
-                    // Обновляем labels
-                    const labels = block.querySelectorAll('label');
-                    labels.forEach(label => {
-                        if (label.getAttribute('for') && label.getAttribute('for').includes('stages')) {
-                            const newFor = label.getAttribute('for').replace(/stages\d+\./, `stages${newIndex}.`);
-                            label.setAttribute('for', newFor);
-                        }
-                    });
-
-                    // Обновляем порядковый номер
-                    const orderInput = block.querySelector('input[name*="stageOrder"]');
-                    if (orderInput) {
-                        orderInput.value = newIndex + 1;
-                    }
-                });
-
-                stageCounter = stageBlocks.length;
-                console.log('Переиндексация завершена. Новый stageCounter:', stageCounter);
-            }
-
-            // Добавление нового этапа
-            addStageBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Добавление нового этапа. Текущий stageCounter:', stageCounter);
-
-                // Скрываем сообщение "нет этапов"
-                if (noStagesMessage) {
-                    noStagesMessage.style.display = 'none';
-                }
-
-                // Создаем новый блок этапа
-                const stageHTML = createStageHTML(stageCounter);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = stageHTML;
-                const newStageBlock = tempDiv.firstElementChild;
-
-                // Добавляем в контейнер
-                stagesContainer.appendChild(newStageBlock);
-                console.log('Новый этап добавлен с индексом:', stageCounter);
-
-                stageCounter++;
-
-                // Анимация появления
-                newStageBlock.style.opacity = '0';
-                newStageBlock.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    newStageBlock.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    newStageBlock.style.opacity = '1';
-                    newStageBlock.style.transform = 'translateY(0)';
-                }, 10);
-            });
-
-            // Удаление этапа
-            stagesContainer.addEventListener('click', function(e) {
-                if (e.target.closest('.remove-stage-btn')) {
-                    e.preventDefault();
-
-                    const stageBlock = e.target.closest('.stage-block');
-                    const stageIndex = stageBlock.getAttribute('data-stage-index');
-                    console.log('Удаление этапа с индексом:', stageIndex);
-
-                    // Анимация исчезновения
-                    stageBlock.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    stageBlock.style.opacity = '0';
-                    stageBlock.style.transform = 'translateY(-10px)';
-
-                    setTimeout(() => {
-                        stageBlock.remove();
-
-                        // Переиндексируем оставшиеся этапы
-                        reindexStages();
-
-                        const remainingStages = stagesContainer.querySelectorAll('.stage-block');
-                        if (remainingStages.length === 0 && noStagesMessage) {
-                            noStagesMessage.style.display = 'block';
-                        }
-
-                        console.log('Этап удален. Осталось этапов:', remainingStages.length);
-                    }, 300);
-                }
-            });
-
-            console.log('Инициализация завершена');
+        // Добавляем обработчик для новой кнопки удаления
+        newOrganizer.querySelector('.remove-organizer').addEventListener('click', function () {
+            organizersDiv.removeChild(newOrganizer);
         });
-    </script>
+    });
 
+    // Обработчики для существующих кнопок удаления организаторов
+    document.querySelectorAll('.remove-organizer').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const organizerItem = this.closest('.organizer-card');
+            document.getElementById('organizers').removeChild(organizerItem);
+        });
+    });
+
+    // Обработка загрузки файла
+    const fileInput = document.querySelector('.file-upload input[type="file"]');
+    const fileUploadLabel = document.querySelector('.file-upload-label');
+
+    fileInput.addEventListener('change', function () {
+        if (this.files.length > 0) {
+            fileUploadLabel.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>${this.files[0].name}</span>
+                    <span style="color: var(--primary-light); font-size: 0.75rem;">${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</span>
+                `;
+        }
+    });
+</script>
+</body>
 </@main.layout>

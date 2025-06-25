@@ -52,7 +52,7 @@ public class OlympiadController {
             model.addAttribute("stagesCount", olympiadCreateDto.getStages() != null ? olympiadCreateDto.getStages().size() : 1);
             return "olympiad/create-olympiad";
         }
-        olympiadService.save(olympiadCreateDto, principal.getName());
+
         return "redirect:/profile";
     }
 }

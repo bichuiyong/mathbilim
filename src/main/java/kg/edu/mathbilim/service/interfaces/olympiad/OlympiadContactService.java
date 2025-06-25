@@ -7,7 +7,5 @@ import kg.edu.mathbilim.model.olympiad.OlympiadContact;
 import java.util.List;
 
 public interface OlympiadContactService {
-    void save(OlympiadCreateDto dto, Olympiad olympiad);
-
     List<OlympiadContact> getContactsByOlympId(int olympId);
 }
