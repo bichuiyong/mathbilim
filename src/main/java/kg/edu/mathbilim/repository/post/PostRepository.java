@@ -40,23 +40,34 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
 
     @Query("""
             SELECT DISTINCT p FROM Post p
-            JOIN p.postTranslations t
-            WHERE p.status = :contentStatus
-            ORDER BY p.createdAt DESC
+               JOIN p.postTranslations t
+               WHERE p.status = :contentStatus
             """)
     Page<Post> getPostsByStatus(ContentStatus contentStatus, Pageable pageable);
+
+
+    @Query("""
+    SELECT DISTINCT p FROM Post p
+    JOIN p.postTranslations t
+    WHERE p.status = :contentStatus
+      AND t.id.languageCode = :languageCode
+    """)
+    Page<Post> getPostsByStatusWithLang(@Param("contentStatus") ContentStatus contentStatus,
+                                        @Param("languageCode") String languageCode,
+                                        Pageable pageable);
 
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
             WHERE p.status = :contentStatus
                         AND
-            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
+                        t.id.languageCode = :languageCode
             ORDER BY p.createdAt DESC
             """)
     Page<Post> getPostsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
-                                         Pageable pageable);
+                                         Pageable pageable, String languageCode);
 
     @Override
     @Query("""
