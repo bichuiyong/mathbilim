@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.impl.olympiad;
 
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.dto.olympiad.OlympiadStageDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import kg.edu.mathbilim.repository.olympiad.OlympiadStageRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -36,5 +38,23 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
             repository.saveAndFlush(stage);
         });
 
+    }
+
+    @Override
+    public List<OlympiadStageDto> getOlympStageDtos(int id) {
+        return repository.getOlympiadStageByOlympiad_Id(id)
+                .stream()
+                .map(olympiadStage -> OlympiadStageDto
+                        .builder()
+                        .id(Long.valueOf(olympiadStage.getId()))
+                        .stageOrder(olympiadStage.getStageOrder())
+                        .registrationStart(olympiadStage.getRegistrationStart())
+                        .registrationEnd(olympiadStage.getRegistrationEnd())
+                        .createdAt(olympiadStage.getCreatedAt())
+                        .updatedAt(olympiadStage.getUpdatedAt())
+                        .startDate(olympiadStage.getStartDate())
+                        .endDate(olympiadStage.getEndDate())
+                        .build())
+                .toList();
     }
 }

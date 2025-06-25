@@ -10,6 +10,8 @@ import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -38,4 +40,8 @@ public class OlympiadContactServiceImpl implements OlympiadContactService {
         });
     }
 
+    @Override
+    public List<OlympiadContact> getContactsByOlympId(int olympId) {
+        return repository.getByOlympiad_Id(olympId);
+    }
 }

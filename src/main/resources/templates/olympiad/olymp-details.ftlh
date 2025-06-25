@@ -39,9 +39,12 @@
             <div class="tab-pane fade show active" id="stages" role="tabpanel" aria-labelledby="stages-tab">
                 <h4>Этапы проведения</h4>
                 <ul>
-                    <li>1 этап — Онлайн-отбор: 15 января – 15 февраля</li>
-                    <li>2 этап — Очный тур: 25 февраля в г. Бишкек</li>
-                    <li>3 этап — Финал и награждение: 1 марта</li>
+                    <#if olympiad.stages??>
+                        <#list olympiad.stages as stage>
+                            <li>${stage.stageOrder} этап — Онлайн-отбор: ${stage.registrationStart} января
+                                – ${stage.registrationEnd} февраля</li>
+                        </#list>
+                    </#if>
                 </ul>
             </div>
 
@@ -70,15 +73,20 @@
             <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
                 <h4>Контакты</h4>
                 <p>
-                    <strong>Email:</strong> info@olympiads.kg<br>
-                    <strong>Телефон:</strong> +996 312 123 456
+                    <#if olympiad.contacts??>
+                        <#list olympiad.contacts as contact>
+                            <strong>${contact.contactType}:</strong> ${contact.info}<br>
+                        </#list>
+                    </#if>
                 </p>
             </div>
 
 
             <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
                 <h4>Регламент / правила участия</h4>
-                <p><a href="/rules/tsi-2025.pdf" class="btn btn-outline-secondary" target="_blank">Скачать регламент</a></p>
+                <p>
+                    ${olympiad.rules}
+                </p>
             </div>
 
 

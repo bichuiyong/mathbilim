@@ -16,23 +16,15 @@ import java.time.LocalDateTime;
 public class OlympiadStageDto {
     Long id;
 
-    OlympiadDto olympiad;
-
-    String name;
-
     Integer stageOrder;
-
-    String description;
 
     LocalDate registrationStart;
 
     LocalDate registrationEnd;
 
-    LocalDate eventStartDate;
+    LocalDate startDate;
 
-    LocalDate eventEndDate;
-
-    String location;
+    LocalDate endDate;
 
     LocalDateTime createdAt = LocalDateTime.now();
 
