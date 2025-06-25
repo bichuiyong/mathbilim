@@ -228,3 +228,9 @@ app:
     region: ${MINIO_REGION}
     base-url: ${MINIO_BASE_URL}
     endpoint: ${MINIO_ENDPOINT}
+
+---
+app:
+  remember-me:
+    key: 550e8400-e29b-41d4-a716-446655440000
+
