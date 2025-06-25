@@ -12,5 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryDto extends BaseTypeDto<CategoryTranslationDto> {
-
+    public CategoryDto() {
+        super();
+    }
 }
