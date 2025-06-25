@@ -1,14 +1,11 @@
 server:
   port: 9999
 
+
+
+
 app:
   storage:
-    access-key: ${AWS_ACCESS_KEY_ID}
-    secret-key: ${AWS_SECRET_ACCESS_KEY}
-    bucket-name: ${AWS_S3_BUCKET_NAME:mathbilim-storage}
-    region: ${AWS_REGION:eu-north-1}
-    base-url: https://${AWS_S3_BUCKET_NAME:mathbilim-storage}.s3.${AWS_REGION:eu-north-1}.amazonaws.com
-
     max-sizes:
       image: 5MB
       document: 25MB
@@ -96,6 +93,9 @@ app:
         temp: "temp/"
 
 spring:
+  profiles:
+    active: minio  # Поменяйте на s3 для переключения
+
   telegram:
     bot-name: "@Mathbilimbot"
     bot-token: ${TGBOTKEY}
@@ -129,6 +129,7 @@ spring:
         format_sql: true
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   output:
     ansi:
       enabled: always
@@ -145,6 +146,7 @@ spring:
           starttls:
             enable: true
             required: true
+
   security:
     user:
       name: email
@@ -172,7 +174,6 @@ spring:
             token-uri: https://graph.facebook.com/v17.0/oauth/access_token
             user-info-uri: https://graph.facebook.com/me?fields=id,name,email
 
-
   freemarker:
     expose-session-attributes: true
 
@@ -199,6 +200,37 @@ logging:
       max-file-size: 10MB
       max-history: 7
 
-  app:
-    remember-me:
-      key: 550e8400-e29b-41d4-a716-446655440000
+---
+spring:
+  config:
+    activate:
+      on-profile: s3
+
+app:
+  storage:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    bucket-name: ${AWS_S3_BUCKET_NAME:mathbilim-storage}
+    region: ${AWS_REGION:eu-north-1}
+    base-url: https://${AWS_S3_BUCKET_NAME:mathbilim-storage}.s3.${AWS_REGION:eu-north-1}.amazonaws.com
+
+---
+spring:
+  config:
+    activate:
+      on-profile: minio
+
+app:
+  storage:
+    access-key: ${MINIO_ACCESS_KEY}
+    secret-key: ${MINIO_SECRET_KEY}
+    bucket-name: ${MINIO_BUCKET_NAME}
+    region: ${MINIO_REGION}
+    base-url: ${MINIO_BASE_URL}
+    endpoint: ${MINIO_ENDPOINT}
+
+---
+app:
+  remember-me:
+    key: 550e8400-e29b-41d4-a716-446655440000
+

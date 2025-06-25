@@ -157,7 +157,7 @@ sudo mkdir -p /opt/minio/data
 sudo chown -R $USER:$USER /opt/minio
 
 # Запуск MinIO (в отдельном терминале)
-MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin123 minio server /opt/minio/data --console-address ":9001"
+minio server /opt/minio/data --console-address ":9001"
 ```
 
 #### Windows:
@@ -188,9 +188,8 @@ MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin123 minio server ~/mini
 
 **Настройка MinIO:**
 1. Откройте веб-интерфейс: http://localhost:9001
-2. Войдите с учетными данными: `minioadmin` / `minioadmin123`
-3. Создайте новый bucket для проекта (например, `mathbilim-files`)
-4. Создайте Access Key и Secret Key в разделе Access Keys
+2. Войдите с учетными данными: `minioadmin` / `minioadmin`
+3. Создайте новый bucket для проекта (например, `mathbilim`)
 
 **Полезные ссылки:**
 - [MinIO Quickstart Guide](https://min.io/docs/minio/linux/index.html)
