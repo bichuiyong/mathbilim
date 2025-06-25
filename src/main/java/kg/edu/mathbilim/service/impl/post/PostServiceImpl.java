@@ -16,6 +16,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class PostServiceImpl extends
                 >
         implements PostService {
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService) {
+    public PostServiceImpl(PostRepository repository, @Qualifier("postMapperImpl") PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService) {
         super(repository, mapper, userService, fileService, translationService);
     }
 
@@ -97,12 +98,27 @@ public class PostServiceImpl extends
         return PaginationUtil.getPage(() -> repository.getUserPostsWithQuery(userId, query, pageable), mapper::toDto);
     }
 
-    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection) {
+    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang) {
         ContentStatus contentStatus = ContentStatus.fromName(status);
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if (query == null || query.isEmpty()) {
-            return PaginationUtil.getPage(() -> repository.getPostsByStatus(contentStatus, pageable), mapper::toDto);
+        if (query != null && !query.isEmpty()) {
+            System.out.println("Posts with query and lang: " + repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang).getContent());
+            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang), mapper::toDto);
         }
-        return PaginationUtil.getPage(() -> repository.getPostsByStatusWithQuery(contentStatus, query, pageable), mapper::toDto);
+
+        if (lang != null && !lang.isEmpty()) {
+            System.out.println("Posts with lang: " + repository.getPostsByStatusWithLang(contentStatus, lang, pageable).getContent());
+            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithLang(contentStatus, lang, pageable), mapper::toDto);
+        }
+
+        System.out.println("Posts: " + repository.getPostsByStatus(contentStatus, pageable).getContent());
+        return PaginationUtil.getPage(() -> repository.getPostsByStatus(contentStatus, pageable), mapper::toDto);
+    }
+
+
+    @Override
+    public PostDto getPostById(Long id) {
+        Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
+        return mapper.toDto(post);
     }
 }
