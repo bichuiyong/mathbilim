@@ -13,5 +13,7 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     void togglePostApproving(Long id);
 
-    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
+    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang);
+
+    PostDto getPostById(Long id);
 }
