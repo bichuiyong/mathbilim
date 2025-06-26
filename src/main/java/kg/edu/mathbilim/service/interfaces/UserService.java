@@ -72,11 +72,6 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
-
-    void setUserAvatar(Long userId, MultipartFile file);
-
-    UserEditDto getEditUserById(Long id);
-
     void setUserAvatar(Long userId, MultipartFile file);
 
     UserEditDto getEditUserById(Long id);
