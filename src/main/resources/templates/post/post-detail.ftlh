@@ -158,7 +158,26 @@
             margin-bottom: 12px;
             line-height: 1.5;
             white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
+
+        .publication-text.collapsed {
+            max-height: 120px;
+            position: relative;
+        }
+
+        .show-more-btn {
+            display: inline-block;
+            margin-top: 4px;
+            color: #0095f6;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
         .publication-meta {
             font-size: 13px;
             color: #8e8e8e;
@@ -301,7 +320,8 @@
                     <div class="publication-title">${translation.title}</div>
                 </#if>
                 <#if translation.content?? && translation.content?has_content>
-                    <div class="publication-text">${translation.content}</div>
+                    <div class="publication-text collapsed" id="postContent">${translation.content}</div>
+                    <div class="show-more-btn" id="toggleButton">Показать ещё</div>
                 </#if>
                 <div class="publication-meta">
                     <div class="meta-item">
@@ -357,5 +377,25 @@
                 });
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElement = document.getElementById('postContent');
+            const toggleButton = document.getElementById('toggleButton');
+
+            if (contentElement && toggleButton) {
+                if (contentElement.scrollHeight <= 120) {
+                    toggleButton.style.display = 'none';
+                }
+                toggleButton.addEventListener('click', function() {
+                    contentElement.classList.toggle('collapsed');
+                    if (contentElement.classList.contains('collapsed')) {
+                        toggleButton.textContent = 'Показать ещё';
+                    } else {
+                        toggleButton.textContent = 'Скрыть';
+                    }
+                });
+            }
+        });
+
     </script>
 </@main.layout>
