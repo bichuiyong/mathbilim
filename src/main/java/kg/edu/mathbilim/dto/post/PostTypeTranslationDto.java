@@ -1,17 +1,18 @@
 package kg.edu.mathbilim.dto.post;
 
 import kg.edu.mathbilim.dto.abstracts.TypeTranslationDto;
+import kg.edu.mathbilim.model.post.Post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class PostTypeTranslationDto extends TypeTranslationDto {
-    Integer postTypeId;
+   public PostTypeTranslationDto() {
+       super();
+   }
 }

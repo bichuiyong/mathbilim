@@ -2,128 +2,97 @@ package kg.edu.mathbilim.service.impl.event;
 
 import kg.edu.mathbilim.dto.event.EventTypeDto;
 import kg.edu.mathbilim.dto.event.EventTypeTranslationDto;
-import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventTypeMapper;
 import kg.edu.mathbilim.model.event.EventType;
+import kg.edu.mathbilim.model.event.EventTypeTranslation;
 import kg.edu.mathbilim.repository.event.EventTypeRepository;
+import kg.edu.mathbilim.repository.event.EventTypeTranslationRepository;
+import kg.edu.mathbilim.service.impl.abstracts.AbstractTypeContentService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
-import kg.edu.mathbilim.service.interfaces.event.EventTypeTranslationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class EventTypeServiceImpl implements EventTypeService {
-    private final EventTypeRepository eventTypeRepository;
-    private final EventTypeMapper eventTypeMapper;
-    private final EventTypeTranslationService eventTypeTranslationService;
+public class EventTypeServiceImpl
+        extends AbstractTypeContentService<
+        EventType,
+        EventTypeDto,
+        EventTypeTranslation,
+        EventTypeTranslationDto,
+        EventTypeRepository,
+        EventTypeTranslationRepository,
+        EventTypeMapper>
+        implements EventTypeService {
+
+    public EventTypeServiceImpl(EventTypeRepository repository,
+                                EventTypeTranslationRepository translationRepository,
+                                EventTypeMapper mapper) {
+        super(repository, translationRepository, mapper);
+    }
 
     @Override
     public List<EventTypeDto> getAllEventTypes() {
-        return eventTypeRepository.findAll()
-                .stream()
-                .map(eventTypeMapper::toDto)
-                .toList();
-    }
-
-    private EventType getEventTypeEntity(Integer id) {
-        return eventTypeRepository.findById(id)
-                .orElseThrow(TypeNotFoundException::new);
+        return getAll();
     }
 
     @Override
     public EventTypeDto getEventTypeById(Integer id) {
-        return eventTypeMapper.toDto(getEventTypeEntity(id));
+        return getByIdOrThrow(id);
     }
 
     @Override
     public List<EventTypeDto> getEventTypesByLanguage(String languageCode) {
-        return eventTypeRepository.findAll().stream()
-                .map(eventType -> {
-                    EventTypeDto dto = eventTypeMapper.toDto(eventType);
-                    dto .setEventTypeTranslations(List.of(eventTypeTranslationService.getTranslation(eventType.getId(), languageCode)));
-                    return dto;
-                })
-                .toList();
+        return getByLanguage(languageCode);
     }
 
     @Transactional
     @Override
     public EventTypeDto createEventType(EventTypeDto eventTypeDto) {
-        EventType eventType = new EventType();
-        EventType savedEventType = eventTypeRepository.save(eventType);
-
-        EventTypeDto savedDto = eventTypeMapper.toDto(savedEventType);
-
-        if (eventTypeDto.getEventTypeTranslations() != null && !eventTypeDto.getEventTypeTranslations().isEmpty()) {
-            List<EventTypeTranslationDto> savedTranslations = eventTypeDto
-                    .getEventTypeTranslations()
-                    .stream()
-                    .map(translation -> {
-                        translation.setEventTypeId(savedEventType.getId());
-                        return eventTypeTranslationService.createTranslation(translation);
-                    })
-                    .toList();
-            savedDto.setEventTypeTranslations(savedTranslations);
-        }
-
-        return savedDto;
+        return create(eventTypeDto);
     }
 
     @Transactional
     @Override
     public EventTypeDto updateEventType(Integer id, EventTypeDto eventTypeDto) {
-        EventTypeDto dto = getEventTypeById(id);
-
-        if (eventTypeDto.getEventTypeTranslations() != null) {
-            eventTypeTranslationService.deleteAllTranslationsByEventTypeId(id);
-
-            List<EventTypeTranslationDto> savedTranslations =
-                    eventTypeDto.getEventTypeTranslations()
-                            .stream()
-                            .map(translation -> {
-                                translation.setEventTypeId(id);
-                                return eventTypeTranslationService.createTranslation(translation);
-                            })
-                            .toList();
-
-            dto.setEventTypeTranslations(savedTranslations);
-            return dto;
-        }
-
-        return dto;
+        return update(id, eventTypeDto);
     }
 
     @Transactional
     @Override
     public void deleteEventType(Integer id) {
-        eventTypeRepository.deleteById(id);
+        delete(id);
     }
 
     @Transactional
     @Override
     public EventTypeDto addTranslation(Integer eventTypeId, String languageCode, String translation) {
-        EventTypeDto eventType = getEventTypeById(eventTypeId);
-
-        EventTypeTranslationDto translationDto = EventTypeTranslationDto.builder()
-                .eventTypeId(eventTypeId)
-                .languageCode(languageCode)
-                .translation(translation)
-                .build();
-
-        eventTypeTranslationService.upsertTranslation(translationDto);
-        eventType.getEventTypeTranslations().add(translationDto);
-        return eventType;
+        return addTranslation(eventTypeId, languageCode, translation);
     }
 
     @Transactional
     @Override
     public EventTypeDto removeTranslation(Integer eventTypeId, String languageCode) {
-        getEventTypeById(eventTypeId);
-        eventTypeTranslationService.deleteTranslation(eventTypeId, languageCode);
-        return getEventTypeById(eventTypeId);
+        return removeTranslation(eventTypeId, languageCode);
+    }
+
+    @Override
+    protected EventType createNewEntity() {
+        return new EventType();
+    }
+
+    @Override
+    protected EventTypeTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
+        return EventTypeTranslationDto.builder()
+                .typeId(typeId)
+                .languageCode(languageCode)
+                .translation(translation)
+                .build();
+    }
+
+    @Override
+    protected void setTypeIdInTranslation(EventTypeTranslationDto translationDto, Integer typeId) {
+        translationDto.setTypeId(typeId);
     }
 }

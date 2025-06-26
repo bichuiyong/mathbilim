@@ -11,16 +11,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryTranslation extends TypeTranslation {
-
-    @EmbeddedId
-    TranslationId id;
-
-    @MapsId("typeId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
-    Category category;
+public class CategoryTranslation extends TypeTranslation<Category> {
+    public CategoryTranslation() {
+        super();
+    }
 }

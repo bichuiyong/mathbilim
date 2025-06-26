@@ -27,6 +27,8 @@ public class UserController {
     @GetMapping("{id}")
     public String profile(@PathVariable Long id, Model model) {
         UserDto userDto = userService.getDtoById(id);
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("types", translationService.getUserTypesByLanguage());
         model.addAttribute("user", userDto);
         return "profile/profile-page";
     }

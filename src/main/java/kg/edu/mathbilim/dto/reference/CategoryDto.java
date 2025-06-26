@@ -1,20 +1,18 @@
 package kg.edu.mathbilim.dto.reference;
 
-import kg.edu.mathbilim.validation.annotation.AllTranslationsRequired;
-import lombok.*;
+import kg.edu.mathbilim.dto.abstracts.BaseTypeDto;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryDto {
-    Integer id;
-
-    @AllTranslationsRequired
-    List<CategoryTranslationDto> categoryTranslations;
+public class CategoryDto extends BaseTypeDto<CategoryTranslationDto> {
+    public CategoryDto() {
+        super();
+    }
 }

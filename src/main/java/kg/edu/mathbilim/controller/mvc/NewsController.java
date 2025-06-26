@@ -29,7 +29,7 @@ public class NewsController {
                       Model model
     ) {
         model.addAttribute("news", newsService.getPage(query,page, size, sortBy, sortDirection));
-        return "media/news";
+        return "news/news";
     }
 
     @GetMapping("detail")
@@ -38,7 +38,7 @@ public class NewsController {
             Model model
     ) {
         model.addAttribute(newsDto, newsService.getById(id));
-        return "media/news_detail";
+        return "news/news_detail";
     }
 
     @GetMapping("create")

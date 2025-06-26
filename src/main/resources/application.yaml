@@ -6,6 +6,12 @@ server:
 
 app:
   storage:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    bucket-name: ${AWS_S3_BUCKET_NAME:mathbilim-storage}
+    region: ${AWS_REGION:eu-north-1}
+    base-url: https://${AWS_S3_BUCKET_NAME:mathbilim-storage}.s3.${AWS_REGION:eu-north-1}.amazonaws.com
+
     max-sizes:
       image: 5MB
       document: 25MB
@@ -93,9 +99,6 @@ app:
         temp: "temp/"
 
 spring:
-  profiles:
-    active: minio  # Поменяйте на s3 для переключения
-
   telegram:
     bot-name: "@Mathbilimbot"
     bot-token: ${TGBOTKEY}
@@ -146,7 +149,6 @@ spring:
           starttls:
             enable: true
             required: true
-
   security:
     user:
       name: email
@@ -201,9 +203,6 @@ logging:
       max-history: 7
 
 
-telegram-bot:
-  bot-username: ${TELEGRAM_NAME}
-  bot-token: ${TELEGRAM_TOKEN}
 ---
 spring:
   config:

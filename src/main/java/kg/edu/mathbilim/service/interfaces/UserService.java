@@ -77,6 +77,10 @@ public interface UserService {
 
     UserEditDto getEditUserById(Long id);
 
+    void setUserAvatar(Long userId, MultipartFile file);
+
+    UserEditDto getEditUserById(Long id);
+
     void registerChatId(Long userId, Long chatId);
 
     boolean hasChatId(Long userId);

@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class TypeTranslationDto {
+
+    Integer typeId;
     @NotBlank
     @Size(min = 2, max = 2, message = "Language code must be exactly 2 characters")
     String languageCode;

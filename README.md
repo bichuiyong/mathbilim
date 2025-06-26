@@ -157,7 +157,7 @@ sudo mkdir -p /opt/minio/data
 sudo chown -R $USER:$USER /opt/minio
 
 # Запуск MinIO (в отдельном терминале)
-minio server /opt/minio/data --console-address ":9001"
+MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin123 minio server /opt/minio/data --console-address ":9001"
 ```
 
 #### Windows:
@@ -292,8 +292,8 @@ cd mathbilim
 # Переключитесь на ветку разработки
 git checkout dev
 ```
+<h3>6. Запусти сборку jar:</h3>
 
-### 2. Сборка проекта
 
 **Linux/macOS:**
 ```bash
@@ -366,8 +366,6 @@ RESET_PASSWORD=your_app_password
 # Google reCAPTCHA
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 
-# Telegram Bot
-TGBOTKEY=your_telegram_bot_token
 ```
 
 ### Настройка Google OAuth 2.0
