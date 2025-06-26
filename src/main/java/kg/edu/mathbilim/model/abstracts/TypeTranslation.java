@@ -1,8 +1,6 @@
 package kg.edu.mathbilim.model.abstracts;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -15,15 +13,23 @@ import java.io.Serializable;
 @SuperBuilder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class TypeTranslation implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public abstract class TypeTranslation<E extends BaseType<?>> implements Serializable {
+
+    @EmbeddedId
+    private TranslationId id;
 
     @NotNull
     @Size(max = 100)
     @Column(name = "translation", nullable = false, length = 100)
-    String translation;
+    private String translation;
+
+    @MapsId("typeId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    E parent;
 
     @Embeddable
     @Data

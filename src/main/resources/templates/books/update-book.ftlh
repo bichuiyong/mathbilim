@@ -33,8 +33,9 @@
                     <div class="mb-3">
                         <#assign categoryOptions = {}>
                         <#list categories as category>
-                            <#assign categoryOptions = categoryOptions + {category.id?string: category.name}>
+                            <#assign categoryOptions = categoryOptions + {category.id?string: category.translations[0].translation}>
                         </#list>
+
 
                         <label for="category" class="form-label">Category</label>
                         <@spring.formSingleSelect

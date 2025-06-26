@@ -36,7 +36,7 @@
 
                         <#if user.type??>
                             <span class="badge bg-light-blue text-primary mb-3">
-                            ${user.type.userTypeTranslations[0].translation}
+                            ${user.type.translations[0].translation}
                         </span>
                         </#if>
 

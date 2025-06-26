@@ -43,26 +43,26 @@
                                         <div class="position-relative">
                                             <!-- Иконка в зависимости от типа -->
                                             <div class="mb-3">
-                                                <#if type.userTypeTranslations[0].translation?contains("Ученик") || type.userTypeTranslations[0].translation?contains("Student")>
+                                                <#if type.translations[0].translation?contains("Ученик") || type.translations[0].translation?contains("Student")>
                                                     <i class="fas fa-user-graduate text-primary" style="font-size: 2.5rem;"></i>
-                                                <#elseif type.userTypeTranslations[0].translation?contains("Учитель") || type.userTypeTranslations[0].translation?contains("Teacher")>
+                                                <#elseif type.translations[0].translation?contains("Учитель") || type.translations[0].translation?contains("Teacher")>
                                                     <i class="fas fa-chalkboard-teacher text-primary" style="font-size: 2.5rem;"></i>
-                                                <#elseif type.userTypeTranslations[0].translation?contains("Родитель") || type.userTypeTranslations[0].translation?contains("Parent")>
+                                                <#elseif type.translations[0].translation?contains("Родитель") || type.translations[0].translation?contains("Parent")>
                                                     <i class="fas fa-user-friends text-primary" style="font-size: 2.5rem;"></i>
                                                 <#else>
                                                     <i class="fas fa-user text-primary" style="font-size: 2.5rem;"></i>
                                                 </#if>
                                             </div>
 
-                                            <h4 class="mb-2">${type.userTypeTranslations[0].translation}</h4>
+                                            <h4 class="mb-2">${type.translations[0].translation}</h4>
 
                                             <!-- Примерное описание для каждого типа -->
                                             <p class="text-muted mb-3">
-                                                <#if type.userTypeTranslations[0].translation?contains("Ученик") || type.userTypeTranslations[0].translation?contains("Student")>
+                                                <#if type.translations[0].translation?contains("Ученик") || type.translations[0].translation?contains("Student")>
                                                     Доступ к тестам, олимпиадным задачам и учебным материалам
-                                                <#elseif type.userTypeTranslations[0].translation?contains("Учитель") || type.userTypeTranslations[0].translation?contains("Teacher")>
+                                                <#elseif type.translations[0].translation?contains("Учитель") || type.translations[0].translation?contains("Teacher")>
                                                     Создание тестов, отслеживание прогресса учеников, методические материалы
-                                                <#elseif type.userTypeTranslations[0].translation?contains("Родитель") || type.userTypeTranslations[0].translation?contains("Parent")>
+                                                <#elseif type.translations[0].translation?contains("Родитель") || type.translations[0].translation?contains("Parent")>
                                                     Контроль успеваемости, уведомления о прогрессе ребенка
                                                 <#else>
                                                     Полный доступ к функциям платформы

@@ -1,17 +1,18 @@
 package kg.edu.mathbilim.dto.user;
 
 import kg.edu.mathbilim.dto.abstracts.TypeTranslationDto;
+import kg.edu.mathbilim.model.abstracts.TypeTranslation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class UserTypeTranslationDto extends TypeTranslationDto {
-    Integer userTypeId;
+    public UserTypeTranslationDto() {
+        super();
+    }
 }

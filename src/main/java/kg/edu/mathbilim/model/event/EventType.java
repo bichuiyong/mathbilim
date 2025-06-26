@@ -1,26 +1,21 @@
 package kg.edu.mathbilim.model.event;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import kg.edu.mathbilim.model.abstracts.BaseType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "event_types")
 @Getter
 @Setter
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EventType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @OneToMany(mappedBy = "eventType")
-    @Builder.Default
-    List<EventTypeTranslation> eventTypeTranslations = new ArrayList<>();
+public class EventType extends BaseType<EventTypeTranslation> {
 }

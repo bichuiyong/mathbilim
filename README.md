@@ -157,7 +157,7 @@ sudo mkdir -p /opt/minio/data
 sudo chown -R $USER:$USER /opt/minio
 
 # Запуск MinIO (в отдельном терминале)
-minio server /opt/minio/data --console-address ":9001"
+MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin123 minio server /opt/minio/data --console-address ":9001"
 ```
 
 #### Windows:

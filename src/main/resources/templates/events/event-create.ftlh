@@ -107,7 +107,7 @@
                                         <#list eventsTypes as type>
                                             <option value="${type.id}"
                                                     <#if spring.status.value?? && spring.status.value == type.id?string>selected</#if>>
-                                                ${type.eventTypeTranslations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                                ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
                                             </option>
                                         </#list>
                                     </select>

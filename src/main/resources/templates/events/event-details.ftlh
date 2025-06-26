@@ -27,7 +27,7 @@
                             <div class="blog-meta">
                                 <div class="event-type-badge">
                                     <i class="fas fa-tag me-1"></i>
-                                    ${eventType.eventTypeTranslations[0].translation}
+                                    ${eventType.translations[0].translation}
                                 </div>
 
                                 <time class="event-date" datetime="${event.startDate}">
