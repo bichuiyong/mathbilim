@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         user.setEmail(userEmailDto.getEmail());
         user.setType(userType);
-        user.setUpdatedAt(Instant.now());
+        user.setUpdatedAt(LocalDateTime.from(Instant.now()));
         userRepository.save(user);
         try {
             generateEmailVerificationToken(request, user.getEmail());
