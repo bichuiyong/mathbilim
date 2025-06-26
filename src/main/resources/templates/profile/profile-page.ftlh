@@ -1,8 +1,10 @@
 <#import "../layout.ftlh" as main>
 <#import "/spring.ftl" as spring>
 <@main.layout title="Профиль">
-<#--    <head><meta name="_csrf" content="${_csrf.token}">-->
-<#--        <title></title></head>-->
+    <head>
+        <meta name="_csrf" content="${_csrf.token}">
+        <title></title>
+    </head>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
     <#if known>
@@ -224,7 +226,7 @@
                                     <!-- Фильтры пользователей -->
                                     <div class="users-filters mb-4">
                                         <div class="row g-2">
-                                            <div class="col-md-8">
+                                            <div class="col-md-12">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="usersSearch" placeholder="Поиск по имени или email...">
                                                     <button class="btn btn-outline-secondary" type="button" id="usersSearchBtn">
@@ -232,13 +234,13 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <select class="form-select form-select-sm" id="usersSortBy">
-                                                    <option value="name">По имени</option>
-                                                    <option value="email">По email</option>
-                                                    <option value="createdAt">По дате регистрации</option>
-                                                </select>
-                                            </div>
+<#--                                            <div class="col-md-4">-->
+<#--                                                <select class="form-select form-select-sm" id="usersSortBy">-->
+<#--                                                    <option value="name">По имени</option>-->
+<#--                                                    <option value="email">По email</option>-->
+<#--                                                    <option value="createdAt">По дате регистрации</option>-->
+<#--                                                </select>-->
+<#--                                            </div>-->
                                         </div>
                                     </div>
 
