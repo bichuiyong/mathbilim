@@ -16,6 +16,9 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,20 +87,25 @@ public class NewsServiceImpl extends
 
     @Override
     public Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         if (query != null && !query.isEmpty()) {
             return PaginationUtil.getPage(() ->
-                            repository.findNewsByQuery(query, page, size, sortBy, sortDirection, lang),
+                            repository.findNewsByQuery(query, lang, pageable),
                     mapper::toDto);
         }
 
         if (lang != null && !lang.isEmpty()) {
             return PaginationUtil.getPage(() ->
-                            repository.findByNewsWithLang(page, size, sortBy, sortDirection, lang),
+                            repository.findByNewsWithLang(lang, pageable),
                     mapper::toDto);
         }
 
-       return PaginationUtil.getPage(() ->
-                        repository.findAllNews(page, size, sortBy, sortDirection),
+        return PaginationUtil.getPage(() ->
+                        repository.findAllNews(pageable),
                 mapper::toDto);
+
+
     }
 }
