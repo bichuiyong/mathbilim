@@ -72,8 +72,6 @@ public interface UserService {
 
     void updateUser(UserEditDto userDto, Long userId);
 
-    UserDto createOAuthUser(UserDto userDto);
-
     void registerChatId(Long userId, Long chatId);
 
     boolean hasChatId(Long userId);
