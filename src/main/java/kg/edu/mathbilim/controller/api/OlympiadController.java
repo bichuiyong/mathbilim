@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +24,7 @@ public class OlympiadController {
     @GetMapping("all")
     public ResponseEntity<Page<OlympListDto>> getAllOlymps(@RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "8") int size) {
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "createdAt"));
         return ResponseEntity.ofNullable(olympiadService.getAll(pageable));
-    }
-
-    @GetMapping("tt")
-    public ResponseEntity<OlympiadDto> getAllOlysdfmps(@RequestParam(defaultValue = "0") long id) {
-
-        return ResponseEntity.ofNullable(olympiadService.getById(id));
     }
 }

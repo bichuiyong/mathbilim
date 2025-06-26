@@ -46,15 +46,18 @@ public class OlympiadCreateDto {
     LocalDate endDate;
 
     @Valid
+    @Builder.Default
     List<OlympiadContactDto> contacts = new ArrayList<>();
 
     @NotNull(message = "Создатель обязателен")
     Long creatorId;
 
-    @NotEmpty(message = "Этапы обязательны")
+    @Builder.Default
+    @NotNull(message = "Этапы обязательны")
     @Valid
     List<OlympiadStageCreateDto> stages = new ArrayList<>();
 
+    @Builder.Default
     @NotNull
     List<Long> organizationIds = new ArrayList<>();
 }

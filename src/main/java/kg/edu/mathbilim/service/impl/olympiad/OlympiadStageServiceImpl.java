@@ -74,4 +74,9 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
                         .build())
                 .toList();
     }
+
+    @Override
+    public void addAll(List<OlympiadStage> olympiadStages) {
+        repository.saveAll(olympiadStages);
+    }
 }

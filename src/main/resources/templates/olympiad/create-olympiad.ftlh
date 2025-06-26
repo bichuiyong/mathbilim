@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<#import "spring.ftl" as spring>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
         :root {
@@ -14,14 +14,7 @@
             --error: #dc2626;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
+        .olympiad-body {
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.5;
@@ -29,7 +22,7 @@
             min-height: 100vh;
         }
 
-        .container {
+        .olympiad-container {
             max-width: 900px;
             margin: 0 auto;
             background-color: var(--card);
@@ -38,12 +31,12 @@
             overflow: hidden;
         }
 
-        header {
+        .olympiad-header {
             padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border);
         }
 
-        h1 {
+        .olympiad-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--primary);
@@ -52,7 +45,7 @@
             gap: 0.75rem;
         }
 
-        h1 svg {
+        .olympiad-title svg {
             width: 1.5rem;
             height: 1.5rem;
         }
@@ -61,7 +54,7 @@
             padding: 2rem;
         }
 
-        .grid {
+        .olympiad-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
@@ -75,7 +68,7 @@
             grid-column: span 2;
         }
 
-        label {
+        .olympiad-label {
             display: block;
             margin-bottom: 0.5rem;
             font-size: 0.875rem;
@@ -83,15 +76,15 @@
             color: var(--text);
         }
 
-        label.required::after {
+        .olympiad-label.required::after {
             content: '*';
             color: var(--error);
             margin-left: 0.25rem;
         }
 
-        input,
-        select,
-        textarea {
+        .olympiad-input,
+        .olympiad-select,
+        .olympiad-textarea {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1px solid var(--border);
@@ -100,15 +93,15 @@
             transition: all 0.15s ease;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        .olympiad-input:focus,
+        .olympiad-select:focus,
+        .olympiad-textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        textarea {
+        .olympiad-textarea {
             min-height: 120px;
             resize: vertical;
         }
@@ -150,7 +143,7 @@
             color: var(--primary);
         }
 
-        .btn {
+        .olympiad-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -163,29 +156,41 @@
             border: none;
         }
 
-        .btn-primary {
+        .olympiad-btn-primary {
             background-color: var(--primary);
             color: white;
         }
 
-        .btn-primary:hover {
+        .olympiad-btn-primary:hover {
             background-color: var(--primary-dark);
         }
 
-        .btn-outline {
+        .olympiad-btn-outline {
             background-color: transparent;
             border: 1px solid var(--border);
             color: var(--text);
         }
 
-        .btn-outline:hover {
+        .olympiad-btn-outline:hover {
             background-color: #f1f5f9;
         }
 
-        .btn svg {
+        .olympiad-btn svg {
             width: 1rem;
             height: 1rem;
             margin-right: 0.5rem;
+        }
+
+        .olympiad-btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+
+        .olympiad-btn-sm svg {
+            width: 0.875rem;
+            height: 0.875rem;
+            margin-right: 0.25rem;
         }
 
         .stages-container {
@@ -214,18 +219,53 @@
             color: var(--primary);
         }
 
-        .organizers-container {
+        .contacts-container {
             margin-top: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .organizer-card {
+        .contact-card {
             display: grid;
-            grid-template-columns: 2fr 1.5fr auto;
+            grid-template-columns: 1fr 2fr auto;
             gap: 1rem;
             align-items: center;
+        }
+
+        .checkbox-group {
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+        }
+
+        .checkbox-group.open {
+            max-height: 300px;
+            padding: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex-grow: 1;
         }
 
         .submit-btn {
@@ -236,7 +276,7 @@
         }
 
         @media (max-width: 768px) {
-            .grid {
+            .olympiad-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -244,233 +284,381 @@
                 grid-column: span 1;
             }
 
-            .organizer-card {
+            .contact-card {
                 grid-template-columns: 1fr;
             }
         }
     </style>
-</head>
 
-<body>
-<div class="container">
-    <header>
-        <h1>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Создание новой олимпиады
-        </h1>
-    </header>
+    <div class="olympiad-body">
+    <div class="olympiad-container">
+        <header class="olympiad-header">
+            <h1 class="olympiad-title">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Создание новой олимпиады
+            </h1>
+        </header>
 
-    <div class="form-content">
-        <form id="olympiadForm" action="/api/olympiads" method="POST" enctype="multipart/form-data">
-            <div class="grid">
-                <!-- Основная информация -->
-                <div class="form-group full-width">
-                    <label for="title" class="required">Название олимпиады</label>
-                    <input type="text" id="title" name="title" required placeholder="Введите название">
-                </div>
+        <div class="form-content">
+            <form id="olympiadForm" action="/olympiad/add" method="POST" enctype="multipart/form-data">
+                <div class="olympiad-grid">
 
-                <div class="form-group full-width">
-                    <label for="info" class="required">Описание</label>
-                    <textarea id="info" name="info" required placeholder="Подробное описание олимпиады"></textarea>
-                </div>
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
 
-                <div class="form-group">
-                    <label for="start_date" class="required">Дата начала</label>
-                    <input type="date" id="start_date" name="start_date" required>
-                </div>
+                    <input type="hidden" name="creatorId" value="${user.id}">
 
-                <div class="form-group">
-                    <label for="end_date" class="required">Дата окончания</label>
-                    <input type="date" id="end_date" name="end_date" required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="rules" class="required">Правила участия</label>
-                    <textarea id="rules" name="rules" required
-                              placeholder="Условия и требования для участников"></textarea>
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Изображение</label>
-                    <div class="file-upload">
-                        <label class="file-upload-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <span>Перетащите изображение или кликните для загрузки</span>
-                            <span style="color: var(--primary-light); font-size: 0.75rem;">PNG, JPG (макс.
-                                    10MB)</span>
-                        </label>
-                        <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+                    <div class="form-group full-width">
+                        <label for="title" class="olympiad-label required">Название олимпиады</label>
+                        <@spring.formInput "olympiadCreateDto.title" "placeholder='Веддите название' class='olympiad-input'"/>
+                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
                     </div>
-                </div>
 
-                <!-- Организаторы -->
-                <div class="form-group full-width">
-                    <label>Организаторы</label>
-                    <div id="organizers" class="organizers-container">
-                        <div class="organizer-card">
-                            <input type="text" name="organizers[]" placeholder="Название организации">
-                            <input type="text" name="organizer_contacts[]" placeholder="Контактные данные">
-                            <button type="button" class="btn btn-outline remove-organizer">
+                    <div class="form-group full-width">
+                        <label for="info" class="olympiad-label required">Описание</label>
+                        <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Веддите подробное описание олимпиады' class='olympiad-textarea'"/>
+                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start_date" class="olympiad-label required">Дата начала</label>
+                        <@spring.formInput "olympiadCreateDto.startDate" 'type="date" class="olympiad-input"' 'date'/>
+                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_date" class="olympiad-label required">Дата окончания</label>
+                        <@spring.formInput "olympiadCreateDto.endDate" 'type="date" class="olympiad-input"' 'date'/>
+                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="rules" class="olympiad-label required">Правила участия</label>
+                        <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea"'/>
+                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Изображение</label>
+                        <div class="file-upload">
+                            <label class="file-upload-label">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
-                                Удалить
-                            </button>
+                                <span>Перетащите изображение или кликните для загрузки</span>
+                                <span style="color: var(--primary-light); font-size: 0.75rem;">PNG, JPG (макс.
+                                    10MB)</span>
+                            </label>
+                            <input type="file" id="image" name="imageFile" accept="image/png, image/jpeg">
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
                     </div>
-                    <button type="button" id="addOrganizer" class="btn btn-outline" style="margin-top: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        Добавить организатора
-                    </button>
-                </div>
 
-                <!-- Контакты -->
-                <div class="form-group full-width">
-                    <label for="contacts" class="required">Контактная информация</label>
-                    <textarea id="contacts" name="contacts" required
-                              placeholder="Email, телефон, адрес для связи"></textarea>
-                </div>
 
-                <!-- Этапы -->
-                <div class="form-group full-width">
-                    <label for="stageCount">Количество этапов</label>
-                    <select id="stageCount" name="stage_count">
-                        <option value="1">1 этап</option>
-                        <option value="2">2 этапа</option>
-                        <option value="3">3 этапа</option>
-                        <option value="4">4 этапа</option>
-                    </select>
+                    <div class="form-group full-width">
+                        <label>Организаторы</label>
+                        <button type="button" id="toggleOrganizers" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm"
+                                style="margin-bottom: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 9l-7 7-7-7" />
+                            </svg>
+                            Показать организаторов
+                        </button>
+                        <div id="organizersContainer" class="checkbox-group">
+<#--                            js-->
+                        </div>
+                    </div>
 
-                    <div class="stages-container" id="stagesContainer">
-                        <div class="stage-card">
-                            <div class="stage-header">
-                                <span class="stage-title">Этап 1</span>
+
+                    <div class="form-group full-width">
+                        <label>Контакты</label>
+                        <div id="contacts" class="contacts-container">
+                            <div class="contact-card">
+                                <select name="contact_types[]" class="olympiad-select contact-type-select">
+
+                                </select>
+                                <input type="text" name="contact_links[]" placeholder="Ссылка или контакт" class="olympiad-input">
+                                <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Удалить
+                                </button>
                             </div>
-                            <div class="grid" style="gap: 1rem;">
-                                <div class="form-group">
-                                    <label class="required">Дата начала</label>
-                                    <input type="date" name="stage_start[]" required>
+                        </div>
+                        <button type="button" id="addContact" class="olympiad-btn olympiad-btn-outline" style="margin-top: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Добавить контакт
+                        </button>
+                    </div>
+
+
+                    <div class="form-group full-width">
+                        <label for="stageCount">Количество этапов</label>
+                        <select id="stageCount" name="stage_count" class="olympiad-select">
+                            <option value="1">1 этап</option>
+                            <option value="2">2 этапа</option>
+                            <option value="3">3 этапа</option>
+                            <option value="4">4 этапа</option>
+                            <option value="5">5 этапа</option>
+                            <option value="6">6 этапа</option>
+                            <option value="7">7 этапа</option>
+                        </select>
+
+                        <div class="stages-container" id="stagesContainer">
+                            <div class="stage-card">
+                                <div class="stage-header">
+                                    <span class="stage-title">Этап 1</span>
                                 </div>
-                                <div class="form-group">
-                                    <label class="required">Дата окончания</label>
-                                    <input type="date" name="stage_end[]" required>
+                                <div class="olympiad-grid" style="gap: 1rem;">
+                                    <input name="stages[0].stageOrder" value="1" type="hidden">
+                                    <div class="form-group">
+                                        <label class="olympiad-label required">Дата начала</label>
+                                        <input class="olympiad-input" name="stages[0].eventStartDate" type="date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="olympiad-label required">Дата окончания</label>
+                                        <input class="olympiad-input" name="stages[0].eventEndDate" type="date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="olympiad-label required">Начало регистрации</label>
+                                        <input class="olympiad-input" name="stages[0].registrationStart" type="date" required>                        </div>
+                                    <div class="form-group">
+                                        <label class="olympiad-label required">Конец регистрации</label>
+                                        <input class="olympiad-input" name="stages[0].registrationEnd" type="date" required>                        </div>
                                 </div>
-                                <div class="form-group full-width">
-                                    <label>Описание этапа</label>
-                                    <textarea name="stage_description[]" placeholder="Детали этапа"></textarea>
-                                </div>
+                                <#if dateError??>
+                                    <br>
+                                    <p class="text-danger small mt-1">
+                                        ${dateError}
+                                    </p>
+                                </#if>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <button type="submit" class="btn btn-primary submit-btn">
+                <button type="submit" class="olympiad-btn olympiad-btn-primary submit-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    Сохранить олимпиаду
+                </button>
+            </form>
+        </div>
+    </div>
+    </div>
+    <#noparse>
+        <script>
+            document.getElementById('toggleOrganizers').addEventListener('click', function () {
+                const organizersContainer = document.getElementById('organizersContainer');
+                const isHidden = organizersContainer.classList.contains('open');
+                organizersContainer.classList.toggle('open', !isHidden);
+                this.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="${isHidden ? 'M19 9l-7 7-7-7' : 'M19 14l-7-7-7 7'}" />
+            </svg>
+            ${isHidden ? 'Показать организаторов' : 'Скрыть организаторов'}
+        `;
+            });
+
+            document.getElementById('stageCount').addEventListener('change', function () {
+                const count = parseInt(this.value);
+                const container = document.getElementById('stagesContainer');
+                container.innerHTML = '';
+
+                for (let i = 0; i < count; i++) {
+                    const stageCard = document.createElement('div');
+                    stageCard.className = 'stage-card';
+                    stageCard.innerHTML = `
+                <div class="stage-header">
+                    <span class="stage-title">Этап ${i + 1}</span>
+                </div>
+                <div class="olympiad-grid" style="gap: 1rem;">
+                    <input name="stages[${i}].stageOrder" value="${i + 1}" type="hidden">
+                    <div class="form-group">
+                        <label class="olympiad-label required">Дата начала</label>
+                        <input class="olympiad-input" name="stages[${i}].eventStartDate" type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="olympiad-label required">Дата окончания</label>
+                        <input class="olympiad-input" name="stages[${i}].eventEndDate" type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="olympiad-label required">Начало регистрации</label>
+                        <input class="olympiad-input" name="stages[${i}].registrationStart" type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="olympiad-label required">Конец регистрации</label>
+                        <input class="olympiad-input" name="stages[${i}].registrationEnd" type="date" required>
+                    </div>
+                </div>
+            `;
+                    container.appendChild(stageCard);
+                }
+            });
+
+            async function loadContactTypes(selectElement) {
+                try {
+                    const response = await fetch('/api/contactType', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch contact types');
+                    }
+
+                    const contactTypes = await response.json();
+                    selectElement.innerHTML = '';
+
+                    if (!contactTypes || contactTypes.length === 0) {
+                        selectElement.innerHTML = '<option value="">Нет доступных типов контактов</option>';
+                        return;
+                    }
+
+                    contactTypes.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.id;
+                        option.textContent = type.name;
+                        selectElement.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading contact types:', error);
+                    selectElement.innerHTML = '<option value="">Ошибка загрузки типов контактов</option>';
+                }
+            }
+
+            function initializeContactTypes() {
+                document.querySelectorAll('.contact-type-select').forEach(select => {
+                    loadContactTypes(select);
+                });
+            }
+
+            document.getElementById('addContact').addEventListener('click', function () {
+                const contactsDiv = document.getElementById('contacts');
+                const contactCards = contactsDiv.querySelectorAll('.contact-card');
+                const contactCount = contactCards.length;
+
+                const newContact = document.createElement('div');
+                newContact.className = 'contact-card';
+                newContact.innerHTML = `
+            <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required></select>
+            <input type="text" name="contacts[${contactCount}].info" placeholder="Ссылка или контакт" class="olympiad-input">
+            <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                Сохранить олимпиаду
+                Удалить
             </button>
-        </form>
-    </div>
-</div>
+        `;
+                contactsDiv.appendChild(newContact);
+                loadContactTypes(newContact.querySelector('.contact-type-select'));
 
-<script>
-    // Динамическое добавление этапов
-    document.getElementById('stageCount').addEventListener('change', function () {
-        const count = parseInt(this.value);
-        const container = document.getElementById('stagesContainer');
+                newContact.querySelector('.remove-contact').addEventListener('click', function () {
+                    contactsDiv.removeChild(newContact);
+                    reindexContacts();
+                });
 
-        // Очищаем контейнер
-        container.innerHTML = '';
+                reindexContacts();
+            });
 
-        // Добавляем нужное количество этапов
-        for (let i = 0; i < count; i++) {
-            const stageCard = document.createElement('div');
-            stageCard.className = 'stage-card';
-            stageCard.innerHTML = `
-                    <div class="stage-header">
-                        <span class="stage-title">Этап ${i+1}</span>
-                    </div>
-                    <div class="grid" style="gap: 1rem;">
-                        <div class="form-group">
-                            <label class="required">Дата начала</label>
-                            <input type="date" name="stage_start[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="required">Дата окончания</label>
-                            <input type="date" name="stage_end[]" required>
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Описание этапа</label>
-                            <textarea name="stage_description[]" placeholder="Детали этапа"></textarea>
-                        </div>
-                    </div>
-                `;
-            container.appendChild(stageCard);
-        }
-    });
+            document.querySelectorAll('.remove-contact').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const contactItem = this.closest('.contact-card');
+                    const contactsDiv = document.getElementById('contacts');
+                    contactsDiv.removeChild(contactItem);
+                    reindexContacts();
+                });
+            });
 
-    // Добавление организаторов
-    document.getElementById('addOrganizer').addEventListener('click', function () {
-        const organizersDiv = document.getElementById('organizers');
-        const newOrganizer = document.createElement('div');
-        newOrganizer.className = 'organizer-card';
-        newOrganizer.innerHTML = `
-                <input type="text" name="organizers[]" placeholder="Название организации">
-                <input type="text" name="organizer_contacts[]" placeholder="Контактные данные">
-                <button type="button" class="btn btn-outline remove-organizer">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Удалить
-                </button>
+            window.addEventListener('DOMContentLoaded', () => {
+                initializeContactTypes();
+                loadOrganizations();
+            });
+
+            const fileInput = document.querySelector('.file-upload input[type="file"]');
+            const fileUploadLabel = document.querySelector('.file-upload-label');
+            fileInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    fileUploadLabel.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>${this.files[0].name}</span>
+                <span style="color: var(--primary-light); font-size: 0.75rem;">${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</span>
             `;
-        organizersDiv.appendChild(newOrganizer);
+                }
+            });
 
-        // Добавляем обработчик для новой кнопки удаления
-        newOrganizer.querySelector('.remove-organizer').addEventListener('click', function () {
-            organizersDiv.removeChild(newOrganizer);
-        });
-    });
+            async function loadOrganizations() {
+                const container = document.getElementById('organizersContainer');
+                container.innerHTML = '<p>Загрузка организаторов...</p>';
 
-    // Обработчики для существующих кнопок удаления организаторов
-    document.querySelectorAll('.remove-organizer').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const organizerItem = this.closest('.organizer-card');
-            document.getElementById('organizers').removeChild(organizerItem);
-        });
-    });
+                try {
+                    const response = await fetch('/api/organizations/name', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
 
-    // Обработка загрузки файла
-    const fileInput = document.querySelector('.file-upload input[type="file"]');
-    const fileUploadLabel = document.querySelector('.file-upload-label');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch organizations');
+                    }
 
-    fileInput.addEventListener('change', function () {
-        if (this.files.length > 0) {
-            fileUploadLabel.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>${this.files[0].name}</span>
-                    <span style="color: var(--primary-light); font-size: 0.75rem;">${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</span>
+                    const organizations = await response.json();
+                    container.innerHTML = '';
+
+                    if (!organizations || organizations.length === 0) {
+                        container.innerHTML = '<p>Нет доступных организаций</p>';
+                        return;
+                    }
+
+                    organizations.forEach(org => {
+                        const checkboxItem = document.createElement('div');
+                        checkboxItem.className = 'checkbox-item';
+                        checkboxItem.innerHTML = `
+                    <input type="checkbox" name="organizationIds" value="${org.id}" id="org_${org.id}">
+                    <label for="org_${org.id}">${org.name}</label>
                 `;
-        }
-    });
-</script>
-</body>
+                        container.appendChild(checkboxItem);
+                    });
+                } catch (error) {
+                    console.error('Error loading organizations:', error);
+                    container.innerHTML = '<p>Ошибка загрузки организаторов</p>';
+                }
+            }
+
+            function reindexContacts() {
+                const contactCards = document.querySelectorAll('#contacts .contact-card');
+                contactCards.forEach((card, index) => {
+                    const select = card.querySelector('select');
+                    const input = card.querySelector('input[type="text"]');
+                    select.name = `contacts[${index}].contactType`;
+                    input.name = `contacts[${index}].info`;
+                });
+            }
+        </script>
+        </#noparse>
 </@main.layout>

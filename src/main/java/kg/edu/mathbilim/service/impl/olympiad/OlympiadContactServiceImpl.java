@@ -23,4 +23,9 @@ public class OlympiadContactServiceImpl implements OlympiadContactService {
     public List<OlympiadContact> getContactsByOlympId(int olympId) {
         return repository.getByOlympiad_Id(olympId);
     }
+
+    @Override
+    public void addAllContacts(List<OlympiadContact> contacts) {
+        repository.saveAll(contacts);
+    }
 }

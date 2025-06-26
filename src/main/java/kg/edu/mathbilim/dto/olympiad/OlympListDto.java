@@ -10,4 +10,5 @@ import lombok.*;
 public class OlympListDto {
     private Integer id;
     private String title;
+    private Long fileId;
 }

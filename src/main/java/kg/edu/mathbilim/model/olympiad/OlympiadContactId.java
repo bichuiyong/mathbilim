@@ -23,7 +23,7 @@ public class OlympiadContactId implements Serializable {
 
     @NotNull
     @Column(name = "contact_type_id", nullable = false)
-    private Long contactTypeId;
+    private Integer contactTypeId;
 
     @Override
     public boolean equals(Object o) {

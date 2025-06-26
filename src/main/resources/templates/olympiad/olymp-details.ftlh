@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="container mt-4 mb-5">
-        <h1 class="mb-4">TSI Programming Contest 2025</h1>
+        <h1 class="mb-4">${olympiad.title}</h1>
 
 
         <ul class="nav nav-tabs mb-4" id="olympiadTab" role="tablist">
@@ -22,7 +22,7 @@
                         type="button" role="tab" aria-controls="results" aria-selected="false">Результаты</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#results"
+                <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"
                         type="button" role="tab" aria-controls="results" aria-selected="false">Организации</button>
             </li>
         </ul>
@@ -57,6 +57,8 @@
                         <#list olympiad.contacts as contact>
                             <strong>${contact.contactType}:</strong> ${contact.info}<br>
                         </#list>
+                    <#else>
+                    Организатор решил не оставлять контакты :(
                     </#if>
                 </p>
             </div>
@@ -69,7 +71,7 @@
                 </p>
             </div>
 
-            <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+            <div class="tab-pane fade" id="organization" role="tabpanel" aria-labelledby="rules-tab">
                 <h4>Организации</h4>
                 <p>
                     <#if olympiad.organizations??>

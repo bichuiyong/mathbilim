@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface OlympiadContactService {
     List<OlympiadContact> getContactsByOlympId(int olympId);
+
+    void addAllContacts(List<OlympiadContact> contacts);
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Setter
 @Entity
