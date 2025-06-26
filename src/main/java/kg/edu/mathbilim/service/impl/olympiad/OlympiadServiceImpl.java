@@ -2,7 +2,6 @@ package kg.edu.mathbilim.service.impl.olympiad;
 
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
-import kg.edu.mathbilim.model.olympiad.OlympiadStatus;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.olympiad.OlympiadRepository;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -35,10 +34,8 @@ public class OlympiadServiceImpl implements OlympiadService {
         olympiad.setRules(olympiadCreateDto.getRules());
         olympiad.setCreatedAt(LocalDateTime.now());
         olympiad.setUpdatedAt(LocalDateTime.now());
-        olympiad.setSubject(olympiadCreateDto.getSubject());
         olympiad.setStartDate(olympiadCreateDto.getStartDate());
         olympiad.setEndDate(olympiadCreateDto.getEndDate());
-        olympiad.setStatus(OlympiadStatus.PENDING);
         olympiadRepository.saveAndFlush(olympiad);
 
         if (olympiadCreateDto.getStages() != null) {

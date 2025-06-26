@@ -9,11 +9,12 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,58 +25,58 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "organizations")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Organization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
 
     @Size(max = 100)
     @NotNull
     @Column(name = "name", nullable = false, length = 100)
-    private String name;
+    String name;
 
     @Size(max = 500)
     @NotNull
     @Column(name = "description", nullable = false, length = 500)
-    private String description;
+    String description;
 
     @Size(max = 255)
     @Column(name = "url")
-    private String url;
+    String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "avatar")
-    private File avatar;
+    File avatar;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "creator_id")
-    private User creator;
+    User creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "approved_by")
-    private User approvedBy;
+    User approvedBy;
 
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
-    private ContentStatus status;
+    ContentStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
-    private Instant createdAt;
+    LocalDateTime createdAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "organizations")
-    private List<Event> events = new ArrayList<>();
+    List<Event> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
-
+    List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
 
 }

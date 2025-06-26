@@ -1,34 +1,21 @@
 package kg.edu.mathbilim.mapper.user;
 
-import kg.edu.mathbilim.dto.user.user_type.UserTypeTranslationDto;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslation;
-import kg.edu.mathbilim.model.user.user_type.UserTypeTranslationId;
-import org.mapstruct.AfterMapping;
+import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
+import kg.edu.mathbilim.mapper.BaseTranslationMapper;
+import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface UserTypeTranslationMapper {
+public interface UserTypeTranslationMapper extends BaseTranslationMapper<UserTypeTranslation, UserTypeTranslationDto> {
 
     @Mapping(source = "id.languageCode", target = "languageCode")
-    @Mapping(source = "translation", target = "translation")
+    @Mapping(source = "id.typeId", target = "typeId")
     UserTypeTranslationDto toDto(UserTypeTranslation entity);
 
     @Mapping(target = "id.languageCode", source = "languageCode")
-    @Mapping(target = "id.userTypeId", source = "userTypeId")
-    @Mapping(target = "translation", source = "translation")
-    @Mapping(target = "userType.id", source = "userTypeId")
-    @Mapping(target = "userType.userTypeTranslations", ignore = true)
+    @Mapping(target = "id.typeId", source = "typeId")
+    @Mapping(target = "parent.id", source = "typeId")
     UserTypeTranslation toEntity(UserTypeTranslationDto dto);
 
-
-    @AfterMapping
-    default void ensureCompositeKey(@MappingTarget UserTypeTranslation entity, UserTypeTranslationDto dto) {
-        if (entity.getId() == null) {
-            entity.setId(new UserTypeTranslationId());
-            entity.getId().setUserTypeId(dto.getUserTypeId());
-            entity.getId().setLanguageCode(dto.getLanguageCode());
-        }
-    }
 }

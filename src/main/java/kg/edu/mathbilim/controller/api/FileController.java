@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @RestController
@@ -56,6 +57,21 @@ public class FileController {
                 .body(resource);
     }
 
+    @GetMapping("/{fileId}/view")
+    public ResponseEntity<Resource> viewFile(@PathVariable Long fileId) {
+        FileDto fileDto = fileService.getById(fileId);
+        byte[] fileContent = fileService.downloadFile(fileId);
+
+        ByteArrayResource resource = new ByteArrayResource(fileContent);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
+                .contentLength(fileContent.length)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
+                .body(resource);
+    }
+
 
     @PutMapping("/{fileId}")
     public ResponseEntity<FileDto> updateFile(
@@ -90,5 +106,65 @@ public class FileController {
                 .toList();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFiles);
+    }
+
+    @PostMapping("/tinymce/image")
+    public ResponseEntity<Map<String, String>> uploadImageForTinyMCE(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер изображения не должен превышать 5MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/images");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("location", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки изображения"));
+        }
+    }
+
+    @PostMapping("/tinymce/video")
+    public ResponseEntity<Map<String, String>> uploadVideoForTinyMCE(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 100 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер видео не должен превышать 100MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/videos");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("location", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки видео"));
+        }
+    }
+
+    @PostMapping("/tinymce/document")
+    public ResponseEntity<Map<String, String>> uploadDocumentForTinyMCE(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 10 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер документа не должен превышать 10MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/documents");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("location", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки видео"));
+        }
     }
 }

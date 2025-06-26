@@ -1,20 +1,22 @@
 package kg.edu.mathbilim.dto.test;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestChoiceDto {
-    private TestDto test;
+    TestDto test;
 
-    private Integer questionNumber;
+    Integer questionNumber;
 
-    private String questionValue;
+    String questionValue;
 
-    private Instant answeredAt;
+    LocalDateTime answeredAt;
 }

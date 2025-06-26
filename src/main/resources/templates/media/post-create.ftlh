@@ -103,7 +103,7 @@
                             <#list postTypes as type>
                                 <option value="${type.id}"
                                         <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
-                                    ${type.postTypeTranslations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                    ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
                                 </option>
                             </#list>
                         </select>
@@ -127,10 +127,6 @@
                 <input type="file" class="form-control" name="attachments" multiple>
             </div>
 
-            <div>
-                <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
-            </div>
-
             <!-- Кнопки -->
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Создать пост</button>
@@ -140,51 +136,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Активация вкладок переводов
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                // Скрыть все вкладки
-                document.querySelectorAll('.translation-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-
-                // Показать выбранную
-                const targetTab = document.querySelector(this.getAttribute('href'));
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                }
-
-                // Активировать ссылку
-                document.querySelectorAll('.nav-link').forEach(navLink => {
-                    navLink.classList.remove('active');
-                });
-                this.classList.add('active');
-            });
-        });
-
-        // Предварительный просмотр изображения
-        document.querySelector('input[name="image"]').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    let preview = document.getElementById('image-preview');
-                    if (!preview) {
-                        preview = document.createElement('img');
-                        preview.id = 'image-preview';
-                        preview.className = 'img-thumbnail mt-2';
-                        preview.style.maxWidth = '200px';
-                        e.target.parentNode.appendChild(preview);
-                    }
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
+    <script src="/static/js/switchLangTabs.js"></script>
     </body>
     </html>
 </@main.layout>

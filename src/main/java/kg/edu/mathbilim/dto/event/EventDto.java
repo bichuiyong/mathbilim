@@ -3,80 +3,62 @@ package kg.edu.mathbilim.dto.event;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.ContentStatus;
-import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.dto.abstracts.ContentDto;
+import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import kg.edu.mathbilim.validation.annotation.ValidDateTimeRange;
+import kg.edu.mathbilim.validation.annotation.ValidEventLocation;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @ValidDateTimeRange(
         startDateTimeField = "startDate",
         endDateTimeField = "endDate"
 )
-public class EventDto {
-    private Long id;
+@ValidEventLocation
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class EventDto extends ContentDto {
+    @NotNull(message = "Дата начала мероприятия обязательна")
+    @Future(message = "Дата начала мероприятия должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    LocalDateTime startDate;
 
-    @NotNull
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime startDate;
+    @Future(message = "Дата окончания должна быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    LocalDateTime endDate;
 
-    @Future
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime endDate;
+    @NotNull(message = "Необходимо выбрать тип мероприятия")
+    Long typeId;
 
-    @NotNull
-    private Long typeId;
+    String address; // если оффлайн
 
-    private UserDto user;
+    String url; // если онлайн
 
-    @Builder.Default
-    private UserDto approvedBy = null;
-
-    @Builder.Default
-    private Instant createdAt = Instant.now();
-
-    @Builder.Default
-    private Instant updatedAt = Instant.now();
-
-    private String address; // если оффлайн
-
-    private String url; // если онлайн
-
-    private ContentStatus status;
-
-    private FileDto mainImage;
-
-    @NotNull
-    private Boolean isOffline;
+    @NotNull(message = "Необходимо указать тип мероприятия (онлайн/офлайн)")
+    Boolean isOffline;
 
     @Builder.Default
-    private List<FileDto> files = new ArrayList<>();
+    List<FileDto> eventFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    private List<EventTranslationDto> eventTranslations = createDefaultTranslations();
+    List<EventTranslationDto> eventTranslations = createDefaultTranslations();
 
-
-    private static List<EventTranslationDto> createDefaultTranslations() {
-        return Arrays.stream(Language.values())
-                .map(lang -> EventTranslationDto.builder()
-                        .languageCode(lang.getCode())
-                        .title("")
-                        .content("")
-                        .build())
-                .collect(Collectors.toList());
+    static List<EventTranslationDto> createDefaultTranslations() {
+        return TranslationUtil.createDefaultTranslations(languageCode ->
+                EventTranslationDto.builder()
+                        .languageCode(languageCode)
+                        .build()
+        );
     }
 }

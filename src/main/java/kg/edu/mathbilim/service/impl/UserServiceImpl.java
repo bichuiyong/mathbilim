@@ -7,10 +7,12 @@ import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
-import kg.edu.mathbilim.model.user.user_type.UserType;
+import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.user.UserRepository;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
 import kg.edu.mathbilim.service.interfaces.reference.RoleService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -27,13 +29,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static kg.edu.mathbilim.util.PaginationUtil.getPage;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +49,7 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final UserTypeService userTypeService;
     private final EmailServiceImpl emailService;
+    private final FileService fileService;
 
     @Override
     public boolean userEmailIsNotReal(String email) {
@@ -74,9 +79,9 @@ public class UserServiceImpl implements UserService {
                 .name(name)
                 .email("telegram_" + userId + "@notEmail.com")
                 .role(roleService.getRoleByName("USER"))
-                .password(passwordEncoder.encode("telegram"+userId+"password"))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .password(passwordEncoder.encode("telegram" + userId + "password"))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .surname(surname)
                 .telegramId(userId)
                 .enabled(true)
@@ -136,11 +141,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void edit(UserEditDto userDto, String email) {
-        User user = getEntityByEmail(email);
+    public void edit(UserEditDto userDto) {
+        User user = getEntityById(userDto.getId());
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
-        user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
+        if(userDto.getTypeId() != null) {
+            user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
+        }
+        user.setRole(roleService.getRoleById(userDto.getRole().getId()));
         userRepository.saveAndFlush(user);
     }
 
@@ -159,9 +167,9 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
         if (query == null || query.isEmpty()) {
-            return getPage(() -> userRepository.findAll(pageable));
+            return getPage(() -> userRepository.findAll(pageable), userMapper::toDto);
         }
-        return getPage(() -> userRepository.findByQuery(query, pageable));
+        return getPage(() -> userRepository.findByQuery(query, pageable), userMapper::toDto);
     }
 
     @Transactional
@@ -170,20 +178,6 @@ public class UserServiceImpl implements UserService {
         User user = getEntityById(userId);
         user.setEnabled(!user.getEnabled().equals(Boolean.TRUE));
         userRepository.save(user);
-    }
-
-
-    private Page<UserDto> getPage(Supplier<Page<User>> supplier, String notFoundMessage) {
-        Page<User> userPage = supplier.get();
-        if (userPage.isEmpty()) {
-            throw new UserNotFoundException(notFoundMessage);
-        }
-        log.info("Получено {} пользователей на странице", userPage.getSize());
-        return userPage.map(userMapper::toDto);
-    }
-
-    private Page<UserDto> getPage(Supplier<Page<User>> supplier) {
-        return getPage(supplier, "Пользователи не были найдены");
     }
 
     @Override
@@ -240,7 +234,7 @@ public class UserServiceImpl implements UserService {
         UserType userType = userTypeService.getUserTypeEntity(userTypeId);
 
         user.setType(userType);
-        user.setUpdatedAt(Instant.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
     }
@@ -256,25 +250,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createOAuthUser(UserDto userDto) {
-        if (existsByEmail(userDto.getEmail())) {
-            throw new IllegalStateException("Пользователь уже существует: " + userDto.getEmail());
-        }
+    public void setUserAvatar(Long userId, MultipartFile file) {
+        File avatar = fileService.uploadAvatarReturnEntity(file);
+        User user = getEntityById(userId);
+        user.setAvatar(avatar);
+        userRepository.saveAndFlush(user);
+        log.info("Установлен автар пользователя");
+    }
 
-        User user = User.builder()
-                .email(userDto.getEmail())
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
-                .role(roleService.getRoleByName("USER"))
-                .isEmailVerified(true)
-                .enabled(true)
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
-                .build();
-
-        User savedUser = userRepository.save(user);
-        return userMapper.toDto(savedUser);
+    @Override
+    public UserEditDto getEditUserById(Long id) {
+        User user = getEntityById(id);
+        return userMapper.toEditDto(user);
     }
 
     private void updateResetPasswordToken(String email, String token) {
@@ -302,6 +289,27 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Override
+    public UserDto createOAuthUser(UserDto userDto) {
+        if (existsByEmail(userDto.getEmail())) {
+            throw new IllegalStateException("Пользователь уже существует: " + userDto.getEmail());
+        }
+
+        User user = User.builder()
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .role(roleService.getRoleByName("USER"))
+                .isEmailVerified(true)
+                .enabled(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
 
     @Override
     public void updatePassword(Long userId, String password) {
@@ -368,7 +376,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isEmailVerified(String email) {
         User user = getEntityByEmail(email);
-
         return Boolean.TRUE.equals(user.getIsEmailVerified());
     }
 }

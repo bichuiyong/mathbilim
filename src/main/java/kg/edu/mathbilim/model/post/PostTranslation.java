@@ -1,31 +1,26 @@
 package kg.edu.mathbilim.model.post;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import kg.edu.mathbilim.model.abstracts.ContentTranslation;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "post_translations")
-public class PostTranslation {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PostTranslation extends ContentTranslation {
     @EmbeddedId
-    private PostTranslationId id;
+    PostTranslationId id;
 
     @MapsId("postId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
-
-    @Size(max = 500)
-    @NotNull
-    @Column(name = "title", nullable = false, length = 500)
-    private String title;
-
-    @NotNull
-    @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
-    private String content;
+    Post post;
 
 }

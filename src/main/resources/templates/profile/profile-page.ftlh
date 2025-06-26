@@ -1,13 +1,17 @@
 <#import "../layout.ftlh" as main>
 <#import "/spring.ftl" as spring>
 <@main.layout title="Профиль">
+    <head>
+        <meta name="_csrf" content="${_csrf.token}">
+        <title></title>
+    </head>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
     <#if known>
         <#assign
         authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
-        isAdmin = authorities?seq_contains("ROLE_ADMIN")
-        isModer = authorities?seq_contains("ROLE_MODER") || isAdmin
+        isAdmin = authorities?seq_contains("ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
 
@@ -19,15 +23,12 @@
                     <div class="card-body text-center">
                         <div class="profile-avatar-container mb-3">
                             <#if user.avatar??>
-                                <img src="/api/files/${user.avatar.id}" alt="Аватар" class="profile-avatar">
+                                <img src="/api/files/${user.avatar.id}/download" alt="Аватар" class="profile-avatar">
                             <#else>
                                 <div class="profile-avatar-placeholder">
                                     <i class="fas fa-user"></i>
                                 </div>
                             </#if>
-                            <button class="btn btn-sm btn-primary profile-avatar-edit" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                                <i class="fas fa-camera"></i>
-                            </button>
                         </div>
 
                         <h4 class="mb-1">${user.name!} ${user.surname!}</h4>
@@ -35,7 +36,7 @@
 
                         <#if user.type??>
                             <span class="badge bg-light-blue text-primary mb-3">
-                            ${user.type.userTypeTranslations[0].translation}
+                            ${user.type.translations[0].translation}
                         </span>
                         </#if>
 
@@ -68,7 +69,7 @@
 
                         <hr>
 
-                        <a href="/profile/edit" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-edit me-2"></i>Редактировать профиль
                         </a>
                     </div>
@@ -217,15 +218,15 @@
                                     <!-- Действия с пользователями -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0">Управление пользователями</h5>
-                                        <a href="/admin/users/create" class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
                                             <i class="fas fa-user-plus me-2"></i>Создать пользователя
-                                        </a>
+                                        </button>
                                     </div>
 
                                     <!-- Фильтры пользователей -->
                                     <div class="users-filters mb-4">
                                         <div class="row g-2">
-                                            <div class="col-md-8">
+                                            <div class="col-md-12">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="usersSearch" placeholder="Поиск по имени или email...">
                                                     <button class="btn btn-outline-secondary" type="button" id="usersSearchBtn">
@@ -233,13 +234,13 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <select class="form-select form-select-sm" id="usersSortBy">
-                                                    <option value="name">По имени</option>
-                                                    <option value="email">По email</option>
-                                                    <option value="createdAt">По дате регистрации</option>
-                                                </select>
-                                            </div>
+<#--                                            <div class="col-md-4">-->
+<#--                                                <select class="form-select form-select-sm" id="usersSortBy">-->
+<#--                                                    <option value="name">По имени</option>-->
+<#--                                                    <option value="email">По email</option>-->
+<#--                                                    <option value="createdAt">По дате регистрации</option>-->
+<#--                                                </select>-->
+<#--                                            </div>-->
                                         </div>
                                     </div>
 
@@ -252,7 +253,7 @@
                                     </div>
 
                                     <!-- Пагинация -->
-                                    <nav id="usersPagination" class="mt-3" style="display: none;">
+                                    <nav id="usersPagination" class="mt-3">
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
@@ -264,37 +265,132 @@
         </div>
     </div>
 
-    <!-- Модальное окно для загрузки аватара -->
-    <div class="modal fade" id="avatarModal" tabindex="-1">
+
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Загрузить аватар</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="deleteUserModalLabel">Подтвердить удаление</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="avatarForm" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="avatarFile" class="form-label">Выберите изображение</label>
-                            <input type="file" class="form-control" id="avatarFile" accept="image/*" required>
-                            <div class="form-text">Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 5MB</div>
-                        </div>
-                        <div id="avatarPreview" class="text-center" style="display: none;">
-                            <img src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload me-2"></i>Загрузить
-                        </button>
-                    </div>
-                </form>
+                <div class="modal-body" id="deleteUserModalBody">
+                    <input type="hidden" value="" id="deleteUserInput">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="deleteUserBtn">Удалить</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Подключение JavaScript -->
-    <script src="/static/js/profile.js"></script>
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Изменить пользователя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId" name="id" value="">
+                        <div class="mb-3">
+                            <label for="editUserName" class="form-label">First name</label>
+                            <input type="text" class="form-control" id="editUserName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserSurname" class="form-label">Last name</label>
+                            <input type="text" class="form-control" id="editUserSurname" name="surname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserRole" class="form-label">Роль</label>
+                            <select class="form-select" id="editUserRole" name="role">
+                                <#list roles as role>
+                                    <option value="${role.name}">${role.name}</option>
+                                </#list>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserType" class="form-label">Тип аккаунта</label>
+                            <div class="account-type-select">
+                                <select class="form-select" id="editUserType" name="type">
+                                    <option selected disabled value="">Выберите тип аккаунта</option>
+                                    <#list types as type>
+                                        <option value="${type.id}" data-name="${type.userTypeTranslations[0].translation}">${type.userTypeTranslations[0].translation}</option>
+                                    </#list>
+                                </select>
+                                <i class="bi bi-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="editUserBtn">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createUserModalLabel">Создать нового пользователя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createNewUser">
+<#--                        <#if _csrf??>-->
+<#--                            <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>-->
+<#--                        </#if>-->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">First name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Last name</label>
+                            <input type="text" class="form-control" id="surname" name="surname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserRole" class="form-label">Роль</label>
+                            <select class="form-select" id="newUserRole" name="role">
+                                <#list roles as role>
+                                    <option value="${role.name}">${role.name}</option>
+                                </#list>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Тип аккаунта</label>
+                            <div class="account-type-select">
+                                <select class="form-select" id="type" name="type">
+                                    <option selected disabled value="">Выберите тип аккаунта</option>
+                                    <#list types as type>
+                                        <option value="${type.id}" data-name="${type.userTypeTranslations[0].translation}">${type.userTypeTranslations[0].translation}</option>
+                                    </#list>
+                                </select>
+                                <i class="bi bi-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="createUserBtn">Создать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/admin.js"></script>
 </@main.layout>

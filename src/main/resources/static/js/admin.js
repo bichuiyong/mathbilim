@@ -1,29 +1,28 @@
-const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content') ||
-    document.querySelector('input[name="_csrf"]')?.value ||
-    document.querySelector('input[name="csrf"]')?.value;
-
-const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
-
-console.log('CSRF Token:', csrfToken);
-console.log('CSRF Header:', csrfHeader);
-
-window.onload = function () {
-    doFetch('api/users');
-    changeEditModal()
+let switchOnUserButton = document.getElementById('users-tab');
+let userContentList = document.getElementById('usersContentList');
+switchOnUserButton.onclick = function () {
+    doFetch('/api/users');
 }
 
 
-const searchButton = document.getElementById('searchButton');
+
+const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
+    document.querySelector('input[name="csrf"]')?.value ||
+    document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+
+const searchButton = document.getElementById('usersSearchBtn');
 searchButton.onclick = function () {
-    let searchInputValue = document.getElementById('searchInput').value;
-    let url = "api/users"
+    let searchInputValue = document.getElementById('usersSearch').value;
+    let url = "/api/users"
     if (searchInputValue) {
-        url = "api/users?query=" + searchInputValue
+        url = "/api/users?query=" + searchInputValue
     }
     doFetch(url);
 }
 function renderPagination(currentPage, totalPages, url) {
+    // document.getElementById('usersPagination').style.display = 'block';
     const paginationContainer = document.querySelector('.pagination');
+    console.log(paginationContainer);
     paginationContainer.innerHTML = '';
 
     const createPageItem = (page, text = null, active = false, disabled = false) => {
@@ -63,20 +62,7 @@ function renderPagination(currentPage, totalPages, url) {
 }
 function doFetch(url, page = 1) {
     const connector = url.includes('?') ? '&' : '?';
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    if (csrfToken) {
-        headers[csrfHeader] = csrfToken;
-    }
-
-    fetch(`${url}${connector}page=${page}`, {
-        method: 'GET',
-        headers: headers,
-        credentials: 'same-origin'
-    })
+    fetch(`${url}${connector}page=${page}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ошибка сети: ' + response.status);
@@ -88,7 +74,6 @@ function doFetch(url, page = 1) {
             if (data.length === 0) {
 
             } else {
-
                 addUserToTable(data.content)
                 renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
             }
@@ -96,36 +81,108 @@ function doFetch(url, page = 1) {
         })
         .catch(error => {});
 }
-
+//
 function addUserToTable(users) {
-    console.log("WAS APPENDED1")
-    let resultTable = document.getElementById('resultTable');
-    resultTable.innerHTML = "";
-    console.log("WAS APPENDED2")
+    userContentList.innerHTML = "<div class=\"table-responsive\">\n" +
+        "        <table class=\"table table-hover table-striped\">\n" +
+        "            <thead>\n" +
+        "            <tr>\n" +
+        "                <th>ID</th>\n" +
+        "                <th>Имя пользователя</th>\n" +
+        "                <th>Email</th>\n" +
+        "                <th>Роль</th>\n" +
+        "                <th>Статус</th>\n" +
+        "                <th>Действия</th>\n" +
+        "            </tr>\n" +
+        "            </thead>\n" +
+        "            <tbody id=\"resultTableUsers\">\n" +
+        "            </tbody>\n" +
+        "        </table>\n" +
+        "    </div>";
+    let resultTableUsers = document.getElementById('resultTableUsers')
     users.forEach(user => {
         const tr = document.createElement('tr');
-        console.log("WAS APPENDED3")
         tr.innerHTML = `
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td><span class="badge bg-secondary">${user.role.name}</span></td>
-            <td><span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
-                ${user.enabled ? 'Активен' : 'Неактивен'}</span></td>
-            <td>
-                <button class="edit-button btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="${user.id}" data-user-name="${user.name}" data-user-surname="${user.surname}" data-user-role="${user.role.name}" data-user-type="${user.type?.id || ''}">Изменить</button>
-                <button class="delete-button btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="${user.id}">Удалить</button>
-                <button class="block-button btn btn-sm btn-warning" data-user-id="${user.id}">${user.enabled ? 'Заблокировать' : 'Разблокировать'}</button>
-            </td>
-        `;
+  <td>${user.id}</td>
+  <td>${user.name}</td>
+  <td>${user.email}</td>
+  <td><span class="badge bg-secondary">${user.role.name}</span></td>
+  <td>
+    <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
+      ${user.enabled ? 'Активен' : 'Неактивен'}
+    </span>
+  </td>
+  <td>
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Действия
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item edit-button" 
+             href="#" 
+             data-bs-toggle="modal" 
+             data-bs-target="#editUserModal"
+             data-user-id="${user.id}" 
+             data-user-name="${user.name}" 
+             data-user-surname="${user.surname}" 
+             data-user-role="${user.role.name}" 
+             data-user-type="${user.type?.id || ''}">
+            ✏️ Изменить
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item delete-button" 
+             href="#" 
+             data-bs-toggle="modal" 
+             data-bs-target="#deleteUserModal"
+             data-user-id="${user.id}">
+            🗑️ Удалить
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item block-button text-warning" 
+             href="#" 
+             data-user-id="${user.id}">
+            ${user.enabled ? '🔒 Заблокировать' : '🔓 Разблокировать'}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </td>
+`;
 
-        console.log("WAS APPENDED4")
 
-        resultTable.appendChild(tr);
+
+
+        resultTableUsers.appendChild(tr);
 
     });
+    initDropdownBehavior();
+    // console.log('changeEditModal')
+    changeEditModal();
 }
+function initDropdownBehavior() {
+    document.querySelectorAll('.dropdown').forEach(dropdown => {
+        const toggleButton = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+        if (!toggleButton) return;
 
+        toggleButton.addEventListener('click', () => {
+            setTimeout(() => {
+                const rect = dropdown.getBoundingClientRect();
+                const menuHeight = 150;
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceAbove = rect.top;
+
+                if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+                    dropdown.classList.add('dropup');
+                } else {
+                    dropdown.classList.remove('dropup');
+                }
+            }, 10);
+        });
+    });
+}
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
@@ -134,18 +191,11 @@ createUserBtn.onclick = function () {
 
 async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
     try {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        if (csrfToken) {
-            headers[csrfHeader] = csrfToken;
-        }
-
         const response = await fetch(`/api/users/${userId}`, {
             method: method,
-            headers: headers,
-            credentials: 'same-origin'
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
 
         if (response.ok) {
@@ -154,6 +204,7 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
                 const modalEl = document.getElementById(modalId);
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
+
             }
 
 
@@ -167,9 +218,9 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
         console.error('Ошибка:', error.message);
     }
 }
-
+//
 function changeEditModal() {
-    document.getElementById('resultTable').addEventListener('click', async function(event) {
+    document.getElementById('resultTableUsers').addEventListener('click', async function(event) {
         const button = event.target;
         const userId = button.dataset.userId;
         if (button.classList.contains('edit-button')) {
@@ -201,7 +252,7 @@ editUserBtn.onclick = function () {
     let userId = document.getElementById('editUserId').value
     sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal')
 }
-
+//
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
     let userId = deleteUserBtn.dataset.userId
@@ -218,28 +269,26 @@ function sendForm(form, fetchUrl, method, modalId) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     data.role = {name: data.role};
-    let type;
-    if (selectedOption.value && selectedOption.dataset.name) {
-        type = {id: selectedOption.value, name: selectedOption.dataset.name}
+    if (modalId === 'createUserModal') {
+        let type;
+        if (selectedOption.value && selectedOption.dataset.name) {
+            type = {id: selectedOption.value, name: selectedOption.dataset.name}
+        } else {
+            type = null;
+        }
+        data.type = type;
     } else {
-        type = null;
+        data.typeId = selectedOption.value
     }
-    data.type = type
     console.log(data);
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    if (csrfToken) {
-        headers[csrfHeader] = csrfToken;
-    }
-
     fetch(fetchUrl, {
         method: method,
-        headers: headers,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify(data),
-        credentials: 'same-origin'
+        // credentials: "include"
     })
         .then(async response => {
             if (!response.ok) {
@@ -265,11 +314,20 @@ function sendForm(form, fetchUrl, method, modalId) {
                     }
                 }
             } else {
+                if (modalId) {
+                    const modalEl = document.getElementById(modalId);
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+
+                }
                 form.reset();
-                const modalEl = document.getElementById(modalId);
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                modal.hide();
+                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
                 doFetch('/api/users');
             }
         })
+
+
+
+
 }

@@ -7,6 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "olymp_organizations")
+@IdClass(OlympiadOrganizationKey.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,13 +16,11 @@ import lombok.*;
 public class OlympiadOrganization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "olympiad_id", nullable = false)
     private Olympiad olympiad;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;

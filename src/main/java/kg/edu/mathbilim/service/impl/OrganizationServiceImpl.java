@@ -53,6 +53,18 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .toList();
     }
 
+    @Override
+    public List<OrganizationDto> getByIds(List<Long> ids){
+        List<OrganizationDto> organizations = new LinkedList<>();
+
+        for (Long orgId : ids) {
+            OrganizationDto organization = getById(orgId);
+            organizations.add(organization);
+        }
+
+        return organizations;
+    }
+
     @Transactional
     @Override
     public List<Organization> addEventToOrganizations(List<Long> organizationIds, Event event) {

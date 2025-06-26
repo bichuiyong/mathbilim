@@ -72,7 +72,7 @@
                         <div class="col-lg-3">
                             <div class="d-flex justify-content-end auth-buttons">
                                 <#if user??>
-                                    <a href="/profile"  class="btn-icon">
+                                    <a href="/users/${user.authId}"  class="btn-icon">
                                         <i class="fas fa-user "></i>
                                     </a>
                                     <#if _csrf??>
@@ -163,7 +163,7 @@
                     <div class="mobile-menu-section">
                         <div class="d-flex gap-2">
                             <#if user??>
-                                <a href="/profile" class="btn btn-outline-primary w-50">
+                                <a href="/users/${user.authId}" class="btn btn-outline-primary w-50">
                                     <i class="fas fa-user  me-2"></i>Профиль
                                 </a>
                                 <#if _csrf??>

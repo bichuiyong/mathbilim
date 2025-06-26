@@ -2,9 +2,11 @@ package kg.edu.mathbilim.repository.post;
 
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,14 +14,22 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRepository<Post> {
 
-    Page<Post> getPostByUser_Id(Long userId, Pageable pageable);
+    Page<Post> getPostByCreator_Id(Long userId, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Post b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
+    void incrementViewCount(@Param("blogId") Long blogId);
+
+    @Modifying
+    @Query("UPDATE Post b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
+    void incrementShareCount(@Param("blogId") Long blogId);
 
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
-            WHERE p.user.id = :userId
+            WHERE p.creator.id = :userId
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
             ORDER BY p.createdAt DESC
@@ -48,6 +58,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                          String query,
                                          Pageable pageable);
 
+    @Override
     @Query("""
             SELECT DISTINCT p FROM Post p
             LEFT JOIN p.postTranslations t

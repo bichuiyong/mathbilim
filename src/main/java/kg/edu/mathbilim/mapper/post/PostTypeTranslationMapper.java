@@ -1,34 +1,22 @@
 package kg.edu.mathbilim.mapper.post;
 
-import kg.edu.mathbilim.dto.post.post_type.PostTypeTranslationDto;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslation;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslationId;
-import org.mapstruct.AfterMapping;
+import kg.edu.mathbilim.dto.post.PostTypeTranslationDto;
+import kg.edu.mathbilim.mapper.BaseTranslationMapper;
+import kg.edu.mathbilim.model.post.PostTypeTranslation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface PostTypeTranslationMapper {
+public interface PostTypeTranslationMapper extends BaseTranslationMapper<PostTypeTranslation, PostTypeTranslationDto> {
 
     @Mapping(source = "id.languageCode", target = "languageCode")
-    @Mapping(source = "translation", target = "translation")
+    @Mapping(source = "id.typeId", target = "typeId")
     PostTypeTranslationDto toDto(PostTypeTranslation entity);
 
     @Mapping(target = "id.languageCode", source = "languageCode")
-    @Mapping(target = "id.postTypeId", source = "postTypeId")
-    @Mapping(target = "translation", source = "translation")
-    @Mapping(target = "postType.id", source = "postTypeId")
-    @Mapping(target = "postType.postTypeTranslations", ignore = true)
+    @Mapping(target = "id.typeId", source = "typeId")
+    @Mapping(target = "parent.id", source = "typeId")
     PostTypeTranslation toEntity(PostTypeTranslationDto dto);
 
 
-    @AfterMapping
-    default void ensureCompositeKey(@MappingTarget PostTypeTranslation entity, PostTypeTranslationDto dto) {
-        if (entity.getId() == null) {
-            entity.setId(new PostTypeTranslationId());
-            entity.getId().setPostTypeId(dto.getPostTypeId());
-            entity.getId().setLanguageCode(dto.getLanguageCode());
-        }
-    }
 }

@@ -42,7 +42,12 @@ public class OlympOrganizationServiceImpl implements OlympOrganizationService {
     }
 
     @Override
-    public List<OlympiadOrganization> getByOlympiadId(Integer olympiadId) {
-        return olympOrganizationRepository.findAllByOlympiad_Id(olympiadId);
+    public List<OlympiadOrganization> getByOlympiadId(Long olympiadId) {
+        return olympOrganizationRepository.findByOlympiadId(olympiadId);
     }
+    @Override
+    public List<OlympiadOrganization> getByOrganizationId(Long olympiadId) {
+        return olympOrganizationRepository.findByOrganizationId(olympiadId);
+    }
+
 }

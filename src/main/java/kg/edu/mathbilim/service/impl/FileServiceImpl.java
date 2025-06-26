@@ -111,6 +111,12 @@ public class FileServiceImpl implements FileService {
         return uploadFile(avatarFile, "avatars");
     }
 
+    @Transactional
+    @Override
+    public File uploadAvatarReturnEntity(MultipartFile avatarFile){
+        return uploadFileReturnEntity(avatarFile, "avatars");
+    }
+
     /// ДЛЯ РАБОТЫ С S3
 
     @Transactional

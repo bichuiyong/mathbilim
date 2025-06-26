@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
+import kg.edu.mathbilim.dto.user.UserTypeDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,11 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("userDto", new UserDto());
+        UserDto userDto = new UserDto();
+        model.addAttribute("userDto",userDto);
+        if (userDto.getType() == null) {
+            userDto.setType(new UserTypeDto());
+        }
         model.addAttribute("types", translationService.getUserTypesByLanguage());
         return "auth/register";
     }

@@ -5,7 +5,7 @@ import kg.edu.mathbilim.model.Book;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface BookMapper {
+public interface BookMapper extends BaseMapper<Book, BookDto> {
     Book toEntity(BookDto dto);
 
     BookDto toDto(Book book);

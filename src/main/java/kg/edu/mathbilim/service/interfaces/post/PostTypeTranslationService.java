@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.post;
 
-import kg.edu.mathbilim.dto.post.post_type.PostTypeTranslationDto;
-import kg.edu.mathbilim.model.post.post_type.PostTypeTranslation;
+import kg.edu.mathbilim.dto.post.PostTypeTranslationDto;
+import kg.edu.mathbilim.model.post.PostTypeTranslation;
 
 import java.util.List;
 

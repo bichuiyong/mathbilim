@@ -4,8 +4,9 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.TestStatus;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -13,22 +14,23 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestDto {
-    private Long id;
+    Long id;
 
-    private FileDto file;
+    FileDto file;
 
-    private Map<String, Object> metadata;
+    Map<String, Object> metadata;
 
-    private Instant startedAt;
+    LocalDateTime startedAt;
 
-    private Instant finishedAt;
+    LocalDateTime finishedAt;
 
-    private Integer result;
+    Integer result;
 
-    private TestStatus status;
+    TestStatus status;
 
-    private UserDto user;
+    UserDto user;
 
-    private Integer timeLimit;
+    Integer timeLimit;
 }

@@ -10,5 +10,7 @@ public interface OlympOrganizationService {
     @Transactional
     void addOrganizationToOlympiad(OlympOrganizationDto dto);
 
-    List<OlympiadOrganization> getByOlympiadId(Integer olympiadId);
+    List<OlympiadOrganization> getByOlympiadId(Long olympiadId);
+
+    List<OlympiadOrganization> getByOrganizationId(Long olympiadId);
 }

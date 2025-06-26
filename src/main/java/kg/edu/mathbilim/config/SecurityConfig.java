@@ -5,6 +5,7 @@ import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
 import kg.edu.mathbilim.service.impl.auth.UserTypeHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -25,6 +26,9 @@ public class SecurityConfig {
     private final UserTypeHandler userTypeHandler;
     private final UserEmailHandler userEmailHandler;
 
+    @Value("${logging.app.remember-me.key:#{T(java.util.UUID).randomUUID().toString()}}")
+    private String rememberMeKey;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -35,6 +39,7 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/auth/telegram/callback")
+                        .ignoringRequestMatchers("/api/users", "/api/users/**") // временно
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
                 .httpBasic(Customizer.withDefaults())
@@ -51,8 +56,11 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
                         .failureUrl("/auth/login?error=true")
-                        .defaultSuccessUrl("/profile", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll())
+                .rememberMe(rememberMe -> rememberMe
+                        .key(rememberMeKey)
+                        .tokenValiditySeconds(86400*14))
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -62,14 +70,19 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**", "/api/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(
+                                "/admin/**",
+                                "/news/create/**")
+                        .hasAuthority("ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",
                                 "/organizations/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
-                                "/profile/**"
+                                "/profile/**",
+                                "/blog/create/**",
+                                "/events/create/**"
                         ).authenticated()
 
                         .requestMatchers(
@@ -87,4 +100,6 @@ public class SecurityConfig {
                 )
                 .build();
     }
+
 }
+
