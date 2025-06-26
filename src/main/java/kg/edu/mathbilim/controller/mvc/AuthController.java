@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.dto.user.UserTypeDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -86,7 +87,6 @@ public class AuthController {
     public String registrationSuccess() {
         return "auth/registration-success";
     }
-
 
     @GetMapping("/verify-email")
     public String verifyEmail(@RequestParam("token") String token, Model model) {
@@ -219,5 +219,36 @@ public class AuthController {
                     "Ошибка при выборе типа пользователя: " + e.getMessage());
             return "redirect:/auth/select-user-type";
         }
+    }
+
+    @GetMapping("/add-email")
+    public String addEmail(Authentication authentication,
+                           Model model) {
+        if (authentication == null || !userService.userEmailIsNotReal(authentication.getName())) {
+            return "redirect:/";
+        }
+        var userTypes = translationService.getUserTypesByLanguage();
+        model.addAttribute("userTypes", userTypes);
+        model.addAttribute("userEmailDto", new UserEmailDto());
+        if (!authentication.isAuthenticated()) {
+            return "redirect:/auth/login";
+        }
+        return "/auth/email";
+    }
+
+    @PostMapping("/add-email")
+    public String addEmailProcess(Authentication authentication,
+                                  @Valid UserEmailDto userEmailDto,
+                                  BindingResult bindingResult,
+                                  Model model,
+                                  HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            var userTypes = translationService.getUserTypesByLanguage();
+            model.addAttribute("userTypes", userTypes);
+            model.addAttribute("userEmailDto", userEmailDto);
+            return "/auth/email";
+        }
+        userService.newUserEmail(authentication.getName(), userEmailDto, request);
+        return "redirect:/auth/registration-success";
     }
 }

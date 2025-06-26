@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.interfaces;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.UnsupportedEncodingException;
 
 public interface UserService {
+
+    boolean userEmailIsNotReal(String email);
+
+    void newUserEmail(String email, UserEmailDto userEmailDto, HttpServletRequest request);
 
     void createTelegramUser(Long userId, String name, String surname);
 

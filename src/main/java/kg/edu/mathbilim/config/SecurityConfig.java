@@ -2,6 +2,8 @@ package kg.edu.mathbilim.config;
 
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
+import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
+import kg.edu.mathbilim.service.impl.auth.UserTypeHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +13,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,6 +23,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class SecurityConfig {
     private final CustomOAuth2UserService oauthUserService;
     private final OAuth2LoginSuccessHandler oauthSuccessHandler;
+    private final UserTypeHandler userTypeHandler;
+    private final UserEmailHandler userEmailHandler;
 
     @Value("${logging.app.remember-me.key:#{T(java.util.UUID).randomUUID().toString()}}")
     private String rememberMeKey;
@@ -26,6 +32,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
