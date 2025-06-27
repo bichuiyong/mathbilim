@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,6 +62,7 @@ public class NewsController {
     }
 
 
+    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username)")
     @GetMapping("update")
     public String updateNews(@RequestParam("id") long id,
                              Model model) {
@@ -79,6 +81,7 @@ public class NewsController {
         return redirect;
     }
 
+    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN')")
     @PostMapping("delete")
     public String deleteNews(@RequestParam("id") long id) {
         newsService.delete(id);
