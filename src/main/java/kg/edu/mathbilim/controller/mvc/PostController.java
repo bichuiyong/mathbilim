@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
+@Slf4j
 @Controller("mvcPost")
 @RequestMapping("posts")
 @RequiredArgsConstructor
@@ -48,7 +50,44 @@ public class PostController {
             return "media/post-create";
         }
         postService.createPost(post);
-        return "redirect:/posts/";
+        return "redirect:/posts";
     }
 
+
+    @GetMapping
+    public String posts(@RequestParam(required = false) String query,
+                        @RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "size", defaultValue = "10") int size,
+                        @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                        @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                        @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                        Model model) {
+        model.addAttribute("posts",
+                postService.getPostsByStatus(
+                        "APPROVED",
+                        query,
+                        page,
+                        size,
+                        sortBy,
+                        sortDirection,
+                        lang
+                ));
+
+        model.addAttribute("query", query);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        log.info("Current language: {}", lang);
+        model.addAttribute("currentLang", lang);
+        return "post/post-list";
+    }
+
+
+
+    @GetMapping("{postId}")
+    public String detailPost(@PathVariable Long postId, Model model) {
+        model.addAttribute("post", postService.getPostById(postId));
+        return "post/post-detail";
+    }
 }

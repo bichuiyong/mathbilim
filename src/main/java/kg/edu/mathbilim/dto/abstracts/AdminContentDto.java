@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -35,6 +37,14 @@ public abstract class AdminContentDto {
     Long shareCount = 0L;
 
     FileDto mainImage;
+
+    public String getFormattedDate() {
+        if (createdAt == null) {
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm", new Locale("ru"));
+        return createdAt.format(formatter);
+    }
 
     public void setCreatorId(Long creatorId) {
         if (creatorId != null) {
