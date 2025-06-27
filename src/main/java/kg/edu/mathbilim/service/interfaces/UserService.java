@@ -11,6 +11,7 @@ import kg.edu.mathbilim.dto.user.UserEditDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public interface UserService {
 
@@ -76,8 +77,19 @@ public interface UserService {
     boolean isEmailVerified(String email);
 
     void updateUser(UserEditDto userDto, Long userId);
-
     void setUserAvatar(Long userId, MultipartFile file);
 
     UserEditDto getEditUserById(Long id);
+
+    void registerChatId(Long userId, Long chatId);
+
+    boolean hasChatId(Long userId);
+
+    List<Long> getSubscribedChatIds();
+
+    void unsubscribe(Long chatId);
+
+    void subscribe(Long chatId);
+
+    boolean isSubscribed(Long chatId);
 }
