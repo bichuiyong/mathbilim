@@ -75,6 +75,13 @@
 
 
                     </div>
+
+                    <form action="/notifications/subscribe" method="post">
+                        <@main.csrf/>
+                        <input type="hidden" name="type" value="OLYMPIAD">
+                        <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                    </form>
+
                 </div>
 
 

@@ -113,5 +113,11 @@
         </div>
     </div>
 
+    <form action="/notifications/subscribe" method="post">
+        <@main.csrf/>
+        <input type="hidden" name="type" value="EVENT">
+        <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+    </form>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </@main.layout>

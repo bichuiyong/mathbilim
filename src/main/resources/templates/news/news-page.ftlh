@@ -129,5 +129,10 @@
                 </a>
             </section>
         </div>
+        <form action="/notifications/subscribe" method="post">
+            <@main.csrf/>
+            <input type="hidden" name="type" value="NEWS">
+            <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+        </form>
     </div>
 </@main.layout>

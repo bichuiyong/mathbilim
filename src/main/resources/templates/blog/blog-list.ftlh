@@ -111,6 +111,13 @@
                         </#list>
                     </div>
 
+                    <form action="/notifications/subscribe" method="post">
+                        <@main.csrf/>
+                        <input type="hidden" name="type" value="BLOG">
+                        <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                    </form>
+
+
                     <!-- Пагинация -->
                     <#if totalPages > 1>
                         <nav class="blog-pagination" aria-label="Навигация по страницам блога">
