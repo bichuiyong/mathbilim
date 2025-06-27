@@ -292,8 +292,8 @@ cd mathbilim
 # Переключитесь на ветку разработки
 git checkout dev
 ```
+<h3>6. Запусти сборку jar:</h3>
 
-### 2. Сборка проекта
 
 **Linux/macOS:**
 ```bash
@@ -365,8 +365,6 @@ RESET_PASSWORD=your_app_password
 # Google reCAPTCHA
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 
-# Telegram Bot
-TGBOTKEY=your_telegram_bot_token
 ```
 ### Настройка Google OAuth 2.0
 

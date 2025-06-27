@@ -1,3 +1,4 @@
+
 package kg.edu.mathbilim.mapper.event;
 
 import kg.edu.mathbilim.dto.event.EventTypeTranslationDto;
