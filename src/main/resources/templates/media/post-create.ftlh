@@ -134,7 +134,7 @@
                                     <#list postTypes as type>
                                         <option value="${type.id}"
                                                 <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
-                                            ${type.postTypeTranslations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                            ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
                                         </option>
                                     </#list>
                                 </select>
