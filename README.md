@@ -344,7 +344,6 @@ RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 # Telegram Bot
 TGBOTKEY=your_telegram_bot_token
 ```
-
 ### Для MinIO:
 ```env
 # MinIO конфигурация (совместимо с AWS S3 API)
@@ -369,7 +368,6 @@ RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 # Telegram Bot
 TGBOTKEY=your_telegram_bot_token
 ```
-
 ### Настройка Google OAuth 2.0
 
 1. Перейдите в [Google Cloud Console](https://console.cloud.google.com/)
@@ -386,6 +384,8 @@ TGBOTKEY=your_telegram_bot_token
 4. Добавьте домен: `localhost` (для разработки)
 5. Скопируйте **Secret Key** и вставьте в `RECAPTCHA_SECRET_KEY`
 
+<h3>4. Запусти приложение командой:</h3>
+=======
 ### Настройка Telegram Bot
 
 1. Найдите [@BotFather](https://t.me/botfather) в Telegram
@@ -531,7 +531,6 @@ sudo systemctl start mathbilim
 ##  Лицензия
 
 Информация о лицензии будет добавлена позже.
-
 
 ---
 
