@@ -36,6 +36,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static kg.edu.mathbilim.util.PaginationUtil.getPage;
@@ -379,4 +381,49 @@ public class UserServiceImpl implements UserService {
         User user = getEntityByEmail(email);
         return Boolean.TRUE.equals(user.getIsEmailVerified());
     }
+
+
+    @Override
+    public void registerChatId(Long userId, Long chatId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setTelegramId(chatId);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public boolean hasChatId(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.isPresent() && user.get().getTelegramId() != null;
+    }
+
+
+    @Override
+    public List<Long> getSubscribedChatIds() {
+        return userRepository.findAllBySubscribedTrueAndTelegramIdIsNotNull()
+                .stream()
+                .map(User::getTelegramId)
+                .toList();
+    }
+
+
+    @Override
+    public void unsubscribe(Long chatId) {
+        User user = userRepository.findByTelegramId(chatId).orElseThrow(UserNotFoundException::new);
+        user.setSubscribed(false);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void subscribe(Long chatId) {
+        User user = userRepository.findByTelegramId(chatId).orElseThrow(UserNotFoundException::new);
+        user.setSubscribed(true);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public boolean isSubscribed(Long chatId) {
+        User user = userRepository.findByTelegramId(chatId).orElseThrow(UserNotFoundException::new);
+        return user != null && Boolean.TRUE.equals(user.getSubscribed());
+    }
+
 }

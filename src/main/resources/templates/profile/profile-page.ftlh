@@ -40,6 +40,7 @@
                         </span>
                         </#if>
 
+
                         <div class="d-flex justify-content-center gap-2 mb-3">
                             <#if isAdmin>
                                 <span class="badge bg-danger">Администратор</span>
@@ -72,6 +73,11 @@
                         <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-edit me-2"></i>Редактировать профиль
                         </a>
+
+                        <a href="https://t.me/Math_Bilim_bot?start=${user.id}"
+                           target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                            📲 Подключить уведомления в Telegram
+                        </a>
                     </div>
                 </div>
 
@@ -103,13 +109,15 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab">
+                                <button class="nav-link active" id="content-tab" data-bs-toggle="tab"
+                                        data-bs-target="#content" type="button" role="tab">
                                     <i class="fas fa-file-alt me-2"></i>Мой контент
                                 </button>
                             </li>
                             <#if isModer>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="moderation-tab" data-bs-toggle="tab" data-bs-target="#moderation" type="button" role="tab">
+                                    <button class="nav-link" id="moderation-tab" data-bs-toggle="tab"
+                                            data-bs-target="#moderation" type="button" role="tab">
                                         <i class="fas fa-tasks me-2"></i>Модерация
                                         <span class="badge bg-danger ms-1" id="moderationCount">0</span>
                                     </button>
@@ -117,7 +125,8 @@
                             </#if>
                             <#if isAdmin>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users"
+                                            type="button" role="tab">
                                         <i class="fas fa-users me-2"></i>Пользователи
                                     </button>
                                 </li>
@@ -148,8 +157,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" id="contentSearch" placeholder="Поиск по контенту...">
-                                                <button class="btn btn-outline-secondary" type="button" id="contentSearchBtn">
+                                                <input type="text" class="form-control" id="contentSearch"
+                                                       placeholder="Поиск по контенту...">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        id="contentSearchBtn">
                                                     <i class="fas fa-search"></i>
                                                 </button>
                                             </div>
@@ -188,8 +199,10 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="input-group input-group-sm">
-                                                    <input type="text" class="form-control" id="moderationSearch" placeholder="Поиск...">
-                                                    <button class="btn btn-outline-secondary" type="button" id="moderationSearchBtn">
+                                                    <input type="text" class="form-control" id="moderationSearch"
+                                                           placeholder="Поиск...">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="moderationSearchBtn">
                                                         <i class="fas fa-search"></i>
                                                     </button>
                                                 </div>
@@ -228,8 +241,10 @@
                                         <div class="row g-2">
                                             <div class="col-md-12">
                                                 <div class="input-group input-group-sm">
-                                                    <input type="text" class="form-control" id="usersSearch" placeholder="Поиск по имени или email...">
-                                                    <button class="btn btn-outline-secondary" type="button" id="usersSearchBtn">
+                                                    <input type="text" class="form-control" id="usersSearch"
+                                                           placeholder="Поиск по имени или email...">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="usersSearchBtn">
                                                         <i class="fas fa-search"></i>
                                                     </button>
                                                 </div>
