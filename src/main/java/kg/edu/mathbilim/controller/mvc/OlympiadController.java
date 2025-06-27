@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
@@ -46,13 +47,30 @@ public class OlympiadController {
 
 
     @PostMapping("add")
-    public String createOlympiad(OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
+    public String createOlympiad(@Valid OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
                                  Authentication auth
                                 ) {
-
         model.addAttribute("user", userService.getUserByEmail(auth.getName()));
         if (result.hasErrors()) {
             model.addAttribute("olympiadCreateDto", olympiadCreateDto);
+
+            boolean hasStageFieldErrors = result.getFieldErrors().stream()
+                    .anyMatch(error -> error.getField().startsWith("stages["));
+            boolean hasOlympiadDateError = result.getGlobalErrors().stream()
+                    .anyMatch(error -> "ValidOlympiadDates".equals(error.getCode()));
+            if (hasStageFieldErrors) {
+                model.addAttribute("dateError", "Пожалуйста, проверьте даты этапов на корректность");
+            }
+            if (hasOlympiadDateError) {
+                model.addAttribute("olympiadDateError", "Дата окончания не может быть раньше даты начала олимпиады");
+            }
+            if (olympiadCreateDto.getStages().isEmpty()) {
+                model.addAttribute("stageError","Добавьте хотя бы один этап");
+            }
+            return "olympiad/create-olympiad";
+        }
+        if (olympiadCreateDto.getStages().isEmpty()) {
+            model.addAttribute("stageError","Добавьте хотя бы один этап");
             return "olympiad/create-olympiad";
         }
         olympiadService.olympiadCreate(olympiadCreateDto);

@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympiadContactDto {
-    @NotEmpty(message = "Информация обязательна")
     @Size(max = 1000, message = "Информация не должна превышать 1000 символов")
     String info;
 

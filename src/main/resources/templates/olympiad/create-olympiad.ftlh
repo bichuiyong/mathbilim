@@ -337,6 +337,10 @@
                         <@spring.showErrors "<br>", "text-danger small mt-1"/>
                     </div>
 
+                    <#if olympiadDateError??>
+                        <p class="text-danger small">${olympiadDateError}</p>
+                    </#if>
+
                     <div class="form-group full-width">
                         <label for="rules" class="olympiad-label required">Правила участия</label>
                         <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea"'/>
@@ -356,7 +360,7 @@
                                 <span style="color: var(--primary-light); font-size: 0.75rem;">PNG, JPG (макс.
                                     10MB)</span>
                             </label>
-                            <input type="file" id="image" name="imageFile" accept="image/png, image/jpeg">
+                            <input type="file" id="image" name="imageFile" value="${olympiadCreateDto.imageFile!}" accept="image/png, image/jpeg">
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
                     </div>
@@ -383,10 +387,16 @@
                         <label>Контакты</label>
                         <div id="contacts" class="contacts-container">
                             <div class="contact-card">
-                                <select name="contact_types[]" class="olympiad-select contact-type-select">
-
+                                <select name="contacts[0].contactType" class="olympiad-select contact-type-select" required>
+                                    <option value="" disabled>Выберите тип контакта</option>
+                                    <#if contactTypes??>
+                                        <#list contactTypes as type>
+                                            <option value="${type.id}" <#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0) && olympiadCreateDto.contacts[0].contactType?? && olympiadCreateDto.contacts[0].contactType.id == type.id>selected</#if>>${type.name}</option>
+                                        </#list>
+                                    </#if>
                                 </select>
-                                <input type="text" name="contact_links[]" placeholder="Ссылка или контакт" class="olympiad-input">
+                                <input type="text" name="contacts[0].info" value="<#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0)>${olympiadCreateDto.contacts[0].info!}</#if>"
+                                       placeholder="Ссылка или контакт" class="olympiad-input">
                                 <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                          stroke="currentColor">
@@ -395,6 +405,7 @@
                                     </svg>
                                     Удалить
                                 </button>
+                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
                             </div>
                         </div>
                         <button type="button" id="addContact" class="olympiad-btn olympiad-btn-outline" style="margin-top: 0.5rem;">
@@ -409,8 +420,9 @@
 
 
                     <div class="form-group full-width">
-                        <label for="stageCount">Количество этапов</label>
+                        <label style="margin-bottom: 10px" for="stageCount">Количество этапов</label>
                         <select id="stageCount" name="stage_count" class="olympiad-select">
+                            <option value="" disabled selected>Выберите количество этапов</option>
                             <option value="1">1 этап</option>
                             <option value="2">2 этапа</option>
                             <option value="3">3 этапа</option>
@@ -421,34 +433,48 @@
                         </select>
 
                         <div class="stages-container" id="stagesContainer">
-                            <div class="stage-card">
-                                <div class="stage-header">
-                                    <span class="stage-title">Этап 1</span>
-                                </div>
-                                <div class="olympiad-grid" style="gap: 1rem;">
-                                    <input name="stages[0].stageOrder" value="1" type="hidden">
-                                    <div class="form-group">
-                                        <label class="olympiad-label required">Дата начала</label>
-                                        <input class="olympiad-input" name="stages[0].eventStartDate" type="date" required>
+                            <#if olympiadCreateDto.stages?? && (olympiadCreateDto.stages?size > 0)>
+                                <#list olympiadCreateDto.stages as stage>
+                                    <div class="stage-card">
+                                        <div class="stage-header">
+                                            <span class="stage-title">Этап ${stage.stageOrder}</span>
+                                        </div>
+                                        <div class="olympiad-grid" style="gap: 1rem;">
+                                            <input name="stages[${stage_index}].stageOrder" value="${stage.stageOrder}" type="hidden">
+                                            <div class="form-group">
+                                                <label class="olympiad-label required">Дата начала</label>
+                                                <input class="olympiad-input" name="stages[${stage_index}].eventStartDate" type="date" value="${stage.eventStartDate!}" required>
+                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="olympiad-label required">Дата окончания</label>
+                                                <input class="olympiad-input" name="stages[${stage_index}].eventEndDate" type="date" value="${stage.eventEndDate!}" required>
+                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="olympiad-label required">Начало регистрации</label>
+                                                <input class="olympiad-input" name="stages[${stage_index}].registrationStart" type="date" value="${stage.registrationStart!}" required>
+                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="olympiad-label required">Конец регистрации</label>
+                                                <input class="olympiad-input" name="stages[${stage_index}].registrationEnd" type="date" value="${stage.registrationEnd!}" required>
+                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                            </div>
+                                            <#if olympiadDateError??>
+                                                <p class="text-danger small">${olympiadDateError}</p>
+                                            </#if>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="olympiad-label required">Дата окончания</label>
-                                        <input class="olympiad-input" name="stages[0].eventEndDate" type="date" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="olympiad-label required">Начало регистрации</label>
-                                        <input class="olympiad-input" name="stages[0].registrationStart" type="date" required>                        </div>
-                                    <div class="form-group">
-                                        <label class="olympiad-label required">Конец регистрации</label>
-                                        <input class="olympiad-input" name="stages[0].registrationEnd" type="date" required>                        </div>
-                                </div>
-                                <#if dateError??>
-                                    <br>
-                                    <p class="text-danger small mt-1">
-                                        ${dateError}
-                                    </p>
-                                </#if>
-                            </div>
+                                    <#if dateError??>
+                                        <p class="text-danger small">${dateError}</p>
+                                    </#if>
+                                </#list>
+                            </#if>
+                            <#if stageError??>
+                                <p class="text-danger small">
+                                    ${stageError}</p>
+                            </#if>
                         </div>
                     </div>
                 </div>
@@ -488,30 +514,41 @@
                     const stageCard = document.createElement('div');
                     stageCard.className = 'stage-card';
                     stageCard.innerHTML = `
-                <div class="stage-header">
-                    <span class="stage-title">Этап ${i + 1}</span>
+            <div class="stage-header">
+                <span class="stage-title">Этап ${i + 1}</span>
+            </div>
+            <div class="olympiad-grid" style="gap: 1rem;">
+                <input name="stages[${i}].stageOrder" value="${i + 1}" type="hidden">
+                <div class="form-group">
+                    <label class="olympiad-label required">Дата начала</label>
+                    <input class="olympiad-input" name="stages[${i}].eventStartDate" type="date" required>
                 </div>
-                <div class="olympiad-grid" style="gap: 1rem;">
-                    <input name="stages[${i}].stageOrder" value="${i + 1}" type="hidden">
-                    <div class="form-group">
-                        <label class="olympiad-label required">Дата начала</label>
-                        <input class="olympiad-input" name="stages[${i}].eventStartDate" type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="olympiad-label required">Дата окончания</label>
-                        <input class="olympiad-input" name="stages[${i}].eventEndDate" type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="olympiad-label required">Начало регистрации</label>
-                        <input class="olympiad-input" name="stages[${i}].registrationStart" type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="olympiad-label required">Конец регистрации</label>
-                        <input class="olympiad-input" name="stages[${i}].registrationEnd" type="date" required>
-                    </div>
+                <div class="form-group">
+                    <label class="olympiad-label required">Дата окончания</label>
+                    <input class="olympiad-input" name="stages[${i}].eventEndDate" type="date" required>
                 </div>
-            `;
+                <div class="form-group">
+                    <label class="olympiad-label required">Начало регистрации</label>
+                    <input class="olympiad-input" name="stages[${i}].registrationStart" type="date" required>
+                </div>
+                <div class="form-group">
+                    <label class="olympiad-label required">Конец регистрации</label>
+                    <input class="olympiad-input" name="stages[${i}].registrationEnd" type="date" required>
+                </div>
+            </div>
+        `;
                     container.appendChild(stageCard);
+                }
+            });
+
+            window.addEventListener('DOMContentLoaded', () => {
+                initializeContactTypes();
+                loadOrganizations();
+                const stageCountSelect = document.getElementById('stageCount');
+                const savedStageCount = parseInt(stageCountSelect.value) || 1;
+                if (savedStageCount > 1) {
+                    stageCountSelect.value = savedStageCount;
+                    stageCountSelect.dispatchEvent(new Event('change'));
                 }
             });
 
@@ -529,7 +566,7 @@
                     }
 
                     const contactTypes = await response.json();
-                    selectElement.innerHTML = '';
+                    selectElement.innerHTML = '<option value="" disabled selected>Выберите тип контакта</option>';
 
                     if (!contactTypes || contactTypes.length === 0) {
                         selectElement.innerHTML = '<option value="">Нет доступных типов контактов</option>';

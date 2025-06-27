@@ -132,7 +132,7 @@
                     const olympiads = data.content || [];
                     if (page >= data.totalPages || page < 0) {
                         emptyBlock.style.display = 'flex';
-                        updateUrl(page); // Обновляем URL даже для невалидной страницы
+                        updateUrl(page);
                         return;
                     }
 

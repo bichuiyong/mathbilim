@@ -1,13 +1,10 @@
 package kg.edu.mathbilim.dto.olympiad;
 
-import kg.edu.mathbilim.dto.OrganizationDto;
-import kg.edu.mathbilim.dto.user.UserDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.Organization;
+import kg.edu.mathbilim.validation.annotation.ValidOlympiadDates;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ValidOlympiadDates
 public class OlympiadCreateDto {
 
     @NotEmpty(message = "Название олимпиады не должно быть пустым")
@@ -58,6 +56,5 @@ public class OlympiadCreateDto {
     List<OlympiadStageCreateDto> stages = new ArrayList<>();
 
     @Builder.Default
-    @NotNull
     List<Long> organizationIds = new ArrayList<>();
 }
