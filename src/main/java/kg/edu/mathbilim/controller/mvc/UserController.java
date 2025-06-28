@@ -36,10 +36,14 @@ public class UserController {
 
     @GetMapping("{id}/edit")
     public String profileEdit(@PathVariable Long id, Model model) {
-        UserEditDto userEditDto = userService.getEditUserById(id);
+        if (!model.containsAttribute("userEditDto")) {
+            model.addAttribute("userEditDto", userService.getEditUserById(id));
+        } else {
+            UserEditDto userEditDto = userService.getEditUserById(id);
+            model.addAttribute("userEditDto", userEditDto);
+        }
         model.addAttribute("types", translationService.getUserTypesByLanguage());
         model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("userEditDto", userEditDto);
         return "profile/profile-edit";
     }
 
@@ -63,7 +67,7 @@ public class UserController {
                                 RedirectAttributes redirectAttributes) {
         userService.setUserAvatar(userId, file);
 
-        redirectAttributes.addAttribute("userEditDto", userService.getEditUserById(userId));
+        redirectAttributes.addFlashAttribute("userEditDto", userService.getEditUserById(userId));
         return "redirect:/users/" + userId + "/edit";
     }
 }

@@ -12,7 +12,13 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +38,7 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService) {
+    public NewsServiceImpl(NewsRepository repository, @Qualifier("newsMapperImpl") NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService) {
         super(repository, mapper, userService, fileService, translationService);
     }
 
@@ -74,6 +80,32 @@ public class NewsServiceImpl extends
     @Transactional
     @Override
     public NewsDto create(CreateNewsDto createNewsDto) {
-        return createBase(createNewsDto.getNews(), createNewsDto.getImage(), createNewsDto.getAttachments());
+        return createBase(createNewsDto.getNews(),
+                createNewsDto.getImage(),
+                createNewsDto.getAttachments());
+    }
+
+    @Override
+    public Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        if (query != null && !query.isEmpty()) {
+            return PaginationUtil.getPage(() ->
+                            repository.findNewsByQuery(query, lang, pageable),
+                    mapper::toDto);
+        }
+
+        if (lang != null && !lang.isEmpty()) {
+            return PaginationUtil.getPage(() ->
+                            repository.findByNewsWithLang(lang, pageable),
+                    mapper::toDto);
+        }
+
+        return PaginationUtil.getPage(() ->
+                        repository.findAllNews(pageable),
+                mapper::toDto);
+
+
     }
 }

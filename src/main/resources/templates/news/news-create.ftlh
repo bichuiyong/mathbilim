@@ -1,123 +1,202 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout title="Создать новость">
 
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <title>Создать пост</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            .translation-tab {
-                display: none;
-            }
-
-            .translation-tab.active {
-                display: block;
-            }
-        </style>
-    </head>
-    <body>
     <div class="container mt-5">
-        <h2>Создание новости</h2>
-        <form action="/news/create" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">Создание новости</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="newsForm" action="/news/create" method="post" enctype="multipart/form-data">
+                            <@main.csrf/>
+                            <#if error??>
+                                <div class="alert alert-danger">
+                                    ${error}
+                                </div>
+                            </#if>
 
-            <#if bindingResult?? && bindingResult.hasErrors()>
-                <div class="alert alert-danger">
-                    <@spring.bind "newsDto"/>
-                    <#list spring.status.errorMessages as error>
-                        <div>${error}</div>
-                    </#list>
-                </div>
-            </#if>
-
-            <!-- Переводы (вкладки) -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
-                        <#list newsDto.news.newsTranslations as trans>
-                            <li class="nav-item">
-                                <a class="nav-link <#if trans?is_first>active</#if>"
-                                   data-bs-toggle="tab"
-                                   href="#lang-${trans.languageCode}">
-                                    ${languages[trans.languageCode]}
-                                </a>
-                            </li>
-                        </#list>
-                    </ul>
-                </div>
-                <div class="card-body tab-content">
-                    <@spring.bind "newsDto.news.newsTranslations"/>
-                    <#if spring.status.error>
-                        <div class="alert alert-warning mb-3">
-                            <#list spring.status.errorMessages as error>${error}</#list>
-                        </div>
-                    </#if>
-
-                    <#list newsDto.news.newsTranslations as trans>
-                        <div class="tab-pane translation-tab <#if trans?is_first>active</#if>"
-                             id="lang-${trans.languageCode}">
-                            <@spring.bind "newsDto.news.newsTranslations[${trans?index}].title"/>
-                            <div class="mb-3">
-                                <label class="form-label">Заголовок (необязательно)</label>
-                                <input type="text"
-                                       class="form-control <#if spring.status.error>is-invalid</#if>"
-                                       name="news.newsTranslations[${trans?index}].title"
-                                       value="${spring.status.value!''}">
-                                <#if spring.status.error>
-                                    <div class="invalid-feedback">
-                                        <#list spring.status.errorMessages as error>${error}</#list>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Главное изображение</label>
+                                <div class="image-upload-container">
+                                    <input type="file" id="mainImageInput" name="image" accept="image/*"
+                                           class="form-control mb-3">
+                                    <div class="image-preview-container" style="display: none;">
+                                        <div class="crop-container">
+                                            <img id="imagePreview" class="img-fluid">
+                                        </div>
+                                        <div class="crop-controls mt-3">
+                                            <button type="button" class="btn btn-primary" id="cropButton">Применить
+                                                кроп
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить
+                                            </button>
+                                        </div>
                                     </div>
-                                </#if>
+                                    <div class="cropped-preview" style="display: none;">
+                                        <label class="form-label">Предпросмотр (1200x400):</label>
+                                        <div class="cropped-image-container">
+                                            <img id="croppedImage" class="img-fluid border rounded">
+                                        </div>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2"
+                                                id="changeCrop">Изменить кроп
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Изображение будет обрезано до размера 1200x400
+                                    (3:1)</small>
                             </div>
 
-                            <@spring.bind "newsDto.news.newsTranslations[${trans?index}].content"/>
-                            <div class="mb-3">
-                                <label class="form-label">Содержание (необязательно)</label>
-                                <textarea class="form-control <#if spring.status.error>is-invalid</#if>"
-                                          name="news.newsTranslations[${trans?index}].content"
-                                          rows="10">${spring.status.value!''}</textarea>
-                                <#if spring.status.error>
-                                    <div class="invalid-feedback">
-                                        <#list spring.status.errorMessages as error>${error}</#list>
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
+                                        <#list newsDto.news.newsTranslations?sort_by("languageCode") as trans>
+                                            <li class="nav-item">
+                                                <button class="nav-link <#if trans?is_first>active</#if>" type="button"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#lang-${trans.languageCode}"
+                                                        data-lang="${trans.languageCode}">
+                                                    ${languages[trans.languageCode]}
+                                                    <span class="translation-indicator ms-2"
+                                                          id="indicator-${trans.languageCode}">
+                                                    <i class="fas fa-circle text-danger"></i>
+                                                </span>
+                                                </button>
+                                            </li>
+                                        </#list>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <@spring.bind "newsDto.news.newsTranslations"/>
+                                        <#if spring.status.error>
+                                            <div class="alert alert-warning mb-3">
+                                                <#list spring.status.errorMessages as error>${error}</#list>
+                                            </div>
+                                        </#if>
+
+                                        <#list newsDto.news.newsTranslations as trans>
+                                            <div class="tab-pane fade <#if trans?is_first>show active</#if>"
+                                                 id="lang-${trans.languageCode}">
+                                                <div class="mb-4">
+                                                    <@spring.bind "newsDto.news.newsTranslations[${trans?index}].title"/>
+                                                    <label class="form-label fw-bold">Заголовок</label>
+                                                    <input type="text"
+                                                           class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
+                                                           name="news.newsTranslations[${trans?index}].title"
+                                                           data-lang="${trans.languageCode}"
+                                                           value="${spring.status.value!''}"
+                                                           placeholder="Введите заголовок новости...">
+                                                    <#if spring.status.error>
+                                                        <div class="invalid-feedback">
+                                                            <#list spring.status.errorMessages as error>${error}</#list>
+                                                        </div>
+                                                    </#if>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <@spring.bind "newsDto.news.newsTranslations[${trans?index}].content"/>
+                                                    <label class="form-label fw-bold">Содержание</label>
+                                                    <textarea
+                                                            class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
+                                                            name="news.newsTranslations[${trans?index}].content"
+                                                            id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
+                                                    <#if spring.status.error>
+                                                        <div class="invalid-feedback">
+                                                            <#list spring.status.errorMessages as error>${error}</#list>
+                                                        </div>
+                                                    </#if>
+                                                </div>
+
+                                                <input type="hidden"
+                                                       name="news.newsTranslations[${trans?index}].languageCode"
+                                                       value="${trans.languageCode}">
+                                            </div>
+                                        </#list>
                                     </div>
-                                </#if>
+                                </div>
                             </div>
-                            <input type="hidden" name="news.newsTranslations[${trans?index}].languageCode"
-                                   value="${trans.languageCode}">
-                        </div>
-                    </#list>
+
+                            <!-- Вложения -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Вложения</label>
+                                <input type="file" class="form-control" name="attachments" multiple>
+                            </div>
+
+                            <!-- Кнопки -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted"><i class="fas fa-info-circle me-1"></i>Заполните хотя бы один перевод для публикации</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="/news" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Отменить</a>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Создать
+                                        новость
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-
-            <!-- Файлы -->
-            <div class="mb-3">
-                <label class="form-label">Главное изображение</label>
-                <input type="file" class="form-control" name="image" accept="image/*">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Вложения</label>
-                <input type="file" class="form-control" name="attachments" multiple>
-            </div>
-
-            <div>
-                <div class="g-recaptcha" data-sitekey="6LcuuF8rAAAAACaF1yxHhWoVxHHgjUF7BuOogWpO"></div>
-            </div>
-
-            <!-- Кнопки -->
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Создать новость</button>
-                <a href="/news" class="btn btn-secondary">Отмена</a>
-            </div>
-        </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/switchLangTabs.js"></script>
-    </body>
-    </html>
+    <!-- Скрипты -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="/static/js/components/content-create/ImageCropManager.js"></script>
+    <script src="/static/js/components/content-create/TinyMCEManager.js"></script>
+    <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
+    <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
+    <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
+    <script src="/static/js/news/NewsCreateManager.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+    <style>
+        .image-upload-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .image-upload-container:hover {
+            border-color: #2563eb;
+        }
+
+        .crop-container {
+            max-width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        .cropped-image-container {
+            width: 100%;
+            aspect-ratio: 3/1;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .cropped-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .translation-indicator .fa-circle.text-success {
+            color: #10b981 !important;
+        }
+
+        .translation-indicator .fa-circle.text-danger {
+            color: #ef4444 !important;
+        }
+
+        .tox-tinymce {
+            border-radius: 8px !important;
+        }
+    </style>
+
 </@main.layout>

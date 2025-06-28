@@ -521,19 +521,19 @@
             </form>
         </div>
 
-        <#if news?? && news.content?size gt 0>
+        <#if posts?? && posts.content?size gt 0>
             <div class="posts-grid">
-                <#list news.content as p>
+                <#list posts.content as p>
                     <div class="post-item" onclick="window.location.href='/posts/${p.id}'">
                         <#if p.mainImage??>
                             <img src="/api/files/${p.mainImageId}/view" alt="Post Image">
-                        <#elseif p.newsFiles?? && p.newsFiles?size gt 0>
-                            <img src="/api/files/${p.newsFiles[0].id}/view" alt="Post Image">
+                        <#elseif p.postFiles?? && p.postFiles?size gt 0>
+                            <img src="/api/files/${p.postFiles[0].id}/view" alt="Post Image">
                         <#else>
                             <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">📷</div>
                         </#if>
 
-                        <#assign totalImages = (p.newsFiles?size) + (p.mainImage?has_content?then(1, 0))>
+                        <#assign totalImages = (p.postFiles?size) + (p.mainImage?has_content?then(1, 0))>
                         <#if totalImages gt 1>
                             <div class="multiple-images-indicator"></div>
                         </#if>
@@ -543,7 +543,7 @@
                                 <div class="stat-item stat-views">${p.viewCount!0}</div>
                                 <div class="stat-item stat-shares">${p.shareCount!0}</div>
                             </div>
-                            <#assign translation = p.newsTranslations?first>
+                            <#assign translation = p.postTranslations?first>
                             <#if translation.title?? && translation.title?has_content>
                                 <div class="post-title-overlay">${translation.title}</div>
                             </#if>
@@ -553,7 +553,7 @@
             </div>
         <#else>
             <div class="posts-grid">
-                <#if news?? && news.content?size == 0>
+                <#if posts?? && posts.content?size == 0>
                     <div class="no-posts">
                         Посты не найдены
                         <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
@@ -567,9 +567,9 @@
             </div>
         </#if>
 
-        <#if posts?? && (news.hasPrevious() || news.hasNext())>
+        <#if posts?? && (posts.hasPrevious() || posts.hasNext())>
             <div class="pagination-container">
-                <#if news.hasPrevious()>
+                <#if posts.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn prev">
                         Назад
@@ -580,7 +580,7 @@
                     Страница ${page + 1}
                 </div>
 
-                <#if news.hasNext()>
+                <#if posts.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn next">
                         Вперёд
