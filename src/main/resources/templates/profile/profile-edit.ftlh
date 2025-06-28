@@ -152,7 +152,7 @@
                                         <#if types?? && types?size gt 0>
                                             <#assign typeMap = {}>
                                             <#list types as type>
-                                                <#assign typeMap = typeMap + {type.id?string: type.translations[0].translation}>
+                                                <#assign typeMap = typeMap + {type.translations[0].typeId: type.translations[0].translation}>
                                             </#list>
                                             <@spring.formSingleSelect "userEditDto.typeId", typeMap, 'class="form-select" id="typeId"'/>
                                         <#else>

@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
         if(userDto.getTypeId() != null) {
             user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
         }
-        user.setRole(roleService.getRoleById(userDto.getRole().getId()));
+//        user.setRole(roleService.getRoleById(userDto.getRole().getId()));
         userRepository.saveAndFlush(user);
     }
 

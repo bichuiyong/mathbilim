@@ -97,7 +97,7 @@
 
                                 <#assign typeMap = {} />
                                 <#list types as type>
-                                    <#assign typeMap = typeMap + {type: type.translations[0].translation}>
+                                    <#assign typeMap = typeMap + {type.translations[0].typeId: type.translations[0].translation}>
                                 </#list>
 
 
