@@ -479,11 +479,13 @@
                             <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">📝</div>
                         </#if>
 
+                        <#--
                         <#if b.createdAt??>
                             <div class="blog-date-indicator">
                                 ${b.createdAt?date?string('dd.MM')}
                             </div>
                         </#if>
+                        -->
 
                         <div class="blog-overlay">
                             <div class="blog-stats">
@@ -605,7 +607,6 @@
                 }
             });
 
-            // Добавляем возможность фокуса на элементы блогов
             document.querySelectorAll('.blog-item').forEach(item => {
                 item.setAttribute('tabindex', '0');
             });
