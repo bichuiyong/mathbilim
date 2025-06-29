@@ -120,20 +120,16 @@ public abstract class AbstractContentService<
     @Transactional
     public D createBase(D dto, MultipartFile mainImage, MultipartFile[] attachments) {
         setupDtoBeforeSave(dto);
-
         E entity = mapper.toEntity(dto);
+        log.info("Entity not null {} ", entity.toString());
         E savedEntity = repository.save(entity);
         Long savedEntityId = savedEntity.getId();
-
         handleTranslations(dto, savedEntityId);
         uploadMainImage(mainImage, savedEntity);
         uploadFiles(attachments, savedEntity);
         processAdditionalFields(dto, savedEntity);
-
-        log.info("Entity created {}", savedEntity.toString());
-
+        log.info("Entity created {}", savedEntity.getCreator().getName());
         repository.saveAndFlush(savedEntity);
-
         log.info("Created {} with id {}", getEntityName(), savedEntityId);
         return mapper.toDto(savedEntity);
     }
