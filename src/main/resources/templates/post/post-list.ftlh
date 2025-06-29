@@ -1,56 +1,13 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            line-height: 1.4;
-        }
-
         .content-wrapper {
             max-width: 975px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        /* Стили для переключения языков в навбаре */
-        .navbar-lang-switcher {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .navbar-lang-btn {
-            padding: 6px 12px;
-            border: 1px solid #dbdbdb;
-            border-radius: 6px;
-            background: white;
-            color: #8e8e8e;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            text-decoration: none;
-        }
-
-        .navbar-lang-btn:hover {
-            background: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: #262626;
-            text-decoration: none;
-        }
-
-        .navbar-lang-btn.active {
-            background: #0095f6;
-            color: white;
-            border-color: #0095f6;
+            line-height: 1.4;
         }
 
         /* Улучшенные стили для формы поиска */
@@ -84,7 +41,7 @@
             font-size: 18px;
         }
 
-        form {
+        .content-wrapper form {
             padding: 16px;
         }
 
@@ -110,7 +67,7 @@
             font-size: 14px;
             outline: none;
             transition: all 0.2s ease;
-            background: #fafafa;
+            background: white;
         }
 
         .search-input-group input:focus {
@@ -567,7 +524,7 @@
             </div>
         </#if>
 
-        <#if posts?? && (posts.hasPrevious() || posts.hasNext())>
+        <#if posts?? && posts.content?size gt 0 && (posts.hasPrevious() || posts.hasNext())>
             <div class="pagination-container">
                 <#if posts.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"

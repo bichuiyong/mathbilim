@@ -19,6 +19,25 @@ import org.springframework.web.multipart.MultipartFile;
 public class BlogController {
     private final BlogService blogService;
 
+    @GetMapping
+    public String all(@RequestParam(required = false) String query,
+                      @RequestParam(value = "page", defaultValue = "1") int page,
+                      @RequestParam(value = "size", defaultValue = "10") int size,
+                      @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                      @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                      @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      Model model) {
+        model.addAttribute("blog", blogService.getAllDisplayBlogs(page, size, sortBy, sortDirection));
+        model.addAttribute("query", query);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("currentLang", lang);
+
+        return "blog/blog-list";
+    }
+
     @GetMapping("/create")
     public String createBlogForm(Model model) {
         BlogDto blogDto = BlogDto.builder().build();

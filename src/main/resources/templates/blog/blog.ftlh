@@ -13,7 +13,6 @@
     <meta name="twitter:title" content="${blog.title!'Блог'} - MathBilim.kg">
 
     <div class="blog-view-container">
-        <!-- Хлебные крошки -->
         <nav aria-label="breadcrumb" class="blog-breadcrumb">
             <div class="container">
                 <ol class="breadcrumb">

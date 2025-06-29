@@ -1,59 +1,15 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            line-height: 1.4;
-        }
-
         .content-wrapper {
             max-width: 975px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        /* Стили для переключения языков в навбаре */
-        .navbar-lang-switcher {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .navbar-lang-btn {
-            padding: 6px 12px;
-            border: 1px solid #dbdbdb;
-            border-radius: 6px;
-            background: white;
-            color: #8e8e8e;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            text-decoration: none;
-        }
-
-        .navbar-lang-btn:hover {
-            background: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: #262626;
-            text-decoration: none;
+            line-height: 1.4;
         }
 
-        .navbar-lang-btn.active {
-            background: #0095f6;
-            color: white;
-            border-color: #0095f6;
-        }
-
-        /* Улучшенные стили для формы поиска */
         .search-container {
             background: white;
             border: 1px solid #dbdbdb;
@@ -84,7 +40,7 @@
             font-size: 18px;
         }
 
-        form {
+        .content-wrapper form {
             padding: 16px;
         }
 
@@ -110,7 +66,7 @@
             font-size: 14px;
             outline: none;
             transition: all 0.2s ease;
-            background: #fafafa;
+            background: white;
         }
 
         .search-input-group input:focus {
@@ -183,7 +139,6 @@
             transform: translateY(0);
         }
 
-        /* Instagram-style Grid */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -344,7 +299,6 @@
             opacity: 0.5;
         }
 
-        /* Улучшенная пагинация */
         .pagination-container {
             display: flex;
             justify-content: center;
@@ -489,7 +443,7 @@
             <div class="search-header">
                 <div class="search-title">Поиск и фильтры</div>
             </div>
-            <form method="get" action="/posts">
+            <form method="get" action="/news">
                 <div class="search-row">
                     <div class="search-input-group">
                         <input type="text" name="query" value="${query!}" placeholder="Найти посты..."/>
@@ -524,7 +478,7 @@
         <#if news?? && news.content?size gt 0>
             <div class="posts-grid">
                 <#list news.content as p>
-                    <div class="post-item" onclick="window.location.href='/posts/${p.id}'">
+                    <div class="post-item" onclick="window.location.href='/news/${p.id}'">
                         <#if p.mainImage??>
                             <img src="/api/files/${p.mainImageId}/view" alt="Post Image">
                         <#elseif p.newsFiles?? && p.newsFiles?size gt 0>
@@ -567,7 +521,7 @@
             </div>
         </#if>
 
-        <#if posts?? && (news.hasPrevious() || news.hasNext())>
+        <#if news?? && news.content?size gt 0 && (news.hasPrevious() || news.hasNext())>
             <div class="pagination-container">
                 <#if news.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
@@ -613,6 +567,7 @@
                 activeLangButton.classList.add('active');
             }
 
+            // Навигация по клавиатуре
             document.addEventListener('keydown', function(e) {
                 const posts = document.querySelectorAll('.post-item');
                 const currentPost = document.querySelector('.post-item:focus');
