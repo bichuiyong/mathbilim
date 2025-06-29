@@ -5,6 +5,7 @@ import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,6 +59,16 @@ public class OlympiadController {
                     .anyMatch(error -> error.getField().startsWith("stages["));
             boolean hasOlympiadDateError = result.getGlobalErrors().stream()
                     .anyMatch(error -> "ValidOlympiadDates".equals(error.getCode()));
+            boolean hasStageDateError = result.getFieldErrors().stream()
+                    .anyMatch(error -> "stages".equals(error.getField()) && "ValidStageDates".equals(error.getCode()));
+            if (hasStageDateError) {
+                var stageDateErrors = result.getFieldErrors().stream()
+                        .filter(error -> "stages".equals(error.getField()) && "ValidStageDates".equals(error.getCode()))
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .toList();
+
+                model.addAttribute("dateRangeErrors", stageDateErrors);
+            }
             if (hasStageFieldErrors) {
                 model.addAttribute("dateError", "Пожалуйста, проверьте даты этапов на корректность");
             }

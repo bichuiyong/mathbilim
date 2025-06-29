@@ -7,11 +7,13 @@ import kg.edu.mathbilim.dto.olympiad.*;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.model.ContactType;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadContact;
 import kg.edu.mathbilim.model.olympiad.OlympiadContactId;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
+import kg.edu.mathbilim.model.organization.OlympiadOrganizationKey;
 import kg.edu.mathbilim.repository.olympiad.OlympiadRepository;
 import kg.edu.mathbilim.service.interfaces.ContactTypeService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -70,10 +72,12 @@ public class OlympiadServiceImpl implements OlympiadService {
         olympiadRepository.saveAndFlush(olympiad);
 
         for(Long id : dto.getOrganizationIds()) {
+            Organization organization = organizationService.getByIdModel(id);
             OlympiadOrganization olympiadOrganization = OlympiadOrganization
                     .builder()
                     .olympiad(olympiad)
-                    .organization(organizationService.getByIdModel(id))
+                    .organization(organization)
+                    .id(new OlympiadOrganizationKey(olympiad.getId().longValue(),organization.getId()))
                     .build();
             organizations.add(olympiadOrganization);
         }
@@ -127,7 +131,7 @@ public class OlympiadServiceImpl implements OlympiadService {
     public Page<OlympListDto> getAll(Pageable pageable) {
         return olympiadRepository.findAll(pageable)
                 .map(olympiad -> new OlympListDto(
-                        olympiad.getId(),
+                        Math.toIntExact(olympiad.getId()),
                         olympiad.getTitle(),
                         olympiad.getImage().getId()
                 ));
@@ -151,7 +155,7 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .toList();
 
         return OlympiadDto.builder()
-                .id(olympiad.getId())
+                .id(Math.toIntExact(olympiad.getId()))
                 .title(olympiad.getTitle())
                 .info(olympiad.getInfo())
                 .rules(olympiad.getRules())

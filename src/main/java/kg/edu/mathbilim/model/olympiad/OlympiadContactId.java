@@ -19,11 +19,11 @@ public class OlympiadContactId implements Serializable {
     private static final long serialVersionUID = 1814411025584242951L;
     @NotNull
     @Column(name = "olympiad_id", nullable = false)
-    private Integer olympiadId;
+    private Long olympiadId;
 
     @NotNull
     @Column(name = "contact_type_id", nullable = false)
-    private Integer contactTypeId;
+    private Long contactTypeId;
 
     @Override
     public boolean equals(Object o) {

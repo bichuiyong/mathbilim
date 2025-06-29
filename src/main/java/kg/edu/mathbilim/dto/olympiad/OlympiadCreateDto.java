@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.validation.annotation.ValidOlympiadDates;
+import kg.edu.mathbilim.validation.annotation.ValidStageDates;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ValidStageDates
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ValidOlympiadDates

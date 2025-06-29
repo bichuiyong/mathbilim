@@ -24,7 +24,7 @@ import java.util.List;
 public class Olympiad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(nullable = false)
     String title;

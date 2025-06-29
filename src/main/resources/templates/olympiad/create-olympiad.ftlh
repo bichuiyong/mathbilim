@@ -106,43 +106,6 @@
             resize: vertical;
         }
 
-        .file-upload {
-            position: relative;
-            border: 1px dashed var(--border);
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            background-color: #f8fafc;
-            transition: all 0.15s ease;
-        }
-
-        .file-upload:hover {
-            border-color: var(--primary);
-            background-color: rgba(37, 99, 235, 0.05);
-        }
-
-        .file-upload input {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-upload-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .file-upload-label svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            color: var(--primary);
-        }
-
         .olympiad-btn {
             display: inline-flex;
             align-items: center;
@@ -275,6 +238,53 @@
             margin-top: 1.5rem;
         }
 
+        .image-upload-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .image-upload-container:hover {
+            border-color: #2563eb;
+        }
+
+        .crop-container {
+            max-width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cropped-image-container {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1.2 / 1;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .cropped-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .crop-hint {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .cropper-crop-box {
+            border: 2px solid #2563eb;
+        }
+
+        .cropper-view-box {
+            border: 1px dashed #3b82f6;
+        }
+
         @media (max-width: 768px) {
             .olympiad-grid {
                 grid-template-columns: 1fr;
@@ -291,411 +301,444 @@
     </style>
 
     <div class="olympiad-body">
-    <div class="olympiad-container">
-        <header class="olympiad-header">
-            <h1 class="olympiad-title">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Создание новой олимпиады
-            </h1>
-        </header>
+        <div class="olympiad-container">
+            <header class="olympiad-header">
+                <h1 class="olympiad-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Создание новой олимпиады
+                </h1>
+            </header>
 
-        <div class="form-content">
-            <form id="olympiadForm" action="/olympiad/add" method="POST" enctype="multipart/form-data">
-                <div class="olympiad-grid">
+            <div class="form-content">
+                <form id="olympiadForm" action="/olympiad/add" method="POST" enctype="multipart/form-data">
+                    <div class="olympiad-grid">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
 
-                    <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                    </#if>
+                        <input type="hidden" name="creatorId" value="${user.id}">
 
-                    <input type="hidden" name="creatorId" value="${user.id}">
+                        <div class="form-group full-width">
+                            <label for="title" class="olympiad-label required">Название олимпиады</label>
+                            <@spring.formInput "olympiadCreateDto.title" "placeholder='Введите название' class='olympiad-input'"/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group full-width">
-                        <label for="title" class="olympiad-label required">Название олимпиады</label>
-                        <@spring.formInput "olympiadCreateDto.title" "placeholder='Веддите название' class='olympiad-input'"/>
-                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                    </div>
+                        <div class="form-group full-width">
+                            <label for="info" class="olympiad-label required">Описание</label>
+                            <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Введите подробное описание олимпиады' class='olympiad-textarea'"/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group full-width">
-                        <label for="info" class="olympiad-label required">Описание</label>
-                        <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Веддите подробное описание олимпиады' class='olympiad-textarea'"/>
-                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                    </div>
+                        <div class="form-group">
+                            <label for="start_date" class="olympiad-label required">Дата начала</label>
+                            <@spring.formInput "olympiadCreateDto.startDate" 'type="date" class="olympiad-input"' 'date'/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="start_date" class="olympiad-label required">Дата начала</label>
-                        <@spring.formInput "olympiadCreateDto.startDate" 'type="date" class="olympiad-input"' 'date'/>
-                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                    </div>
+                        <div class="form-group">
+                            <label for="end_date" class="olympiad-label required">Дата окончания</label>
+                            <@spring.formInput "olympiadCreateDto.endDate" 'type="date" class="olympiad-input"' 'date'/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="end_date" class="olympiad-label required">Дата окончания</label>
-                        <@spring.formInput "olympiadCreateDto.endDate" 'type="date" class="olympiad-input"' 'date'/>
-                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                    </div>
+                        <#if olympiadDateError??>
+                            <p class="text-danger small">${olympiadDateError}</p>
+                        </#if>
 
-                    <#if olympiadDateError??>
-                        <p class="text-danger small">${olympiadDateError}</p>
-                    </#if>
+                        <div class="form-group full-width">
+                            <label for="rules" class="olympiad-label required">Правила участия</label>
+                            <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea"'/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group full-width">
-                        <label for="rules" class="olympiad-label required">Правила участия</label>
-                        <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea"'/>
-                        <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                    </div>
+                        <div class="form-group full-width">
+                            <label class="olympiad-label required">Главное изображение</label>
+                            <div class="image-upload-container">
+                                <input type="file" id="mainImageInput" name="imageFile" accept="image/*" class="form-control mb-3" required>
+                                <div class="image-preview-container" style="display: none;">
+                                    <p class="crop-hint">Перетаскивайте или масштабируйте, чтобы выбрать область обрезки (1200x1000)</p>
+                                    <div class="crop-container">
+                                        <img id="imagePreview" class="img-fluid">
+                                    </div>
+                                    <div class="crop-controls mt-3">
+                                        <button type="button" class="olympiad-btn olympiad-btn-primary" id="cropButton">Применить кроп</button>
+                                        <button type="button" class="olympiad-btn olympiad-btn-outline" id="cancelCrop">Отменить</button>
+                                    </div>
+                                </div>
+                                <div class="cropped-preview" style="display: none;">
+                                    <label class="olympiad-label">Предпросмотр:</label>
+                                    <div class="cropped-image-container">
+                                        <img id="croppedImage" class="img-fluid border rounded">
+                                    </div>
+                                    <button type="button" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                    <p id="imageError" class="text-danger small mt-1" style="display: none;"></p>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Изображение будет обрезано до размера 1200x1000. Максимальный размер файла: 5MB.
+                                </small>
+                            </div>
+                        </div>
 
-                    <div class="form-group full-width">
-                        <label>Изображение</label>
-                        <div class="file-upload">
-                            <label class="file-upload-label">
+                        <div class="form-group full-width">
+                            <label>Организаторы</label>
+                            <button type="button" id="toggleOrganizers" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm"
+                                    style="margin-bottom: 0.5rem;">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                          d="M19 9l-7 7-7-7" />
                                 </svg>
-                                <span>Перетащите изображение или кликните для загрузки</span>
-                                <span style="color: var(--primary-light); font-size: 0.75rem;">PNG, JPG (макс.
-                                    10MB)</span>
-                            </label>
-                            <input type="file" id="image" name="imageFile" value="${olympiadCreateDto.imageFile!}" accept="image/png, image/jpeg">
-                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                Показать организаторов
+                            </button>
+                            <div id="organizersContainer" class="checkbox-group"></div>
                         </div>
-                    </div>
 
-
-                    <div class="form-group full-width">
-                        <label>Организаторы</label>
-                        <button type="button" id="toggleOrganizers" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm"
-                                style="margin-bottom: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M19 9l-7 7-7-7" />
-                            </svg>
-                            Показать организаторов
-                        </button>
-                        <div id="organizersContainer" class="checkbox-group">
-<#--                            js-->
+                        <div class="form-group full-width">
+                            <label>Контакты</label>
+                            <div id="contacts" class="contacts-container">
+                                <div class="contact-card">
+                                    <select name="contacts[0].contactType" class="olympiad-select contact-type-select" required>
+                                        <option value="" disabled>Выберите тип контакта</option>
+                                        <#if contactTypes??>
+                                            <#list contactTypes as type>
+                                                <option value="${type.id}" <#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0) && olympiadCreateDto.contacts[0].contactType?? && olympiadCreateDto.contacts[0].contactType.id == type.id>selected</#if>>${type.name}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                    <input type="text" name="contacts[0].info" value="<#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0)>${olympiadCreateDto.contacts[0].info!}</#if>"
+                                           placeholder="Ссылка или контакт" class="olympiad-input">
+                                    <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Удалить
+                                    </button>
+                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                </div>
+                            </div>
+                            <button type="button" id="addContact" class="olympiad-btn olympiad-btn-outline" style="margin-top: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Добавить контакт
+                            </button>
                         </div>
-                    </div>
 
+                        <div class="form-group full-width">
+                            <label style="margin-bottom: 10px" for="stageCount">Количество этапов</label>
+                            <select id="stageCount" name="stage_count" class="olympiad-select">
+                                <option value="" disabled selected>Выберите количество этапов</option>
+                                <option value="1">1 этап</option>
+                                <option value="2">2 этапа</option>
+                                <option value="3">3 этапа</option>
+                                <option value="4">4 этапа</option>
+                                <option value="5">5 этапа</option>
+                                <option value="6">6 этапа</option>
+                                <option value="7">7 этапа</option>
+                            </select>
 
-                    <div class="form-group full-width">
-                        <label>Контакты</label>
-                        <div id="contacts" class="contacts-container">
-                            <div class="contact-card">
-                                <select name="contacts[0].contactType" class="olympiad-select contact-type-select" required>
-                                    <option value="" disabled>Выберите тип контакта</option>
-                                    <#if contactTypes??>
-                                        <#list contactTypes as type>
-                                            <option value="${type.id}" <#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0) && olympiadCreateDto.contacts[0].contactType?? && olympiadCreateDto.contacts[0].contactType.id == type.id>selected</#if>>${type.name}</option>
-                                        </#list>
-                                    </#if>
-                                </select>
-                                <input type="text" name="contacts[0].info" value="<#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0)>${olympiadCreateDto.contacts[0].info!}</#if>"
-                                       placeholder="Ссылка или контакт" class="olympiad-input">
-                                <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Удалить
-                                </button>
-                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                            <div class="stages-container" id="stagesContainer">
+                                <#if olympiadCreateDto.stages?? && (olympiadCreateDto.stages?size > 0)>
+                                    <#list olympiadCreateDto.stages as stage>
+                                        <div class="stage-card">
+                                            <div class="stage-header">
+                                                <span class="stage-title">Этап ${stage.stageOrder}</span>
+                                            </div>
+                                            <div class="olympiad-grid" style="gap: 1rem;">
+                                                <input name="stages[${stage_index}].stageOrder" value="${stage.stageOrder}" type="hidden">
+                                                <div class="form-group">
+                                                    <label class="olympiad-label required">Дата начала</label>
+                                                    <input class="olympiad-input" name="stages[${stage_index}].eventStartDate" type="date" value="${stage.eventStartDate!}" required>
+                                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="olympiad-label required">Дата окончания</label>
+                                                    <input class="olympiad-input" name="stages[${stage_index}].eventEndDate" type="date" value="${stage.eventEndDate!}" required>
+                                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="olympiad-label required">Начало регистрации</label>
+                                                    <input class="olympiad-input" name="stages[${stage_index}].registrationStart" type="date" value="${stage.registrationStart!}" required>
+                                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="olympiad-label required">Конец регистрации</label>
+                                                    <input class="olympiad-input" name="stages[${stage_index}].registrationEnd" type="date" value="${stage.registrationEnd!}" required>
+                                                    <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                                                </div>
+                                                <#if olympiadDateError??>
+                                                    <p class="text-danger small">${olympiadDateError}</p>
+                                                </#if>
+                                            </div>
+                                        </div>
+                                        <#if dateError??>
+                                            <p class="text-danger small">${dateError}</p>
+                                        </#if>
+                                        <#if dateRangeErrors?? && dateRangeErrors?size != 0>
+                                            <#list dateRangeErrors as err>
+                                                <p class="text-danger small">${err}</p>
+                                            </#list>
+                                        </#if>
+                                    </#list>
+                                </#if>
+                                <#if stageError??>
+                                    <p class="text-danger small">${stageError}</p>
+                                </#if>
                             </div>
                         </div>
-                        <button type="button" id="addContact" class="olympiad-btn olympiad-btn-outline" style="margin-top: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Добавить контакт
-                        </button>
                     </div>
 
-
-                    <div class="form-group full-width">
-                        <label style="margin-bottom: 10px" for="stageCount">Количество этапов</label>
-                        <select id="stageCount" name="stage_count" class="olympiad-select">
-                            <option value="" disabled selected>Выберите количество этапов</option>
-                            <option value="1">1 этап</option>
-                            <option value="2">2 этапа</option>
-                            <option value="3">3 этапа</option>
-                            <option value="4">4 этапа</option>
-                            <option value="5">5 этапа</option>
-                            <option value="6">6 этапа</option>
-                            <option value="7">7 этапа</option>
-                        </select>
-
-                        <div class="stages-container" id="stagesContainer">
-                            <#if olympiadCreateDto.stages?? && (olympiadCreateDto.stages?size > 0)>
-                                <#list olympiadCreateDto.stages as stage>
-                                    <div class="stage-card">
-                                        <div class="stage-header">
-                                            <span class="stage-title">Этап ${stage.stageOrder}</span>
-                                        </div>
-                                        <div class="olympiad-grid" style="gap: 1rem;">
-                                            <input name="stages[${stage_index}].stageOrder" value="${stage.stageOrder}" type="hidden">
-                                            <div class="form-group">
-                                                <label class="olympiad-label required">Дата начала</label>
-                                                <input class="olympiad-input" name="stages[${stage_index}].eventStartDate" type="date" value="${stage.eventStartDate!}" required>
-                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="olympiad-label required">Дата окончания</label>
-                                                <input class="olympiad-input" name="stages[${stage_index}].eventEndDate" type="date" value="${stage.eventEndDate!}" required>
-                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="olympiad-label required">Начало регистрации</label>
-                                                <input class="olympiad-input" name="stages[${stage_index}].registrationStart" type="date" value="${stage.registrationStart!}" required>
-                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="olympiad-label required">Конец регистрации</label>
-                                                <input class="olympiad-input" name="stages[${stage_index}].registrationEnd" type="date" value="${stage.registrationEnd!}" required>
-                                                <@spring.showErrors "<br>", "text-danger small mt-1"/>
-                                            </div>
-                                            <#if olympiadDateError??>
-                                                <p class="text-danger small">${olympiadDateError}</p>
-                                            </#if>
-                                        </div>
-                                    </div>
-                                    <#if dateError??>
-                                        <p class="text-danger small">${dateError}</p>
-                                    </#if>
-                                </#list>
-                            </#if>
-                            <#if stageError??>
-                                <p class="text-danger small">
-                                    ${stageError}</p>
-                            </#if>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="olympiad-btn olympiad-btn-primary submit-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                    </svg>
-                    Сохранить олимпиаду
-                </button>
-            </form>
+                    <button type="submit" class="olympiad-btn olympiad-btn-primary submit-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        Сохранить олимпиаду
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-    </div>
+
     <#noparse>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+        <script src="/static/js/components/content-create/ImageCropManager.js"></script>
+
         <script>
-            document.getElementById('toggleOrganizers').addEventListener('click', function () {
-                const organizersContainer = document.getElementById('organizersContainer');
-                const isHidden = organizersContainer.classList.contains('open');
-                organizersContainer.classList.toggle('open', !isHidden);
-                this.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="${isHidden ? 'M19 9l-7 7-7-7' : 'M19 14l-7-7-7 7'}" />
-            </svg>
-            ${isHidden ? 'Показать организаторов' : 'Скрыть организаторов'}
-        `;
-            });
+            let imageCropManager;
 
-            document.getElementById('stageCount').addEventListener('change', function () {
-                const count = parseInt(this.value);
-                const container = document.getElementById('stagesContainer');
-                container.innerHTML = '';
+            document.addEventListener('DOMContentLoaded', () => {
+                imageCropManager = new ImageCropManager({
+                    inputId: 'mainImageInput',
+                    previewId: 'imagePreview',
+                    previewContainerSelector: '.image-preview-container',
+                    croppedPreviewSelector: '.cropped-preview',
+                    cropButtonId: 'cropButton',
+                    cancelCropId: 'cancelCrop',
+                    changeCropId: 'changeCrop',
+                    croppedImageId: 'croppedImage',
+                    aspectRatio: 1.2,
+                    autoCropArea: 0.8,
+                    cropBoxResizable: true,
+                    maxFileSize: 5 * 1024 * 1024,
+                    outputWidth: 1200,
+                    outputHeight: 1000,
+                    outputQuality: 0.9,
+                    onError: (message) => {
+                        const errorElement = document.getElementById('imageError');
+                        errorElement.textContent = message;
+                        errorElement.style.display = 'block';
+                    },
+                    onCropComplete: (blob, dataUrl) => {
+                        const errorElement = document.getElementById('imageError');
+                        errorElement.style.display = 'none';
+                    }
+                });
 
-                for (let i = 0; i < count; i++) {
-                    const stageCard = document.createElement('div');
-                    stageCard.className = 'stage-card';
-                    stageCard.innerHTML = `
-            <div class="stage-header">
-                <span class="stage-title">Этап ${i + 1}</span>
-            </div>
-            <div class="olympiad-grid" style="gap: 1rem;">
-                <input name="stages[${i}].stageOrder" value="${i + 1}" type="hidden">
-                <div class="form-group">
-                    <label class="olympiad-label required">Дата начала</label>
-                    <input class="olympiad-input" name="stages[${i}].eventStartDate" type="date" required>
-                </div>
-                <div class="form-group">
-                    <label class="olympiad-label required">Дата окончания</label>
-                    <input class="olympiad-input" name="stages[${i}].eventEndDate" type="date" required>
-                </div>
-                <div class="form-group">
-                    <label class="olympiad-label required">Начало регистрации</label>
-                    <input class="olympiad-input" name="stages[${i}].registrationStart" type="date" required>
-                </div>
-                <div class="form-group">
-                    <label class="olympiad-label required">Конец регистрации</label>
-                    <input class="olympiad-input" name="stages[${i}].registrationEnd" type="date" required>
-                </div>
-            </div>
-        `;
-                    container.appendChild(stageCard);
-                }
-            });
+                document.getElementById('olympiadForm').addEventListener('submit', (e) => {
+                    if (!imageCropManager.hasCroppedImage()) {
+                        e.preventDefault();
+                        const errorElement = document.getElementById('imageError');
+                        errorElement.textContent = 'Пожалуйста, выберите и обрежьте изображение перед сохранением.';
+                        errorElement.style.display = 'block';
+                    }
+                });
 
-            window.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('toggleOrganizers').addEventListener('click', function () {
+                    const organizersContainer = document.getElementById('organizersContainer');
+                    const isHidden = organizersContainer.classList.contains('open');
+                    organizersContainer.classList.toggle('open', !isHidden);
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="${isHidden ? 'M19 9l-7 7-7-7' : 'M19 14l-7-7-7 7'}" />
+                        </svg>
+                        ${isHidden ? 'Показать организаторов' : 'Скрыть организаторов'}
+                    `;
+                });
+
+                document.getElementById('stageCount').addEventListener('change', function () {
+                    const count = parseInt(this.value);
+                    const container = document.getElementById('stagesContainer');
+                    container.innerHTML = '';
+
+                    for (let i = 0; i < count; i++) {
+                        const stageCard = document.createElement('div');
+                        stageCard.className = 'stage-card';
+                        stageCard.innerHTML = `
+                            <div class="stage-header">
+                                <span class="stage-title">Этап ${i + 1}</span>
+                            </div>
+                            <div class="olympiad-grid" style="gap: 1rem;">
+                                <input name="stages[${i}].stageOrder" value="${i + 1}" type="hidden">
+                                <div class="form-group">
+                                    <label class="olympiad-label required">Дата начала</label>
+                                    <input class="olympiad-input" name="stages[${i}].eventStartDate" type="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="olympiad-label required">Дата окончания</label>
+                                    <input class="olympiad-input" name="stages[${i}].eventEndDate" type="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="olympiad-label required">Начало регистрации</label>
+                                    <input class="olympiad-input" name="stages[${i}].registrationStart" type="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="olympiad-label required">Конец регистрации</label>
+                                    <input class="olympiad-input" name="stages[${i}].registrationEnd" type="date" required>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(stageCard);
+                    }
+                });
+
                 initializeContactTypes();
                 loadOrganizations();
+
                 const stageCountSelect = document.getElementById('stageCount');
                 const savedStageCount = parseInt(stageCountSelect.value) || 1;
                 if (savedStageCount > 1) {
                     stageCountSelect.value = savedStageCount;
                     stageCountSelect.dispatchEvent(new Event('change'));
                 }
-            });
 
-            async function loadContactTypes(selectElement) {
-                try {
-                    const response = await fetch('/api/contactType', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch contact types');
-                    }
-
-                    const contactTypes = await response.json();
-                    selectElement.innerHTML = '<option value="" disabled selected>Выберите тип контакта</option>';
-
-                    if (!contactTypes || contactTypes.length === 0) {
-                        selectElement.innerHTML = '<option value="">Нет доступных типов контактов</option>';
-                        return;
-                    }
-
-                    contactTypes.forEach(type => {
-                        const option = document.createElement('option');
-                        option.value = type.id;
-                        option.textContent = type.name;
-                        selectElement.appendChild(option);
-                    });
-                } catch (error) {
-                    console.error('Error loading contact types:', error);
-                    selectElement.innerHTML = '<option value="">Ошибка загрузки типов контактов</option>';
-                }
-            }
-
-            function initializeContactTypes() {
-                document.querySelectorAll('.contact-type-select').forEach(select => {
-                    loadContactTypes(select);
-                });
-            }
-
-            document.getElementById('addContact').addEventListener('click', function () {
-                const contactsDiv = document.getElementById('contacts');
-                const contactCards = contactsDiv.querySelectorAll('.contact-card');
-                const contactCount = contactCards.length;
-
-                const newContact = document.createElement('div');
-                newContact.className = 'contact-card';
-                newContact.innerHTML = `
-            <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required></select>
-            <input type="text" name="contacts[${contactCount}].info" placeholder="Ссылка или контакт" class="olympiad-input">
-            <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Удалить
-            </button>
-        `;
-                contactsDiv.appendChild(newContact);
-                loadContactTypes(newContact.querySelector('.contact-type-select'));
-
-                newContact.querySelector('.remove-contact').addEventListener('click', function () {
-                    contactsDiv.removeChild(newContact);
-                    reindexContacts();
-                });
-
-                reindexContacts();
-            });
-
-            document.querySelectorAll('.remove-contact').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const contactItem = this.closest('.contact-card');
+                document.getElementById('addContact').addEventListener('click', function () {
                     const contactsDiv = document.getElementById('contacts');
-                    contactsDiv.removeChild(contactItem);
+                    const contactCards = contactsDiv.querySelectorAll('.contact-card');
+                    const contactCount = contactCards.length;
+
+                    const newContact = document.createElement('div');
+                    newContact.className = 'contact-card';
+                    newContact.innerHTML = `
+                        <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required></select>
+                        <input type="text" name="contacts[${contactCount}].info" placeholder="Ссылка или контакт" class="olympiad-input">
+                        <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Удалить
+                        </button>
+                    `;
+                    contactsDiv.appendChild(newContact);
+                    loadContactTypes(newContact.querySelector('.contact-type-select'));
+
+                    newContact.querySelector('.remove-contact').addEventListener('click', function () {
+                        contactsDiv.removeChild(newContact);
+                        reindexContacts();
+                    });
+
                     reindexContacts();
                 });
-            });
 
-            window.addEventListener('DOMContentLoaded', () => {
-                initializeContactTypes();
-                loadOrganizations();
-            });
-
-            const fileInput = document.querySelector('.file-upload input[type="file"]');
-            const fileUploadLabel = document.querySelector('.file-upload-label');
-            fileInput.addEventListener('change', function () {
-                if (this.files.length > 0) {
-                    fileUploadLabel.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>${this.files[0].name}</span>
-                <span style="color: var(--primary-light); font-size: 0.75rem;">${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</span>
-            `;
-                }
-            });
-
-            async function loadOrganizations() {
-                const container = document.getElementById('organizersContainer');
-                container.innerHTML = '<p>Загрузка организаторов...</p>';
-
-                try {
-                    const response = await fetch('/api/organizations/name', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
+                document.querySelectorAll('.remove-contact').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const contactItem = this.closest('.contact-card');
+                        const contactsDiv = document.getElementById('contacts');
+                        contactsDiv.removeChild(contactItem);
+                        reindexContacts();
                     });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch organizations');
-                    }
-
-                    const organizations = await response.json();
-                    container.innerHTML = '';
-
-                    if (!organizations || organizations.length === 0) {
-                        container.innerHTML = '<p>Нет доступных организаций</p>';
-                        return;
-                    }
-
-                    organizations.forEach(org => {
-                        const checkboxItem = document.createElement('div');
-                        checkboxItem.className = 'checkbox-item';
-                        checkboxItem.innerHTML = `
-                    <input type="checkbox" name="organizationIds" value="${org.id}" id="org_${org.id}">
-                    <label for="org_${org.id}">${org.name}</label>
-                `;
-                        container.appendChild(checkboxItem);
-                    });
-                } catch (error) {
-                    console.error('Error loading organizations:', error);
-                    container.innerHTML = '<p>Ошибка загрузки организаторов</p>';
-                }
-            }
-
-            function reindexContacts() {
-                const contactCards = document.querySelectorAll('#contacts .contact-card');
-                contactCards.forEach((card, index) => {
-                    const select = card.querySelector('select');
-                    const input = card.querySelector('input[type="text"]');
-                    select.name = `contacts[${index}].contactType`;
-                    input.name = `contacts[${index}].info`;
                 });
-            }
+
+                async function loadContactTypes(selectElement) {
+                    try {
+                        const response = await fetch('/api/contactType', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch contact types');
+                        }
+
+                        const contactTypes = await response.json();
+                        selectElement.innerHTML = '<option value="" disabled selected>Выберите тип контакта</option>';
+
+                        if (!contactTypes || contactTypes.length === 0) {
+                            selectElement.innerHTML = '<option value="">Нет доступных типов контактов</option>';
+                            return;
+                        }
+
+                        contactTypes.forEach(type => {
+                            const option = document.createElement('option');
+                            option.value = type.id;
+                            option.textContent = type.name;
+                            selectElement.appendChild(option);
+                        });
+                    } catch (error) {
+                        console.error('Error loading contact types:', error);
+                        selectElement.innerHTML = '<option value="">Ошибка загрузки типов контактов</option>';
+                    }
+                }
+
+                function initializeContactTypes() {
+                    document.querySelectorAll('.contact-type-select').forEach(select => {
+                        loadContactTypes(select);
+                    });
+                }
+
+                async function loadOrganizations() {
+                    const container = document.getElementById('organizersContainer');
+                    container.innerHTML = '<p>Загрузка организаторов...</p>';
+
+                    try {
+                        const response = await fetch('/api/organizations/name', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch organizations');
+                        }
+
+                        const organizations = await response.json();
+                        container.innerHTML = '';
+
+                        if (!organizations || organizations.length === 0) {
+                            container.innerHTML = '<p>Нет доступных организаций</p>';
+                            return;
+                        }
+
+                        organizations.forEach(org => {
+                            const checkboxItem = document.createElement('div');
+                            checkboxItem.className = 'checkbox-item';
+                            checkboxItem.innerHTML = `
+                                <input type="checkbox" name="organizationIds" value="${org.id}" id="org_${org.id}">
+                                <label for="org_${org.id}">${org.name}</label>
+                            `;
+                            container.appendChild(checkboxItem);
+                        });
+                    } catch (error) {
+                        console.error('Error loading organizations:', error);
+                        container.innerHTML = '<p>Ошибка загрузки организаторов</p>';
+                    }
+                }
+
+                function reindexContacts() {
+                    const contactCards = document.querySelectorAll('#contacts .contact-card');
+                    contactCards.forEach((card, index) => {
+                        const select = card.querySelector('select');
+                        const input = card.querySelector('input[type="text"]');
+                        select.name = `contacts[${index}].contactType`;
+                        input.name = `contacts[${index}].info`;
+                    });
+                }
+            });
         </script>
-        </#noparse>
+    </#noparse>
 </@main.layout>

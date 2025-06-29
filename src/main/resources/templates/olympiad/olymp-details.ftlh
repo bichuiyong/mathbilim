@@ -73,13 +73,11 @@
 
             <div class="tab-pane fade" id="organization" role="tabpanel" aria-labelledby="rules-tab">
                 <h4>Организации</h4>
-                <p>
                     <#if olympiad.organizations??>
                         <#list olympiad.organizations as organization>
-                            ${organization.name}
+                <p>${organization.name}</p>
                         </#list>
                     </#if>
-                </p>
             </div>
 
         </div>
