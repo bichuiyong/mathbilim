@@ -58,7 +58,8 @@ public class UserController {
             return "profile/profile-edit";
         }
         userService.edit(userEditDto);
-        return "redirect:/profile";
+
+        return "redirect:/users/" + id;
     }
 
     @PostMapping("{userId}/avatar")

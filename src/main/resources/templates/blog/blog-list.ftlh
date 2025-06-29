@@ -1,368 +1,614 @@
-<#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-
-<@main.layout title="Блог - MathBilim.kg">
-
-    <div class="blog-list-container">
-        <!-- Заголовок и навигация -->
-        <section class="blog-header-section">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <h1 class="page-title">Блог MathBilim.kg</h1>
-                        <p class="page-subtitle">
-                            Последние статьи о математическом образовании, олимпиадах и научных достижениях
-                        </p>
-                    </div>
-                    <div class="col-lg-4 text-lg-end">
-                        <a href="/blog/create" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i>Написать статью
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Фильтры и сортировка -->
-        <section class="blog-filters">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="language-filter">
-                            <label class="filter-label">Язык статей:</label>
-                            <div class="btn-group" role="group">
-                                <a href="/blog?lang=ru" class="btn btn-outline-primary ${currentLang == 'ru' ? 'active' : ''}">Русский</a>
-                                <a href="/blog?lang=ky" class="btn btn-outline-primary ${currentLang == 'ky' ? 'active' : ''}">Кыргызча</a>
-                                <a href="/blog?lang=en" class="btn btn-outline-primary ${currentLang == 'en' ? 'active' : ''}">English</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <div class="blog-stats">
-                            <span class="stats-text">
-                                <i class="fas fa-newspaper me-1"></i>
-                                Всего статей: <strong>${totalElements}</strong>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Список блогов -->
-        <section class="blog-content">
-            <div class="container">
-                <#if blogs?? && blogs?size > 0>
-                    <div class="blog-masonry-grid">
-                        <#list blogs as blog>
-                            <#if blog.title?? && blog.title?trim != "">
-                                <article class="blog-item ${blog?index % 4 == 0 ? 'blog-item-large' : (blog?index % 3 == 0 ? 'blog-item-tall' : 'blog-item-small')}">
-                                    <a href="/blog/${blog.id}?lang=${currentLang}" class="blog-link">
-                                        <#if blog.mainImage??>
-                                            <img src="/api/files/${blog.mainImage.id}/view"
-                                                 alt="${blog.title}"
-                                                 loading="lazy">
-                                        <#else>
-                                            <div class="blog-placeholder">
-                                                <i class="fas fa-file-alt"></i>
-                                            </div>
-                                        </#if>
-
-                                        <div class="blog-overlay">
-                                            <div class="blog-category">
-                                                <i class="fas fa-tag me-1"></i>Блог
-                                            </div>
-
-                                            <h2 class="blog-title">${blog.title}</h2>
-
-                                            <#if blog.content??>
-                                                <p class="blog-excerpt">
-                                                    ${blog.getExcerpt(120)}
-                                                </p>
-                                            </#if>
-
-                                            <div class="blog-meta">
-                                                <time class="blog-date">${blog.createdAt?string("dd MMM yyyy")}</time>
-                                                <div class="blog-stats">
-                                                    <span><i class="fas fa-eye me-1"></i>${blog.viewCount}</span>
-                                                    <span><i class="fas fa-share me-1"></i>${blog.shareCount}</span>
-                                                </div>
-                                            </div>
-
-                                            <#if blog.creator?? && blog.creator.fullName??>
-                                                <div class="blog-author">
-                                                    <div class="author-avatar-small">
-                                                        <#if blog.creator.profileImage??>
-                                                            <img src="/api/files/${blog.creator.profileImage.id}/view"
-                                                                 alt="${blog.creator.fullName}">
-                                                        <#else>
-                                                            <div class="avatar-placeholder-small">
-                                                                ${blog.creator.fullName?substring(0, 1)?upper_case}
-                                                            </div>
-                                                        </#if>
-                                                    </div>
-                                                    <span class="author-name">${blog.creator.fullName}</span>
-                                                </div>
-                                            </#if>
-                                        </div>
-                                    </a>
-                                </article>
-                            </#if>
-                        </#list>
-                    </div>
-
-                    <!-- Пагинация -->
-                    <#if totalPages > 1>
-                        <nav class="blog-pagination" aria-label="Навигация по страницам блога">
-                            <ul class="pagination justify-content-center">
-                                <!-- Предыдущая страница -->
-                                <#if currentPage > 0>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/blog?page=${currentPage - 1}&lang=${currentLang}">
-                                            <i class="fas fa-chevron-left me-1"></i>Назад
-                                        </a>
-                                    </li>
-                                <#else>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">
-                                            <i class="fas fa-chevron-left me-1"></i>Назад
-                                        </span>
-                                    </li>
-                                </#if>
-
-                                <!-- Номера страниц -->
-                                <#assign startPage = (currentPage - 2 < 0) ? 0 : (currentPage - 2)>
-<#assign endPage = (currentPage + 2 > totalPages - 1) ? (totalPages - 1) : (currentPage + 2)>
-
-
-                                <#if startPage > 0>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/blog?page=0&lang=${currentLang}">1</a>
-                                    </li>
-                                    <#if startPage > 1>
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                    </#if>
-                                </#if>
-
-                                <#list startPage..endPage as pageNum>
-                                    <li class="page-item  <#if currentPage == pageNum>'active'</#if>">
-                                        <a class="page-link" href="/blog?page=${pageNum}&lang=${currentLang}">
-                                            ${pageNum + 1}
-                                        </a>
-                                    </li>
-                                </#list>
-
-                                <#if endPage < totalPages - 1>
-                                    <#if endPage < totalPages - 2>
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                    </#if>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/blog?page=${totalPages - 1}&lang=${currentLang}">
-                                            ${totalPages}
-                                        </a>
-                                    </li>
-                                </#if>
-
-                                <!-- Следующая страница -->
-                                <#if currentPage < totalPages - 1>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/blog?page=${currentPage + 1}&lang=${currentLang}">
-                                            Вперед<i class="fas fa-chevron-right ms-1"></i>
-                                        </a>
-                                    </li>
-                                <#else>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">
-                                            Вперед<i class="fas fa-chevron-right ms-1"></i>
-                                        </span>
-                                    </li>
-                                </#if>
-                            </ul>
-                        </nav>
-                    </#if>
-
-                <#else>
-                    <!-- Пустое состояние -->
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <h3 class="empty-title">Пока нет статей</h3>
-                        <p class="empty-text">
-                            Статьи на выбранном языке еще не опубликованы.
-                            Попробуйте выбрать другой язык или станьте первым автором!
-                        </p>
-                        <a href="/blog/create" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i>Написать первую статью
-                        </a>
-                    </div>
-                </#if>
-            </div>
-        </section>
-    </div>
-
+<@main.layout>
     <style>
-        /* Дополнительные стили для списка блогов */
-        .blog-list-container {
-            background: #f8fafc;
-            min-height: 100vh;
+        .content-wrapper {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #262626;
+            line-height: 1.4;
         }
 
-        .blog-header-section {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-            color: white;
-            padding: 4rem 0 3rem;
-        }
-
-        .page-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-
-        .page-subtitle {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 0;
-        }
-
-        .blog-filters {
+        /* Улучшенные стили для формы поиска */
+        .search-container {
             background: white;
-            padding: 2rem 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .filter-label {
-            font-weight: 600;
-            color: #374151;
-            margin-right: 1rem;
-        }
-
-        .blog-stats .stats-text {
-            color: #6b7280;
-            font-size: 0.95rem;
-        }
-
-        .blog-content {
-            padding: 3rem 0;
-        }
-
-        .blog-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9ca3af;
-            font-size: 3rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: white;
+            border: 1px solid #dbdbdb;
             border-radius: 12px;
+            margin-bottom: 28px;
+            overflow: hidden;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .empty-icon {
-            font-size: 4rem;
-            color: #d1d5db;
-            margin-bottom: 2rem;
+        .search-header {
+            padding: 16px;
+            border-bottom: 1px solid #efefef;
+            background: #fafafa;
         }
 
-        .empty-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #374151;
-            margin-bottom: 1rem;
+        .search-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #262626;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .empty-text {
-            color: #6b7280;
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+        .search-title::before {
+            content: "📝";
+            font-size: 18px;
         }
 
-        .blog-pagination {
-            margin-top: 3rem;
+        .content-wrapper form {
+            padding: 16px;
         }
 
-        .author-avatar-small {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+        .search-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input-group {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .search-input-group input:focus {
+            border-color: #0095f6;
+            box-shadow: 0 0 0 2px rgba(0, 149, 246, 0.2);
+            background: white;
+        }
+
+        .select-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .select-wrapper {
+            position: relative;
+            min-width: 120px;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 36px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            appearance: none;
+        }
+
+        .select-wrapper::after {
+            content: "▼";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+
+        .select-wrapper select:focus {
+            border-color: #0095f6;
+            box-shadow: 0 0 0 2px rgba(0, 149, 246, 0.2);
+        }
+
+        .search-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0095f6, #0074cc);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 149, 246, 0.3);
+            min-width: 100px;
+        }
+
+        .search-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 149, 246, 0.4);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        /* Instagram-style Grid для блогов */
+        .blogs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-bottom: 32px;
+        }
+
+        .blog-item {
+            position: relative;
+            aspect-ratio: 1;
             overflow: hidden;
-            margin-right: 0.5rem;
+            cursor: pointer;
+            background: #f8f8f8;
+            border-radius: 4px;
+            transition: all 0.2s ease;
         }
 
-        .author-avatar-small img {
+        .blog-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1;
+        }
+
+        .blog-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: all 0.2s ease;
         }
 
-        .avatar-placeholder-small {
-            width: 100%;
-            height: 100%;
-            background: #2563eb;
-            color: white;
+        .blog-item:hover img {
+            filter: brightness(0.8);
+        }
+
+        .blog-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .blog-author {
+        .blog-item:hover .blog-overlay {
+            opacity: 1;
+        }
+
+        .blog-stats {
             display: flex;
             align-items: center;
-            margin-top: 1rem;
-            font-size: 0.875rem;
+            gap: 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
         }
 
-        .author-name {
-            color: rgba(255, 255, 255, 0.9);
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-item::before {
+            font-size: 18px;
+        }
+
+        .stat-views::before {
+            content: "👁";
+        }
+
+        .stat-shares::before {
+            content: "📤";
+        }
+
+        .blog-title-overlay {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            padding: 0 12px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .blog-date-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #8e8e8e;
+            font-size: 16px;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0095f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-blogs {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #8e8e8e;
+            font-size: 18px;
+        }
+
+        .no-blogs::before {
+            content: "📝";
+            display: block;
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Улучшенная пагинация */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 32px;
+            padding: 20px 0;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            min-width: 80px;
+            gap: 8px;
+        }
+
+        .pagination-btn.prev {
+            background: #f0f0f0;
+            color: #262626;
+            border: 1px solid #dbdbdb;
+        }
+
+        .pagination-btn.prev:hover {
+            background: #e0e0e0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .pagination-btn.next {
+            background: linear-gradient(135deg, #0095f6, #0074cc);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 149, 246, 0.3);
+        }
+
+        .pagination-btn.next:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 149, 246, 0.4);
+            text-decoration: none;
+        }
+
+        .pagination-btn::before {
+            font-size: 12px;
+        }
+
+        .pagination-btn.prev::before {
+            content: "←";
+        }
+
+        .pagination-btn.next::after {
+            content: "→";
+        }
+
+        .pagination-info {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #8e8e8e;
             font-weight: 500;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
+            .content-wrapper {
+                padding: 12px;
             }
 
-            .page-subtitle {
-                font-size: 1rem;
+            .search-container {
+                border-radius: 8px;
+                margin-bottom: 20px;
             }
 
-            .blog-header-section {
-                padding: 2rem 0;
-                text-align: center;
-            }
-
-            .blog-filters .row {
-                text-align: center;
-            }
-
-            .blog-filters .col-md-6:first-child {
-                margin-bottom: 1rem;
-            }
-
-            .language-filter {
-                display: flex;
+            .search-row {
                 flex-direction: column;
-                align-items: center;
-                gap: 1rem;
+                gap: 12px;
+            }
+
+            .search-input-group {
+                min-width: unset;
+            }
+
+            .select-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .select-wrapper {
+                flex: 1;
+                min-width: unset;
+            }
+
+            .blogs-grid {
+                gap: 2px;
+            }
+
+            .pagination-container {
+                padding: 16px 0;
+                gap: 8px;
+            }
+
+            .pagination-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+                min-width: 70px;
+            }
+
+            .pagination-info {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .blogs-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2px;
+            }
+
+            .blog-stats {
+                font-size: 14px;
+                gap: 12px;
+            }
+
+            .blog-title-overlay {
+                font-size: 12px;
             }
         }
     </style>
 
+    <div class="content-wrapper">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-title">Поиск блогов</div>
+            </div>
+            <form method="get" action="/blog">
+                <div class="search-row">
+                    <div class="search-input-group">
+                        <input type="text" name="query" value="${query!}" placeholder="Найти блоги..."/>
+                    </div>
+                </div>
+
+                <div class="search-row">
+                    <div class="select-group">
+                        <div class="select-wrapper">
+                            <select name="sortBy">
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>По дате</option>
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>По просмотрам</option>
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>По репостам</option>
+                            </select>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <select name="sortDirection">
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>Сначала новые</option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>Сначала старые</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="search-button">Применить</button>
+                </div>
+
+                <input type="hidden" name="lang" value="${currentLang!'ru'}"/>
+            </form>
+        </div>
+
+        <#if blog?? && blog.content?size gt 0>
+            <div class="blogs-grid">
+                <#list blog.content as b>
+                    <div class="blog-item" onclick="window.location.href='/blog/${b.id}'">
+                        <#if b.mainImage??>
+                            <img src="/api/files/${b.mainImage.id}/view" alt="Blog Image">
+                        <#else>
+                            <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">📝</div>
+                        </#if>
+
+                        <#if b.createdAt??>
+                            <div class="blog-date-indicator">
+                                ${b.createdAt?date?string('dd.MM')}
+                            </div>
+                        </#if>
+
+                        <div class="blog-overlay">
+                            <div class="blog-stats">
+                                <div class="stat-item stat-views">${b.viewCount!0}</div>
+                                <div class="stat-item stat-shares">${b.shareCount!0}</div>
+                            </div>
+                            <#if b.title?? && b.title?has_content>
+                                <div class="blog-title-overlay">${b.title}</div>
+                            </#if>
+                        </div>
+                    </div>
+                </#list>
+            </div>
+        <#else>
+            <div class="blogs-grid">
+                <#if blog?? && blog.content?size == 0>
+                    <div class="no-blogs">
+                        Блоги не найдены
+                        <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
+                    </div>
+                <#else>
+                    <div class="loader">
+                        <div class="spinner"></div>
+                        <span>Блоги загружаются, пожалуйста подождите...</span>
+                    </div>
+                </#if>
+            </div>
+        </#if>
+
+        <#if blog?? && blog.content?size gt 0 && (blog.hasPrevious() || blog.hasNext())>
+            <div class="pagination-container">
+                <#if blog.hasPrevious()>
+                    <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                       class="pagination-btn prev">
+                        Назад
+                    </a>
+                </#if>
+
+                <div class="pagination-info">
+                    Страница ${page + 1}
+                </div>
+
+                <#if blog.hasNext()>
+                    <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                       class="pagination-btn next">
+                        Вперёд
+                    </a>
+                </#if>
+            </div>
+        </#if>
+    </div>
+
+    <script>
+        function switchLanguage(langCode) {
+            const url = new URL(window.location);
+            url.searchParams.set('lang', langCode);
+            window.location.href = url.toString();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('[data-lang]');
+            langButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const langCode = this.getAttribute('data-lang');
+                    switchLanguage(langCode);
+                });
+            });
+
+            const currentLang = new URLSearchParams(window.location.search).get('lang') || 'ru';
+            const activeLangButton = document.querySelector(`[data-lang="${currentLang}"]`);
+            if (activeLangButton) {
+                activeLangButton.classList.add('active');
+            }
+
+            // Навигация по клавиатуре
+            document.addEventListener('keydown', function(e) {
+                const blogs = document.querySelectorAll('.blog-item');
+                const currentBlog = document.querySelector('.blog-item:focus');
+
+                if (!currentBlog && blogs.length > 0) {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        blogs[0].focus();
+                        e.preventDefault();
+                    }
+                    return;
+                }
+
+                const currentIndex = Array.from(blogs).indexOf(currentBlog);
+                let newIndex = currentIndex;
+
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
+                        e.preventDefault();
+                        break;
+                    case 'ArrowRight':
+                        newIndex = currentIndex < blogs.length - 1 ? currentIndex + 1 : currentIndex;
+                        e.preventDefault();
+                        break;
+                    case 'ArrowUp':
+                        newIndex = currentIndex >= 3 ? currentIndex - 3 : currentIndex;
+                        e.preventDefault();
+                        break;
+                    case 'ArrowDown':
+                        newIndex = currentIndex + 3 < blogs.length ? currentIndex + 3 : currentIndex;
+                        e.preventDefault();
+                        break;
+                    case 'Enter':
+                        if (currentBlog) {
+                            currentBlog.click();
+                        }
+                        e.preventDefault();
+                        break;
+                }
+
+                if (newIndex !== currentIndex && blogs[newIndex]) {
+                    blogs[newIndex].focus();
+                }
+            });
+
+            // Добавляем возможность фокуса на элементы блогов
+            document.querySelectorAll('.blog-item').forEach(item => {
+                item.setAttribute('tabindex', '0');
+            });
+        });
+    </script>
 </@main.layout>
