@@ -38,7 +38,7 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, @Qualifier("newsMapperImpl") NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService) {
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService) {
         super(repository, mapper, userService, fileService, translationService);
     }
 
