@@ -8,7 +8,9 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
+
 @Table(name="user_notification")
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter

@@ -6,12 +6,15 @@ import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.repository.news.NewsRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +35,8 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService) {
-        super(repository, mapper, userService, fileService, translationService);
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, UserNotificationService notificationService) {
+        super(repository, mapper, userService, fileService, translationService, notificationService);
     }
 
     @Override
@@ -74,6 +77,8 @@ public class NewsServiceImpl extends
     @Transactional
     @Override
     public NewsDto create(CreateNewsDto createNewsDto) {
-        return createBase(createNewsDto.getNews(), createNewsDto.getImage(), createNewsDto.getAttachments());
+        NewsDto newsDto = createBase(createNewsDto.getNews(), createNewsDto.getImage(), createNewsDto.getAttachments());
+        notificationService.notifyAllSubscribed(NotificationEnum.NEWS,"New news uploaded");
+        return newsDto;
     }
 }

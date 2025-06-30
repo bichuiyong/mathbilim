@@ -6,30 +6,34 @@ import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.model.notifications.UserNotification;
 import kg.edu.mathbilim.repository.notification.NotificationRepository;
-import kg.edu.mathbilim.repository.notification.NotificationTypeRepository;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.notification.NotificationService;
+import kg.edu.mathbilim.service.interfaces.notification.NotificationTypeService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.generics.TelegramBot;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationServiceImpl implements NotificationService {
+@Slf4j
+public class UserNotificationServiceImpl implements UserNotificationService {
     private final UserService userService;
     private final NotificationRepository userNotificationRepository;
     private final UserMapper userMapper;
-    private final NotificationTypeRepository notificationTypeRepository;
+    private final kg.edu.mathbilim.telegram.bot.TelegramBot telegramBot;
+    private final NotificationTypeService notificationTypeService;
 
     @Override
 
     public void subscribe(String email, NotificationEnum notificationType) {
         UserDto userDto = userService.getUserByEmail(email);
-        NotificationType notification = notificationTypeRepository.findByName(notificationType).orElseThrow(()-> new NoSuchElementException("No such type"));
+        NotificationType notification = notificationTypeService.findByName(notificationType);
 
         boolean alreadySubscribed = userNotificationRepository.existsByUserIdAndTypeId(userDto.getId(), notification.getId());
         if (!alreadySubscribed) {
@@ -43,15 +47,22 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void notifyAllSubscribed(NotificationType type, String message, TelegramBot bot) {
-        List<UserNotification> subscriptions = userNotificationRepository.findByType(type);
+    @Transactional(readOnly = true)
+    public void notifyAllSubscribed(NotificationEnum type, String message)  {
+        NotificationType notificationType = notificationTypeService.findByName(type);
+        List<UserNotification> subscriptions = userNotificationRepository
+                .findByTypeWithUserNative(notificationType.getId());
         for (UserNotification sub : subscriptions) {
             Long telegramId = sub.getUser().getTelegramId();
             if (telegramId != null) {
                 SendMessage msg = new SendMessage();
                 msg.setChatId(String.valueOf(telegramId));
                 msg.setText(message);
-//                bot.execute(msg);
+                try {
+                    telegramBot.execute(msg);
+                }catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

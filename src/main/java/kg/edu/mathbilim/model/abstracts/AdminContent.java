@@ -3,6 +3,7 @@ package kg.edu.mathbilim.model.abstracts;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
@@ -20,8 +21,10 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class AdminContent {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -54,4 +57,6 @@ public abstract class AdminContent {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "main_image_id")
     File mainImage;
+
+    public abstract void setStatus(ContentStatus status);
 }

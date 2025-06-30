@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationType {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;

@@ -3,7 +3,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.notifications.NotificationType;
-import kg.edu.mathbilim.service.interfaces.notification.NotificationService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 @RequestMapping("/notifications")
 public class NotificationController {
-    private final NotificationService notificationService;
+    private final UserNotificationService notificationService;
 
     @PostMapping("/subscribe")
     public String subscribe(
