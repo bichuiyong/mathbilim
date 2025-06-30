@@ -19,7 +19,6 @@ public class NewsController {
     private static final String newsDto = "newsDto";
     private static final String redirect = "redirect:/news";
     private final NewsService newsService;
-    private final UserService userService;
 
     @GetMapping()
     public String all(@RequestParam(required = false) String query,
@@ -36,6 +35,8 @@ public class NewsController {
         model.addAttribute("size", size);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("currentLang", lang);
+
         return "news/news";
     }
 

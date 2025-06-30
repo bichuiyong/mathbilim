@@ -43,7 +43,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             );
 
             authenticateUser(result.user().getEmail());
-            String redirectUrl = determineRedirectUrl(result.needsTypeSelection());
+            String redirectUrl = determineRedirectUrl(result.needsTypeSelection(), String.valueOf(result.user().getId()));
 
             response.sendRedirect(redirectUrl);
         } catch (Exception e) {
@@ -83,11 +83,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         return new OAuthUserInfo(email, fullName);
     }
 
-    private String determineRedirectUrl(boolean needsTypeSelection) {
+    private String determineRedirectUrl(boolean needsTypeSelection, String userId) {
         if (needsTypeSelection) {
             return "/auth/select-user-type";
         }
-        return "/profile";
+        return "/users/" + userId;
     }
 
     private record OAuthUserInfo(String email, String fullName) {}
