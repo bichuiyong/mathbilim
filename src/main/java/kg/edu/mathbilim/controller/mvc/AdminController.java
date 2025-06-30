@@ -39,8 +39,9 @@ public class AdminController {
             @RequestParam(required = false) String query,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String sortDirection,
+            @RequestParam(required = false, defaultValue = "en") String language,
             Model model) {
-        Page<PostDto> page1 = postService.getPostsByStatus(status,query, page, size, sortBy, sortDirection);
+        Page<PostDto> page1 = postService.getPostsByStatus(status,query, page, size, sortBy, sortDirection, language);
         model.addAttribute("posts", page1.getContent());
         return "approveContent/contentToApprovePosts";
     }
