@@ -7,7 +7,6 @@ import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.repository.news.NewsRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -15,7 +14,12 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,5 +84,29 @@ public class NewsServiceImpl extends
         NewsDto newsDto = createBase(createNewsDto.getNews(), createNewsDto.getImage(), createNewsDto.getAttachments());
         notificationService.notifyAllSubscribed(NotificationEnum.NEWS,"New news uploaded");
         return newsDto;
+    }
+
+    @Override
+    public Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        if (query != null && !query.isEmpty()) {
+            return PaginationUtil.getPage(() ->
+                            repository.findNewsByQuery(query, lang, pageable),
+                    mapper::toDto);
+        }
+
+        if (lang != null && !lang.isEmpty()) {
+            return PaginationUtil.getPage(() ->
+                            repository.findByNewsWithLang(lang, pageable),
+                    mapper::toDto);
+        }
+
+        return PaginationUtil.getPage(() ->
+                        repository.findAllNews(pageable),
+                mapper::toDto);
+
+
     }
 }

@@ -332,7 +332,7 @@
                                 <select class="form-select" id="editUserType" name="type">
                                     <option selected disabled value="">Выберите тип аккаунта</option>
                                     <#list types as type>
-                                        <option value="${type.id}" data-name="${type.userTypeTranslations[0].translation}">${type.userTypeTranslations[0].translation}</option>
+                                        <option value="${type.translations[0].typeId}" data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
                                     </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
@@ -391,7 +391,7 @@
                                 <select class="form-select" id="type" name="type">
                                     <option selected disabled value="">Выберите тип аккаунта</option>
                                     <#list types as type>
-                                        <option value="${type.id}" data-name="${type.userTypeTranslations[0].translation}">${type.userTypeTranslations[0].translation}</option>
+                                        <option value="${type.translations[0].typeId}" data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
                                     </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>

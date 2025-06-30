@@ -65,7 +65,7 @@
                                 <a href="/news" class="nav-link">Новости</a>
                                 <a href="/events" class="nav-link">Мероприятия</a>
                                 <a href="/blog" class="nav-link">Блог</a>
-                                <a href="/publications" class="nav-link">Публикации</a>
+                                <a href="/posts" class="nav-link">Публикации</a>
                             </div>
                         </div>
 

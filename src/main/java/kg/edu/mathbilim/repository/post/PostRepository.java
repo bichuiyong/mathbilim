@@ -39,22 +39,36 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
                                      Pageable pageable);
 
     @Query("""
-            SELECT  p FROM Post p
-            LEFT JOIN FETCH p.postTranslations
+            SELECT DISTINCT p FROM Post p
+            JOIN p.postTranslations t
             WHERE p.status = :contentStatus
+            ORDER BY p.createdAt DESC
             """)
     Page<Post> getPostsByStatus(ContentStatus contentStatus, Pageable pageable);
+
+
+    @Query("""
+    SELECT DISTINCT p FROM Post p
+    JOIN p.postTranslations t
+    WHERE p.status = :contentStatus
+      AND t.id.languageCode = :languageCode
+    """)
+    Page<Post> getPostsByStatusWithLang(@Param("contentStatus") ContentStatus contentStatus,
+                                        @Param("languageCode") String languageCode,
+                                        Pageable pageable);
 
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
             WHERE p.status = :contentStatus
                         AND
-            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
+                        t.id.languageCode = :languageCode
+            ORDER BY p.createdAt DESC
             """)
     Page<Post> getPostsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
-                                         Pageable pageable);
+                                         Pageable pageable, String languageCode);
 
     @Override
     @Query("""
@@ -100,6 +114,4 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     Page<Post> findByTranslationQueryAndStatuses(@Param("query") String query,
                                                  @Param("statuses") List<ContentStatus> statuses,
                                                  Pageable pageable);
-
-    Page<Post> findPostsByStatus(ContentStatus status, Pageable pageable);
 }

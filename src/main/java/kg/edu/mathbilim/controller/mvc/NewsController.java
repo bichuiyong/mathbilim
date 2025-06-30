@@ -18,7 +18,6 @@ public class NewsController {
     private static final String newsDto = "newsDto";
     private static final String redirect = "redirect:/news";
     private final NewsService newsService;
-    private final UserService userService;
 
     @GetMapping()
     public String all(@RequestParam(required = false) String query,
@@ -26,9 +25,17 @@ public class NewsController {
                       @RequestParam(value = "size", defaultValue = "10") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                      @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
                       Model model
     ) {
-        model.addAttribute("news", newsService.getPage(query,page, size, sortBy, sortDirection));
+        model.addAttribute("news", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang));
+        model.addAttribute("query", query);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("currentLang", lang);
+
         return "news/news";
     }
 
@@ -38,7 +45,7 @@ public class NewsController {
             Model model
     ) {
         model.addAttribute(newsDto, newsService.getById(id));
-        return "news/news_detail";
+        return "news/news-detail";
     }
 
     @GetMapping("create")

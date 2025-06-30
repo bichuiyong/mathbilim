@@ -130,6 +130,8 @@ public abstract class AbstractContentService<
         uploadFiles(attachments, savedEntity);
         processAdditionalFields(dto, savedEntity);
 
+        log.info("Entity created {}", savedEntity.toString());
+
         repository.saveAndFlush(savedEntity);
 
         log.info("Created {} with id {}", getEntityName(), savedEntityId);
