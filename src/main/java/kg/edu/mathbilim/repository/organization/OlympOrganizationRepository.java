@@ -15,4 +15,6 @@ public interface OlympOrganizationRepository extends JpaRepository<OlympiadOrgan
     @Query("SELECT oo FROM OlympiadOrganization oo WHERE oo.organization.id = :organizationId")
     List<OlympiadOrganization> findByOrganizationId(@Param("organizationId") Long organizationId);
 
+    @Query("select o.organization.id from OlympiadOrganization o where o.olympiad.id = :olympiad_id ")
+    List<Long> getOrganizationIdsWhereOlympiadId(Integer olympiad_id);
 }

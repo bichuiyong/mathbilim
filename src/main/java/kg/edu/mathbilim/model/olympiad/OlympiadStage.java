@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.model.Result;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,6 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -56,4 +59,7 @@ public class OlympiadStage {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "olympiadStage", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Result> result = new ArrayList<>();
 }

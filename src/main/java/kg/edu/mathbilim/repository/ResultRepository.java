@@ -9,6 +9,4 @@ import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
     List<Result> findByFile(File files);
-
-    List<Result> findByOlympiad(Olympiad olympiad);
 }

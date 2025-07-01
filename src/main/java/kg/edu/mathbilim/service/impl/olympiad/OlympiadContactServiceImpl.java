@@ -10,6 +10,8 @@ import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -17,25 +19,13 @@ public class OlympiadContactServiceImpl implements OlympiadContactService {
     private final OlympiadContactRepository repository;
     private final ContactTypeRepository contactTypeRepository;
 
-
-    public ContactType toContactTypeEntity(Integer typeId) {
-        return contactTypeRepository.findById(typeId)
-                .orElseThrow(() -> new RuntimeException("No such contact type"));
+    @Override
+    public List<OlympiadContact> getContactsByOlympId(int olympId) {
+        return repository.getByOlympiad_Id(olympId);
     }
 
     @Override
-    public void save(OlympiadCreateDto dto, Olympiad olympiad) {
-        if (dto.getContacts() == null) return;
-
-        dto.getContacts().forEach(c -> {
-            OlympiadContact contact =
-                    OlympiadContact.builder()
-                            .contactType(toContactTypeEntity(c.getContactDto().getId()))
-                            .olympiad(olympiad)
-                            .info(c.getInfo())
-                            .build();
-            repository.saveAndFlush(contact);
-        });
+    public void addAllContacts(List<OlympiadContact> contacts) {
+        repository.saveAll(contacts);
     }
-
 }

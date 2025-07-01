@@ -17,8 +17,6 @@ public class ResultDto {
 
     FileDto file;
 
-    OlympiadDto olympiad;
-
     LocalDateTime createdAt = LocalDateTime.now();
 
     LocalDateTime updatedAt = LocalDateTime.now();

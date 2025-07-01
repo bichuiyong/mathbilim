@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.OrganizationDto;
+import kg.edu.mathbilim.dto.organization.OrganizationIdNameDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.OrganizationNotFound;
 import kg.edu.mathbilim.mapper.OrganizationMapper;
@@ -25,7 +26,6 @@ import java.util.*;
 public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final OrganizationMapper organizationMapper;
-
     private final FileService fileService;
     private final UserService userService;
 
@@ -35,8 +35,23 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public List<OrganizationIdNameDto> getAllOrganizationIdNames() {
+        return organizationRepository.findAll().stream().map(organization -> OrganizationIdNameDto
+                .builder()
+                .id(organization.getId())
+                .name(organization.getName())
+                .build())
+                .toList();
+    }
+
+    @Override
     public OrganizationDto getById(Long id) {
         return organizationMapper.toDto(getEntityById(id));
+    }
+
+    @Override
+    public Organization getByIdModel(Long id) {
+        return organizationRepository.getById(id);
     }
 
     @Override
