@@ -1,100 +1,31 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
+    <h2 style="margin: 30px 0 45px; color: #666666; text-align: center">Страница олимпиад</h2>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
             <main class="col-12 px-md-4">
-                <h1 class="h2 mb-4">Олимпиады</h1>
-
-
-                <div style="max-width: 1200px; margin: 0 auto">
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
-
-
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0">
-                                <img src="https://api.olympiads.kg/Files/Contests/2066/tsi-2025.jpeg"
-                                     class="card-img-top p-3"
-                                     alt="TSI"
-                                     style="height: 200px; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">TSI Programming Contest - Олимпиада TSI по программированию</h5>
-                                    <div class="mt-auto text-start">
-                                        <a href="#" class="text-primary text-decoration-none">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
+                <div style="max-width: 1200px; margin: 0 auto; position: relative;">
+                    <div id="olympiad-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4" style="min-height: 200px; position: relative;">
+                        <div id="no-olympiads" class="text-center" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; align-items: center; justify-content: center; flex-direction: column; z-index: 5; background: rgba(255, 255, 255, 0.9);">
+                            <svg width="150" height="150" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 7H3V9H21V7ZM21 11H3V13H21V11ZM21 15H3V17H21V15Z" fill="#6c757d"/>
+                                <path d="M3 19H21V21H3V19Z" fill="#6c757d"/>
+                                <path d="M7 3H17V5H7V3Z" fill="#6c757d"/>
+                            </svg>
+                            <p class="text-muted mt-2">Нет олимпиад на этой странице</p>
                         </div>
-
-
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0">
-                                <img src="https://api.olympiads.kg/Files/Contests/33/IOI.png"
-                                     class="card-img-top p-3"
-                                     alt="IOI"
-                                     style="height: 200px; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">Информатика. IV Национальная олимпиада</h5>
-                                    <div class="mt-auto text-start">
-                                        <a href="#" class="text-primary text-decoration-none">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="loading-spinner" class="text-center" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
+                            <div class="spinner"></div>
                         </div>
-
-
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0">
-                                <img src="https://api.olympiads.kg/Files/Contests/1049/KRSU-logo240.png"
-                                     class="card-img-top p-3"
-                                     alt="KRSU"
-                                     style="height: 200px; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">Функциональное программирование</h5>
-                                    <div class="mt-auto text-start">
-                                        <a href="#" class="text-primary text-decoration-none">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0">
-                                <img src="https://api.olympiads.kg/Files/Contests/35/itcup.png"
-                                     class="card-img-top p-3"
-                                     alt="IT Cup"
-                                     style="height: 200px; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">IT Кубок Кыргызстана 2023</h5>
-                                    <div class="mt-auto text-start">
-                                        <a href="#" class="text-primary text-decoration-none">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
                     </div>
                 </div>
 
-
-
                 <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Назад</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Вперед</a>
-                        </li>
+                    <ul id="pagination" class="pagination justify-content-center" style="display: none;">
                     </ul>
                 </nav>
 
                 <style>
-
                     .card {
                         transition: transform 0.2s ease;
                         border-radius: 8px;
@@ -114,10 +45,17 @@
                         margin: 50px 0 10px;
                     }
 
-                    .page-item.active .page-link:hover {
+                    .page-item.active .page-link {
                         background-color: #0d6efd;
                         color: white;
                         cursor: default;
+                    }
+
+                    .page-item.disabled .page-link {
+                        color: #6c757d;
+                        pointer-events: none;
+                        background-color: #fff;
+                        border-color: #ddd;
                     }
 
                     .page-link {
@@ -137,12 +75,139 @@
                         box-shadow: none;
                     }
 
-                    .page-link:hover {
+                    .page-link:hover:not(.disabled) {
                         background-color: #f0f0f0;
                     }
 
+                    .spinner {
+                        width: 40px;
+                        height: 40px;
+                        border: 4px solid #ffffff;
+                        border-top: 4px solid #007bff;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    @keyframes spin {
+                        0% { transform: translate(-50%, -50%) rotate(0deg); }
+                        100% { transform: translate(-50%, -50%) rotate(360deg); }
+                    }
                 </style>
             </main>
         </div>
     </div>
+
+    <script>
+        const currentPage = ${page!"0"};
+        const size = ${size!"8"};
+
+        function loadPage(page) {
+            console.log(`Loading page: ${page}`);
+            const container = document.getElementById('olympiad-container');
+            const emptyBlock = document.getElementById('no-olympiads');
+            const pagination = document.getElementById('pagination');
+            const loadingSpinner = document.getElementById('loading-spinner');
+
+            loadingSpinner.style.display = 'block';
+            emptyBlock.style.display = 'none';
+            pagination.style.display = 'none';
+
+            fetch(`/api/olymp/all?page=${page}&size=${size}`)
+            <#noparse>
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response:', data);
+                    container.innerHTML = '';
+                    pagination.innerHTML = '';
+
+                    const olympiads = data.content || [];
+                    if (page >= data.totalPages || page < 0) {
+                        emptyBlock.style.display = 'flex';
+                        updateUrl(page);
+                        return;
+                    }
+
+                    if (!olympiads || olympiads.length === 0) {
+                        emptyBlock.style.display = 'flex';
+                    } else {
+                        emptyBlock.style.display = 'none';
+                        olympiads.forEach(olympiad => {
+                            const block = `
+                                <div class="col">
+                                    <div class="card h-100 shadow-sm border-0">
+                                        <img src="/api/files/${olympiad.fileId}/view" class="card-img-top p-3"
+                                             alt="olymp-photo" style="height: 200px; object-fit: contain;">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">${olympiad.title}</h5>
+                                            <div class="mt-auto text-start">
+                                                <a href="/olympiad/details?id=${olympiad.id}" class="text-primary text-decoration-none">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            container.insertAdjacentHTML('beforeend', block);
+                        });
+                    }
+
+                    if (data.totalPages > 1) {
+                        pagination.style.display = 'flex';
+                        const maxPagesToShow = 5;
+                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+                        let endPage = Math.min(data.totalPages - 1, startPage + maxPagesToShow - 1);
+
+                        if (endPage - startPage + 1 < maxPagesToShow) {
+                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+                        }
+
+                        const prevItem = document.createElement('li');
+                        prevItem.className = `page-item ${page === 0 ? 'disabled' : ''}`;
+                        prevItem.innerHTML = `<a class="page-link" href="?page=${page - 1}" onclick="loadPage(${page - 1}); return false;">«</a>`;
+                        pagination.appendChild(prevItem);
+
+                        for (let i = startPage; i <= endPage; i++) {
+                            const pageItem = document.createElement('li');
+                            pageItem.className = `page-item ${i === page ? 'active' : ''}`;
+                            pageItem.innerHTML = `<a class="page-link" href="?page=${i}" onclick="loadPage(${i}); return false;">${i + 1}</a>`;
+                            pagination.appendChild(pageItem);
+                        }
+
+                        const nextItem = document.createElement('li');
+                        nextItem.className = `page-item ${page === data.totalPages - 1 ? 'disabled' : ''}`;
+                        nextItem.innerHTML = `<a class="page-link" href="?page=${page + 1}" onclick="loadPage(${page + 1}); return false;">»</a>`;
+                        pagination.appendChild(nextItem);
+                    } else {
+                        pagination.style.display = 'none';
+                    }
+
+                    updateUrl(page);
+                })
+                .catch(error => {
+                    emptyBlock.style.display = 'flex';
+                    pagination.style.display = 'none';
+                })
+                .finally(() => {
+                    loadingSpinner.style.display = 'none';
+                });
+        }
+
+        function updateUrl(page) {
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('page', page);
+            window.history.pushState({}, '', newUrl);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPage(currentPage);
+        });
+    </script>
+    </#noparse>
 </@main.layout>

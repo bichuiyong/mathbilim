@@ -108,7 +108,7 @@
                         <div class="col-lg-6">
                             <div class="d-flex justify-content-center">
                                 <a href="/tests" class="nav-link">Тесты</a>
-                                <a href="/olympiads" class="nav-link">Олимпиады</a>
+                                <a href="/olympiad" class="nav-link">Олимпиады</a>
                                 <a href="/books" class="nav-link">Книги</a>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
                                 <a class="nav-link" href="/tests">Тесты</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/olympiads">Олимпиады</a>
+                                <a class="nav-lik" href="/olympiad">Олимпиады</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/books">Книги</a>

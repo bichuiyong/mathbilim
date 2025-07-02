@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
+import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.*;
@@ -34,8 +35,8 @@ public class Result {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "olympiad_id", nullable = false)
-    Olympiad olympiad;
+    @JoinColumn(name = "stage_id", nullable = false)
+    OlympiadStage olympiadStage;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")

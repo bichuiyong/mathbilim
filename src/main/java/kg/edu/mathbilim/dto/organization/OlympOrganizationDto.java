@@ -1,10 +1,13 @@
 package kg.edu.mathbilim.dto.organization;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OlympOrganizationDto {
     Long olympiadId;

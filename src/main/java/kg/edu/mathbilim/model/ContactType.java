@@ -22,7 +22,7 @@ public class ContactType {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Size(max = 50)
     @NotNull

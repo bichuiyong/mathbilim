@@ -1,10 +1,12 @@
 package kg.edu.mathbilim.dto.olympiad;
 
+import kg.edu.mathbilim.dto.ResultDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -16,25 +18,19 @@ import java.time.LocalDateTime;
 public class OlympiadStageDto {
     Long id;
 
-    OlympiadDto olympiad;
-
-    String name;
-
     Integer stageOrder;
-
-    String description;
 
     LocalDate registrationStart;
 
     LocalDate registrationEnd;
 
-    LocalDate eventStartDate;
+    LocalDate startDate;
 
-    LocalDate eventEndDate;
-
-    String location;
+    LocalDate endDate;
 
     LocalDateTime createdAt = LocalDateTime.now();
 
     LocalDateTime updatedAt = LocalDateTime.now();
+
+    List<ResultDto> result;
 }
