@@ -57,6 +57,10 @@ public abstract class AdminContent {
     @JoinColumn(name = "main_image_id")
     File mainImage;
 
+    public void setStatus(ContentStatus status) {
+
+    }
+
 
 
     @PrePersist
