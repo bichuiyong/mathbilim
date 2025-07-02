@@ -2,12 +2,9 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,16 +21,32 @@ public class NotificationController {
     @PostMapping("/subscribe")
     public String subscribe(
             @RequestParam("type") NotificationEnum type,
-            Authentication principal,
             RedirectAttributes redirectAttributes,
             HttpServletRequest request) {
         try {
-            notificationService.subscribe(principal.getName(), type);
+            notificationService.subscribe(type);
             redirectAttributes.addFlashAttribute("message", "Вы подписались на уведомления!");
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("warning", "Вы уже подписаны.");
         }
         return "redirect:" + request.getHeader("Referer");
     }
+
+
+    @PostMapping("/unsubscribe")
+    public String unsubscribe(
+            @RequestParam("type") NotificationEnum type,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request){
+        try {
+            notificationService.unsubscribe(type);
+            redirectAttributes.addFlashAttribute("message", "Вы отписались от уведомлений!");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("warning", "Вы уже отписаны.");
+        }
+        return "redirect:" + request.getHeader("Referer");
+    }
+
+
 
 }

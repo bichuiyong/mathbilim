@@ -2,11 +2,15 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BlogController {
     private final BlogService blogService;
+    private final UserNotificationService userNotificationService;
+    private final SubscriptionModelPopulator subscriptionModelPopulator;
 
     @GetMapping
     public String all(@RequestParam(required = false) String query,
@@ -26,6 +32,7 @@ public class BlogController {
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                       @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      Authentication authentication,
                       Model model) {
         model.addAttribute("blog", blogService.getAllDisplayBlogs(page, size, sortBy, sortDirection));
         model.addAttribute("query", query);
@@ -35,6 +42,7 @@ public class BlogController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("currentLang", lang);
 
+        subscriptionModelPopulator.addSubscriptionAttributes(authentication,NotificationEnum.BLOG, model);
         return "blog/blog-list";
     }
 

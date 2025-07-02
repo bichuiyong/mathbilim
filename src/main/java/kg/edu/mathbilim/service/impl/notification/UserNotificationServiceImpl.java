@@ -31,8 +31,8 @@ public class UserNotificationServiceImpl implements UserNotificationService {
 
     @Override
 
-    public void subscribe(String email, NotificationEnum notificationType) {
-        UserDto userDto = userService.getUserByEmail(email);
+    public void subscribe( NotificationEnum notificationType) {
+        UserDto userDto = userService.getAuthUser();
         NotificationType notification = notificationTypeService.findByName(notificationType);
 
         boolean alreadySubscribed = userNotificationRepository.existsByUserIdAndTypeId(userDto.getId(), notification.getId());
@@ -65,5 +65,20 @@ public class UserNotificationServiceImpl implements UserNotificationService {
                 }
             }
         }
+    }
+
+    @Override
+    public void unsubscribe(NotificationEnum notificationType) {
+        UserDto userDto = userService.getAuthUser();
+        NotificationType notification = notificationTypeService.findByName(notificationType);
+        UserNotification userNotification = userNotificationRepository.findByUserIdAndTypeId(userDto.getId(), notification.getId()).orElseThrow(NoSuchElementException::new);
+        userNotificationRepository.delete(userNotification);
+    }
+
+    @Override
+    public boolean isSubscribed(NotificationEnum notificationType) {
+        UserDto userDto = userService.getAuthUser();
+        NotificationType notification = notificationTypeService.findByName(notificationType);
+        return userNotificationRepository.existsByUserIdAndTypeId(userDto.getId(), notification.getId());
     }
 }
