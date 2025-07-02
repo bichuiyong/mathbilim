@@ -28,9 +28,8 @@ public abstract class AdminContent {
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "creator_id", nullable = false)
-    User creator;
+    private User creator;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -54,4 +53,23 @@ public abstract class AdminContent {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "main_image_id")
     File mainImage;
+
+
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+        if (viewCount == null) {
+            viewCount = 0L;
+        }
+        if (shareCount == null) {
+            shareCount = 0L;
+        }
+    }
+
 }

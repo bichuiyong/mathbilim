@@ -174,9 +174,11 @@
             </div>
         </div>
     </div>
+    <!-- Подключение TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <!-- Подключение скриптов -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Подключение Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
@@ -185,9 +187,7 @@
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
     <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
 
-    <script src="/static/js/post/PostCreateManager.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="/static/js/blog/BlogCreateManager.js"></script>
 
     <style>
         .image-upload-container {
