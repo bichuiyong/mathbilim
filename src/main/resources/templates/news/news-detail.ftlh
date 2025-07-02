@@ -319,7 +319,7 @@
                     <div class="publication-title">${translation.title}</div>
                 </#if>
                 <#if translation.content?? && translation.content?has_content>
-                    <div class="publication-text collapsed" id="postContent">${translation.content}</div>
+                    <div class="publication-text collapsed" id="postContent">${translation.content?no_esc}</div>
                     <div class="show-more-btn" id="toggleButton">Показать ещё</div>
                 </#if>
                 <div class="publication-meta">

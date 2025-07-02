@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AdminContent {
 
 
@@ -31,9 +31,8 @@ public abstract class AdminContent {
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "creator_id", nullable = false)
-    User creator;
+    private User creator;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -58,5 +57,22 @@ public abstract class AdminContent {
     @JoinColumn(name = "main_image_id")
     File mainImage;
 
-    public abstract void setStatus(ContentStatus status);
+
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+        if (viewCount == null) {
+            viewCount = 0L;
+        }
+        if (shareCount == null) {
+            shareCount = 0L;
+        }
+    }
+
 }

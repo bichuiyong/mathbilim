@@ -45,8 +45,9 @@
                                         </button>
                                     </div>
                                 </div>
-                                <small class="form-text text-muted">Изображение будет обрезано до размера 1200x400
-                                    (3:1)</small>
+                                <small class="form-text text-muted">
+                                    Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                                </small>
                             </div>
 
                             <div class="card mb-4">
@@ -54,7 +55,8 @@
                                     <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
                                         <#list newsDto.news.newsTranslations?sort_by("languageCode") as trans>
                                             <li class="nav-item">
-                                                <button class="nav-link <#if trans?is_first>active</#if>" type="button"
+                                                <button class="nav-link <#if trans?is_first>active</#if>"
+                                                        type="button"
                                                         data-bs-toggle="tab"
                                                         data-bs-target="#lang-${trans.languageCode}"
                                                         data-lang="${trans.languageCode}">
@@ -80,6 +82,7 @@
                                         <#list newsDto.news.newsTranslations as trans>
                                             <div class="tab-pane fade <#if trans?is_first>show active</#if>"
                                                  id="lang-${trans.languageCode}">
+                                                <!-- Заголовок -->
                                                 <div class="mb-4">
                                                     <@spring.bind "newsDto.news.newsTranslations[${trans?index}].title"/>
                                                     <label class="form-label fw-bold">Заголовок</label>
@@ -96,12 +99,14 @@
                                                     </#if>
                                                 </div>
 
+                                                <!-- Контент -->
                                                 <div class="mb-4">
                                                     <@spring.bind "newsDto.news.newsTranslations[${trans?index}].content"/>
                                                     <label class="form-label fw-bold">Содержание</label>
                                                     <textarea
                                                             class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="news.newsTranslations[${trans?index}].content"
+                                                            data-lang="${trans.languageCode}"
                                                             id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
@@ -128,12 +133,17 @@
                             <!-- Кнопки -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="text-muted"><i class="fas fa-info-circle me-1"></i>Заполните хотя бы один перевод для публикации</span>
+                                <span class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Заполните хотя бы один перевод для публикации
+                                </span>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="/news" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Отменить</a>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Создать
-                                        новость
+                                    <a href="/posts" class="btn btn-secondary">
+                                        <i class="fas fa-times me-2"></i>Отменить
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Создать пост
                                     </button>
                                 </div>
                             </div>
@@ -143,18 +153,20 @@
             </div>
         </div>
     </div>
+    <!-- Подключение TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <!-- Скрипты -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Подключение Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
     <script src="/static/js/components/content-create/TinyMCEManager.js"></script>
     <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
     <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
-    <script src="/static/js/news/NewsCreateManager.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="/static/js/blog/BlogCreateManager.js"></script>
 
     <style>
         .image-upload-container {

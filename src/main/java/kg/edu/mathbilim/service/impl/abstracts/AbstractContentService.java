@@ -2,10 +2,15 @@ package kg.edu.mathbilim.service.impl.abstracts;
 
 import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
+import kg.edu.mathbilim.dto.news.NewsDto;
+import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.AdminContent;
+import kg.edu.mathbilim.model.news.News;
+import kg.edu.mathbilim.model.news.NewsTranslation;
+import kg.edu.mathbilim.model.news.NewsTranslationId;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -120,23 +125,20 @@ public abstract class AbstractContentService<
     @Transactional
     public D createBase(D dto, MultipartFile mainImage, MultipartFile[] attachments) {
         setupDtoBeforeSave(dto);
-
         E entity = mapper.toEntity(dto);
+        log.info("Entity not null {} ", entity.toString());
         E savedEntity = repository.save(entity);
         Long savedEntityId = savedEntity.getId();
-
         handleTranslations(dto, savedEntityId);
         uploadMainImage(mainImage, savedEntity);
         uploadFiles(attachments, savedEntity);
         processAdditionalFields(dto, savedEntity);
-
-        log.info("Entity created {}", savedEntity.toString());
-
+        log.info("Entity created {}", savedEntity.getCreator().getName());
         repository.saveAndFlush(savedEntity);
-
         log.info("Created {} with id {}", getEntityName(), savedEntityId);
         return mapper.toDto(savedEntity);
     }
+
 
     public String getCurrentLanguage() {
         return LocaleContextHolder.getLocale().getLanguage();
@@ -152,6 +154,9 @@ public abstract class AbstractContentService<
     public void incrementShareCount(Long id) {
         repository.incrementShareCount(id);
         log.debug("Share count incremented for blog {}", id);
+    }
+
+    protected void handleNewsTranslations(NewsDto dto, Long entityId) {
     }
 
     protected abstract void handleTranslations(D dto, Long entityId);
