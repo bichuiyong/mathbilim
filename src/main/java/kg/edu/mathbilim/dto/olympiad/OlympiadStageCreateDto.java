@@ -2,6 +2,7 @@ package kg.edu.mathbilim.dto.olympiad;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import kg.edu.mathbilim.validation.annotation.ValidOlympStage;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ValidOlympStage
 public class OlympiadStageCreateDto {
 
     @NotNull(message = "Порядок этапа обязателен")

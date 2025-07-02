@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Setter
 @Entity
@@ -22,13 +24,17 @@ import java.util.List;
 public class Olympiad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(nullable = false)
     String title;
 
     @Column(name = "info")
     String info;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    File image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)

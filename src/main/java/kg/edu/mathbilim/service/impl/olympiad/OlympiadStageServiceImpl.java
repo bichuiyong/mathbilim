@@ -1,6 +1,9 @@
 package kg.edu.mathbilim.service.impl.olympiad;
 
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.ResultDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.dto.olympiad.OlympiadStageDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import kg.edu.mathbilim.repository.olympiad.OlympiadStageRepository;
@@ -9,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -36,5 +40,43 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
             repository.saveAndFlush(stage);
         });
 
+    }
+
+    @Override
+    public List<OlympiadStageDto> getOlympStageDtos(int id) {
+        return repository.getOlympiadStageByOlympiad_Id(id)
+                .stream()
+                .map(olympiadStage -> OlympiadStageDto
+                        .builder()
+                        .id(Long.valueOf(olympiadStage.getId()))
+                        .stageOrder(olympiadStage.getStageOrder())
+                        .registrationStart(olympiadStage.getRegistrationStart())
+                        .registrationEnd(olympiadStage.getRegistrationEnd())
+                        .createdAt(olympiadStage.getCreatedAt())
+                        .updatedAt(olympiadStage.getUpdatedAt())
+                        .startDate(olympiadStage.getStartDate())
+                        .endDate(olympiadStage.getEndDate())
+                        .result(olympiadStage.getResult().stream().map(result -> ResultDto
+                                .builder()
+                                        .id(result.getId())
+                                        .file(new FileDto(
+                                                result.getFile().getId(),
+                                                result.getFile().getFilename(),
+                                                result.getFile().getFilePath(),
+                                                result.getFile().getType(),
+                                                result.getFile().getSize(),
+                                                result.getFile().getS3Link()
+                                        ))
+                                        .createdAt(result.getCreatedAt())
+                                        .updatedAt(result.getUpdatedAt())
+                                .build())
+                                .toList())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public void addAll(List<OlympiadStage> olympiadStages) {
+        repository.saveAll(olympiadStages);
     }
 }

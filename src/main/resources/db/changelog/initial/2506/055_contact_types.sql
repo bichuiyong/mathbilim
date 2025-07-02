@@ -1,0 +1,18 @@
+INSERT INTO contact_types (name) VALUES
+                                     ('Telegram'),
+                                     ('WhatsApp'),
+                                     ('Viber'),
+                                     ('Instagram'),
+                                     ('Facebook'),
+                                     ('VK'),
+                                     ('YouTube'),
+                                     ('TikTok'),
+                                     ('Twitter'),
+                                     ('LinkedIn'),
+                                     ('Snapchat'),
+                                     ('Skype'),
+                                     ('Email'),
+                                     ('Phone'),
+                                     ('Website'),
+                                     ('Discord'),
+                                     ('Reddit');

@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.model.organization;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
