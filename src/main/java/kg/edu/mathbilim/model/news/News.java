@@ -26,7 +26,7 @@ public class News extends AdminContent {
             inverseJoinColumns = @JoinColumn(name = "file_id"))
     List<File> newsFiles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "news")
+    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL)
     List<NewsTranslation> newsTranslations = new ArrayList<>();
 
 
