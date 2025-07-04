@@ -14,7 +14,6 @@ import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -93,5 +92,10 @@ public class BlogServiceImpl extends
     public List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return repository.findRelatedBlogs(excludeId, getCurrentLanguage(), pageable);
+    }
+
+    @Override
+    public Blog findByBlogId(Long blogId) {
+        return repository.findById(blogId).orElseThrow();
     }
 }
