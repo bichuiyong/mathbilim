@@ -475,7 +475,7 @@
             </form>
         </div>
 
-        <#if news?? && news.content?size gt 0>
+        <#if news.content?size gt 0>
             <div class="posts-grid">
                 <#list news.content as p>
                     <div class="post-item" onclick="window.location.href='/news/${p.id}'">
@@ -515,7 +515,7 @@
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Посты загружаются, пожалуйста подождите...</span>
+                        <span>Новости загружаются, пожалуйста подождите...</span>
                     </div>
                 </#if>
             </div>
@@ -567,7 +567,6 @@
                 activeLangButton.classList.add('active');
             }
 
-            // Навигация по клавиатуре
             document.addEventListener('keydown', function(e) {
                 const posts = document.querySelectorAll('.post-item');
                 const currentPost = document.querySelector('.post-item:focus');

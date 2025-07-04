@@ -107,7 +107,8 @@
                                                             class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="news.newsTranslations[${trans?index}].content"
                                                             data-lang="${trans.languageCode}"
-                                                            id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
+                                                            id="content-${trans.languageCode}"
+                                                            value="${spring.status.value!''}">${spring.status.value!''}</textarea>
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
