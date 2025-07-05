@@ -5,14 +5,20 @@ categoryTab.addEventListener('show.bs.tab', function () {
     doFetch(`/api/dict/${staticTypeSortBy.value}`, -1, addContentInList)
 });
 
+
+staticTypeSortBy.addEventListener('change', function () {
+    const value = this.value;
+    doFetch(`/api/dict/${value}`, -1, addContentInList);
+})
+
 function addContentInList(content) {
     typeContentList.innerHTML = "<div class=\"table-responsive\" style=\"max-height: 400px; overflow-y: auto;\">\n" +
         "    <table class=\"table table-hover table-striped\">\n" +
         "        <thead>\n" +
         "            <tr>\n" +
         "                <th>ID</th>\n" +
-        "                <th>Локаль</th>\n" +
         "                <th>Перевод</th>\n" +
+        "                <th>Локаль</th>\n" +
         "                <th>Действия</th>\n" +
         "            </tr>\n" +
         "        </thead>\n" +

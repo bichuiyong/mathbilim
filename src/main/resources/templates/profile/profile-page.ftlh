@@ -300,9 +300,9 @@
                                             <div class="col-md-4">
                                                 <select class="form-select form-select-sm" id="staticTypeSortBy">
                                                     <option value="categories">Категория</option>
-                                                    <option value="event_type">Тип мероприятий</option>
-                                                    <option value="post_type">Тип публикаций</option>
-                                                    <option value="user_type">Тип пользователей</option>
+                                                    <option value="events">Тип мероприятий</option>
+                                                    <option value="posts">Тип публикаций</option>
+                                                    <option value="user-types">Тип пользователей</option>
                                                 </select>
                                             </div>
                                         </div>
