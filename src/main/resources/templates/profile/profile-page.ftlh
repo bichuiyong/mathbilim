@@ -130,6 +130,12 @@
                                         <i class="fas fa-users me-2"></i>Пользователи
                                     </button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category"
+                                            type="button" role="tab">
+                                        <i class="fa-solid fa-clipboard me-2"></i>Категории/Типы контента
+                                    </button>
+                                </li>
                             </#if>
                         </ul>
                     </div>
@@ -272,6 +278,49 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
+                                <div class="tab-pane fade" id="category" role="tabpanel">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h5 class="mb-0">Управление типами/категориями</h5>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTypeModal">
+                                            <i class="fa-solid fa-clipboard me-2"></i>Создать
+                                        </button>
+                                    </div>
+                                    <div class="users-filters mb-4">
+                                        <div class="row g-2">
+                                            <div class="col-md-8">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" class="form-control" id="typeSearch"
+                                                           placeholder="Поиск по названию...">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="typeSearchBtn">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select class="form-select form-select-sm" id="staticTypeSortBy">
+                                                    <option value="categories">Категория</option>
+                                                    <option value="event_type">Тип мероприятий</option>
+                                                    <option value="post_type">Тип публикаций</option>
+                                                    <option value="user_type">Тип пользователей</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+<#--                                    ------------------------------------------------------------------>
+                                    <div class="users-list" id="typeContentList">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                            <p>Загрузка...</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Пагинация -->
+                                    <nav class="mt-3">
+                                        <ul class="pagination justify-content-center"></ul>
+                                    </nav>
+                                </div>
                             </#if>
                         </div>
                     </div>
@@ -407,5 +456,50 @@
         </div>
     </div>
 
-    <script src="/static/js/admin.js"></script>
+    <div class="modal fade" id="createTypeModal" tabindex="-1" aria-labelledby="createTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="categoryForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createTypeModalLabel">Категория / Тип контента</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nameRu" class="form-label">Название (Русский)</label>
+                            <input type="text" class="form-control" id="nameRu" name="nameRu" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nameEn" class="form-label">Название (English)</label>
+                            <input type="text" class="form-control" id="nameEn" name="nameEn" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nameKg" class="form-label">Название (Кыргызча)</label>
+                            <input type="text" class="form-control" id="nameKg" name="nameKg" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Что вы хотите создать?</label>
+                            <div class="account-type-select">
+                                <select class="form-select" id="staticType">
+                                    <option selected disabled value="">Выберите объект создания</option>
+                                    <option value="categories">Категория</option>
+                                    <option value="event_type">Тип мероприятий</option>
+                                    <option value="post_type">Тип публикаций</option>
+                                    <option value="user_type">Тип пользователей</option>
+                                </select>
+                                <i class="bi bi-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/profile/controlUsers.js"></script>
+    <script src="/static/js/profile/controlTypes.js"></script>
 </@main.layout>

@@ -1,8 +1,8 @@
-let switchOnUserButton = document.getElementById('users-tab');
+let usersTab = document.getElementById('users-tab');
 let userContentList = document.getElementById('usersContentList');
-switchOnUserButton.onclick = function () {
+usersTab.addEventListener('shown.bs.tab', function (e) {
     doFetch('/api/users');
-}
+});
 
 
 
@@ -60,7 +60,10 @@ function renderPagination(currentPage, totalPages, url) {
         });
     });
 }
-function doFetch(url, page = 1) {
+function doFetch(url, page = 1, onSuccess = addUserToTable) {
+    if (page < 1) {
+        page = 1;
+    }
     const connector = url.includes('?') ? '&' : '?';
     fetch(`${url}${connector}page=${page}`)
         .then(response => {
@@ -74,7 +77,8 @@ function doFetch(url, page = 1) {
             if (data.length === 0) {
 
             } else {
-                addUserToTable(data.content)
+                onSuccess(data)
+                // addUserToTable(data.content)
                 renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
             }
 
@@ -82,8 +86,9 @@ function doFetch(url, page = 1) {
         .catch(error => {});
 }
 //
-function addUserToTable(users) {
-    userContentList.innerHTML = "<div class=\"table-responsive\">\n" +
+function addUserToTable(content) {
+    let users = content.content
+    userContentList.innerHTML =  "<div class=\"table-responsive\" style=\"max-height: 400px; overflow-y: auto;\">\n" +
         "        <table class=\"table table-hover table-striped\">\n" +
         "            <thead>\n" +
         "            <tr>\n" +
