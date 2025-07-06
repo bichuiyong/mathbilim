@@ -446,7 +446,7 @@
             <form method="get" action="/news">
                 <div class="search-row">
                     <div class="search-input-group">
-                        <input type="text" name="query" value="${query!}" placeholder="Найти посты..."/>
+                        <input type="text" name="query" value="${query!}" placeholder="Найти новости..."/>
                     </div>
                 </div>
 
@@ -509,7 +509,7 @@
             <div class="posts-grid">
                 <#if news?? && news.content?size == 0>
                     <div class="no-posts">
-                        Посты не найдены
+                        Новости не найдены
                         <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
                     </div>
                 <#else>

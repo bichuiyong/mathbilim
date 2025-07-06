@@ -26,7 +26,7 @@ public class NewsController {
 
     @GetMapping()
     public String all(@RequestParam(required = false) String query,
-                      @RequestParam(value = "page", defaultValue = "1") int page,
+                      @RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = "10") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
@@ -45,9 +45,9 @@ public class NewsController {
         return "news/news";
     }
 
-    @GetMapping("detail")
+    @GetMapping("{id}")
     public String news(
-            @RequestParam("id") long id,
+            @PathVariable long id,
             Model model,
             Principal principal
     ) {
