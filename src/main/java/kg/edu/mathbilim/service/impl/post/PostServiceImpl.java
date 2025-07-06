@@ -121,4 +121,9 @@ public class PostServiceImpl extends
         Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
         return mapper.toDto(post);
     }
+
+    @Override
+    public Post findByPostId(Long id) {
+        return repository.findById(id).orElseThrow(PostNotFoundException::new);
+    }
 }

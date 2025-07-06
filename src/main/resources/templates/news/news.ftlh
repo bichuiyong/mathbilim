@@ -446,7 +446,7 @@
             <form method="get" action="/news">
                 <div class="search-row">
                     <div class="search-input-group">
-                        <input type="text" name="query" value="${query!}" placeholder="Найти посты..."/>
+                        <input type="text" name="query" value="${query!}" placeholder="Найти новости..."/>
                     </div>
                 </div>
 
@@ -475,7 +475,7 @@
             </form>
         </div>
 
-        <#if news?? && news.content?size gt 0>
+        <#if news.content?size gt 0>
             <div class="posts-grid">
                 <#list news.content as p>
                     <div class="post-item" onclick="window.location.href='/news/${p.id}'">
@@ -509,13 +509,13 @@
             <div class="posts-grid">
                 <#if news?? && news.content?size == 0>
                     <div class="no-posts">
-                        Посты не найдены
+                        Новости не найдены
                         <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Посты загружаются, пожалуйста подождите...</span>
+                        <span>Новости загружаются, пожалуйста подождите...</span>
                     </div>
                 </#if>
             </div>
@@ -567,7 +567,6 @@
                 activeLangButton.classList.add('active');
             }
 
-            // Навигация по клавиатуре
             document.addEventListener('keydown', function(e) {
                 const posts = document.querySelectorAll('.post-item');
                 const currentPost = document.querySelector('.post-item:focus');

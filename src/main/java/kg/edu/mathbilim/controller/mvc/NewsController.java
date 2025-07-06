@@ -6,11 +6,15 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
+@Slf4j
 @Controller
 @RequestMapping("news")
 @RequiredArgsConstructor
@@ -18,10 +22,11 @@ public class NewsController {
     private static final String newsDto = "newsDto";
     private static final String redirect = "redirect:/news";
     private final NewsService newsService;
+    private final UserService userService;
 
     @GetMapping()
     public String all(@RequestParam(required = false) String query,
-                      @RequestParam(value = "page", defaultValue = "1") int page,
+                      @RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "size", defaultValue = "10") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
@@ -29,6 +34,7 @@ public class NewsController {
                       Model model
     ) {
         model.addAttribute("news", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang));
+        log.info("News {}", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang).getSize());
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -39,12 +45,14 @@ public class NewsController {
         return "news/news";
     }
 
-    @GetMapping("detail")
+    @GetMapping("{id}")
     public String news(
-            @RequestParam("id") long id,
-            Model model
+            @PathVariable long id,
+            Model model,
+            Principal principal
     ) {
-        model.addAttribute(newsDto, newsService.getById(id));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
+        model.addAttribute(newsDto, newsService.getNewsById(id));
         return "news/news-detail";
     }
 
