@@ -107,7 +107,8 @@
                                                             class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="news.newsTranslations[${trans?index}].content"
                                                             data-lang="${trans.languageCode}"
-                                                            id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
+                                                            id="content-${trans.languageCode}"
+                                                            value="${spring.status.value!''}">${spring.status.value!''}</textarea>
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -139,11 +140,11 @@
                                 </span>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="/posts" class="btn btn-secondary">
+                                    <a href="/news" class="btn btn-secondary">
                                         <i class="fas fa-times me-2"></i>Отменить
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Создать пост
+                                        <i class="fas fa-save me-2"></i>Создать новость
                                     </button>
                                 </div>
                             </div>

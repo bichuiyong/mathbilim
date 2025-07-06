@@ -6,6 +6,7 @@ import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
@@ -17,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+
 @Controller("mvcBlog")
 @RequestMapping("/blog")
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class BlogController {
     private final BlogService blogService;
     private final UserNotificationService userNotificationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
+    private final UserService userService;
 
     @GetMapping
     public String all(@RequestParam(required = false) String query,
@@ -71,7 +75,7 @@ public class BlogController {
     @GetMapping("/{id}")
     public String viewBlog(@PathVariable Long id,
                            HttpServletRequest request,
-                           Model model) {
+                           Model model, Principal principal) {
 
         blogService.incrementViewCount(id);
         DisplayContentDto blog = blogService.getDisplayBlogById(id);
@@ -79,6 +83,8 @@ public class BlogController {
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
         model.addAttribute("shareUrl", shareUrl);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
+
 
         return "blog/blog";
     }

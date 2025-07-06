@@ -1,9 +1,6 @@
 package kg.edu.mathbilim.dto.news;
 
-
 import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
-import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.util.TranslationUtil;
 import kg.edu.mathbilim.validation.annotation.AtLeastOneTranslationRequired;
 import lombok.*;
@@ -18,8 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NewsDto extends ContentDto {
-    
+public class NewsViewDto {
+    Long id;
+
+
+
     List<FileDto> newsFiles = new ArrayList<>();
 
     @AtLeastOneTranslationRequired

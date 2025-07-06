@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 
@@ -22,4 +23,6 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
     Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang);
 
     PostDto getPostById(Long id);
+
+    Post findByPostId(Long id);
 }

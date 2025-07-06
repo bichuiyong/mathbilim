@@ -18,7 +18,6 @@ import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -127,26 +126,43 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    public NewsDto getNewsById(Long id) {
+        News news = repository.findById(id).orElse(null);
+        log.info("News {} with id {}", news.getId(), news.getCreator().getId());
+
+        return mapper.toDto(news);
+    }
+
+    @Override
     public Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        log.info("getNewsByLang called with query='{}', page={}, size={}, sortBy='{}', sortDirection='{}', lang='{}'",
+                query, page, size, sortBy, sortDirection, lang);
+
+        Page<News> resultPage;
+
         if (query != null && !query.isEmpty()) {
-            return PaginationUtil.getPage(() ->
-                            repository.findNewsByQuery(query, lang, pageable),
-                    mapper::toDto);
+            log.info("Searching news by query '{}' and lang '{}'", query, lang);
+            resultPage = repository.findNewsByQuery(query, lang, pageable);
+        } else if (lang != null && !lang.isEmpty()) {
+            log.info("Searching news by language '{}'", lang);
+            resultPage = repository.findByNewsWithLang(lang, pageable);
+        } else {
+            log.info("Fetching all news");
+            resultPage = repository.findAllNews(pageable);
         }
 
-        if (lang != null && !lang.isEmpty()) {
-            return PaginationUtil.getPage(() ->
-                            repository.findByNewsWithLang(lang, pageable),
-                    mapper::toDto);
-        }
+        log.info("Found {} news items", resultPage.getTotalElements());
 
-        return PaginationUtil.getPage(() ->
-                        repository.findAllNews(pageable),
-                mapper::toDto);
+        return PaginationUtil.getPage(() -> resultPage, mapper::toDto);
+    }
 
 
+
+    @Override
+    public News findByNewsId(Long newsId) {
+        return repository.findById(newsId).orElseThrow();
     }
 }

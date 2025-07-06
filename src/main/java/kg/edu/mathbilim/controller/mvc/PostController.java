@@ -5,6 +5,8 @@ import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.service.interfaces.CommentService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Principal;
+
 
 @Slf4j
 @Controller("mvcPost")
@@ -26,6 +30,8 @@ public class PostController {
     private final PostService postService;
     private final PostTypeService postTypeService;
     private final RestTemplate restTemplate;
+    private final CommentService commentService;
+    private final UserService userService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
 
 
@@ -92,8 +98,9 @@ public class PostController {
 
 
     @GetMapping("{postId}")
-    public String detailPost(@PathVariable Long postId, Model model) {
+    public String detailPost(@PathVariable Long postId, Model model, Principal principal) {
         model.addAttribute("post", postService.getPostById(postId));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
     }
 }
