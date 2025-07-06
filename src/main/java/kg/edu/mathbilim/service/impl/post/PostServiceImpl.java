@@ -122,22 +122,6 @@ public class PostServiceImpl extends
     public void approve(Long id) {
         approveContent(id,NotificationEnum.POST, "New event");
     }
-//    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang) {
-//        ContentStatus contentStatus = ContentStatus.fromName(status);
-//        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-//        if (query != null && !query.isEmpty()) {
-//            System.out.println("Posts with query and lang: " + repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang).getContent());
-//            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang), mapper::toDto);
-//        }
-//
-//        if (lang != null && !lang.isEmpty()) {
-//            System.out.println("Posts with lang: " + repository.getPostsByStatusWithLang(contentStatus, lang, pageable).getContent());
-//            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithLang(contentStatus, lang, pageable), mapper::toDto);
-//        }
-//
-//        System.out.println("Posts: " + repository.getPostsByStatus(contentStatus, pageable).getContent());
-//        return PaginationUtil.getPage(() -> repository.getPostsByStatus(contentStatus, pageable), mapper::toDto);
-//    }
 
 
     @Override
