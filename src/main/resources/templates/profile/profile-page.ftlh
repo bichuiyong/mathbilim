@@ -493,7 +493,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="button" class="btn btn-primary" id="createTypeBtn">Сохранить</button>
                     </div>
                 </form>
             </div>

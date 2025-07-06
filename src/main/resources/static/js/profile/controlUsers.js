@@ -22,7 +22,7 @@ searchButton.onclick = function () {
 function renderPagination(currentPage, totalPages, url) {
     // document.getElementById('usersPagination').style.display = 'block';
     const paginationContainer = document.querySelector('.pagination');
-    console.log(paginationContainer);
+    // console.log(paginationContainer);
     paginationContainer.innerHTML = '';
 
     const createPageItem = (page, text = null, active = false, disabled = false) => {
@@ -73,7 +73,7 @@ function doFetch(url, page = 1, onSuccess = addUserToTable) {
             return response.json();
         })
         .then(data => {
-            console.log('Ответ сервера:', data);
+            // console.log('Ответ сервера:', data);
             if (data.length === 0) {
 
             } else {
@@ -191,7 +191,7 @@ function initDropdownBehavior() {
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
-    sendForm(form, '/api/users', 'POST', 'createUserModal');
+    sendForm(form, '/api/users', 'POST', 'createUserModal', getModelFromFormCreateUpdateUser(form, 'createUserModal'));
 }
 
 async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
@@ -204,7 +204,7 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
         });
 
         if (response.ok) {
-            console.log(successMessage);
+            // console.log(successMessage);
             if (modalId) {
                 const modalEl = document.getElementById(modalId);
                 const modal = bootstrap.Modal.getInstance(modalEl);
@@ -240,7 +240,7 @@ function changeEditModal() {
             let deleteUserBtn = document.getElementById('deleteUserBtn');
             deleteUserBtn.dataset.userId = userId
             deleteUserInput.value = userId;
-            console.log(deleteUserInput);
+            // console.log(deleteUserInput);
             deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
 
         } else if (button.classList.contains('block-button')) {
@@ -255,7 +255,7 @@ let editUserBtn = document.getElementById('editUserBtn');
 editUserBtn.onclick = function () {
     let editUserForm = document.getElementById('editUserForm');
     let userId = document.getElementById('editUserId').value
-    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal')
+    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal', getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'))
 }
 //
 let deleteUserBtn = document.getElementById('deleteUserBtn');
@@ -266,9 +266,9 @@ deleteUserBtn.onclick = async function () {
         'Ошибка удаления пользователя', userId, 'deleteUserModal');
 }
 
-function sendForm(form, fetchUrl, method, modalId) {
+function getModelFromFormCreateUpdateUser(form, modalId) {
     let selectElement;
-    console.log(form);
+    // console.log(form);
     selectElement = form.querySelector('select[name="type"]');
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const formData = new FormData(form);
@@ -285,7 +285,11 @@ function sendForm(form, fetchUrl, method, modalId) {
     } else {
         data.typeId = selectedOption.value
     }
-    console.log(data);
+    return data;
+}
+
+function sendForm(form, fetchUrl, method, modalId, data) {
+    // console.log(data);
     fetch(fetchUrl, {
         method: method,
         headers: {
@@ -296,6 +300,7 @@ function sendForm(form, fetchUrl, method, modalId) {
         // credentials: "include"
     })
         .then(async response => {
+            // console.log(response)
             if (!response.ok) {
                 const errorBody = await response.json();
                 const errors = errorBody.response;
@@ -321,10 +326,13 @@ function sendForm(form, fetchUrl, method, modalId) {
             } else {
                 if (modalId) {
                     const modalEl = document.getElementById(modalId);
-                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    let modal = bootstrap.Modal.getInstance(modalEl);
+                    if (!modal) {
+                        modal = new bootstrap.Modal(modalEl);
+                    }
                     modal.hide();
-
                 }
+
                 form.reset();
                 form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                 form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());

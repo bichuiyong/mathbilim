@@ -39,7 +39,7 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/auth/telegram/callback")
-                        .ignoringRequestMatchers("/api/users", "/api/users/**") // временно
+                        .ignoringRequestMatchers("/api/users", "/api/users/**", "/api/categories") // временно
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
                 .httpBasic(Customizer.withDefaults())

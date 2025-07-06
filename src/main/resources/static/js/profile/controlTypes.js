@@ -1,6 +1,52 @@
 let categoryTab = document.getElementById('category-tab');
 let typeContentList = document.getElementById('typeContentList');
 let staticTypeSortBy = document.getElementById('staticTypeSortBy');
+let createTypeBtn = document.getElementById('createTypeBtn');
+
+
+createTypeBtn.onclick = function () {
+    const form = document.getElementById('categoryForm');
+    const selectedType = document.getElementById('staticType')
+    selectedType.disabled;
+    sendForm(form, getLinkByName(selectedType.value), 'POST', 'createTypeModal', getTranslationsFromForm(form))
+
+}
+
+
+function getTranslationsFromForm(form) {
+    const translations = [
+        {
+            translation: form.querySelector('#nameRu').value.trim(),
+            languageCode: 'ru'
+        },
+        {
+            translation: form.querySelector('#nameEn').value.trim(),
+            languageCode: 'en'
+        },
+        {
+            translation: form.querySelector('#nameKg').value.trim(),
+            languageCode: 'kg'
+        }
+    ];
+
+    return { translations };
+}
+
+
+function getLinkByName(name) {
+    if (name === 'categories') {
+        return '/api/categories';
+    } else if (name === 'event_type') {
+        return '/api/eventTypes'
+    } else if (name === 'post_type') {
+        return '/api/postTypes'
+    } else if (name === 'user_type') {
+        return '/api/userTypes'
+    }
+}
+
+
+
 categoryTab.addEventListener('show.bs.tab', function () {
     doFetch(`/api/dict/${staticTypeSortBy.value}`, -1, addContentInList)
 });
