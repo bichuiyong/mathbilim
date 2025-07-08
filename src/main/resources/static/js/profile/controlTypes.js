@@ -8,9 +8,40 @@ createTypeBtn.onclick = function () {
     const form = document.getElementById('categoryForm');
     const selectedType = document.getElementById('staticType')
     selectedType.disabled;
-    sendForm(form, getLinkByName(selectedType.value), 'POST', 'createTypeModal', getTranslationsFromForm(form))
+    sendForm(form, getLinkByName(selectedType.value), 'POST', 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, getLinkByName(selectedType.value))
 
 }
+
+function onCreateTypeError(response) {
+    let form = document.getElementById('categoryForm');
+
+    response.json().then(errorBody => {
+        const errors = errorBody.response;
+        console.log(errors);
+
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+
+        const inputs = [
+            { id: 'nameRu', message: 'Поле обязательно (Русский)' },
+            { id: 'nameEn', message: 'Поле обязательно (English)' },
+            { id: 'nameKg', message: 'Поле обязательно (Кыргызча)' }
+        ];
+
+        inputs.forEach(inputData => {
+            const input = document.getElementById(inputData.id);
+            if (!input.value.trim()) {
+                const div = document.createElement('div');
+                div.classList.add('invalid-feedback');
+                div.innerText = inputData.message;
+                input.classList.add('is-invalid');
+                input.after(div);
+            }
+        });
+    });
+}
+
+
 
 
 function getTranslationsFromForm(form) {
