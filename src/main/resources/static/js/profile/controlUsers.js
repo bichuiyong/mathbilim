@@ -330,11 +330,9 @@ function onUserSaveError(response, form) {
         const errors = errorBody.response;
         console.log(errors);
 
-        // Удаляем старые ошибки
         form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
         form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
 
-        // Добавляем новые ошибки
         for (const fieldName in errors) {
             const messages = errors[fieldName];
             const field = form.querySelector(`[name="${fieldName}"]`);
