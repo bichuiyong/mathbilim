@@ -191,7 +191,7 @@ function initDropdownBehavior() {
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
-    sendForm(form, '/api/users', 'POST', 'createUserModal', getModelFromFormCreateUpdateUser(form, 'createUserModal'));
+    sendForm(form, '/api/users', 'POST', 'createUserModal', getModelFromFormCreateUpdateUser(form, 'createUserModal'), onUserSaveError, "/api/users");
 }
 
 async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
@@ -288,7 +288,7 @@ function getModelFromFormCreateUpdateUser(form, modalId) {
     return data;
 }
 
-function sendForm(form, fetchUrl, method, modalId, data) {
+function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetchUrl) {
     // console.log(data);
     fetch(fetchUrl, {
         method: method,
@@ -302,27 +302,7 @@ function sendForm(form, fetchUrl, method, modalId, data) {
         .then(async response => {
             // console.log(response)
             if (!response.ok) {
-                const errorBody = await response.json();
-                const errors = errorBody.response;
-                console.log(errors);
-
-                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-
-                for (const fieldName in errors) {
-                    const messages = errors[fieldName];
-                    const field = form.querySelector(`[name="${fieldName}"]`);
-                    if (field) {
-                        field.classList.add("is-invalid");
-
-                        messages.forEach(msg => {
-                            const div = document.createElement("div");
-                            div.classList.add("invalid-feedback");
-                            div.innerText = msg;
-                            field.parentElement.appendChild(div);
-                        });
-                    }
-                }
+                onError(response, form)
             } else {
                 if (modalId) {
                     const modalEl = document.getElementById(modalId);
@@ -336,7 +316,7 @@ function sendForm(form, fetchUrl, method, modalId, data) {
                 form.reset();
                 form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                 form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-                doFetch('/api/users');
+                doFetch(onSuccessFetchUrl);
             }
         })
 
@@ -344,3 +324,31 @@ function sendForm(form, fetchUrl, method, modalId, data) {
 
 
 }
+
+function onUserSaveError(response, form) {
+    response.json().then(errorBody => {
+        const errors = errorBody.response;
+        console.log(errors);
+
+        // Удаляем старые ошибки
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+
+        // Добавляем новые ошибки
+        for (const fieldName in errors) {
+            const messages = errors[fieldName];
+            const field = form.querySelector(`[name="${fieldName}"]`);
+            if (field) {
+                field.classList.add("is-invalid");
+
+                messages.forEach(msg => {
+                    const div = document.createElement("div");
+                    div.classList.add("invalid-feedback");
+                    div.innerText = msg;
+                    field.parentElement.appendChild(div);
+                });
+            }
+        }
+    });
+}
+

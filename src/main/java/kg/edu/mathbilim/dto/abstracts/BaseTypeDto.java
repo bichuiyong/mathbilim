@@ -19,6 +19,6 @@ public class BaseTypeDto<T> {
 
     Integer id;
 
-//    @AllTranslationsRequired
+    @AllTranslationsRequired
     List<T> translations = new ArrayList<>();
 }
