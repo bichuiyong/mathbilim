@@ -19,8 +19,8 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(category));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryDto category, Integer categoryId) {
+    @PutMapping("{categoryId}")
+    public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryDto category, @PathVariable Integer categoryId) {
         return ResponseEntity.ok(categoryService.updateCategory(categoryId, category));
     }
 

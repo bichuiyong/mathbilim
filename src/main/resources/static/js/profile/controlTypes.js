@@ -5,10 +5,18 @@ let createTypeBtn = document.getElementById('createTypeBtn');
 
 
 createTypeBtn.onclick = function () {
+    const typeId = document.getElementById('typeIdForChange').value;
     const form = document.getElementById('categoryForm');
-    const selectedType = document.getElementById('staticType')
-    selectedType.disabled;
-    sendForm(form, getLinkByName(selectedType.value), 'POST', 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, getLinkByName(selectedType.value))
+    const selectedType = document.getElementById('staticTypeValue').value;
+    const isEdit = !!typeId;
+    const method = isEdit ? 'PUT' : 'POST';
+
+    let url = getLinkByName(selectedType);
+    if (isEdit) {
+        url += `/${typeId}`;
+    }
+
+    sendForm(form, url, method, 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, url)
 
 }
 
@@ -45,6 +53,8 @@ function onCreateTypeError(response) {
 
 
 function getTranslationsFromForm(form) {
+    // const typeId = document.getElementById('typeIdForChange').value;
+
     const translations = [
         {
             translation: form.querySelector('#nameRu').value.trim(),
@@ -60,8 +70,11 @@ function getTranslationsFromForm(form) {
         }
     ];
 
-    return { translations };
+
+
+    return {translations};
 }
+
 
 
 function getLinkByName(name) {
@@ -79,13 +92,62 @@ function getLinkByName(name) {
 
 
 categoryTab.addEventListener('show.bs.tab', function () {
-    doFetch(`/api/dict/${staticTypeSortBy.value}`, -1, addContentInList)
+    doFetch(`/api/dict/${staticTypeSortBy.value}`, -1, addContentInList, changeModalForTypes)
 });
+
+function openCreateModal() {
+    document.getElementById('categoryForm').reset();
+    document.getElementById('typeIdForChange').value = ''; // очистить скрытое поле
+    document.getElementById('selectWrapper').style.display = 'block';
+    document.getElementById('staticType').disabled = false;
+
+    const staticType = document.getElementById('staticType');
+    const hiddenInput = document.getElementById('staticTypeValue');
+    staticType.addEventListener('change', () => {
+        hiddenInput.value = staticType.value;
+    });
+
+    hiddenInput.value = staticType.value;
+}
+
+
+
+function changeModalForTypes() {
+    document.getElementById('resultTableContent').addEventListener('click', function (event) {
+        const editButton = event.target.closest('.edit-button');
+        const deleteButton = event.target.closest('.delete-button');
+
+        if (editButton) {
+            const typeId = editButton.dataset.typeId;
+            const nameRu = editButton.dataset.typeRu;
+            const nameEn = editButton.dataset.typeEn;
+            const nameKg = editButton.dataset.typeKg;
+
+            document.getElementById('nameRu').value = nameRu;
+            document.getElementById('nameEn').value = nameEn;
+            document.getElementById('nameKg').value = nameKg;
+            document.getElementById('typeIdForChange').value = typeId;
+
+            const selectWrapper = document.getElementById('selectWrapper');
+            const staticType = document.getElementById('staticType');
+            if (selectWrapper) selectWrapper.style.display = 'none';
+            if (staticType) staticType.disabled = true;
+
+            // Записать тип в скрытое поле
+            const staticTypeHidden = document.getElementById('staticTypeValue');
+            staticTypeHidden.value = staticTypeSortBy.value; // или другой способ получить текущий тип
+
+        }
+        
+    });
+}
+
+
 
 
 staticTypeSortBy.addEventListener('change', function () {
     const value = this.value;
-    doFetch(`/api/dict/${value}`, -1, addContentInList);
+    doFetch(`/api/dict/${value}`, -1, addContentInList, changeModalForTypes);
 })
 
 function addContentInList(content) {
@@ -122,11 +184,11 @@ function addContentInList(content) {
           <a class="dropdown-item edit-button" 
              href="#" 
              data-bs-toggle="modal" 
-             data-bs-target="#editUserModal"
-             data-c-id="${c.id}" 
-             data-c-ru="${c.translations[0].translation}" 
-             data-c-en="${c.translations[1].translation}" 
-             data-c-kg="${c.translations[2].translation}">
+             data-bs-target="#createTypeModal"
+             data-type-id="${c.id}" 
+             data-type-ru="${c.translations[0].translation}" 
+             data-type-en="${c.translations[1].translation}" 
+             data-type-kg="${c.translations[2].translation}">
             ✏️ Изменить
           </a>
         </li>

@@ -281,7 +281,7 @@
                                 <div class="tab-pane fade" id="category" role="tabpanel">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0">Управление типами/категориями</h5>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTypeModal">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTypeModal" onclick="openCreateModal()">
                                             <i class="fa-solid fa-clipboard me-2"></i>Создать
                                         </button>
                                     </div>
@@ -477,7 +477,7 @@
                             <label for="nameKg" class="form-label">Название (Кыргызча)</label>
                             <input type="text" class="form-control" id="nameKg" name="nameKg" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="selectWrapper">
                             <label for="type" class="form-label">Что вы хотите создать?</label>
                             <div class="account-type-select">
                                 <select class="form-select" id="staticType">
@@ -490,6 +490,8 @@
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
                         </div>
+                        <input type="hidden" id="typeIdForChange">
+                        <input type="hidden" id="staticTypeValue" name="staticTypeValue">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>

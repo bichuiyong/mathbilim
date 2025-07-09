@@ -60,7 +60,7 @@ function renderPagination(currentPage, totalPages, url) {
         });
     });
 }
-function doFetch(url, page = 1, onSuccess = addUserToTable) {
+function doFetch(url, page = 1, onSuccess = addUserToTable, changeModals = changeEditModal) {
     if (page < 1) {
         page = 1;
     }
@@ -78,8 +78,10 @@ function doFetch(url, page = 1, onSuccess = addUserToTable) {
 
             } else {
                 onSuccess(data)
+                changeModals()
+                initDropdownBehavior()
                 // addUserToTable(data.content)
-                renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
+                // renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
             }
 
         })
@@ -163,9 +165,9 @@ function addUserToTable(content) {
         resultTableUsers.appendChild(tr);
 
     });
-    initDropdownBehavior();
+    // initDropdownBehavior();
     // console.log('changeEditModal')
-    changeEditModal();
+    // changeEditModal();
 }
 function initDropdownBehavior() {
     document.querySelectorAll('.dropdown').forEach(dropdown => {
@@ -255,7 +257,7 @@ let editUserBtn = document.getElementById('editUserBtn');
 editUserBtn.onclick = function () {
     let editUserForm = document.getElementById('editUserForm');
     let userId = document.getElementById('editUserId').value
-    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal', getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'))
+    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal', getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'), onUserSaveError, "/api/users");
 }
 //
 let deleteUserBtn = document.getElementById('deleteUserBtn');
