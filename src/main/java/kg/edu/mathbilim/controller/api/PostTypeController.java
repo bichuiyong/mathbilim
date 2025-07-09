@@ -21,13 +21,13 @@ public class PostTypeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postTypeService.createPostType(postType));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updatePostType(@RequestBody @Valid PostTypeDto postType, Integer postTypeId) {
+    @PutMapping("{postTypeId}")
+    public ResponseEntity<?> updatePostType(@RequestBody @Valid PostTypeDto postType, @PathVariable Integer postTypeId) {
         return ResponseEntity.ok(postTypeService.updatePostType(postTypeId, postType));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deletePostType(Integer postTypeId) {
+    @DeleteMapping("{postTypeId}")
+    public ResponseEntity<?> deletePostType(@PathVariable Integer postTypeId) {
         postTypeService.deletePostType(postTypeId);
         return ResponseEntity.ok().build();
     }

@@ -133,12 +133,19 @@ function changeModalForTypes() {
             if (selectWrapper) selectWrapper.style.display = 'none';
             if (staticType) staticType.disabled = true;
 
-            // Записать тип в скрытое поле
             const staticTypeHidden = document.getElementById('staticTypeValue');
-            staticTypeHidden.value = staticTypeSortBy.value; // или другой способ получить текущий тип
+            staticTypeHidden.value = staticTypeSortBy.value;
+        } else if (deleteButton) {
+            const typeId = deleteButton.dataset.typeId;
+            const deleteUserModal = document.getElementById('deleteUserModalBody');
+            const deleteUserInput = document.getElementById('deleteUserInput');
+            const deleteUserBtn = document.getElementById('deleteUserBtn');
 
+            deleteUserBtn.dataset.typeId = typeId;
+            deleteUserBtn.dataset.contentType = staticTypeSortBy.value
+            deleteUserInput.value = typeId;
+            deleteUserModal.textContent = 'Вы уверены, что хотите удалить объект с ID: ' + typeId;
         }
-        
     });
 }
 
@@ -197,7 +204,7 @@ function addContentInList(content) {
              href="#" 
              data-bs-toggle="modal" 
              data-bs-target="#deleteUserModal"
-             data-c-id="${c.id}">
+             data-type-id="${c.id}">
             🗑️ Удалить
           </a>
         </li>

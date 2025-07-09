@@ -19,13 +19,13 @@ public class EventTypeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventTypeService.createEventType(eventTypeDto));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateEventType(@RequestBody @Valid EventTypeDto eventTypeDto, Integer eventTypeId) {
+    @PutMapping("{eventTypeId}")
+    public ResponseEntity<?> updateEventType(@RequestBody @Valid EventTypeDto eventTypeDto, @PathVariable Integer eventTypeId) {
         return ResponseEntity.ok(eventTypeService.updateEventType(eventTypeId, eventTypeDto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteEventType(Integer eventTypeId) {
+    @DeleteMapping("{eventTypeId}")
+    public ResponseEntity<?> deleteEventType(@PathVariable Integer eventTypeId) {
         eventTypeService.deleteEventType(eventTypeId);
         return ResponseEntity.noContent().build();
     }

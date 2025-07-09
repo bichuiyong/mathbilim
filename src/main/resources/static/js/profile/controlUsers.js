@@ -196,9 +196,9 @@ createUserBtn.onclick = function () {
     sendForm(form, '/api/users', 'POST', 'createUserModal', getModelFromFormCreateUpdateUser(form, 'createUserModal'), onUserSaveError, "/api/users");
 }
 
-async function handleUserAction(method, successMessage, errorMessage, userId, modalId) {
+async function handleUserAction(method, successMessage, errorMessage, url, modalId, successUrlFetch) {
     try {
-        const response = await fetch(`/api/users/${userId}`, {
+        const response = await fetch(url, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -206,17 +206,19 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
         });
 
         if (response.ok) {
-            // console.log(successMessage);
             if (modalId) {
                 const modalEl = document.getElementById(modalId);
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
-
             }
 
+            if (typeof successUrlFetch === 'string') {
+                doFetch(successUrlFetch);
+            } else if (typeof successUrlFetch === 'object') {
+                const { url, onSuccess, changeModals } = successUrlFetch;
+                doFetch(url, -1, onSuccess, changeModals);
+            }
 
-
-            doFetch('/api/users');
         } else {
             const errorData = await response.json();
             throw new Error(errorData.message || errorMessage);
@@ -225,6 +227,7 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
         console.error('Ошибка:', error.message);
     }
 }
+
 //
 function changeEditModal() {
     document.getElementById('resultTableUsers').addEventListener('click', async function(event) {
@@ -263,9 +266,30 @@ editUserBtn.onclick = function () {
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
     let userId = deleteUserBtn.dataset.userId
-    await handleUserAction('DELETE',
-        `Пользователь с id=${userId} успешно удалён`,
-        'Ошибка удаления пользователя', userId, 'deleteUserModal');
+    let typeId = deleteUserBtn.dataset.typeId
+    let url
+    let successUrl
+    if (userId) {
+        url = `/api/users/${userId}`
+        successUrl = '/api/users'
+    }
+    if (typeId) {
+        let contentType = deleteUserBtn.dataset.contentType
+        url = `/api/${contentType}/${typeId}`
+        successUrl = '/api/dict/' + contentType
+    }
+    await handleUserAction(
+        'DELETE',
+        `Объект успешно удалён`,
+        'Ошибка удаления ',
+        url,
+        'deleteUserModal',
+        {
+            url: successUrl,
+            onSuccess: addContentInList,
+            changeModals: changeModalForTypes
+        }
+    );
 }
 
 function getModelFromFormCreateUpdateUser(form, modalId) {

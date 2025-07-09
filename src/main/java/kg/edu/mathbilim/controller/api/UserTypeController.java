@@ -20,13 +20,13 @@ public class UserTypeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userTypeService.createUserType(userTypeDto));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUserType(@RequestBody @Valid UserTypeDto userTypeDto, Integer userTypeId) {
+    @PutMapping("{userTypeId}")
+    public ResponseEntity<?> updateUserType(@RequestBody @Valid UserTypeDto userTypeDto, @PathVariable Integer userTypeId) {
         return ResponseEntity.ok(userTypeService.updateUserType(userTypeId, userTypeDto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteUserType(Integer userTypeId) {
+    @DeleteMapping("userTypeId")
+    public ResponseEntity<?> deleteUserType(@PathVariable Integer userTypeId) {
         userTypeService.deleteUserType(userTypeId);
         return ResponseEntity.noContent().build();
     }
