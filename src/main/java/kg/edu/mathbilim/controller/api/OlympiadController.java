@@ -1,7 +1,7 @@
 package kg.edu.mathbilim.controller.api;
 
 import kg.edu.mathbilim.dto.olympiad.OlympListDto;
-import kg.edu.mathbilim.dto.olympiad.OlympiadDto;
+import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,10 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController("apiOlympiadController")
@@ -26,5 +23,10 @@ public class OlympiadController {
                                                            @RequestParam(defaultValue = "8") int size) {
         Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "createdAt"));
         return ResponseEntity.ofNullable(olympiadService.getAll(pageable));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<OlympiadCreateDto> getOlympById(@PathVariable long id) {
+        return ResponseEntity.ofNullable(olympiadService.getOlympiadCreateDto(id));
     }
 }

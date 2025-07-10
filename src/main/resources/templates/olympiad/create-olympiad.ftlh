@@ -313,7 +313,7 @@
             </header>
 
             <div class="form-content">
-                <form id="olympiadForm" action="/olympiad/add" method="POST" enctype="multipart/form-data">
+                <form id="olympiadForm" action="/olympiad/create" method="POST" enctype="multipart/form-data">
                     <div class="olympiad-grid">
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
@@ -330,20 +330,22 @@
 
                         <div class="form-group full-width">
                             <label for="info" class="olympiad-label required">Описание</label>
-                            <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Введите подробное описание олимпиады' class='olympiad-textarea'"/>
+                            <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Введите подробное описание олимпиады' class='olympiad-textarea rich-text-editor'"/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group">
                             <label for="start_date" class="olympiad-label required">Дата начала</label>
-                            <@spring.formInput "olympiadCreateDto.startDate" 'type="date" class="olympiad-input"' 'date'/>
-                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                            <input
+                                    name="startDate" type="date" class="olympiad-input" value="${olympiadCreateDto.startDate!''}" <#if olympiadCreateDto.hasStarted> readonly </#if>>
+                            <@spring.showErrors "startDate" "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group">
                             <label for="end_date" class="olympiad-label required">Дата окончания</label>
-                            <@spring.formInput "olympiadCreateDto.endDate" 'type="date" class="olympiad-input"' 'date'/>
-                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
+                            <input
+                                    name="endDate" type="date" class="olympiad-input" value="${olympiadCreateDto.endDate!''}" <#if olympiadCreateDto.hasEnded> readonly </#if>>
+                            <@spring.showErrors "endDate" "text-danger small mt-1"/>
                         </div>
 
                         <#if olympiadDateError??>
@@ -352,7 +354,7 @@
 
                         <div class="form-group full-width">
                             <label for="rules" class="olympiad-label required">Правила участия</label>
-                            <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea"'/>
+                            <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea olympiad-textarea rich-text-editor"'/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
@@ -510,11 +512,24 @@
     </div>
 
     <#noparse>
+        <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
         <script src="/static/js/components/content-create/ImageCropManager.js"></script>
 
         <script>
+            tinymce.init({
+                selector: 'textarea.rich-text-editor',
+                menubar: false,
+                plugins: 'lists link image code preview',
+                toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
+                height: 300,
+                language: 'ru',
+                branding: false,
+                content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
+            });
+
             let imageCropManager;
 
             document.addEventListener('DOMContentLoaded', () => {

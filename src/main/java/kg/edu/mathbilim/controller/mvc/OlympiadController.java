@@ -1,7 +1,10 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.interfacePack.OnCreate;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.service.interfaces.ContactTypeService;
+import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class OlympiadController {
     private final OlympiadService olympiadService;
     private final UserService userService;
+    private final OrganizationService organizationService;
+    private final ContactTypeService contactTypeService;
 
     @GetMapping()
     public String olympiadPage(@RequestParam(defaultValue = "0") int page,
@@ -42,28 +48,31 @@ public class OlympiadController {
     }
 
     @PostMapping("create")
-    public String createOlympiad(@Valid OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
+    public String createOlympiad(@Valid @Validated(OnCreate.class) OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
                                  Authentication auth) {
         model.addAttribute("user", userService.getUserByEmail(auth.getName()));
-        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/create-olympiad");
+        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/create-olympiad",true);
     }
 
     @GetMapping("edit")
     public String editOlympiad(@RequestParam long id, Model model) {
         model.addAttribute("olympiadCreateDto", olympiadService.getOlympiadCreateDto(id));
+        model.addAttribute("contactTypes", contactTypeService.getTypes());
+        model.addAttribute("organizations", organizationService.getAllOrganizationIdNames());
         return "olympiad/edit-olymp";
     }
 
     @PostMapping("edit")
     public String editOlympiadPost(@Valid @ModelAttribute("olympiadCreateDto") OlympiadCreateDto olympiadCreateDto,
                                    BindingResult result, Model model) {
-        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/edit-olymp");
+        model.addAttribute("contactTypes", contactTypeService.getTypes());
+        model.addAttribute("organizations", organizationService.getAllOrganizationIdNames());
+        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/edit-olymp",false);
     }
 
     private String processOlympiadForm(OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
-                                       String templateName) {
+                                       String templateName, boolean create) {
         if (result.hasErrors()) {
-            model.addAttribute("bindingResult", result);
             model.addAttribute("olympiadCreateDto", olympiadCreateDto);
 
             boolean hasStageFieldErrors = result.getFieldErrors().stream()
@@ -97,7 +106,11 @@ public class OlympiadController {
             return templateName;
         }
 
-        olympiadService.olympiadCreate(olympiadCreateDto);
+        if (create) {
+            olympiadService.olympiadCreate(olympiadCreateDto);
+        } else {
+            olympiadService.olympiadUpdate(olympiadCreateDto);
+        }
         return "redirect:/olympiad";
     }
 }
