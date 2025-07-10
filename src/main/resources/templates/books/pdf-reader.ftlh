@@ -50,7 +50,11 @@
 
                     <div class="divider"></div>
 
-                    <button id="downloadBtn" class="btn btn-outline-light btn-sm" title="Download">
+                    <button
+                            id="downloadBtn"
+                            class="btn btn-outline-light btn-sm"
+                            title="Download"
+                            data-file-id="${(fileDto.id)!0}">
                         <i class="fas fa-download"></i>
                     </button>
 
@@ -95,17 +99,43 @@
             background-color: var(--light-bg);
         }
 
-        /* Enhanced Toolbar */
         .pdf-toolbar {
-            background: var(--dark-bg);
+            background: linear-gradient(to right, #283e51, #485563);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
             height: var(--toolbar-height);
-            z-index: 10;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-toolbar .btn,
+        .pdf-toolbar .form-select-sm {
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pdf-toolbar .btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        }
+
+        .pdf-toolbar .btn:active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .pdf-toolbar .btn i {
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .pdf-toolbar .btn:hover i {
+            transform: scale(1.15);
         }
 
         .toolbar-left {
@@ -116,16 +146,12 @@
         }
 
         .back-btn {
-            border-radius: 4px;
-            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            font-weight: 500;
         }
 
-        .document-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .document-title {
+        .document-info h5 {
             margin: 0;
             font-size: 1rem;
             font-weight: 600;
@@ -134,13 +160,6 @@
             text-overflow: ellipsis;
             max-width: 300px;
             color: white;
-        }
-
-        .document-meta {
-            display: flex;
-            align-items: center;
-            font-size: 0.8rem;
-            margin-top: 0.2rem;
         }
 
         .toolbar-center {
@@ -158,9 +177,10 @@
         .page-info {
             display: flex;
             align-items: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
             padding: 0.25rem 0.75rem;
+            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.1);
         }
 
         .page-input {
@@ -175,7 +195,8 @@
 
         .page-input:focus {
             outline: none;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
         }
 
         .page-count {
@@ -201,7 +222,7 @@
         .divider {
             width: 1px;
             height: 24px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             margin: 0 0.5rem;
         }
 
@@ -213,12 +234,14 @@
 
         .form-select-sm {
             width: 90px;
-            background-color: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
             color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
         }
 
-        /* PDF Viewer Container */
         .pdf-viewer-container {
             flex: 1;
             overflow: hidden;
@@ -232,7 +255,7 @@
             justify-content: center;
             align-items: flex-start;
             padding: 1.5rem;
-            background: #525659; /* PDF.js background color */
+            background: #525659;
         }
 
         .loading-state {
@@ -249,10 +272,9 @@
             height: 3rem;
         }
 
-        /* PDF Page Styling */
         .pdf-page-container {
             background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             margin-bottom: 1.5rem;
             border-radius: 4px;
             overflow: hidden;
@@ -264,7 +286,6 @@
             height: auto;
         }
 
-        /* Responsive Design */
         @media (max-width: 992px) {
             .document-title {
                 max-width: 200px;
@@ -301,7 +322,6 @@
             }
         }
 
-        /* Fullscreen styles */
         .pdf-reader-container:fullscreen {
             background: #000;
             width: 100%;
@@ -316,6 +336,7 @@
             box-shadow: none;
         }
     </style>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
@@ -334,10 +355,8 @@
                 this.initElements();
                 this.bindEvents();
 
-                // Set PDF.js worker
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-                // Load PDF immediately
                 this.loadPDF();
             }
 
@@ -367,7 +386,6 @@
                 this.zoomOutBtn.addEventListener('click', () => this.zoomOut());
                 this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
 
-                // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
                     if (e.target.tagName === 'INPUT') return; // Don't interfere with input fields
 
@@ -396,17 +414,30 @@
                     }
                 });
 
-                // Mouse wheel zoom
+                let lastWheelTime = 0;
+
                 this.viewer.addEventListener('wheel', (e) => {
-                    if (e.ctrlKey) {
+                    const now = Date.now();
+
+                    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+                    const isZoomGesture = e.ctrlKey || e.metaKey || (navigator.platform.includes('Mac') && e.altKey);
+
+                    if (isZoomGesture || Math.abs(e.deltaY) > 50) {
                         e.preventDefault();
-                        if (e.deltaY > 0) {
-                            this.zoomOut();
-                        } else {
+
+                        if (now - lastWheelTime < 100) return;
+                        lastWheelTime = now;
+
+                        if (e.deltaY < 0) {
                             this.zoomIn();
+                        } else {
+                            this.zoomOut();
                         }
                     }
-                });
+                }, { passive: false });
+
+
             }
             showLoading() {
                 this.viewer.innerHTML = `
@@ -419,16 +450,6 @@
                 </div>
             `;
             }
-            <#--showError(message) {-->
-            <#--    this.viewer.innerHTML = `-->
-            <#--        <div class="error">-->
-            <#--            <div class="error-icon">⚠️</div>-->
-            <#--            <h5>Ошибка загрузки</h5>-->
-            <#--            <p>${message}</p>-->
-            <#--            <button class="btn btn-primary" onclick="location.reload()">Попробовать снова</button>-->
-            <#--        </div>-->
-            <#--    `;-->
-            <#--}-->
 
             async loadPDF() {
                 this.showLoading();
@@ -442,7 +463,6 @@
                     await this.renderPage();
                 } catch (error) {
                     console.error('Error loading PDF:', error);
-                    // this.showError('Не удалось загрузить PDF файл. Проверьте подключение к интернету.');
                 }
             }
 
@@ -454,7 +474,6 @@
                 this.prevBtn.disabled = this.currentPage <= 1;
                 this.nextBtn.disabled = this.currentPage >= this.totalPages;
 
-                // Update button classes for disabled state
                 this.prevBtn.classList.toggle('disabled', this.currentPage <= 1);
                 this.nextBtn.classList.toggle('disabled', this.currentPage >= this.totalPages);
             }
@@ -465,7 +484,6 @@
                 try {
                     const page = await this.pdfDoc.getPage(this.currentPage);
 
-                    // Create canvas if it doesn't exist
                     if (!this.canvas) {
                         this.viewer.innerHTML = '<div class="pdf-page-container"></div>';
                         this.pageContainer = this.viewer.querySelector('.pdf-page-container');
@@ -477,9 +495,8 @@
 
                     let viewport = page.getViewport({ scale: this.scale });
 
-                    // Handle fit-to-width
                     if (this.zoomSelect.value === 'fit') {
-                        const containerWidth = this.viewer.clientWidth - 80; // Account for padding
+                        const containerWidth = this.viewer.clientWidth - 80;
                         this.scale = containerWidth / viewport.width;
                         viewport = page.getViewport({ scale: this.scale });
                     }
@@ -494,12 +511,10 @@
 
                     await page.render(renderContext).promise;
 
-                    // Scroll to top of page
                     this.viewer.scrollTop = 0;
 
                 } catch (error) {
                     console.error('Error rendering page:', error);
-                    // this.showError('Ошибка при отображении страницы');
                 }
             }
 
@@ -573,13 +588,28 @@
             }
         }
 
-        // Initialize PDF Reader when page loads
         document.addEventListener('DOMContentLoaded', function() {
             const pdfUrl = '${pdfUrl}';
             const pdfReader = new PDFReader(pdfUrl);
 
-            // Make pdfReader globally available for debugging
             window.pdfReader = pdfReader;
         });
+
+
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const fileId = this.getAttribute('data-file-id');
+            if (!fileId || fileId === "0") {
+                alert("Файл не найден для загрузки.");
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = `/api/files/${fileId}/download`;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
     </script>
 </@main.layout>
