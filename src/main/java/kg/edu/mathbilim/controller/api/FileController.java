@@ -9,9 +9,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -67,11 +69,10 @@ public class FileController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
                 .contentLength(fileContent.length)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileDto.getFilename() + "\"")
                 .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
                 .body(resource);
     }
-
 
     @PutMapping("/{fileId}")
     public ResponseEntity<FileDto> updateFile(

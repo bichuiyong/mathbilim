@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.BookDto;
+import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
