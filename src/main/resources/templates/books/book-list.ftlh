@@ -2,7 +2,8 @@
 <@main.layout>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
-            <aside class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block">
+            <!-- Sidebar with collapse ID for toggle -->
+            <aside id="sidebarCategories" class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block">
                 <div class="filter-section p-3">
                     <h3 class="h5 fw-bold mb-3">Предметы</h3>
                     <ul class="nav flex-column">
@@ -181,6 +182,9 @@
             justify-content: center;
             gap: 0.25rem;
         }
-
     </style>
+
+    <!-- Add Bootstrap 5 JS bundle for collapse -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </@main.layout>
