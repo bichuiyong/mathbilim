@@ -63,7 +63,10 @@
 
                     <div class="mb-3">
                         <label for="attachments" class="form-label">Attachments</label>
-                        <input type="file" class="form-control" id="attachments" name="attachments" multiple
+                        <input type="file" class="form-control"
+                               id="attachments"
+                               name="attachments"
+                               multiple required
                                accept=".pdf">
                         <div class="form-text text-danger">
                             📎 Supported files: PDF only<br>
@@ -159,14 +162,13 @@
         .tox-tinymce {
             border-radius: 8px !important;
         }
-        /* Override for book cover preview (2:3 ratio) */
         .cropped-preview .cropped-image-container {
-            aspect-ratio: 2/3 !important;  /* Forces 2:3 ratio (height:width) */
-            max-width: 400px;              /* Adjust if needed (600px for 3:2) */
+            aspect-ratio: 2/3 !important;
+            max-width: 400px;
         }
 
         .cropped-preview .cropped-image-container img {
-            object-fit: cover;             /* Ensures image fills container */
+            object-fit: cover;
             width: 100%;
             height: 100%;
         }

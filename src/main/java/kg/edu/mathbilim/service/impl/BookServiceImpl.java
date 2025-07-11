@@ -73,6 +73,9 @@ public class BookServiceImpl extends
 
     @Transactional
     public BookDto createBook(MultipartFile attachment,MultipartFile image, BookDto bookDto) {
+        if(attachment.isEmpty()) {
+            throw new BookNotFoundException();
+        }
         bookDto.setFile(fileService.uploadFile(attachment,"books/" + bookDto.getId()));
         bookDto.setCreator(userService.getAuthUser());
         return createBase(bookDto, image, null);

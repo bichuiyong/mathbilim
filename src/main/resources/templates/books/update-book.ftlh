@@ -5,7 +5,7 @@
     <div class="container my-5">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="mb-0">Create New Book</h3>
+                <h3 class="mb-0">Update Book</h3>
             </div>
             <div class="card-body">
                 <form id="bookForm" action="/books/update/${book.id}" method="post" enctype="multipart/form-data">
@@ -14,7 +14,6 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
-                        <#-- Show existing main image if it exists -->
                         <#if book.mainImage??>
                             <div class="existing-image-section mb-3 p-3 bg-light rounded">
                                 <h6 class="mb-2">🖼️ Current Image:</h6>
@@ -80,7 +79,6 @@
                     <div class="mb-3">
                         <label for="attachments" class="form-label">Attachments</label>
 
-                        <#-- Show existing file if it exists -->
                         <#if existingFile??>
                             <div class="existing-file-section mb-3 p-3 bg-light rounded">
                                 <h6 class="mb-2">📎 Current File:</h6>

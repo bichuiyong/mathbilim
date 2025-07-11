@@ -25,12 +25,12 @@ public class BookDto extends ContentDto {
     @NotBlank
     String authors;
 
+    @NotBlank
     String isbn;
 
     @NotBlank
     String description;
 
-//    @NotNull
     FileDto file;
 
     @NotNull

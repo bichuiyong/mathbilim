@@ -37,11 +37,23 @@
                         <#if categoryId??>
                             <input type="hidden" name="categoryId" value="${categoryId}">
                         </#if>
-                        <input type="text" name="query" value="${query!}" class="form-control" placeholder="Поиск по названию или описанию...">
-                        <button type="submit" class="btn btn-primary flex-shrink-0">Найти</button>
+                        <input type="text"
+                               name="query"
+                               value="${query!}"
+                               class="form-control" placeholder="Поиск по названию или описанию..."
+                               style="height: 38px; font-size: 0.875rem;"/>
+                        <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="min-width: 130px; height: 38px;">
+                            🔍 Найти
+                        </button>
                     </form>
-                    <a href="/books/create" class="btn btn-success flex-shrink-0">Добавить книгу</a>
+
+                    <a href="/books/create"
+                       class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                       style="min-width: 130px; height: 38px;">
+                        ➕ Добавить книгу
+                    </a>
                 </div>
+
 
                 <div class="list-group mb-4">
                     <#if book.content?size == 0>
@@ -70,21 +82,28 @@
                                         </div>
                                         <p class="mb-2 text-muted">${bookItem.description}</p>
                                         <div class="mt-auto d-flex gap-2">
-                                            <#if bookItem.file??>
-                                                <#if bookItem.file.type.mimeType == "application/pdf">
-                                                    <a href="/books/${bookItem.file.id}/pdf-reader" class="btn btn-primary btn-sm">
-                                                        📖 Читать
-                                                    </a>
-                                                <#else>
-                                                    <a href="/api/files/${bookItem.file.id}/view" class="btn btn-primary btn-sm" target="_blank">
-                                                        📄 Открыть
-                                                    </a>
-                                                </#if>
-                                                <a href="/api/files/${bookItem.file.id}/download" class="btn btn-outline-secondary btn-sm">
-                                                    ⬇️ Скачать
+                                            <#if bookItem.file.type.mimeType == "application/pdf">
+                                                <a href="/books/${bookItem.file.id}/pdf-reader"
+                                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                                   style="min-width: 120px; height: 36px;">
+                                                    <i class="bi bi-book me-1"></i> Читать
+                                                </a>
+                                            <#else>
+                                                <a href="/api/files/${bookItem.file.id}/view"
+                                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                                   style="min-width: 120px; height: 36px;"
+                                                   target="_blank">
+                                                    <i class="bi bi-file-earmark-text me-1"></i> Открыть
                                                 </a>
                                             </#if>
+
+                                            <a href="/api/files/${bookItem.file.id}/download"
+                                               class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                               style="min-width: 120px; height: 36px;">
+                                                <i class="bi bi-download me-1"></i> Скачать
+                                            </a>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -92,27 +111,20 @@
                     </#if>
                 </div>
 
-                <#-- ... other code in your template ... -->
-
-                <#-- REPLACE THE EXISTING PAGINATION BLOCK WITH THIS ONE -->
-                <#-- ... other code in your template ... -->
 
                 <#if book.totalPages gt 1>
-                <#-- Use the 1-based page from controller -->
                     <#assign currentPage = page>
                     <#assign startPage = [1, currentPage - 2]?max>
                     <#assign endPage = [book.totalPages, currentPage + 2]?min>
 
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
-                            <#-- Previous Page Link -->
                             <li class="page-item <#if book.isFirst()>disabled</#if>">
                                 <a class="page-link" href="?page=${currentPage - 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
 
-                            <#-- First Page and Ellipsis -->
                             <#if startPage gt 1>
                                 <li class="page-item">
                                     <a class="page-link" href="?page=1&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">1</a>
@@ -122,14 +134,12 @@
                                 </#if>
                             </#if>
 
-                            <#-- Page Number Links -->
                             <#list startPage..endPage as i>
                                 <li class="page-item <#if currentPage == i>active</#if>">
                                     <a class="page-link" href="?page=${i}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">${i}</a>
                                 </li>
                             </#list>
 
-                            <#-- Last Page and Ellipsis -->
                             <#if endPage lt book.totalPages>
                                 <#if endPage lt book.totalPages - 1>
                                     <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -139,7 +149,6 @@
                                 </li>
                             </#if>
 
-                            <#-- Next Page Link -->
                             <li class="page-item <#if book.isLast()>disabled</#if>">
                                 <a class="page-link" href="?page=${currentPage + 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
@@ -149,11 +158,11 @@
                     </nav>
                 </#if>
 
-                <#-- ... rest of your template ... -->
-                <#-- ... rest of your template ... -->
             </main>
         </div>
     </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
         .book-cover {
@@ -162,5 +171,16 @@
             object-fit: cover;
             border-radius: 4px;
         }
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
     </style>
 </@main.layout>
