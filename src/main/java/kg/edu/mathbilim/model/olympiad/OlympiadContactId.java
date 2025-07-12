@@ -3,8 +3,7 @@ package kg.edu.mathbilim.model.olympiad;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.io.Serial;
@@ -14,6 +13,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OlympiadContactId implements Serializable {
     @Serial
     private static final long serialVersionUID = 1814411025584242951L;

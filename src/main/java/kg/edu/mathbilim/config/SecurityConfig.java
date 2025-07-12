@@ -85,6 +85,11 @@ public class SecurityConfig {
                                 "/events/create/**"
                         ).authenticated()
 
+                            .requestMatchers(
+                                    "/olympiad/create",
+                                    "/olympiad/edit"
+                            ).hasAnyAuthority("ADMIN","MODER")
+
                         .requestMatchers(
                                 "/auth/**",
                                 "/",

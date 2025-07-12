@@ -1,7 +1,10 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.interfacePack.OnCreate;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.service.interfaces.ContactTypeService;
+import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/olympiad")
@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class OlympiadController {
     private final OlympiadService olympiadService;
     private final UserService userService;
+    private final OrganizationService organizationService;
+    private final ContactTypeService contactTypeService;
 
     @GetMapping()
     public String olympiadPage(@RequestParam(defaultValue = "0") int page,
@@ -33,25 +35,43 @@ public class OlympiadController {
     }
 
     @GetMapping("details")
-    public String olympiadPageDetails(@RequestParam long id,
-                                      Model model) {
-        model.addAttribute("olympiad",olympiadService.getById(id));
+    public String olympiadPageDetails(@RequestParam long id, Model model) {
+        model.addAttribute("olympiad", olympiadService.getById(id));
         return "olympiad/olymp-details";
     }
 
-    @GetMapping("add")
-    public String createOlympiad(Model model,Authentication auth) {
+    @GetMapping("create")
+    public String createOlympiad(Model model, Authentication auth) {
         model.addAttribute("olympiadCreateDto", new OlympiadCreateDto());
         model.addAttribute("user", userService.getUserByEmail(auth.getName()));
         return "olympiad/create-olympiad";
     }
 
-
-    @PostMapping("add")
-    public String createOlympiad(@Valid OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
-                                 Authentication auth
-                                ) {
+    @PostMapping("create")
+    public String createOlympiad(@Valid @Validated(OnCreate.class) OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
+                                 Authentication auth) {
         model.addAttribute("user", userService.getUserByEmail(auth.getName()));
+        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/create-olympiad",true);
+    }
+
+    @GetMapping("edit")
+    public String editOlympiad(@RequestParam long id, Model model) {
+        model.addAttribute("olympiadCreateDto", olympiadService.getOlympiadCreateDto(id));
+        model.addAttribute("contactTypes", contactTypeService.getTypes());
+        model.addAttribute("organizations", organizationService.getAllOrganizationIdNames());
+        return "olympiad/edit-olymp";
+    }
+
+    @PostMapping("edit")
+    public String editOlympiadPost(@Valid @ModelAttribute("olympiadCreateDto") OlympiadCreateDto olympiadCreateDto,
+                                   BindingResult result, Model model) {
+        model.addAttribute("contactTypes", contactTypeService.getTypes());
+        model.addAttribute("organizations", organizationService.getAllOrganizationIdNames());
+        return processOlympiadForm(olympiadCreateDto, result, model, "olympiad/edit-olymp",false);
+    }
+
+    private String processOlympiadForm(OlympiadCreateDto olympiadCreateDto, BindingResult result, Model model,
+                                       String templateName, boolean create) {
         if (result.hasErrors()) {
             model.addAttribute("olympiadCreateDto", olympiadCreateDto);
 
@@ -61,12 +81,12 @@ public class OlympiadController {
                     .anyMatch(error -> "ValidOlympiadDates".equals(error.getCode()));
             boolean hasStageDateError = result.getFieldErrors().stream()
                     .anyMatch(error -> "stages".equals(error.getField()) && "ValidStageDates".equals(error.getCode()));
+
             if (hasStageDateError) {
                 var stageDateErrors = result.getFieldErrors().stream()
                         .filter(error -> "stages".equals(error.getField()) && "ValidStageDates".equals(error.getCode()))
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .toList();
-
                 model.addAttribute("dateRangeErrors", stageDateErrors);
             }
             if (hasStageFieldErrors) {
@@ -76,15 +96,21 @@ public class OlympiadController {
                 model.addAttribute("olympiadDateError", "Дата окончания не может быть раньше даты начала олимпиады");
             }
             if (olympiadCreateDto.getStages().isEmpty()) {
-                model.addAttribute("stageError","Добавьте хотя бы один этап");
+                model.addAttribute("stageError", "Добавьте хотя бы один этап");
             }
-            return "olympiad/create-olympiad";
+            return templateName;
         }
+
         if (olympiadCreateDto.getStages().isEmpty()) {
-            model.addAttribute("stageError","Добавьте хотя бы один этап");
-            return "olympiad/create-olympiad";
+            model.addAttribute("stageError", "Добавьте хотя бы один этап");
+            return templateName;
         }
-        olympiadService.olympiadCreate(olympiadCreateDto);
+
+        if (create) {
+            olympiadService.olympiadCreate(olympiadCreateDto);
+        } else {
+            olympiadService.olympiadUpdate(olympiadCreateDto);
+        }
         return "redirect:/olympiad";
     }
 }

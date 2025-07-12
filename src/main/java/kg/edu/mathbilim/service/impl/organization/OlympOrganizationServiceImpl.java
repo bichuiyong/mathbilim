@@ -55,4 +55,13 @@ public class OlympOrganizationServiceImpl implements OlympOrganizationService {
         return olympOrganizationRepository.findByOrganizationId(olympiadId);
     }
 
+    @Override
+    public void addAll(List<OlympiadOrganization> olympiadOrganization) {
+        olympOrganizationRepository.saveAll(olympiadOrganization);
+    }
+
+    @Override
+    public void deleteByOlympiadId(Long olympiadId) {
+        olympOrganizationRepository.deleteByOlympiadId((olympiadId));
+    }
 }

@@ -5,18 +5,26 @@
         <div class="row">
             <main class="col-12 px-md-4">
                 <div style="max-width: 1200px; margin: 0 auto; position: relative;">
-                    <div id="olympiad-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4" style="min-height: 200px; position: relative;">
-                        <div id="no-olympiads" class="text-center" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; align-items: center; justify-content: center; flex-direction: column; z-index: 5; background: rgba(255, 255, 255, 0.9);">
-                            <svg width="150" height="150" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21 7H3V9H21V7ZM21 11H3V13H21V11ZM21 15H3V17H21V15Z" fill="#6c757d"/>
-                                <path d="M3 19H21V21H3V19Z" fill="#6c757d"/>
-                                <path d="M7 3H17V5H7V3Z" fill="#6c757d"/>
-                            </svg>
-                            <p class="text-muted mt-2">Нет олимпиад на этой странице</p>
+                    <div id="olympiad-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4" style="min-height: 200px;">
+
+                    </div>
+
+                    <div id="no-olympiads" class="text-center" style="display: none; min-height: 300px; align-items: center; justify-content: center; flex-direction: column;">
+                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="#e9ecef" stroke-width="2" fill="#f8f9fa"/>
+                            <path d="M12 8v4l3 3" stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 12h.01" stroke="#6c757d" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 12h.01" stroke="#6c757d" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="12" cy="16" r="1" fill="#6c757d"/>
+                        </svg>
+                        <div class="mt-3">
+                            <h5 class="text-muted mb-2">Олимпиады не найдены</h5>
+                            <p class="text-muted small">На этой странице пока нет олимпиад</p>
                         </div>
-                        <div id="loading-spinner" class="text-center" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
-                            <div class="spinner"></div>
-                        </div>
+                    </div>
+
+                    <div id="loading-spinner" class="text-center" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: rgba(255, 255, 255, 0.8);">
+                        <div class="spinner"></div>
                     </div>
                 </div>
 
@@ -101,113 +109,143 @@
         </div>
     </div>
 
-    <script>
-        const currentPage = ${page!"0"};
-        const size = ${size!"8"};
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPage = ${page!"0"};
+    const defaultSize = ${size!"8"};
+    <#noparse>
+    const actualSize = urlParams.get('size') || defaultSize;
+    function loadPage(page) {
+        const container = document.getElementById('olympiad-container');
+        const emptyBlock = document.getElementById('no-olympiads');
+        const pagination = document.getElementById('pagination');
+        const loadingSpinner = document.getElementById('loading-spinner');
 
-        function loadPage(page) {
-            console.log(`Loading page: ${page}`);
-            const container = document.getElementById('olympiad-container');
-            const emptyBlock = document.getElementById('no-olympiads');
-            const pagination = document.getElementById('pagination');
-            const loadingSpinner = document.getElementById('loading-spinner');
+        loadingSpinner.style.display = 'block';
+        emptyBlock.style.display = 'none';
+        pagination.style.display = 'none';
+        container.innerHTML = '';
+        container.style.display = 'flex';
 
-            loadingSpinner.style.display = 'block';
-            emptyBlock.style.display = 'none';
-            pagination.style.display = 'none';
+        fetch(`/api/olymp/all?page=${page}&size=${actualSize}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const olympiads = data.content || [];
 
-            fetch(`/api/olymp/all?page=${page}&size=${size}`)
-            <#noparse>
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('API Response:', data);
-                    container.innerHTML = '';
-                    pagination.innerHTML = '';
+                if (!olympiads || olympiads.length === 0) {
+                    emptyBlock.style.display = 'flex';
+                    container.style.display = 'none';
+                } else {
+                    emptyBlock.style.display = 'none';
+                    container.style.display = 'flex';
 
-                    const olympiads = data.content || [];
-                    if (page >= data.totalPages || page < 0) {
-                        emptyBlock.style.display = 'flex';
-                        updateUrl(page);
-                        return;
-                    }
-
-                    if (!olympiads || olympiads.length === 0) {
-                        emptyBlock.style.display = 'flex';
-                    } else {
-                        emptyBlock.style.display = 'none';
-                        olympiads.forEach(olympiad => {
-                            const block = `
-                                <div class="col">
-                                    <div class="card h-100 shadow-sm border-0">
-                                        <img src="/api/files/${olympiad.fileId}/view" class="card-img-top p-3"
-                                             alt="olymp-photo" style="height: 200px; object-fit: contain;">
-                                        <div class="card-body d-flex flex-column">
-                                            <h5 class="card-title">${olympiad.title}</h5>
-                                            <div class="mt-auto text-start">
-                                                <a href="/olympiad/details?id=${olympiad.id}" class="text-primary text-decoration-none">Подробнее</a>
-                                            </div>
+                    olympiads.forEach(olympiad => {
+                        const block = `
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <img src="/api/files/${olympiad.fileId}/view" class="card-img-top p-3"
+                                         alt="olymp-photo" style="height: 200px; object-fit: contain;">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">${olympiad.title}</h5>
+                                        <div class="mt-auto text-start">
+                                            <a href="/olympiad/details?id=${olympiad.id}" class="text-primary text-decoration-none">Подробнее</a>
                                         </div>
                                     </div>
-                                </div>`;
-                            container.insertAdjacentHTML('beforeend', block);
-                        });
+                                </div>
+                            </div>`;
+                        container.insertAdjacentHTML('beforeend', block);
+                    });
+                }
+
+                if (data.totalPages > 1) {
+                    pagination.style.display = 'flex';
+                    pagination.innerHTML = '';
+
+                    const maxPagesToShow = 5;
+                    let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+                    let endPage = Math.min(data.totalPages - 1, startPage + maxPagesToShow - 1);
+
+                    if (endPage - startPage + 1 < maxPagesToShow) {
+                        startPage = Math.max(0, endPage - maxPagesToShow + 1);
                     }
 
-                    if (data.totalPages > 1) {
-                        pagination.style.display = 'flex';
-                        const maxPagesToShow = 5;
-                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
-                        let endPage = Math.min(data.totalPages - 1, startPage + maxPagesToShow - 1);
-
-                        if (endPage - startPage + 1 < maxPagesToShow) {
-                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+                    const prevItem = document.createElement('li');
+                    prevItem.className = `page-item ${page <= 0 ? 'disabled' : ''}`;
+                    const prevLink = document.createElement('a');
+                    prevLink.className = 'page-link';
+                    prevLink.href = '#';
+                    prevLink.innerHTML = '«';
+                    prevLink.onclick = (e) => {
+                        e.preventDefault();
+                        if (page > 0) {
+                            loadPage(page - 1);
                         }
+                    };
+                    prevItem.appendChild(prevLink);
+                    pagination.appendChild(prevItem);
 
-                        const prevItem = document.createElement('li');
-                        prevItem.className = `page-item ${page === 0 ? 'disabled' : ''}`;
-                        prevItem.innerHTML = `<a class="page-link" href="?page=${page - 1}" onclick="loadPage(${page - 1}); return false;">«</a>`;
-                        pagination.appendChild(prevItem);
-
-                        for (let i = startPage; i <= endPage; i++) {
-                            const pageItem = document.createElement('li');
-                            pageItem.className = `page-item ${i === page ? 'active' : ''}`;
-                            pageItem.innerHTML = `<a class="page-link" href="?page=${i}" onclick="loadPage(${i}); return false;">${i + 1}</a>`;
-                            pagination.appendChild(pageItem);
-                        }
-
-                        const nextItem = document.createElement('li');
-                        nextItem.className = `page-item ${page === data.totalPages - 1 ? 'disabled' : ''}`;
-                        nextItem.innerHTML = `<a class="page-link" href="?page=${page + 1}" onclick="loadPage(${page + 1}); return false;">»</a>`;
-                        pagination.appendChild(nextItem);
-                    } else {
-                        pagination.style.display = 'none';
+                    for (let i = startPage; i <= endPage; i++) {
+                        const pageItem = document.createElement('li');
+                        pageItem.className = `page-item ${i === page ? 'active' : ''}`;
+                        const pageLink = document.createElement('a');
+                        pageLink.className = 'page-link';
+                        pageLink.href = '#';
+                        pageLink.innerHTML = i + 1;
+                        pageLink.onclick = (e) => {
+                            e.preventDefault();
+                            if (i !== page) {
+                                loadPage(i);
+                            }
+                        };
+                        pageItem.appendChild(pageLink);
+                        pagination.appendChild(pageItem);
                     }
 
-                    updateUrl(page);
-                })
-                .catch(error => {
-                    emptyBlock.style.display = 'flex';
+                    const nextItem = document.createElement('li');
+                    nextItem.className = `page-item ${page >= data.totalPages - 1 ? 'disabled' : ''}`;
+                    const nextLink = document.createElement('a');
+                    nextLink.className = 'page-link';
+                    nextLink.href = '#';
+                    nextLink.innerHTML = '»';
+                    nextLink.onclick = (e) => {
+                        e.preventDefault();
+                        if (page < data.totalPages - 1) {
+                            loadPage(page + 1);
+                        }
+                    };
+                    nextItem.appendChild(nextLink);
+                    pagination.appendChild(nextItem);
+                } else {
                     pagination.style.display = 'none';
-                })
-                .finally(() => {
-                    loadingSpinner.style.display = 'none';
-                });
-        }
+                }
 
-        function updateUrl(page) {
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set('page', page);
-            window.history.pushState({}, '', newUrl);
-        }
+                updateUrl(page);
+            })
+            .catch(error => {
+                emptyBlock.style.display = 'flex';
+                container.style.display = 'none';
+                pagination.style.display = 'none';
+            })
+            .finally(() => {
+                loadingSpinner.style.display = 'none';
+            });
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPage(currentPage);
-        });
-    </script>
-    </#noparse>
+    function updateUrl(page) {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('page', page);
+        newUrl.searchParams.set('size', actualSize);
+        window.history.pushState({}, '', newUrl);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPage(currentPage);
+    });
+</script>
+</#noparse>
 </@main.layout>

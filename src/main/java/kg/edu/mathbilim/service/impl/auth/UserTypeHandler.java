@@ -50,6 +50,11 @@ public class UserTypeHandler extends OncePerRequestFilter {
             String username = getUsername(authentication);
             if (username != null) {
                 User user = userRepository.findByEmail(username).orElse(null);
+            if (user.getRole().getName().equalsIgnoreCase("admin")
+                        || user.getRole().getName().equalsIgnoreCase("moder")) {
+                filterChain.doFilter(request, response);
+                    return;
+                }
                 if (user != null && user.getType() == null) {
                     response.sendRedirect("/auth/select-user-type");
                     return;
