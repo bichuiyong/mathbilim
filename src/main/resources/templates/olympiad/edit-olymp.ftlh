@@ -351,7 +351,6 @@
                         <input type="hidden" name="id" value="${olympiadCreateDto.id!''}">
                         <input type="hidden" name="creatorId" value="${olympiadCreateDto.creatorId!''}">
 
-
                         <div class="form-group full-width">
                             <label for="title" class="olympiad-label required">Название олимпиады</label>
                             <@spring.formInput "olympiadCreateDto.title" "placeholder='Введите название' class='olympiad-input' readonly"/>
@@ -365,18 +364,18 @@
                         </div>
 
                         <div class="form-group">
-                        <label for="start_date" class="olympiad-label required">Дата начала</label>
-                        <input
-                                name="startDate" type="date" class="olympiad-input" value="${olympiadCreateDto.startDate!''}" <#if olympiadCreateDto.hasStarted> readonly </#if>>
-                        <@spring.showErrors "startDate" "text-danger small mt-1"/>
-                    </div>
+                            <label for="start_date" class="olympiad-label required">Дата начала</label>
+                            <input
+                                    name="startDate" type="date" class="olympiad-input" value="${olympiadCreateDto.startDate!''}" <#if olympiadCreateDto.hasStarted> readonly </#if>>
+                            <@spring.showErrors "startDate" "text-danger small mt-1"/>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="end_date" class="olympiad-label required">Дата окончания</label>
-                        <input
-                                name="endDate" type="date" class="olympiad-input" value="${olympiadCreateDto.endDate!''}" <#if olympiadCreateDto.hasEnded> readonly </#if>>
-                        <@spring.showErrors "endDate" "text-danger small mt-1"/>
-                    </div>
+                        <div class="form-group">
+                            <label for="end_date" class="olympiad-label required">Дата окончания</label>
+                            <input
+                                    name="endDate" type="date" class="olympiad-input" value="${olympiadCreateDto.endDate!''}" <#if olympiadCreateDto.hasEnded> readonly </#if>>
+                            <@spring.showErrors "endDate" "text-danger small mt-1"/>
+                        </div>
 
                         <#if olympiadDateError??>
                             <div class="form-group full-width">
@@ -555,7 +554,7 @@
                         </svg>
                         Обновить олимпиаду
                     </button>
-            </form>
+                </form>
             </div>
         </div>
     </div>
@@ -564,128 +563,163 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
-        <script>
-            const contactTypes = [
-                <#if contactTypes??>
-                <#list contactTypes as type>
+    <script>
+        const contactTypes = [
+            <#if contactTypes??>
+            <#list contactTypes as type>
             { id: "${type.id}", name: "${type.name?js_string}" }<#if type_has_next>,</#if>
             </#list>
             </#if>
-            ];
-
-            <#noparse>
-
-    tinymce.init({
-    selector: 'textarea.rich-text-editor',
-    menubar: false,
-    plugins: 'lists link image code preview',
-    toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
-    height: 300,
-    language: 'ru',
-    branding: false,
-    content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
-    });
-
-    let imageCropManager;
-
-    document.addEventListener('DOMContentLoaded', () => {
-    imageCropManager = new ImageCropManager({
-    inputId: 'mainImageInput',
-    previewId: 'imagePreview',
-    previewContainerSelector: '.image-preview-container',
-    croppedPreviewSelector: '.cropped-preview',
-    cropButtonId: 'cropButton',
-    cancelCropId: 'cancelCrop',
-    changeCropId: 'changeCrop',
-    croppedImageId: 'croppedImage',
-    aspectRatio: 1.2,
-    autoCropArea: 0.8,
-    cropBoxResizable: true,
-    maxFileSize: 5 * 1024 * 1024,
-    outputWidth: 1200,
-    outputHeight: 1000,
-    outputQuality: 0.9,
-    onError: function(message) {
-    const errorElement = document.getElementById('imageError');
-    errorElement.textContent = message;
-    errorElement.style.display = 'block';
-    },
-    onCropComplete: function(blob, dataUrl) {
-    const errorElement = document.getElementById('imageError');
-    errorElement.style.display = 'none';
-    }
-    });
-
-        const toggleBtn = document.getElementById('toggleOrganizers');
-        const container = document.getElementById('organizersContainer');
-
-        toggleBtn.addEventListener('click', () => {
-            const isHidden = container.style.display === 'none';
-            container.style.display = isHidden ? 'block' : 'none';
-            container.classList.toggle('open', isHidden);
-
-            const pathD = isHidden ? 'M19 14l-7-7-7 7' : 'M19 9l-7 7-7-7';
-            const labelText = isHidden ? 'Скрыть организаторов' : 'Показать организаторов';
-            toggleBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${pathD}" />
-        </svg>
-        ${labelText}
-    `;
+        ];
+<#noparse>
+        tinymce.init({
+            selector: 'textarea.rich-text-editor',
+            menubar: false,
+            plugins: 'lists link image code preview',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
+            height: 300,
+            language: 'ru',
+            branding: false,
+            content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
         });
 
-        document.getElementById('addContact').addEventListener('click', function() {
-            const contactsDiv = document.getElementById('contacts');
-            const contactCards = contactsDiv.querySelectorAll('.contact-card');
-            const contactCount = contactCards.length;
+        let imageCropManager;
 
-            const newContact = document.createElement('div');
-            newContact.className = 'contact-card';
-            newContact.innerHTML = `
-                <div>
-                    <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required>
-                        <option value="" disabled selected>Выберите тип контакта</option>
-                        ${contactTypes.map(type => `<option value="${type.id}">${type.name}</option>`).join('')}
-                    </select>
-                </div>
-                <div>
-                    <input type="text" name="contacts[${contactCount}].info" placeholder="Ссылка или контакт" class="olympiad-input">
-                </div>
-                <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Удалить
-                </button>
-            `;
-            contactsDiv.appendChild(newContact);
-            reindexContacts();
-        });
-
-
-        document.getElementById('contacts').addEventListener('click', function(e) {
-            if (e.target.closest('.remove-contact')) {
-                const contactItem = e.target.closest('.contact-card');
-                const contactsDiv = document.getElementById('contacts');
-                if (contactItem) {
-                    contactsDiv.removeChild(contactItem);
-                    reindexContacts();
+        document.addEventListener('DOMContentLoaded', () => {
+            imageCropManager = new ImageCropManager({
+                inputId: 'mainImageInput',
+                previewId: 'imagePreview',
+                previewContainerSelector: '.image-preview-container',
+                croppedPreviewSelector: '.cropped-preview',
+                cropButtonId: 'cropButton',
+                cancelCropId: 'cancelCrop',
+                changeCropId: 'changeCrop',
+                croppedImageId: 'croppedImage',
+                aspectRatio: 1.2,
+                autoCropArea: 0.8,
+                cropBoxResizable: true,
+                maxFileSize: 5 * 1024 * 1024,
+                outputWidth: 1200,
+                outputHeight: 1000,
+                outputQuality: 0.9,
+                onError: function(message) {
+                    const errorElement = document.getElementById('imageError');
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                },
+                onCropComplete: function(blob, dataUrl) {
+                    const errorElement = document.getElementById('imageError');
+                    errorElement.style.display = 'none';
                 }
-            }
-        });
-
-        function reindexContacts() {
-            const contactCards = document.querySelectorAll('#contacts .contact-card');
-            contactCards.forEach(function(card, index) {
-                const select = card.querySelector('select');
-                const input = card.querySelector('input[type="text"]');
-                select.name = `contacts[${index}].contactType`;
-                input.name = `contacts[${index}].info`;
             });
-        }
-    });
 
-  </script>
-    </#noparse>
+            const toggleBtn = document.getElementById('toggleOrganizers');
+            const container = document.getElementById('organizersContainer');
+
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = container.style.display === 'none';
+                container.style.display = isHidden ? 'block' : 'none';
+                container.classList.toggle('open', isHidden);
+
+                const pathD = isHidden ? 'M19 14l-7-7-7 7' : 'M19 9l-7 7-7-7';
+                const labelText = isHidden ? 'Скрыть организаторов' : 'Показать организаторов';
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${pathD}" />
+                    </svg>
+                    ${labelText}
+                `;
+            });
+
+            function updateContactTypeOptions() {
+                const contactCards = document.querySelectorAll('#contacts .contact-card');
+                const selectedTypes = Array.from(contactCards)
+                    .map(card => card.querySelector('.contact-type-select').value)
+                    .filter(value => value !== '');
+
+                contactCards.forEach(card => {
+                    const select = card.querySelector('.contact-type-select');
+                    const currentValue = select.value;
+                    select.innerHTML = `<option value="" disabled ${!currentValue ? 'selected' : ''}>Выберите тип контакта</option>`;
+                    contactTypes.forEach(type => {
+                        if (!selectedTypes.includes(type.id) || type.id === currentValue) {
+                            const option = document.createElement('option');
+                            option.value = type.id;
+                            option.textContent = type.name;
+                            if (type.id === currentValue) {
+                                option.selected = true;
+                            }
+                            select.appendChild(option);
+                        }
+                    });
+                });
+            }
+
+            document.getElementById('addContact').addEventListener('click', function() {
+                const contactsDiv = document.getElementById('contacts');
+                const contactCards = contactsDiv.querySelectorAll('.contact-card');
+                const contactCount = contactCards.length;
+
+                const newContact = document.createElement('div');
+                newContact.className = 'contact-card';
+                newContact.innerHTML = `
+                    <div>
+                        <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required>
+                            <option value="" disabled selected>Выберите тип контакта</option>
+                            ${contactTypes.map(type => `<option value="${type.id}">${type.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <input type="text" name="contacts[${contactCount}].info" placeholder="Ссылка или контакт" class="olympiad-input">
+                    </div>
+                    <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Удалить
+                    </button>
+                `;
+                contactsDiv.appendChild(newContact);
+                reindexContacts();
+                updateContactTypeOptions();
+
+                newContact.querySelector('.contact-type-select').addEventListener('change', updateContactTypeOptions);
+            });
+
+            document.getElementById('contacts').addEventListener('click', function(e) {
+                if (e.target.closest('.remove-contact')) {
+                    const contactItem = e.target.closest('.contact-card');
+                    const contactsDiv = document.getElementById('contacts');
+                    if (contactItem) {
+                        contactsDiv.removeChild(contactItem);
+                        reindexContacts();
+                        updateContactTypeOptions();
+                    }
+                }
+            });
+
+            document.getElementById('contacts').addEventListener('change', function(e) {
+                if (e.target.classList.contains('contact-type-select')) {
+                    updateContactTypeOptions();
+                }
+            });
+
+            function reindexContacts() {
+                const contactCards = document.querySelectorAll('#contacts .contact-card');
+                contactCards.forEach(function(card, index) {
+                    const select = card.querySelector('select');
+                    const input = card.querySelector('input[type="text"]');
+                    select.name = `contacts[${index}].contactType`;
+                    input.name = `contacts[${index}].info`;
+                });
+            }
+
+            updateContactTypeOptions();
+            document.querySelectorAll('.contact-type-select').forEach(select => {
+                select.addEventListener('change', updateContactTypeOptions);
+            });
+        });
+        </#noparse>
+    </script>
 </@main.layout>
