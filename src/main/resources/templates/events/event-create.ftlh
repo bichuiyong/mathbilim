@@ -121,9 +121,14 @@
                                     <@spring.bind "createEventDto.organizationIds"/>
                                     <label class="form-label fw-bold">Организации</label>
                                     <select class="form-select" name="organizationIds" multiple>
-                                        <#list organizations as org>
-                                            <option value="${org.id}">${org.name}</option>
-                                        </#list>
+                                        <#if organizations?has_content>
+                                            <#list organizations as org>
+                                                <option value="${org.id}">${org.name}</option>
+                                            </#list>
+                                            <#else>
+                                                <option disabled>Организации не найдены</option>
+                                        </#if>
+
                                     </select>
                                     <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких</small>
                                 </div>
