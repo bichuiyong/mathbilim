@@ -23,9 +23,20 @@
                         </div>
                     </div>
 
+                    <form action="/notifications/${(isBlogSubscribed!false)?then('unsubscribe', 'subscribe')}" method="post">
+                        <@main.csrf/>
+                        <input type="hidden" name="type" value="OLYMPIAD">
+                        <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
+                            <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                        <#else>
+                            <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                        </#if>
+                    </form>
+
                     <div id="loading-spinner" class="text-center" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: rgba(255, 255, 255, 0.8);">
                         <div class="spinner"></div>
                     </div>
+
                 </div>
 
                 <nav aria-label="Page navigation">
@@ -110,7 +121,7 @@
     </div>
 
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search);
     const currentPage = ${page!"0"};
     const defaultSize = ${size!"8"};
     <#noparse>
@@ -246,6 +257,153 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadPage(currentPage);
     });
+
+        // Olympiad subscription handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const subscriptionForm = document.querySelector('form[action="/notifications/subscribe"]');
+            const subscriptionButton = subscriptionForm.querySelector('button');
+
+            subscriptionForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(subscriptionForm);
+                const isSubscribed = subscriptionButton.textContent.includes('Подписаться');
+
+                try {
+                    if (isSubscribed) {
+                        subscriptionForm.action = '/notifications/subscribe';
+                        formData.set('type', 'OLYMPIAD');
+                    } else {
+                        subscriptionForm.action = '/notifications/unsubscribe';
+                        formData.set('type', 'OLYMPIAD');
+                    }
+
+                    subscriptionButton.disabled = true;
+                    subscriptionButton.textContent = '⏳ Обработка...';
+
+                    const response = await fetch(subscriptionForm.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.status === 401 || response.status === 403) {
+                        window.location.href = '/auth/login';
+                        return;
+                    }
+
+                    if (response.ok) {
+                        if (isSubscribed) {
+                            showNotification('✅ Вы успешно подписались на уведомления олимпиад!', 'success');
+                            updateButtonToUnsubscribe();
+                        } else {
+                            showNotification('❌ Вы отписались от уведомлений олимпиад', 'info');
+                            updateButtonToSubscribe();
+                        }
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('❌ Произошла ошибка. Попробуйте позже.', 'error');
+                    if (isSubscribed) {
+                        updateButtonToSubscribe();
+                    } else {
+                        updateButtonToUnsubscribe();
+                    }
+                }
+            });
+
+            function updateButtonToUnsubscribe() {
+                subscriptionButton.textContent = '🔕 Отписаться от уведомлений';
+                subscriptionButton.className = 'btn btn-outline-secondary';
+                subscriptionButton.disabled = false;
+                subscriptionForm.action = '/notifications/unsubscribe';
+            }
+
+            function updateButtonToSubscribe() {
+                subscriptionButton.textContent = '📩 Подписаться на уведомления';
+                subscriptionButton.className = 'btn btn-outline-primary';
+                subscriptionButton.disabled = false;
+                subscriptionForm.action = '/notifications/subscribe';
+            }
+
+            function showNotification(message, type = 'info') {
+                const existingNotifications = document.querySelectorAll('.notification-toast');
+                existingNotifications.forEach(notification => notification.remove());
+
+                const notification = document.createElement('div');
+                let alertType = 'info';
+                if (type === 'success') {
+                    alertType = 'success';
+                } else if (type === 'error') {
+                    alertType = 'danger';
+                }
+                notification.className = 'notification-toast alert alert-' + alertType + ' alert-dismissible fade show';
+                notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            max-width: 500px;
+            animation: slideInRight 0.3s ease-out;
+        `;
+
+                notification.innerHTML =
+                    message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+
+                if (!document.querySelector('#notification-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'notification-styles';
+                    style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+                    document.head.appendChild(style);
+                }
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.style.animation = 'slideOutRight 0.3s ease-in';
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, 5000);
+
+                const closeButton = notification.querySelector('.btn-close');
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => {
+                        notification.remove();
+                    });
+                }
+            }
+        });
 </script>
 </#noparse>
 </@main.layout>

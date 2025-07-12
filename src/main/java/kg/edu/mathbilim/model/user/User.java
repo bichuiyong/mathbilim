@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.notifications.UserNotification;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.test.Test;
 import lombok.*;
@@ -34,6 +35,7 @@ public class User {
 
     @Size(max = 100)
     @Column(name = "name", nullable = false, length = 100)
+
     String name;
 
     @Size(max = 100)
@@ -94,5 +96,8 @@ public class User {
 
     @Column(name = "subscribed_to_notifications")
     Boolean subscribed = true;
+
+    @OneToMany(mappedBy = "user")
+    List<UserNotification> notifications = new ArrayList<>();
 
 }

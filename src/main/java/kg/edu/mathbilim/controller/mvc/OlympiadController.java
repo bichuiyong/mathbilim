@@ -1,6 +1,9 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.components.SubscriptionModelPopulator;
+import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.dto.interfacePack.OnCreate;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.service.interfaces.ContactTypeService;
@@ -22,15 +25,18 @@ import org.springframework.web.bind.annotation.*;
 public class OlympiadController {
     private final OlympiadService olympiadService;
     private final UserService userService;
+    private final SubscriptionModelPopulator subscriptionModelPopulator;
     private final OrganizationService organizationService;
     private final ContactTypeService contactTypeService;
 
     @GetMapping()
     public String olympiadPage(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "8") int size,
+                               Authentication authentication,
                                Model model) {
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        subscriptionModelPopulator.addSubscriptionAttributes(authentication, NotificationEnum.OLYMPIAD, model);
         return "olympiad/olymp-list";
     }
 
