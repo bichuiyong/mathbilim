@@ -20,6 +20,7 @@ public interface CategoryMapper extends TypeBaseMapper<
 
         @Override
         Category toEntity(CategoryDto dto);
+
         @Override
         default CategoryTranslationMapper getTranslationMapper() {
             return new CategoryTranslationMapperImpl();

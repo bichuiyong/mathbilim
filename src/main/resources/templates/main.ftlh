@@ -346,50 +346,50 @@
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
+                    <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calculator"></i>
                             </div>
                             <h4>Тесты</h4>
-                            <p>Проверьте свои знания в различных разделах математики</p>
-                            <a href="/tests" class="btn btn-primary">Начать тест</a>
+                            <p class="h-25">Проверьте свои знания в различных разделах математики</p>
+                            <a href="/tests" class="btn btn-primary mt-3">Начать тест</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
+                    <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <h4>Олимпиады</h4>
-                            <p>Участвуйте в олимпиадах разного уровня</p>
-                            <a href="/olympiads" class="btn btn-primary">Участвовать</a>
+                            <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
+                            <a href="/olympiads" class="btn btn-primary mt-3">Участвовать</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
+                    <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
                                 <i class="fas fa-book"></i>
                             </div>
                             <h4>Книги</h4>
-                            <p>Изучайте математику по качественным учебникам</p>
-                            <a href="/books" class="btn btn-primary">Изучать</a>
+                            <p class="h-25">Изучайте математику по качественным учебникам</p>
+                            <a href="/books" class="btn btn-primary mt-3">Изучать</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
+                    <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
                                 <i class="fas fa-users"></i>
                             </div>
                             <h4>Сообщество</h4>
-                            <p>Общайтесь с единомышленниками и преподавателями</p>
-                            <a href="/community" class="btn btn-primary">Присоединиться</a>
+                            <p class="h-25">Общайтесь с единомышленниками и преподавателями</p>
+                            <a href="/community" class="btn btn-primary mt-3">Присоединиться</a>
                         </div>
                     </div>
                 </div>

@@ -98,6 +98,11 @@
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i>Книга
                             </a>
+                            <#if isModer || isAdmin>
+                            <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-book me-2"></i>Олимпиада
+                            </a>
+                            </#if>
                         </div>
                     </div>
                 </div>
@@ -148,6 +153,7 @@
                                                 <option value="blog">Блог</option>
                                                 <option value="events">Мероприятия</option>
                                                 <option value="books">Книги</option>
+                                                <option value="olympiads">Олимпиады</option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">

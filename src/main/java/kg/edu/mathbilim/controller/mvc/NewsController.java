@@ -1,11 +1,15 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.news.CreateNewsDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +27,7 @@ public class NewsController {
     private static final String redirect = "redirect:/news";
     private final NewsService newsService;
     private final UserService userService;
+    private final SubscriptionModelPopulator subscriptionModelPopulator;
 
     @GetMapping()
     public String all(@RequestParam(required = false) String query,
@@ -31,6 +36,7 @@ public class NewsController {
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                       @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      Authentication auth,
                       Model model
     ) {
         model.addAttribute("news", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang));
@@ -41,7 +47,7 @@ public class NewsController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("currentLang", lang);
-
+        subscriptionModelPopulator.addSubscriptionAttributes(auth, NotificationEnum.NEWS, model);
         return "news/news";
     }
 
@@ -76,6 +82,7 @@ public class NewsController {
     }
 
 
+    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username)")
     @GetMapping("update")
     public String updateNews(@RequestParam("id") long id,
                              Model model) {
@@ -94,6 +101,7 @@ public class NewsController {
         return redirect;
     }
 
+    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN')")
     @PostMapping("delete")
     public String deleteNews(@RequestParam("id") long id) {
         newsService.delete(id);

@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.dto.olympiad;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -19,5 +18,5 @@ public class OlympiadContactDto {
     String info;
 
     @NotNull
-    Integer contactType;
+    Long contactType;
 }

@@ -58,7 +58,7 @@ public class Olympiad {
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OlympiadStage> stages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "olympiad", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     List<OlympiadContact> contactInfos = new ArrayList<>();
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)

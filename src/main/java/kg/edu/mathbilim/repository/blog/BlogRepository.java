@@ -1,7 +1,9 @@
 package kg.edu.mathbilim.repository.blog;
 
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.blog.Blog;
+import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,4 +98,24 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     @Modifying
     @Query("UPDATE Blog b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
     void incrementShareCount(@Param("blogId") Long blogId);
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            JOIN p.blogTranslations t
+            WHERE p.status = :contentStatus
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> findBlogsByStatus(ContentStatus status, Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            JOIN p.blogTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsByStatusWithQuery(ContentStatus contentStatus,
+                                         String query,
+                                         Pageable pageable);
 }
