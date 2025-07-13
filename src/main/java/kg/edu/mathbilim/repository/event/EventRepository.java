@@ -2,6 +2,7 @@ package kg.edu.mathbilim.repository.event;
 
 import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
@@ -84,4 +85,12 @@ public interface EventRepository extends BaseContentRepository<Event> {
     Page<Event> getEventsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
                                          Pageable pageable);
+
+
+
+    @Query("""
+            SELECT DISTINCT e FROM Event e
+               WHERE e.status = :contentStatus
+            """)
+    Page<Event> getEventsByStatus(ContentStatus contentStatus, Pageable pageable);
 }

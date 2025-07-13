@@ -2,6 +2,7 @@ package kg.edu.mathbilim.repository;
 
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.Book;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
@@ -35,6 +36,12 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
     Optional<Book> findByIdAndCreatorId(Long id, Long user);
 
     @Query("""
+            SELECT DISTINCT b FROM Book b
+               WHERE b.status = :contentStatus
+            """)
+    Page<Book> getBooksByStatus(ContentStatus contentStatus, Pageable pageable);
+
+    @Query("""
            select b from Book b 
            where b.status=:status   
             ORDER BY b.createdAt DESC      
@@ -59,3 +66,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
            """)
     Page<Book> findAllBooksByCategory(Long categoryId,ContentStatus status,  Pageable pageable);
 }
+
+
+
+
+
+
