@@ -8,6 +8,7 @@ import kg.edu.mathbilim.model.post.Post;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface FileService {
@@ -46,4 +47,6 @@ public interface FileService {
     void deleteFile(Long fileId);
 
     byte[] downloadFile(Long fileId);
+
+    InputStream downloadFileStream(Long fileId);
 }

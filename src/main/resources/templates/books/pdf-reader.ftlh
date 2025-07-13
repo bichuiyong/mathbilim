@@ -351,6 +351,9 @@
                 this.context = null;
                 this.pageContainer = null;
                 this.pdfUrl = pdfUrl;
+                this.pageCache = new Map();
+                this.maxCacheSize = 5;
+                this.renderingTask = null;
 
                 this.initElements();
                 this.bindEvents();
@@ -387,7 +390,7 @@
                 this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
 
                 document.addEventListener('keydown', (e) => {
-                    if (e.target.tagName === 'INPUT') return; // Don't interfere with input fields
+                    if (e.target.tagName === 'INPUT') return;
 
                     switch(e.key) {
                         case 'ArrowLeft':
@@ -415,17 +418,14 @@
                 });
 
                 let lastWheelTime = 0;
-
                 this.viewer.addEventListener('wheel', (e) => {
                     const now = Date.now();
-
                     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
                     const isZoomGesture = e.ctrlKey || e.metaKey || (navigator.platform.includes('Mac') && e.altKey);
 
                     if (isZoomGesture || Math.abs(e.deltaY) > 50) {
                         e.preventDefault();
-
                         if (now - lastWheelTime < 100) return;
                         lastWheelTime = now;
 
@@ -436,26 +436,49 @@
                         }
                     }
                 }, { passive: false });
-
-
             }
+
             showLoading() {
                 this.viewer.innerHTML = `
-                <div class="loading-state">
-                    <div class="spinner-grow text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                    <div class="loading-state">
+                        <div class="spinner-grow text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="mt-3">Loading document</h5>
+                        <p class="text-muted">Please wait...</p>
                     </div>
-                    <h5 class="mt-3">Loading document</h5>
-                    <p class="text-muted">Please wait...</p>
-                </div>
-            `;
+                `;
             }
+
+            // showError(message) {
+            //     this.viewer.innerHTML = `
+            //         <div class="loading-state">
+            //             <div class="alert alert-danger" role="alert">
+            //                 <i class="fas fa-exclamation-triangle"></i>
+            //                 <h5 class="mt-3">Error</h5>
+            //                 <p>` + message + `</p>
+            //             </div>
+            //         </div>
+            //     `;
+            // }
 
             async loadPDF() {
                 this.showLoading();
 
                 try {
-                    this.pdfDoc = await pdfjsLib.getDocument(this.pdfUrl).promise;
+                    const loadingTask = pdfjsLib.getDocument({
+                        url: this.pdfUrl,
+                        disableAutoFetch: false,
+                        disableStream: false,
+                        disableRange: false,
+                        cMapPacked: true,
+                        standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/',
+                        maxImageSize: 16777216,
+                        disableFontFace: false,
+                        useSystemFonts: true
+                    });
+
+                    this.pdfDoc = await loadingTask.promise;
                     this.totalPages = this.pdfDoc.numPages;
                     this.currentPage = 1;
 
@@ -463,6 +486,7 @@
                     await this.renderPage();
                 } catch (error) {
                     console.error('Error loading PDF:', error);
+                    // this.showError('Failed to load PDF. The file might be corrupted or too large.');
                 }
             }
 
@@ -478,8 +502,36 @@
                 this.nextBtn.classList.toggle('disabled', this.currentPage >= this.totalPages);
             }
 
+            getCacheKey(pageNum, scale) {
+                return pageNum + '-' + scale;
+            }
+
+            addToCache(pageNum, scale, imageData) {
+                const key = this.getCacheKey(pageNum, scale);
+
+                if (this.pageCache.size >= this.maxCacheSize) {
+                    const firstKey = this.pageCache.keys().next().value;
+                    this.pageCache.delete(firstKey);
+                }
+
+                this.pageCache.set(key, imageData);
+            }
+
+            getFromCache(pageNum, scale) {
+                const key = this.getCacheKey(pageNum, scale);
+                return this.pageCache.get(key);
+            }
+
+            clearCache() {
+                this.pageCache.clear();
+            }
+
             async renderPage() {
                 if (!this.pdfDoc) return;
+
+                if (this.renderingTask) {
+                    this.renderingTask.cancel();
+                }
 
                 try {
                     const page = await this.pdfDoc.getPage(this.currentPage);
@@ -501,20 +553,62 @@
                         viewport = page.getViewport({ scale: this.scale });
                     }
 
+                    const cachedData = this.getFromCache(this.currentPage, this.scale);
+                    if (cachedData) {
+                        this.canvas.width = cachedData.width;
+                        this.canvas.height = cachedData.height;
+                        this.context.putImageData(cachedData.imageData, 0, 0);
+                        this.viewer.scrollTop = 0;
+                        return;
+                    }
+
+                    const maxCanvasSize = 4096;
+                    if (viewport.width > maxCanvasSize || viewport.height > maxCanvasSize) {
+                        const scaleFactor = Math.min(maxCanvasSize / viewport.width, maxCanvasSize / viewport.height);
+                        viewport = page.getViewport({ scale: this.scale * scaleFactor });
+                    }
+
                     this.canvas.width = viewport.width;
                     this.canvas.height = viewport.height;
 
+                    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
                     const renderContext = {
                         canvasContext: this.context,
-                        viewport: viewport
+                        viewport: viewport,
+                        intent: 'display',
+                        renderInteractiveForms: false,
+                        transform: null,
+                        imageLayer: null,
+                        canvasFactory: null,
+                        background: 'rgba(255,255,255,1.0)'
                     };
 
-                    await page.render(renderContext).promise;
+                    this.renderingTask = page.render(renderContext);
+                    await this.renderingTask.promise;
+
+                    try {
+                        const imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                        this.addToCache(this.currentPage, this.scale, {
+                            imageData: imageData,
+                            width: this.canvas.width,
+                            height: this.canvas.height
+                        });
+                    } catch (e) {
+                        console.warn('Failed to cache page:', e);
+                    }
 
                     this.viewer.scrollTop = 0;
+                    this.renderingTask = null;
+                    page.cleanup();
 
                 } catch (error) {
+                    if (error.name === 'RenderingCancelledException') {
+                        console.log('Rendering cancelled');
+                        return;
+                    }
                     console.error('Error rendering page:', error);
+                    // this.showError('Failed to render page. The page might be corrupted or too complex.');
                 }
             }
 
@@ -543,6 +637,8 @@
             }
 
             setZoom(value) {
+                this.clearCache();
+
                 if (value === 'fit') {
                     this.renderPage();
                 } else {
@@ -557,6 +653,7 @@
                 const currentIndex = scales.findIndex(s => s >= currentScale);
 
                 if (currentIndex < scales.length - 1) {
+                    this.clearCache();
                     this.scale = scales[currentIndex + 1];
                     this.zoomSelect.value = this.scale.toString();
                     this.renderPage();
@@ -569,6 +666,7 @@
                 const currentIndex = scales.findIndex(s => s >= currentScale);
 
                 if (currentIndex > 0) {
+                    this.clearCache();
                     this.scale = scales[currentIndex - 1];
                     this.zoomSelect.value = this.scale.toString();
                     this.renderPage();
@@ -586,15 +684,29 @@
                     });
                 }
             }
+
+            destroy() {
+                if (this.renderingTask) {
+                    this.renderingTask.cancel();
+                }
+                this.clearCache();
+                if (this.pdfDoc) {
+                    this.pdfDoc.destroy();
+                }
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             const pdfUrl = '${pdfUrl}';
             const pdfReader = new PDFReader(pdfUrl);
-
             window.pdfReader = pdfReader;
-        });
 
+            window.addEventListener('beforeunload', () => {
+                if (window.pdfReader) {
+                    window.pdfReader.destroy();
+                }
+            });
+        });
 
         document.getElementById('downloadBtn').addEventListener('click', function () {
             const fileId = this.getAttribute('data-file-id');
@@ -604,12 +716,11 @@
             }
 
             const link = document.createElement('a');
-            link.href = `/api/files/${fileId}/download`;
+            link.href = `/api/files/` + fileId + `/download`;
             link.download = '';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         });
-
     </script>
 </@main.layout>

@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @Slf4j
@@ -55,5 +56,14 @@ public class S3ServiceImpl implements S3Service {
                 .build();
         s3Client.deleteObject(request);
         log.info("File deleted from S3: {}", s3Key);
+    }
+
+    @Override
+    public InputStream downloadFileStream(String s3Key) throws IOException {
+        GetObjectRequest request = GetObjectRequest.builder()
+                .bucket(s3Config.getBucketName())
+                .key(s3Key)
+                .build();
+        return s3Client.getObject(request);
     }
 }

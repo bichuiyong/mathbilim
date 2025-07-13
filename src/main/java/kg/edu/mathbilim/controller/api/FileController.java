@@ -1,9 +1,11 @@
 package kg.edu.mathbilim.controller.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -60,18 +64,27 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}/view")
-    public ResponseEntity<Resource> viewFile(@PathVariable Long fileId) {
+    public ResponseEntity<StreamingResponseBody> viewFile(@PathVariable Long fileId) {
         FileDto fileDto = fileService.getById(fileId);
-        byte[] fileContent = fileService.downloadFile(fileId);
 
-        ByteArrayResource resource = new ByteArrayResource(fileContent);
+        StreamingResponseBody stream = outputStream -> {
+            try (InputStream inputStream = fileService.downloadFileStream(fileId)) {
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                    outputStream.flush();
+                }
+            }
+        };
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
-                .contentLength(fileContent.length)
+                .contentLength(fileDto.getSize()) // If you have file size stored
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileDto.getFilename() + "\"")
                 .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
-                .body(resource);
+                .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                .body(stream);
     }
 
     @PutMapping("/{fileId}")
