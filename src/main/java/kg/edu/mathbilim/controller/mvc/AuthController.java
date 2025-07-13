@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.dto.user.UserTypeDto;
+import kg.edu.mathbilim.dto.user.UserTypeDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;

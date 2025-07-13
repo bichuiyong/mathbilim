@@ -17,8 +17,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class Blog extends Content {
+
     @OneToMany(mappedBy = "blog")
     List<BlogTranslation> blogTranslations = new ArrayList<>();
 

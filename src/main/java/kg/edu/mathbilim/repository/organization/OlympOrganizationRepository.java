@@ -17,4 +17,6 @@ public interface OlympOrganizationRepository extends JpaRepository<OlympiadOrgan
 
     @Query("select o.organization.id from OlympiadOrganization o where o.olympiad.id = :olympiad_id ")
     List<Long> getOrganizationIdsWhereOlympiadId(Integer olympiad_id);
+
+    void deleteByOlympiadId(Long olympiadId);
 }

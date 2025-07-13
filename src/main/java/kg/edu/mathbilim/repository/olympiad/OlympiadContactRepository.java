@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface OlympiadContactRepository extends JpaRepository<OlympiadContact, OlympiadContactId> {
     List<OlympiadContact> getByOlympiad_Id(Integer olympiadId);
+
+    void deleteByOlympiadId(Long olympiadId);
 }

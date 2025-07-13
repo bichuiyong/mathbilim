@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.news.NewsTranslation;
 import kg.edu.mathbilim.model.news.NewsTranslationId;
 import kg.edu.mathbilim.repository.news.NewsRepository;
@@ -15,6 +16,7 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -41,8 +44,8 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository) {
-        super(repository, mapper, userService, fileService, translationService);
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository, UserNotificationService notificationService) {
+        super(repository, mapper, userService, fileService, translationService, notificationService);
         this.newsTranslationRepository = newsTranslationRepository;
     }
     private final NewsTranslationRepository newsTranslationRepository;;
@@ -118,6 +121,7 @@ public class NewsServiceImpl extends
         repository.saveAndFlush(news);
 
         log.info("Created News {} with id {}", news.getId());
+        notificationService.notifyAllSubscribed(NotificationEnum.NEWS,"New news uploaded");
         return mapper.toDto(news);
     }
 

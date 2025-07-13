@@ -47,11 +47,16 @@ public class UserEmailHandler extends OncePerRequestFilter {
             String username = getUsername(authentication);
             if (username != null) {
                 User user = userRepository.findByEmail(username).orElse(null);
-                if (user != null && user.getEmail().endsWith("notEmail.com")) {
+                if (user.getRole().getName().equalsIgnoreCase("admin")
+                        || user.getRole().getName().equalsIgnoreCase("moder")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                if (user.getEmail().endsWith("notEmail.com")) {
                     response.sendRedirect("/auth/add-email");
                     return;
                 } else {
-                    if (user != null && !user.getIsEmailVerified()) {
+                    if (!user.getIsEmailVerified()) {
                         response.sendRedirect("/auth/registration-success");
                         return;
                     }

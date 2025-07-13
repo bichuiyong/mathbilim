@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl.olympiad;
 
+import jakarta.ws.rs.NotFoundException;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.ResultDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
@@ -43,7 +44,7 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
     }
 
     @Override
-    public List<OlympiadStageDto> getOlympStageDtos(int id) {
+    public List<OlympiadStageDto> getOlympStageDtos(Long id) {
         return repository.getOlympiadStageByOlympiad_Id(id)
                 .stream()
                 .map(olympiadStage -> OlympiadStageDto
@@ -78,5 +79,20 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
     @Override
     public void addAll(List<OlympiadStage> olympiadStages) {
         repository.saveAll(olympiadStages);
+    }
+
+    @Override
+    public void deleteByOlympiadId(Long olympiadId) {
+        repository.deleteByOlympiadId(olympiadId);
+    }
+
+    @Override
+    public OlympiadStage getOlympiadStageById(Integer stageId) {
+        return repository.findById(stageId).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public List<OlympiadStage> saveAll(List<OlympiadStage> olympiadStages) {
+        return repository.saveAll(olympiadStages);
     }
 }

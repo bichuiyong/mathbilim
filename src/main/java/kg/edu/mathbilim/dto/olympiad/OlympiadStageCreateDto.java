@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ValidOlympStage
 public class OlympiadStageCreateDto {
+    private Integer id;
 
     @NotNull(message = "Порядок этапа обязателен")
     @Positive(message = "Порядок этапа должен быть положительным числом")
@@ -33,4 +34,6 @@ public class OlympiadStageCreateDto {
     @NotNull(message = "Дата окончания события обязательна")
     LocalDate eventEndDate;
 
+    boolean hasStarted;
+    boolean hasEnded;
 }

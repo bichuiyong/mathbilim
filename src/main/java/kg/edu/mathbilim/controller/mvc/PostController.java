@@ -1,8 +1,10 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.CommentService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
@@ -10,6 +12,7 @@ import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +32,7 @@ public class PostController {
     private final RestTemplate restTemplate;
     private final CommentService commentService;
     private final UserService userService;
+    private final SubscriptionModelPopulator subscriptionModelPopulator;
 
 
     @Value("${recaptcha.secret}")
@@ -67,6 +71,7 @@ public class PostController {
                         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                         @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                        Authentication auth,
                         Model model) {
         model.addAttribute("posts",
                 postService.getPostsByStatus(
@@ -86,6 +91,7 @@ public class PostController {
         model.addAttribute("sortDirection", sortDirection);
         log.info("Current language: {}", lang);
         model.addAttribute("currentLang", lang);
+        subscriptionModelPopulator.addSubscriptionAttributes(auth, NotificationEnum.POST, model);
         return "post/post-list";
     }
 
