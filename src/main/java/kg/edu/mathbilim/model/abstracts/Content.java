@@ -17,8 +17,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Content extends AdminContent{
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "approved_by")
@@ -27,4 +28,5 @@ public abstract class Content extends AdminContent{
     @Convert(converter = ContentStatusConverter.class)
     @Column(name = "status_id", nullable = false)
     ContentStatus status;
+
 }

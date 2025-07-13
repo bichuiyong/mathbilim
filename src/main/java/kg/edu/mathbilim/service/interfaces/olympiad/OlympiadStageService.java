@@ -10,7 +10,14 @@ import java.util.List;
 public interface OlympiadStageService {
     void save(OlympiadCreateDto dto, Olympiad olympiad);
 
-    List<OlympiadStageDto> getOlympStageDtos(int id);
+    List<OlympiadStageDto> getOlympStageDtos(Long id);
 
     void addAll(List<OlympiadStage> olympiadStages);
+
+    void deleteByOlympiadId(Long olympiadId);
+
+    OlympiadStage getOlympiadStageById(Integer stageId);
+
+
+    List<OlympiadStage> saveAll(List<OlympiadStage> olympiadStages);
 }

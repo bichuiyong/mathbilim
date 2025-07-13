@@ -15,4 +15,8 @@ public interface OlympOrganizationService {
     List<OlympiadOrganization> getByOlympiadId(Long olympiadId);
 
     List<OlympiadOrganization> getByOrganizationId(Long olympiadId);
+
+    void addAll(List<OlympiadOrganization> olympiadOrganization);
+
+    void deleteByOlympiadId(Long olympiadId);
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.dto.interfacePack.OnCreate;
 import kg.edu.mathbilim.validation.annotation.ValidOlympiadDates;
 import kg.edu.mathbilim.validation.annotation.ValidStageDates;
 import lombok.*;
@@ -23,6 +24,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ValidOlympiadDates
 public class OlympiadCreateDto {
+    Long id;
 
     @NotEmpty(message = "Название олимпиады не должно быть пустым")
     @Size(max = 255, message = "Название олимпиады не должно превышать 255 символов")
@@ -39,7 +41,7 @@ public class OlympiadCreateDto {
     @NotNull(message = "Дата начала обязательна")
     LocalDate startDate;
 
-    @NotNull
+    @NotNull(groups = OnCreate.class)
     MultipartFile imageFile;
 
     @NotNull(message = "Дата окончания обязательна")
@@ -59,4 +61,7 @@ public class OlympiadCreateDto {
 
     @Builder.Default
     List<Long> organizationIds = new ArrayList<>();
+
+    boolean hasStarted;
+    boolean hasEnded;
 }

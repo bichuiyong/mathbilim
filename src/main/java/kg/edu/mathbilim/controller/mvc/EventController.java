@@ -2,15 +2,18 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,7 @@ public class EventController {
     private final EventService eventService;
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
+    private final SubscriptionModelPopulator subscriptionModelPopulator;
 
 
     @ModelAttribute
@@ -34,7 +38,8 @@ public class EventController {
     }
 
     @GetMapping()
-    public String eventList() {
+    public String eventList(Authentication auth, Model model) {
+        subscriptionModelPopulator.addSubscriptionAttributes(auth, NotificationEnum.EVENT, model);
         return "events/event-list";
     }
 

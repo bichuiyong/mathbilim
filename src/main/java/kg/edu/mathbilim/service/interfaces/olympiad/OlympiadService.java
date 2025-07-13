@@ -11,7 +11,12 @@ public interface OlympiadService {
     @Transactional
     void olympiadCreate(OlympiadCreateDto dto);
 
+    @Transactional
+    void olympiadUpdate(OlympiadCreateDto dto);
+
     Page<OlympListDto> getAll(Pageable pageable);
+
+    OlympiadCreateDto getOlympiadCreateDto(Long olympId);
 
     OlympiadDto getById(long id);
 }

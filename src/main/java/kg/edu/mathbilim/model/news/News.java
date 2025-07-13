@@ -2,6 +2,7 @@ package kg.edu.mathbilim.model.news;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.AdminContent;
 import lombok.*;

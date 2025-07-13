@@ -6,11 +6,16 @@ import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
+import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.event.Event;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
@@ -39,8 +44,9 @@ public class PostServiceImpl extends
                 >
         implements PostService {
 
-    public PostServiceImpl(PostRepository repository, @Qualifier("postMapperImpl") PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService) {
-        super(repository, mapper, userService, fileService, translationService);
+
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, UserNotificationService notificationService) {
+        super(repository, mapper, userService, fileService, translationService,notificationService );
     }
 
     @Override
@@ -99,21 +105,23 @@ public class PostServiceImpl extends
         return PaginationUtil.getPage(() -> repository.getUserPostsWithQuery(userId, query, pageable), mapper::toDto);
     }
 
-    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang) {
-        ContentStatus contentStatus = ContentStatus.fromName(status);
-        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        if (query != null && !query.isEmpty()) {
-            System.out.println("Posts with query and lang: " + repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang).getContent());
-            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithQuery(contentStatus, query, pageable, lang), mapper::toDto);
-        }
 
-        if (lang != null && !lang.isEmpty()) {
-            System.out.println("Posts with lang: " + repository.getPostsByStatusWithLang(contentStatus, lang, pageable).getContent());
-            return PaginationUtil.getPage(() -> repository.getPostsByStatusWithLang(contentStatus, lang, pageable), mapper::toDto);
-        }
+    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection,  String lang) {
+        return getContentByStatus(
+                status,
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                pageable -> repository.getPostsByStatus(ContentStatus.fromName(status), pageable),
+                (q, pageable) -> repository.getPostsByStatusWithQuery(ContentStatus.fromName(status), q, pageable, lang)
+        );
+    }
 
-        System.out.println("Posts: " + repository.getPostsByStatus(contentStatus, pageable).getContent());
-        return PaginationUtil.getPage(() -> repository.getPostsByStatus(contentStatus, pageable), mapper::toDto);
+    @Override
+    public void approve(Long id) {
+        approveContent(id,NotificationEnum.POST, "New event");
     }
 
 
