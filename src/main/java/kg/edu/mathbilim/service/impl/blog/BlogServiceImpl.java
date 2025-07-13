@@ -18,6 +18,7 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -82,6 +83,23 @@ public class BlogServiceImpl extends
         log.debug("Share count incremented for blog {}", id);
     }
 
+
+    @Override
+    public Page<BlogDto> getBlogsForModeration(Pageable pageable) {
+        Page<Blog> blogs = repository.getBlogsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+
+        blogs.forEach(blog -> {
+            if (blog.getBlogTranslations() != null) {
+                blog.getBlogTranslations().forEach(translation -> {
+                    log.info("Blog entity ID: {}, translation languageCode: {}", blog.getId(), translation.getId().getLanguageCode());
+                });
+            } else {
+                log.warn("Blog entity ID: {} has no translations", blog.getId());
+            }
+        });
+        return PaginationUtil.getPage(() -> blogs, mapper::toDto);
+    }
+
     public DisplayContentDto getDisplayBlogById(Long id) {
         return repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
@@ -117,6 +135,17 @@ public class BlogServiceImpl extends
     }
 
 
+
+    @Override
+    public Page<BlogDto> getContentByCreatorIdBlog(Long creatorId, Pageable pageable) {
+        Page<BlogDto> allBlogs = getContentByCreatorId(creatorId, pageable);
+
+        List<BlogDto> approvedBlogs = allBlogs.stream()
+                .filter(blog -> blog.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedBlogs, pageable, approvedBlogs.size());
+    }
 
     @Override
     public Blog findByBlogId(Long blogId) {

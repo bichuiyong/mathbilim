@@ -18,6 +18,7 @@ import java.util.Locale;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AdminContentDto {
+    @Getter
     Long id;
 
     UserDto creator;
@@ -65,4 +66,5 @@ public abstract class AdminContentDto {
     public Long getMainImageId() {
         return mainImage != null ? mainImage.getId() : null;
     }
+
 }

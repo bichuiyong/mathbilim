@@ -140,6 +140,9 @@ public abstract class AbstractContentService<
     }
 
 
+    public Page<D> getContentByCreatorId(Long creatorId, Pageable pageable) {
+        return PaginationUtil.getPage(() -> repository.findByCreator_Id(creatorId, pageable), mapper::toDto);
+    }
     public String getCurrentLanguage() {
         return LocaleContextHolder.getLocale().getLanguage();
     }

@@ -19,9 +19,13 @@ import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -130,4 +134,21 @@ public class EventServiceImpl extends
             log.info("Added event {} to {} organizations", event.getId(), organizations.size());
         }
     }
+
+    @Override
+    public Page<EventDto> getContentByCreatorIdEvent(Long creatorId, Pageable pageable) {
+        Page<EventDto> allEvents = getContentByCreatorId(creatorId, pageable);
+
+        List<EventDto> approvedEvents = allEvents.stream()
+                .filter(event -> event.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedEvents, pageable, approvedEvents.size());
+    }
+
+
+    @Override
+    public Page<EventDto> getEventsForModeration(Pageable pageable) {
+        Page<Event> events = repository.getEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+        return PaginationUtil.getPage(() -> events, mapper::toDto);    }
 }
