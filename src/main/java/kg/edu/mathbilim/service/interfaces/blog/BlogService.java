@@ -7,6 +7,7 @@ import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -14,11 +15,15 @@ import java.util.List;
 public interface BlogService extends BaseTranslatableService<BlogDto, BlogTranslationDto> {
     BlogDto create(@Valid BlogDto blogDto, MultipartFile mainImage);
 
+    Page<BlogDto> getBlogsForModeration(Pageable pageable);
+
     DisplayContentDto getDisplayBlogById(Long id);
 
     Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
 
     List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit);
+
+    Page<BlogDto> getContentByCreatorIdBlog(Long id, Pageable pageable);
 
     Blog findByBlogId(Long blogId);
 }

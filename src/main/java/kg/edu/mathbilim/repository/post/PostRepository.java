@@ -40,7 +40,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
 
     @Query("""
             SELECT DISTINCT p FROM Post p
-               JOIN p.postTranslations t
                WHERE p.status = :contentStatus
             """)
     Page<Post> getPostsByStatus(ContentStatus contentStatus, Pageable pageable);

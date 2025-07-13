@@ -1,8 +1,11 @@
 package kg.edu.mathbilim.repository.event;
 
 import kg.edu.mathbilim.dto.event.DisplayEventDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -60,4 +63,12 @@ public interface EventRepository extends BaseContentRepository<Event> {
         WHERE e.id = :eventId
     """)
     List<Long> findOrganizationIdsByEventId(@Param("eventId") Long eventId);
+
+
+
+    @Query("""
+            SELECT DISTINCT e FROM Event e
+               WHERE e.status = :contentStatus
+            """)
+    Page<Event> getEventsByStatus(ContentStatus contentStatus, Pageable pageable);
 }

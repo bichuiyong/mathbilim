@@ -1,6 +1,8 @@
 package kg.edu.mathbilim.repository;
 
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.Book;
+import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +32,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
     void incrementShareCount(@Param("blogId") Long blogId);
 
     Optional<Book> findByIdAndCreatorId(Long id, Long user);
-}
+
+    @Query("""
+            SELECT DISTINCT b FROM Book b
+               WHERE b.status = :contentStatus
+            """)
+    Page<Book> getBooksByStatus(ContentStatus contentStatus, Pageable pageable);}
