@@ -5,7 +5,6 @@ switchOnUserButton.onclick = function () {
 }
 
 
-
 const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
     document.querySelector('input[name="csrf"]')?.value ||
     document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
@@ -19,6 +18,7 @@ searchButton.onclick = function () {
     }
     doFetch(url);
 }
+
 function renderPagination(currentPage, totalPages, url) {
     // document.getElementById('usersPagination').style.display = 'block';
     const paginationContainer = document.querySelector('.pagination');
@@ -60,6 +60,7 @@ function renderPagination(currentPage, totalPages, url) {
         });
     });
 }
+
 function doFetch(url, page = 1) {
     const connector = url.includes('?') ? '&' : '?';
     fetch(`${url}${connector}page=${page}`)
@@ -79,8 +80,10 @@ function doFetch(url, page = 1) {
             }
 
         })
-        .catch(error => {});
+        .catch(error => {
+        });
 }
+
 //
 function addUserToTable(users) {
     userContentList.innerHTML = "<div class=\"table-responsive\">\n" +
@@ -153,8 +156,6 @@ function addUserToTable(users) {
 `;
 
 
-
-
         resultTableUsers.appendChild(tr);
 
     });
@@ -162,6 +163,7 @@ function addUserToTable(users) {
     // console.log('changeEditModal')
     changeEditModal();
 }
+
 function initDropdownBehavior() {
     document.querySelectorAll('.dropdown').forEach(dropdown => {
         const toggleButton = dropdown.querySelector('[data-bs-toggle="dropdown"]');
@@ -183,6 +185,7 @@ function initDropdownBehavior() {
         });
     });
 }
+
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
@@ -208,7 +211,6 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
             }
 
 
-
             doFetch('/api/users');
         } else {
             const errorData = await response.json();
@@ -218,9 +220,10 @@ async function handleUserAction(method, successMessage, errorMessage, userId, mo
         console.error('Ошибка:', error.message);
     }
 }
+
 //
 function changeEditModal() {
-    document.getElementById('resultTableUsers').addEventListener('click', async function(event) {
+    document.getElementById('resultTableUsers').addEventListener('click', async function (event) {
         const button = event.target;
         const userId = button.dataset.userId;
         if (button.classList.contains('edit-button')) {
@@ -328,6 +331,409 @@ function sendForm(form, fetchUrl, method, modalId) {
         })
 
 
-
-
+// ==========================================================================================
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const contentList = document.getElementById("moderationContentList");
+    const modal = new bootstrap.Modal(document.getElementById('contentModal'));
+    const modalContent = document.getElementById('modalContent');
+    const modalApproveBtn = document.getElementById('modalApproveBtn');
+    const modalRejectBtn = document.getElementById('modalRejectBtn');
+    let currentItem = null;
+
+    function showLoading() {
+        contentList.innerHTML = `
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                <p>Загрузка контента...</p>
+            </div>`;
+    }
+
+    function getTypeName(type) {
+        const typeNames = {
+            'post': 'Пост',
+            'blog': 'Блог',
+            'event': 'Событие',
+            'book': 'Книга'
+        };
+        return typeNames[type] || type;
+    }
+
+    function getContentTitle(item, type) {
+        // For different content types, get title from different fields
+        switch (type) {
+            case 'event':
+                return item.eventTranslations && item.eventTranslations[0] && item.eventTranslations[0].title
+                    ? item.eventTranslations[0].title
+                    : 'Без заголовка';
+            case 'blog':
+                return item.blogTranslations && item.blogTranslations[0] && item.blogTranslations[0].title
+                    ? item.blogTranslations[0].title
+                    : item.title || 'Без заголовка';
+            case 'post':
+                // Both blog and post use postTranslations structure
+                return item.postTranslations && item.postTranslations[0] && item.postTranslations[0].title
+                    ? item.postTranslations[0].title
+                    : item.title || 'Без заголовка';
+            case 'book':
+                return item.name || 'Без заголовка';
+            default:
+                return item.title || 'Без заголовка';
+        }
+    }
+
+    function getContentDescription(item, type) {
+        switch (type) {
+            case 'event':
+                return item.eventTranslations && item.eventTranslations[0] && item.eventTranslations[0].description
+                    ? item.eventTranslations[0].description
+                    : 'Нет описания';
+            case 'blog':
+                return item.blogTranslations && item.blogTranslations[0] && item.blogTranslations[0].content
+                    ? item.blogTranslations[0].content
+                    : item.content || 'Нет контента';
+            case 'post':
+                // Both blog and post use postTranslations structure with content field
+                return item.postTranslations && item.postTranslations[0] && item.postTranslations[0].content
+                    ? item.postTranslations[0].content
+                    : item.content || 'Нет контента';
+            case 'book':
+                return item.description || 'Нет описания';
+            default:
+                return item.content || 'Нет контента';
+        }
+    }
+
+    function formatEventDateTime(startDate, endDate) {
+        if (!startDate) return '';
+
+        const start = new Date(startDate);
+        const startFormatted = start.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        if (endDate) {
+            const end = new Date(endDate);
+            const endFormatted = end.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            return `${startFormatted} - ${endFormatted}`;
+        }
+
+        return startFormatted;
+    }
+
+    function getEventLocation(item) {
+        if (item.isOffline) {
+            return item.address || 'Адрес не указан';
+        } else {
+            return item.url || 'Ссылка не указана';
+        }
+    }
+
+    function showContentDetails(item, type) {
+        currentItem = { ...item, type };
+
+        const title = getContentTitle(item, type);
+        const content = getContentDescription(item, type);
+        const author = item.creator && item.creator.name || 'Неизвестен';
+        const date = new Date(item.createdAt || Date.now()).toLocaleDateString('ru-RU');
+
+        let additionalInfo = '';
+
+        // Add type-specific information
+        if (type === 'event') {
+            const eventDateTime = formatEventDateTime(item.startDate, item.endDate);
+            const location = getEventLocation(item);
+            const locationType = item.isOffline ? 'Офлайн' : 'Онлайн';
+
+            additionalInfo = `
+                <div class="mb-3">
+                    <strong>Дата и время:</strong> ${eventDateTime}
+                </div>
+                <div class="mb-3">
+                    <strong>Тип:</strong> ${locationType}
+                </div>
+                <div class="mb-3">
+                    <strong>${item.isOffline ? 'Адрес' : 'Ссылка'}:</strong> ${location}
+                </div>
+            `;
+        } else if (type === 'book') {
+            additionalInfo = `
+                ${item.authors ? `<div class="mb-3"><strong>Авторы:</strong> ${item.authors}</div>` : ''}
+                ${item.isbn ? `<div class="mb-3"><strong>ISBN:</strong> ${item.isbn}</div>` : ''}
+                ${item.category && item.category.name ? `<div class="mb-3"><strong>Категория:</strong> ${item.category.name}</div>` : ''}
+            `;
+        } else if (type === 'post' || type === 'blog') {
+            console.log('Debug blog/post item:', item);
+            additionalInfo = `
+                ${item.postFiles && item.postFiles.length > 0 ? `<div class="mb-3"><strong>Файлы:</strong> ${item.postFiles.length} файл(ов)</div>` : ''}
+            `;
+        }
+
+        modalContent.innerHTML = `
+            <div class="mb-3">
+                <img src="/api/files/${item.mainImageId || (item.mainImage && item.mainImage.id)}/view" 
+                     alt="Изображение" class="modal-image" 
+                     onerror="this.src='/static/images/img.png'">
+            </div>
+            <div class="mb-3">
+                <strong>Загаловок:</strong> ${title}
+            </div>
+            <div class="mb-3">
+                <strong>Тип:</strong> <span class="badge bg-secondary">${getTypeName(type)}</span>
+            </div>
+            <div class="mb-3">
+                <strong>Автор:</strong> ${author}
+            </div>
+            <div class="mb-3">
+                <strong>Дата создания:</strong> ${date}
+            </div>
+            ${additionalInfo}
+            <div class="mb-3">
+                <strong>${type === 'book' ? 'Описание' : (type === 'event' ? 'Описание' : 'Контент')}:</strong>
+                <div class="publication-text collapsed" id="modalPostContent">${content}</div>
+                <div class="show-more-btn" id="modalToggleButton">Показать ещё</div>
+            </div>
+        `;
+
+        const toggleBtn = document.getElementById('modalToggleButton');
+        const postContent = document.getElementById('modalPostContent');
+
+        toggleBtn.addEventListener('click', function () {
+            if (postContent.classList.contains('collapsed')) {
+                postContent.classList.remove('collapsed');
+                toggleBtn.textContent = 'Скрыть';
+            } else {
+                postContent.classList.add('collapsed');
+                toggleBtn.textContent = 'Показать ещё';
+            }
+        });
+
+        modal.show();
+    }
+
+    function showContentDetailsById(id, type) {
+        const endpoint = getApiEndpoint(type);
+        fetch(`${endpoint}/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(item => {
+                showContentDetails(item, type);
+            })
+            .catch(error => {
+                console.log(`${endpoint}/${id}`);
+                console.error('Ошибка при загрузке деталей:', error);
+                showNotification('Ошибка при загрузке деталей контента', 'error');
+            });
+    }
+
+    function getApiEndpoint(type) {
+        const endpoints = {
+            'post': '/api/users/posts',
+            'blog': '/api/users/blogs',
+            'event': '/api/users/events',
+            'book': '/api/users/books'
+        };
+        return endpoints[type] || '/api/users/content';
+    }
+
+    function getModerationEndpoint(type) {
+        const endpoints = {
+            'post': '/api/users/posts/moderate',
+            'blog': '/api/users/blogs/moderate',
+            'event': '/api/users/events/moderate',
+            'book': '/api/users/books/moderate'
+        };
+        return endpoints[type] || '/api/users/content/moderate';
+    }
+
+    function performModerationActionById(action, id, type) {
+        currentItem = { id, type };
+        performModerationAction(action);
+    }
+
+    function performModerationAction(action) {
+        if (!currentItem) return;
+
+        const url = getModerationEndpoint(currentItem.type);
+        const requestBody = {
+            id: currentItem.id,
+            action: action
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                modal.hide();
+
+                const cardElement = document.querySelector(`[data-item-id="${currentItem.id}"][data-item-type="${currentItem.type}"]`);
+                if (cardElement) {
+                    cardElement.classList.add('removing');
+                    setTimeout(() => {
+                        cardElement.remove();
+                        const remainingCards = contentList.querySelectorAll('.content-card');
+                        if (remainingCards.length === 0) {
+                            showNoContent();
+                        }
+                    }, 300);
+                }
+
+                const actionMessage = action === 'approve' ? 'одобрен' : 'отклонён';
+                showNotification(
+                    result.message || `Контент ${actionMessage}`,
+                    'success'
+                );
+            })
+            .catch(error => {
+                console.error('Ошибка при выполнении действия:', error);
+                showNotification('Ошибка при выполнении действия', 'error');
+            });
+    }
+
+    function showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+
+        const alertContainer = document.createElement('div');
+        alertContainer.innerHTML = alertHtml;
+        document.body.insertBefore(alertContainer, document.body.firstChild);
+
+        setTimeout(() => {
+            alertContainer.remove();
+        }, 5000);
+    }
+
+    function showNoContent() {
+        contentList.innerHTML = `
+            <div class="no-content">
+                <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="12" y="14" width="40" height="36" rx="3" ry="3" fill="#eaeaea" stroke="#888" stroke-width="2"/>
+                    <line x1="20" y1="20" x2="44" y2="20" stroke="#bbb" stroke-width="1.5"/>
+                    <line x1="20" y1="26" x2="44" y2="26" stroke="#bbb" stroke-width="1.5"/>
+                    <line x1="20" y1="32" x2="44" y2="32" stroke="#bbb" stroke-width="1.5"/>
+                    <line x1="20" y1="38" x2="44" y2="38" stroke="#bbb" stroke-width="1.5"/>
+                </svg>
+                <p class="fs-5">Нет контента на модерации</p>
+            </div>
+        `;
+    }
+
+    function createContentCard(item, type) {
+        const title = getContentTitle(item, type);
+        const author = item.creator && item.creator.name || 'Неизвестен';
+        const date = new Date(item.createdAt || Date.now()).toLocaleDateString('ru-RU');
+        const imageId = item.mainImageId || (item.mainImage && item.mainImage.id) || '';
+
+        return `
+            <div class="content-card d-flex" data-item-id="${item.id}" data-item-type="${type}">
+                <div class="p-3">
+                    <img src="/api/files/${imageId}/view" 
+                         alt="${getTypeName(type)} Image" 
+                         class="content-image" 
+                         onclick="showContentDetailsById(${item.id}, '${type}')"
+                         onerror="this.src='/static/images/img.png'">
+                </div>
+                <div class="content-info">
+                    <div class="content-title" onclick="showContentDetailsById(${item.id}, '${type}')">${title}</div>
+                    <div class="content-meta">${author} • ${date}</div>
+                    <span class="badge bg-info me-2">${getTypeName(type)}</span>
+                    <span class="status-badge status-pending">Ожидает</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-approve" onclick="performModerationActionById('approve', ${item.id}, '${type}')">
+                        <i class="fas fa-check"></i> Принять
+                    </button>
+                    <button class="btn btn-reject" onclick="performModerationActionById('reject', ${item.id}, '${type}')">
+                        <i class="fas fa-times"></i> Отклонить
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function loadAllContent() {
+        showLoading();
+
+        const types = ['post', 'blog', 'event', 'book'];
+        const urls = types.map(type => `/api/users/moder?type=${type}&page=0&size=10`);
+
+        Promise.all(urls.map(url =>
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка загрузки: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .catch(error => {
+                    console.warn(`Ошибка загрузки для ${url}:`, error);
+                    return { content: [] };
+                })
+        ))
+            .then(results => {
+                let html = '';
+                let hasContent = false;
+
+                results.forEach((result, index) => {
+                    const type = types[index];
+                    if (result.content && Array.isArray(result.content)) {
+                        result.content.forEach(item => {
+                            hasContent = true;
+                            html += createContentCard(item, type);
+                        });
+                    }
+                });
+
+                if (!hasContent) {
+                    showNoContent();
+                } else {
+                    contentList.innerHTML = html;
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при загрузке контента: ", error);
+                contentList.innerHTML = `<p class="text-danger text-center py-5">Ошибка загрузки контента.</p>`;
+            });
+    }
+
+    window.showContentDetailsById = showContentDetailsById;
+    window.performModerationActionById = performModerationActionById;
+
+    modalApproveBtn.addEventListener('click', () => performModerationAction('approve'));
+    modalRejectBtn.addEventListener('click', () => performModerationAction('reject'));
+
+    loadAllContent();
+});
+
+
