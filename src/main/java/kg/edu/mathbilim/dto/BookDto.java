@@ -4,12 +4,13 @@ import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookDto extends ContentDto {
     String name;
