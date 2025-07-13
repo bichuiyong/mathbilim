@@ -48,4 +48,5 @@ public class Book extends Content {
     @JoinColumn(name = "category_id")
     Category category;
 
+
 }

@@ -1,8 +1,10 @@
 package kg.edu.mathbilim.service.impl;
 
-import kg.edu.mathbilim.dto.BookDto;
+import kg.edu.mathbilim.dto.book.BookDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
 import kg.edu.mathbilim.mapper.BookMapper;
+import kg.edu.mathbilim.mapper.FileMapper;
 import kg.edu.mathbilim.model.Book;
 import kg.edu.mathbilim.model.reference.Category;
 import kg.edu.mathbilim.repository.BookRepository;
@@ -11,9 +13,13 @@ import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -27,10 +33,14 @@ public class BookServiceImpl extends
         implements BookService {
 
     private final CategoryService categoryService;
+    private final BookRepository bookRepository;
+    private final FileMapper fileMapper;
 
-    public BookServiceImpl(BookRepository repository, BookMapper mapper, UserService userService, FileService fileService, CategoryService categoryService) {
+    public BookServiceImpl(BookRepository repository, BookMapper mapper, UserService userService, FileService fileService, CategoryService categoryService, BookRepository bookRepository, FileMapper fileMapper) {
         super(repository, mapper, userService, fileService);
         this.categoryService = categoryService;
+        this.bookRepository = bookRepository;
+        this.fileMapper = fileMapper;
     }
 
     @Override
@@ -62,7 +72,43 @@ public class BookServiceImpl extends
     }
 
     @Transactional
-    public BookDto createBook(BookDto bookDto) {
-        return createBase(bookDto, null, null);
+    public BookDto createBook(MultipartFile attachment,MultipartFile image, BookDto bookDto) {
+        if(attachment.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+        bookDto.setFile(fileService.uploadFile(attachment,"books/" + bookDto.getId()));
+        bookDto.setCreator(userService.getAuthUser());
+        return createBase(bookDto, image, null);
+    }
+
+    @Override
+    public BookDto updateBook(long id, MultipartFile file, BookDto bookDto, MultipartFile image) {
+        Book book = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        if(file.isEmpty()){
+            bookDto.setFile(fileMapper.toDto(book.getFile()));
+        }
+        if(image.isEmpty()){
+            bookDto.setMainImage(fileMapper.toDto(book.getMainImage()));
+        }
+        else if(!image.isEmpty() && !file.isEmpty()){
+            bookDto.setFile(fileService.updateFile(book.getFile().getId(),file));
+            bookDto.setMainImage(fileService.updateFile(book.getMainImage().getId(),image));
+        }
+        bookDto.setCreator(userService.getAuthUser());
+        bookDto.setId(id);
+        return createBase(bookDto, image, null);
+    }
+
+    @Override
+    public Page<BookDto> getAllBooks(String status,String query,int page, int size, String sortBy, String sortDirection, Long categoryId) {
+        ContentStatus status1 =  ContentStatus.fromName(status);
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        if(query!=null) {
+            return PaginationUtil.getPage(()->repository.findAllBooksByLanguageAndQuery(query,status1,pageable), mapper::toDto);
+        }
+        if(categoryId!=null) {
+            return PaginationUtil.getPage(()-> repository.findAllBooksByCategory(categoryId,status1,pageable), mapper::toDto);
+        }
+       return PaginationUtil.getPage(()->repository.findAllBooksByLanguage(status1,pageable), mapper::toDto);
     }
 }

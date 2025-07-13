@@ -1,14 +1,15 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.BookDto;
-import kg.edu.mathbilim.dto.user.UserDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
-import kg.edu.mathbilim.service.interfaces.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,11 +22,26 @@ import org.springframework.web.multipart.MultipartFile;
 public class BookController {
     private final BookService bookService;
     private final FileService fileService;
-    private final UserService userService;
     private final TranslationService translationService;
 
     @GetMapping
-    public String books(Model model) {
+    public String books(@RequestParam(required = false) String query,
+                        @RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "size", defaultValue = "5") int size,
+                        @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                        @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                        @RequestParam(required = false) Long categoryId,
+                        Model model) {
+
+        int safePage = Math.max(1, page);
+        model.addAttribute("book", bookService.getAllBooks("APPROVED",query,safePage, size, sortBy, sortDirection, categoryId));
+        model.addAttribute("query", query);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("categories", translationService.getCategoriesByLanguage());
+        model.addAttribute("categoryId", categoryId);
         return "books/book-list";
     }
 
@@ -38,7 +54,7 @@ public class BookController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
-        model.addAttribute("book", new BookDto());
+        model.addAttribute("book",new BookDto());
 
         return "books/create-book";
     }
@@ -47,18 +63,15 @@ public class BookController {
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
                           @RequestParam MultipartFile attachments,
                           BindingResult bindingResult,
-                          Model model) {
+                          @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
+                          Model model
+                         ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", translationService.getCategoriesByLanguage());
             return "books/create-book";
         }
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDto user = userService.getUserByEmail(email);
-
-        book.setFile(fileService.uploadFile(attachments, "books"));
-        book.setCreator(user);
-        bookService.createBook(book);
+        bookService.createBook(attachments,mpMainImage,book);
         return "redirect:/books";
     }
 
@@ -68,34 +81,53 @@ public class BookController {
         return "redirect:/profile";
     }
 
-    @GetMapping("{id}/update")
+    @GetMapping("update/{id}")
     public String update(Model model,
                          @PathVariable long id) {
+        BookDto book =  bookService.getById(id);
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
-        model.addAttribute("book", bookService.getById(id));
-
+        model.addAttribute("book", book);
+        if (book.getFile() != null) {
+            FileDto existingFile = fileService.getById(book.getFile().getId());
+            model.addAttribute("existingFile", existingFile);
+        }
         return "books/update-book";
     }
 
-    @PostMapping("{id}/update")
+    @PostMapping("update/{id}")
     public String updateBook(@PathVariable long id,
                              @ModelAttribute("book") @Valid BookDto book,
                              @RequestParam MultipartFile attachments,
-                             @RequestParam(value = "context", defaultValue = "general") String context,
+                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", translationService.getCategoriesByLanguage());
-            return "books/update-book";
+            BookDto existingBook = bookService.getById(id);
+            if (existingBook.getFile() != null) {
+                FileDto existingFile = fileService.getById(existingBook.getFile().getId());
+                model.addAttribute("existingFile", existingFile);
+            }
+        }
+        bookService.updateBook(id,attachments,book, mpMainImage);
+        return "redirect:/books";
+    }
+
+    @GetMapping("/{fileId}/pdf-reader")
+    public String pdfReader(@PathVariable Long fileId, Model model) {
+        FileDto fileDto = fileService.getById(fileId);
+
+        if (fileDto == null) {
+            return "redirect:/books?error=file_not_found";
         }
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDto user = userService.getUserByEmail(email);
+        if (!"application/pdf".equals(fileDto.getType().getMimeType())) {
+            return "redirect:/books?error=not_pdf";
+        }
 
-        book.setFile(fileService.uploadFile(attachments, context));
-        book.setCreator(user);
-        book.setId(id);
-        bookService.createBook(book);
-        return "redirect:/books";
+        model.addAttribute("fileDto", fileDto);
+        model.addAttribute("pdfUrl", "/api/files/" + fileId + "/view");
+
+        return "books/pdf-reader";
     }
 }

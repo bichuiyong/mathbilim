@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class ContentDto extends AdminContentDto {
+
     @Builder.Default
     UserDto approvedBy = null;
 

@@ -3,6 +3,7 @@ class BaseContentCreateManager {
         this.options = {
             formId: 'contentForm',
             contentType: 'content',
+
             imageCropOptions: {},
             tinyMCEOptions: {},
             languageTabsOptions: {},
