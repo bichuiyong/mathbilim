@@ -6,6 +6,182 @@
         <title></title>
     </head>
 
+    <style>
+
+        .collapsed {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .expanded {
+            max-height: none;
+        }
+        .content-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .content-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .content-info {
+            flex: 1;
+            padding: 15px;
+        }
+
+        .content-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .content-title:hover {
+            color: #0d6efd;
+        }
+
+        .content-meta {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d1edff;
+            color: #0c63e4;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 15px;
+            border-left: 1px solid #dee2e6;
+        }
+
+        .btn-approve {
+            background-color: #198754;
+            border-color: #198754;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-reject {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-approve:hover {
+            background-color: #157347;
+            border-color: #146c43;
+        }
+
+        .btn-reject:hover {
+            background-color: #bb2d3b;
+            border-color: #b02a37;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .publication-text {
+            max-height: 200px;
+            overflow-y: auto;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .publication-text.collapsed {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .publication-text.expanded {
+            max-height: none;
+        }
+        .show-more-btn {
+            color: #0d6efd;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .show-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        .content-card.removing {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
+
+        .no-content {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #0d6efd !important;
+            font-weight: 500;
+        }
+
+    </style>
+
     <#assign known = SPRING_SECURITY_CONTEXT?? >
     <#if known>
         <#assign
@@ -16,7 +192,6 @@
     </#if>
 
     <div class="container mt-4" data-user-id="${user.id!}">
-        <!-- Профиль пользователя -->
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="card profile-card">
@@ -70,7 +245,7 @@
 
                         <hr>
 
-                        <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100 mb-2">
                             <i class="fas fa-edit me-2"></i>Редактировать профиль
                         </a>
 
@@ -174,7 +349,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Список контента -->
                                 <div id="userContentList" class="content-list">
                                     <div class="text-center text-muted py-5">
                                         <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
@@ -216,7 +390,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Список контента на модерации -->
                                     <div id="moderationContentList" class="content-list">
                                         <div class="text-center text-muted py-5">
                                             <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
@@ -224,7 +397,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Пагинация -->
                                     <nav id="moderationPagination" class="mt-3" style="display: none;">
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
@@ -237,7 +409,8 @@
                                     <!-- Действия с пользователями -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0">Управление пользователями</h5>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#createUserModal">
                                             <i class="fas fa-user-plus me-2"></i>Создать пользователя
                                         </button>
                                     </div>
@@ -255,13 +428,13 @@
                                                     </button>
                                                 </div>
                                             </div>
-<#--                                            <div class="col-md-4">-->
-<#--                                                <select class="form-select form-select-sm" id="usersSortBy">-->
-<#--                                                    <option value="name">По имени</option>-->
-<#--                                                    <option value="email">По email</option>-->
-<#--                                                    <option value="createdAt">По дате регистрации</option>-->
-<#--                                                </select>-->
-<#--                                            </div>-->
+                                            <#--                                            <div class="col-md-4">-->
+                                            <#--                                                <select class="form-select form-select-sm" id="usersSortBy">-->
+                                            <#--                                                    <option value="name">По имени</option>-->
+                                            <#--                                                    <option value="email">По email</option>-->
+                                            <#--                                                    <option value="createdAt">По дате регистрации</option>-->
+                                            <#--                                                </select>-->
+                                            <#--                                            </div>-->
                                         </div>
                                     </div>
 
@@ -338,7 +511,8 @@
                                 <select class="form-select" id="editUserType" name="type">
                                     <option selected disabled value="">Выберите тип аккаунта</option>
                                     <#list types as type>
-                                        <option value="${type.translations[0].typeId}" data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
+                                        <option value="${type.translations[0].typeId}"
+                                                data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
                                     </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
@@ -364,9 +538,9 @@
                 </div>
                 <div class="modal-body">
                     <form id="createNewUser">
-<#--                        <#if _csrf??>-->
-<#--                            <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>-->
-<#--                        </#if>-->
+                        <#--                        <#if _csrf??>-->
+                        <#--                            <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>-->
+                        <#--                        </#if>-->
                         <div class="mb-3">
                             <label for="name" class="form-label">First name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
@@ -397,7 +571,8 @@
                                 <select class="form-select" id="type" name="type">
                                     <option selected disabled value="">Выберите тип аккаунта</option>
                                     <#list types as type>
-                                        <option value="${type.translations[0].typeId}" data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
+                                        <option value="${type.translations[0].typeId}"
+                                                data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
                                     </#list>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
@@ -413,5 +588,32 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="contentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Детали контента</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalContent">
+                        <!-- Контент будет загружен здесь -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-reject" id="modalRejectBtn">
+                        <i class="fas fa-times"></i> Отклонить
+                    </button>
+                    <button type="button" class="btn btn-approve" id="modalApproveBtn">
+                        <i class="fas fa-check"></i> Одобрить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/admin.js"></script>
+    <script src="/static/js/profile-content.js"></script>
 </@main.layout>
