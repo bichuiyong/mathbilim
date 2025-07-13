@@ -18,6 +18,7 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,7 +124,25 @@ public class PostServiceImpl extends
     }
 
     @Override
+    public Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable) {
+        Page<PostDto> allPosts = getContentByCreatorId(creatorId, pageable);
+
+        List<PostDto> approvedPosts = allPosts.stream()
+                .filter(post -> post.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedPosts, pageable, approvedPosts.size());
+    }
+
+    @Override
+    public Page<PostDto> getPostsForModeration(Pageable pageable) {
+        Page<Post> posts = repository.getPostsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+        return PaginationUtil.getPage(() -> posts, mapper::toDto);
+    }
+
+    @Override
     public Post findByPostId(Long id) {
         return repository.findById(id).orElseThrow(PostNotFoundException::new);
     }
+
 }
