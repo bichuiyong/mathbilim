@@ -450,18 +450,6 @@
                 `;
             }
 
-            // showError(message) {
-            //     this.viewer.innerHTML = `
-            //         <div class="loading-state">
-            //             <div class="alert alert-danger" role="alert">
-            //                 <i class="fas fa-exclamation-triangle"></i>
-            //                 <h5 class="mt-3">Error</h5>
-            //                 <p>` + message + `</p>
-            //             </div>
-            //         </div>
-            //     `;
-            // }
-
             async loadPDF() {
                 this.showLoading();
 
@@ -486,7 +474,6 @@
                     await this.renderPage();
                 } catch (error) {
                     console.error('Error loading PDF:', error);
-                    // this.showError('Failed to load PDF. The file might be corrupted or too large.');
                 }
             }
 
@@ -608,7 +595,6 @@
                         return;
                     }
                     console.error('Error rendering page:', error);
-                    // this.showError('Failed to render page. The page might be corrupted or too complex.');
                 }
             }
 

@@ -80,7 +80,7 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
-                .contentLength(fileDto.getSize()) // If you have file size stored
+                .contentLength(fileDto.getSize())
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileDto.getFilename() + "\"")
                 .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
                 .header(HttpHeaders.ACCEPT_RANGES, "bytes")
