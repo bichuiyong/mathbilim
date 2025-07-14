@@ -11,7 +11,7 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.event.EventRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
@@ -21,13 +21,10 @@ import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
-import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,6 +97,12 @@ public class EventServiceImpl extends
     }
 
     @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
+    }
+
+    @Override
     public DisplayEventDto getDisplayEventById(Long id) {
         DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
@@ -123,8 +126,9 @@ public class EventServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id, NotificationEnum.EVENT, "New event");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id, NotificationEnum.EVENT, "New event", user);
     }
 
     private void setEventOrganizations(List<Long> organizationIds, Event event) {
@@ -146,9 +150,14 @@ public class EventServiceImpl extends
         return new PageImpl<>(approvedEvents, pageable, approvedEvents.size());
     }
 
+    @Override
+    public Page<EventDto> getHisotryEvent(Long creatorId, Pageable pageable) {
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
 
     @Override
     public Page<EventDto> getEventsForModeration(Pageable pageable) {
-        Page<Event> events = repository.getEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+        Page<Event> events = repository.findEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
         return PaginationUtil.getPage(() -> events, mapper::toDto);    }
 }

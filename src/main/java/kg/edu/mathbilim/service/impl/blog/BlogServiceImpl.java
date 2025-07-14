@@ -8,6 +8,7 @@ import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.blog.BlogRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -130,8 +131,15 @@ public class BlogServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id, NotificationEnum.BLOG, "New blog");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id, NotificationEnum.BLOG, "New blog", user);
+    }
+
+    @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
     }
 
 
@@ -145,6 +153,11 @@ public class BlogServiceImpl extends
                 .toList();
 
         return new PageImpl<>(approvedBlogs, pageable, approvedBlogs.size());
+    }
+
+    @Override
+    public Page<BlogDto> getHisotryBlog(Long creatorId, Pageable pageable) {
+        return getContentByCreatorId(creatorId, pageable);
     }
 
     @Override

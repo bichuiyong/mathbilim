@@ -23,6 +23,18 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
             """)
     Page<Book> findByQuery(@Param("query") String query, Pageable pageable);
 
+    @Query("""
+    SELECT b FROM Book b
+    WHERE b.status = :status
+      AND LOWER(b.name) LIKE LOWER(:query)
+""")
+    Page<Book> searchByStatusAndQuery(
+            @Param("status") ContentStatus status,
+            @Param("query") String query,
+            Pageable pageable
+    );
+
+
     @Modifying
     @Query("UPDATE Book b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
     void incrementViewCount(@Param("blogId") Long blogId);
