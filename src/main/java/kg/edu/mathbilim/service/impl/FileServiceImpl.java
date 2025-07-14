@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Service
@@ -195,6 +196,16 @@ public class FileServiceImpl implements FileService {
             return s3Service.downloadFile(file.getFilePath());
         } catch (IOException e) {
             log.error("Error downloading file: {}", e.getMessage());
+            throw new FileValidationException("Ошибка скачивания файла");
+        }
+    }
+
+    @Override
+    public InputStream downloadFileStream(Long fileId) {
+        File file = getEntityById(fileId);
+        try{
+           return s3Service.downloadFileStream(file.getFilePath());
+        }catch (IOException e){
             throw new FileValidationException("Ошибка скачивания файла");
         }
     }
