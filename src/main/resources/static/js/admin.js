@@ -714,7 +714,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const types = ['post', 'blog', 'event', 'book'];
         const urls = types.map(type => `/api/users/moder?type=${type}&page=0&size=10`);
 
-        // Подготавливаем заголовки с CSRF токеном для всех запросов
         const headers = {
             'Content-Type': 'application/json'
         };

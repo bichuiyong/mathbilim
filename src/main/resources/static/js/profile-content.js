@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <img src="/api/files/${item.mainImageId}/view" alt="${item.type} Image" class="content-image">
                         </div>
                         <div class="content-info">
-                            <h6 class="content-title">${item.title || item.name || 'Без названия'}</h6>
+<h6 class="content-title">${getContentTitle(item, item.type)}</h6>
                             <div class="content-meta">
                                 <span class="content-author">ADMIN</span>
                                 <span class="content-date">${createdDate}</span>
@@ -427,3 +427,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadAllContent();
 });
+
+
+function getContentTitle(item, type) {
+    switch (type) {
+        case 'event':
+            return item.eventTranslations && item.eventTranslations[0]?.title
+                ? item.eventTranslations[0].title
+                : 'Без заголовка';
+        case 'blog':
+            return item.blogTranslations && item.blogTranslations[0]?.title
+                ? item.blogTranslations[0].title
+                : item.title || 'Без заголовка';
+        case 'post':
+            return item.postTranslations && item.postTranslations[0]?.title
+                ? item.postTranslations[0].title
+                : item.title || 'Без заголовка';
+        case 'book':
+            return item.name || 'Без заголовка';
+        default:
+            return item.title || 'Без заголовка';
+    }
+}
+

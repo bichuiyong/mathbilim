@@ -2,9 +2,9 @@ package kg.edu.mathbilim.controller.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;

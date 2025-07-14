@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.service.impl;
 
-import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.dto.book.BookDto;
@@ -32,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import java.util.List;
 
 @Slf4j
 @Service
@@ -54,52 +52,6 @@ public class BookServiceImpl extends
         this.categoryService = categoryService;
         this.bookRepository = bookRepository;
         this.fileMapper = fileMapper;
-    }
-
-
-    @Override
-    public Page<BookDto> getAllBooks(
-            String status,
-            String query,
-            int page,
-            int size,
-            String sortBy,
-            String sortDirection
-    ) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
-        );
-
-        Page<Book> books = repository.searchByStatusAndQuery(
-                ContentStatus.valueOf(status),
-                "%" + (query == null ? "" : query.toLowerCase()) + "%",
-                pageable
-        );
-
-        return books.map(mapper::toDto);
-    }
-
-
-
-
-    @Override
-    public void approve(Long id, String email) {
-        User user = userService.findByEmail(email);
-        Book book = repository.findById(id).orElseThrow(BookNotFoundException::new);
-        book.setStatus(ContentStatus.APPROVED);
-        book.setApprovedBy(user);
-        repository.saveAndFlush(book);
-    }
-
-    @Override
-    public void reject(Long id, String email) {
-        User user = userService.findByEmail(email);
-        Book book = repository.findById(id).orElseThrow(BookNotFoundException::new);
-        book.setStatus(ContentStatus.REJECTED);
-        book.setApprovedBy(user);
-        repository.saveAndFlush(book);
     }
 
 
