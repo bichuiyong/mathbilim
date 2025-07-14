@@ -34,7 +34,5 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
 
     Page<BlogDto> getHisotryBlog(Long creatorId, Pageable pageable);
 
-    Page<BlogDto> getContentByCreatorIdBlog(Long id, Pageable pageable);
-
     Blog findByBlogId(Long blogId);
 }

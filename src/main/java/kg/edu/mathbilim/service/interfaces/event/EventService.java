@@ -8,6 +8,8 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EventService extends BaseTranslatableService<EventDto, EventTranslationDto> {
     EventDto create(CreateEventDto createEventDto);

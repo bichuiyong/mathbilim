@@ -3,6 +3,7 @@ package kg.edu.mathbilim.mapper;
 import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.model.Book;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper extends BaseMapper<Book, BookDto> {
@@ -10,6 +11,7 @@ public interface BookMapper extends BaseMapper<Book, BookDto> {
 
     @Mapping(source = "creator", target = "creator")
     @Mapping(source = "mainImage", target = "mainImage")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "id", source = "id")
     BookDto toDto(Book book);
 }
