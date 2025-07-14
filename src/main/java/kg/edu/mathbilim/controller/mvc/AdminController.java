@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("admin")
 @RequiredArgsConstructor
@@ -67,23 +69,26 @@ public class AdminController {
     }
     @PostMapping("eventApprove/{id}")
     public String eventApprove(
-            @PathVariable Long id
+            @PathVariable Long id,
+            Principal principal
     ){
-        eventService.approve(id);
+        eventService.approve(id, principal.getName());
         return "redirect:/admin";
     }
     @GetMapping("postApprove/{id}")
     public String postApprove(
-            @PathVariable Long id
+            @PathVariable Long id,
+            Principal principal
     ){
-        postService.approve(id);
+        postService.approve(id, principal.getName());
         return "redirect:/admin";
     }
     @PostMapping("blogApprove/{id}")
     public String blogApprove(
-            @PathVariable Long id
+            @PathVariable Long id,
+            Principal principal
     ){
-        blogService.approve(id);
+        blogService.approve(id, principal.getName());
         return "redirect:/admin";
     }
 

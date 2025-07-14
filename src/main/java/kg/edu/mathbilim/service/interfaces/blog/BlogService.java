@@ -24,9 +24,15 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
 
     List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit);
 
+    void reject(Long id, String email);
+
+    Page<BlogDto> getContentByCreatorIdBlog(Long id, Pageable pageable);
+
     Page<BlogDto> getBlogsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
-    void approve(Long id);
+    void approve(Long id, String email);
+
+    Page<BlogDto> getHisotryBlog(Long creatorId, Pageable pageable);
 
     Page<BlogDto> getContentByCreatorIdBlog(Long id, Pageable pageable);
 

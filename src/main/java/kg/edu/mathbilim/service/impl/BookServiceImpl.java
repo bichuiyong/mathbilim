@@ -8,8 +8,8 @@ import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
 import kg.edu.mathbilim.mapper.BookMapper;
 import kg.edu.mathbilim.mapper.FileMapper;
 import kg.edu.mathbilim.model.Book;
-import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.model.reference.Category;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.BookRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractContentService;
 import kg.edu.mathbilim.service.interfaces.BookService;
@@ -18,6 +18,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,52 @@ public class BookServiceImpl extends
         this.fileMapper = fileMapper;
     }
 
+
+    @Override
+    public Page<BookDto> getAllBooks(
+            String status,
+            String query,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection
+    ) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+        );
+
+        Page<Book> books = repository.searchByStatusAndQuery(
+                ContentStatus.valueOf(status),
+                "%" + (query == null ? "" : query.toLowerCase()) + "%",
+                pageable
+        );
+
+        return books.map(mapper::toDto);
+    }
+
+
+
+
+    @Override
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        Book book = repository.findById(id).orElseThrow(BookNotFoundException::new);
+        book.setStatus(ContentStatus.APPROVED);
+        book.setApprovedBy(user);
+        repository.saveAndFlush(book);
+    }
+
+    @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        Book book = repository.findById(id).orElseThrow(BookNotFoundException::new);
+        book.setStatus(ContentStatus.REJECTED);
+        book.setApprovedBy(user);
+        repository.saveAndFlush(book);
+    }
+
     @Override
     protected RuntimeException getNotFoundException() {
         return new BookNotFoundException();
@@ -81,6 +128,11 @@ public class BookServiceImpl extends
                 .toList();
 
         return new PageImpl<>(approvedBooks, pageable, approvedBooks.size());
+    }
+
+    @Override
+    public Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable) {
+        return getContentByCreatorId(creatorId, pageable);
     }
 
     @Override
