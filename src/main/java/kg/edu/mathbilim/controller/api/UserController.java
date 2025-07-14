@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.BookDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
@@ -24,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -92,6 +90,26 @@ public class UserController {
         }
         return ResponseEntity.ok(contentPage);
     }
+
+
+    @GetMapping("history")
+    public ResponseEntity<Page<?>> getHistoryByCreator(
+            Pageable pageable,
+            @RequestParam Long id,
+            @RequestParam String type) {
+
+        Page<?> historyPage;
+        switch (type.toLowerCase()) {
+            case "post" -> historyPage = postService.getHisotryPost(id, pageable);
+            case "event" -> historyPage = eventService.getHisotryEvent(id, pageable);
+            case "book" -> historyPage = bookService.getHisotryBook(id, pageable);
+            case "blog" -> historyPage = blogService.getHisotryBlog(id, pageable);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
+        }
+        return ResponseEntity.ok(historyPage);
+    }
+
+
 
 
     @GetMapping("moder")

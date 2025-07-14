@@ -20,14 +20,20 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
 //    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
-    void approve(Long id);
+    void approve(Long id, String email);
     Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang);
+
+    void reject(Long id, String email);
 
     PostDto getPostById(Long id);
 
     Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable);
 
+    Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable);
+
     Page<PostDto> getPostsForModeration(Pageable pageable);
+
+    Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
     Post findByPostId(Long id);
 }

@@ -8,10 +8,9 @@ import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -21,7 +20,6 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -120,8 +118,15 @@ public class PostServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id,NotificationEnum.POST, "New event");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id,NotificationEnum.POST, "New event", user);
+    }
+
+    @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
     }
 
 
@@ -143,9 +148,28 @@ public class PostServiceImpl extends
     }
 
     @Override
+    public Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable) {
+       return getContentByCreatorId(creatorId, pageable);
+    }
+
+    @Override
     public Page<PostDto> getPostsForModeration(Pageable pageable) {
         Page<Post> posts = repository.getPostsByStatus(ContentStatus.PENDING_REVIEW, pageable);
         return PaginationUtil.getPage(() -> posts, mapper::toDto);
+    }
+
+    @Override
+    public Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection) {
+        return getContentByStatus(
+                status,
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                pageable -> repository.findPostsByStatus(ContentStatus.fromName(status), pageable),
+                (q, pageable) -> repository.getPostsByStatus(ContentStatus.fromName(status), q, pageable)
+        );
     }
 
     @Override

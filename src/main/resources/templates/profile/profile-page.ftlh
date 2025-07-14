@@ -17,6 +17,7 @@
         .expanded {
             max-height: none;
         }
+
         .content-card {
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -27,7 +28,7 @@
         }
 
         .content-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .content-image {
@@ -149,6 +150,7 @@
         .publication-text.expanded {
             max-height: none;
         }
+
         .show-more-btn {
             color: #0d6efd;
             cursor: pointer;
@@ -165,8 +167,14 @@
         }
 
         @keyframes fadeOut {
-            from { opacity: 1; transform: scale(1); }
-            to { opacity: 0; transform: scale(0.8); }
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
         }
 
         .no-content {
@@ -274,9 +282,9 @@
                                 <i class="fas fa-book me-2"></i>Книга
                             </a>
                             <#if isModer || isAdmin>
-                            <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-book me-2"></i>Олимпиада
-                            </a>
+                                <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i>Олимпиада
+                                </a>
                             </#if>
                         </div>
                     </div>
@@ -292,6 +300,12 @@
                                 <button class="nav-link active" id="content-tab" data-bs-toggle="tab"
                                         data-bs-target="#content" type="button" role="tab">
                                     <i class="fas fa-file-alt me-2"></i>Мой контент
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="history-tab" data-bs-toggle="tab"
+                                        data-bs-target="#history" type="button" role="tab">
+                                    <i class="fas fa-history me-2"></i>Моя история
                                 </button>
                             </li>
                             <#if isModer>
@@ -362,6 +376,55 @@
                                 </nav>
                             </div>
 
+                            <!-- Вкладка "Моя история" -->
+                            <div class="tab-pane fade" id="history" role="tabpanel">
+                                <!-- Фильтры для истории -->
+                                <div class="history-filters mb-4">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <select class="form-select form-select-sm" id="historyTypeFilter">
+                                                <option value="all">Все типы</option>
+                                                <option value="posts">Публикации</option>
+                                                <option value="blog">Блог</option>
+                                                <option value="events">Мероприятия</option>
+                                                <option value="books">Книги</option>
+                                                <option value="olympiads">Олимпиады</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select form-select-sm" id="historyStatusFilter">
+                                                <option value="all">Все статусы</option>
+                                                <option value="APPROVED">Одобрено</option>
+                                                <option value="REJECTED">Отклонено</option>
+                                                <option value="PENDING_REVIEW">На рассмотрении</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" id="historySearch"
+                                                       placeholder="Поиск по истории...">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        id="historySearchBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="historyContentList" class="content-list">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                        <p>Загрузка истории...</p>
+                                    </div>
+                                </div>
+
+                                <!-- Пагинация -->
+                                <nav id="historyPagination" class="mt-3" style="display: none;">
+                                    <ul class="pagination justify-content-center"></ul>
+                                </nav>
+                            </div>
+
                             <!-- Вкладка "Модерация" (для модераторов) -->
                             <#if isModer>
                                 <div class="tab-pane fade" id="moderation" role="tabpanel">
@@ -428,13 +491,6 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <#--                                            <div class="col-md-4">-->
-                                            <#--                                                <select class="form-select form-select-sm" id="usersSortBy">-->
-                                            <#--                                                    <option value="name">По имени</option>-->
-                                            <#--                                                    <option value="email">По email</option>-->
-                                            <#--                                                    <option value="createdAt">По дате регистрации</option>-->
-                                            <#--                                                </select>-->
-                                            <#--                                            </div>-->
                                         </div>
                                     </div>
 
@@ -451,12 +507,55 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
+
+                                <!-- Вкладка "Весь контент" (для администраторов) -->
+                                <div class="tab-pane fade" id="allcontent" role="tabpanel">
+                                    <!-- Фильтры для всего контента -->
+                                    <div class="allcontent-filters mb-4">
+                                        <div class="row g-2">
+                                            <div class="col-md-3">
+                                                <select class="form-select form-select-sm" id="allcontentTypeFilter">
+                                                    <option value="all">Все типы</option>
+                                                    <option value="post">Публикации</option>
+                                                    <option value="blog">Блог</option>
+                                                    <option value="event">Мероприятия</option>
+                                                    <option value="book">Книги</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select class="form-select form-select-sm" id="allcontentStatusFilter">
+                                                    <option value="all">Все статусы</option>
+                                                    <option value="APPROVED">Одобрено</option>
+                                                    <option value="REJECTED">Отклонено</option>
+                                                    <option value="PENDING_REVIEW">На рассмотрении</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" class="form-control" id="allcontentSearch"
+                                                           placeholder="Поиск по контенту...">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="allcontentSearchBtn">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Пагинация -->
+                                    <nav id="allcontentPagination" class="mt-3" style="display: none;">
+                                        <ul class="pagination justify-content-center"></ul>
+                                    </nav>
+                                </div>
                             </#if>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
 
