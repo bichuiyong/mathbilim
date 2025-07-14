@@ -343,6 +343,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalRejectBtn = document.getElementById('modalRejectBtn');
     let currentItem = null;
 
+    // Получение CSRF токена
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]')?.getAttribute('content') || '';
+    }
+
+    function getCsrfHeader() {
+        return document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+    }
+
     function showLoading() {
         contentList.innerHTML = `
             <div class="text-center text-muted py-5">
@@ -525,7 +534,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function showContentDetailsById(id, type) {
         const endpoint = getApiEndpoint(type);
-        fetch(`${endpoint}/${id}`)
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Добавляем CSRF токен в заголовки
+        const csrfToken = getCsrfToken();
+        const csrfHeader = getCsrfHeader();
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
+        fetch(`${endpoint}/${id}`, {
+            method: 'GET',
+            headers: headers
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Ошибка: ${response.status}`);
@@ -552,42 +575,45 @@ document.addEventListener("DOMContentLoaded", function () {
         return endpoints[type] || '/api/users/content';
     }
 
-    function getModerationEndpoint(type) {
-        const endpoints = {
-            'post': '/api/users/posts/moderate',
-            'blog': '/api/users/blogs/moderate',
-            'event': '/api/users/events/moderate',
-            'book': '/api/users/books/moderate'
-        };
-        return endpoints[type] || '/api/users/content/moderate';
-    }
-
     function performModerationActionById(action, id, type) {
         currentItem = { id, type };
         performModerationAction(action);
     }
 
+    // ИСПРАВЛЕНО: Новая функция для выполнения действий модерации
     function performModerationAction(action) {
         if (!currentItem) return;
 
-        const url = getModerationEndpoint(currentItem.type);
-        const requestBody = {
-            id: currentItem.id,
-            action: action
+        // Используем новые endpoints из AdminController
+        const url = `/api/admin/${action}/${currentItem.type}/${currentItem.id}`;
+
+        // Подготавливаем заголовки с CSRF токеном
+        const headers = {
+            'Content-Type': 'application/json'
         };
+
+        const csrfToken = getCsrfToken();
+        const csrfHeader = getCsrfHeader();
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
 
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody)
+            headers: headers
         })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Ошибка: ${response.status}`);
                 }
-                return response.json();
+                return response.text().then(text => {
+                    // Пытаемся распарсить JSON, если не получается - возвращаем пустой объект
+                    try {
+                        return text ? JSON.parse(text) : {};
+                    } catch (e) {
+                        return { message: 'Действие выполнено успешно' };
+                    }
+                });
             })
             .then(result => {
                 modal.hide();
@@ -688,8 +714,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const types = ['post', 'blog', 'event', 'book'];
         const urls = types.map(type => `/api/users/moder?type=${type}&page=0&size=10`);
 
+        // Подготавливаем заголовки с CSRF токеном для всех запросов
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        const csrfToken = getCsrfToken();
+        const csrfHeader = getCsrfHeader();
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
         Promise.all(urls.map(url =>
-            fetch(url)
+            fetch(url, {
+                method: 'GET',
+                headers: headers
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -735,5 +775,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadAllContent();
 });
-
 
