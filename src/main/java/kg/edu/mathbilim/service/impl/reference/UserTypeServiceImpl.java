@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.reference;
 import kg.edu.mathbilim.dto.user.UserTypeDto;
 import kg.edu.mathbilim.dto.user.UserTypeTranslationDto;
 import kg.edu.mathbilim.mapper.user.UserTypeMapper;
+import kg.edu.mathbilim.mapper.user.UserTypeTranslationMapper;
 import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import kg.edu.mathbilim.repository.user.UserTypeRepository;
@@ -25,11 +26,16 @@ public class UserTypeServiceImpl
         UserTypeTranslationRepository,
         UserTypeMapper>
         implements UserTypeService {
+    private final UserTypeRepository userTypeRepository;
+    private final UserTypeMapper userTypeMapper;
 
     public UserTypeServiceImpl(UserTypeRepository repository,
                                UserTypeTranslationRepository translationRepository,
                                UserTypeMapper mapper) {
         super(repository, translationRepository, mapper);
+        this.userTypeRepository = repository;
+        this.userTypeMapper = mapper;
+
     }
 
     @Override
@@ -80,6 +86,13 @@ public class UserTypeServiceImpl
     @Override
     public UserTypeDto removeTranslation(Integer userTypeId, String languageCode) {
         return removeTranslation(userTypeId, languageCode);
+    }
+
+    @Override
+    public List<UserTypeDto> getUserTypesByQuery(String name, String lang) {
+        return userTypeRepository.findAllByQuery(name, lang).stream()
+                .map(userTypeMapper::toDto)
+                .toList();
     }
 
     @Override

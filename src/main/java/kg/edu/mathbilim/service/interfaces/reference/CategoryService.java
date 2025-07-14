@@ -29,4 +29,6 @@ public interface CategoryService {
     CategoryDto addTranslation(Integer categoryId, String languageCode, String translation);
 
     CategoryDto removeTranslation(Integer categoryId, String languageCode);
+
+    List<CategoryDto> getAllCategoriesByQuery(String name, String lang);
 }

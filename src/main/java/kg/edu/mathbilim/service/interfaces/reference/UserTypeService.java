@@ -31,4 +31,6 @@ public interface UserTypeService {
 
     @Transactional
     UserTypeDto removeTranslation(Integer userTypeId, String languageCode);
+
+    List<UserTypeDto> getUserTypesByQuery(String name, String lang);
 }

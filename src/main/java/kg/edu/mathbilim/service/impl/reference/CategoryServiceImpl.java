@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl extends AbstractTypeContentService<
@@ -24,10 +25,15 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
         CategoryTranslationRepository,
         CategoryMapper>   implements CategoryService {
 
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
     public CategoryServiceImpl(CategoryRepository repository,
                                CategoryTranslationRepository translationRepository,
-                               CategoryMapper mapper) {
+                               CategoryMapper mapper, CategoryRepository categoryRepository) {
         super(repository, translationRepository, mapper);
+        this.categoryRepository = categoryRepository;
+        this.categoryMapper = mapper;
     }
 
     @Override
@@ -78,6 +84,13 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     @Override
     public CategoryDto removeTranslation(Integer categoryId, String languageCode) {
         return removeTranslation(categoryId, languageCode);
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategoriesByQuery(String name, String lang) {
+        return categoryRepository.findAllByQuery(
+                lang,
+                name).stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Override

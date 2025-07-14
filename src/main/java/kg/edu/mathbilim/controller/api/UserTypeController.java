@@ -25,9 +25,14 @@ public class UserTypeController {
         return ResponseEntity.ok(userTypeService.updateUserType(userTypeId, userTypeDto));
     }
 
-    @DeleteMapping("userTypeId")
+    @DeleteMapping("{userTypeId}")
     public ResponseEntity<?> deleteUserType(@PathVariable Integer userTypeId) {
         userTypeService.deleteUserType(userTypeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getUserTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
+        return ResponseEntity.ok(userTypeService.getUserTypesByQuery(name, lang));
     }
 }

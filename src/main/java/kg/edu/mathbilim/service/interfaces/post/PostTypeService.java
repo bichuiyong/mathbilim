@@ -28,4 +28,6 @@ public interface PostTypeService {
 
     @Transactional
     PostTypeDto removeTranslation(Integer postTypeId, String languageCode);
+
+    List<PostTypeDto> getAllPostTypesWithQuery(String name, String lang);
 }

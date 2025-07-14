@@ -31,4 +31,9 @@ public class PostTypeController {
         postTypeService.deletePostType(postTypeId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllPostTypesWithQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
+        return ResponseEntity.ok(postTypeService.getAllPostTypesWithQuery(name, lang));
+    }
 }

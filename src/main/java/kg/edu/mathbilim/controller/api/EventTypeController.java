@@ -29,4 +29,10 @@ public class EventTypeController {
         eventTypeService.deleteEventType(eventTypeId);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping
+    public ResponseEntity<?> getAllEventTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
+        return ResponseEntity.ok(eventTypeService.getAllEventTypesByQuery(lang, name));
+    }
 }

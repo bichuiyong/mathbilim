@@ -29,4 +29,9 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllCategoriesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByQuery(name, lang));
+    }
 }
