@@ -1,7 +1,7 @@
 let usersTab = document.getElementById('users-tab');
 let userContentList = document.getElementById('usersContentList');
 usersTab.addEventListener('shown.bs.tab', function (e) {
-    doFetch('/api/users');
+    doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
 });
 
 
@@ -17,7 +17,8 @@ searchButton.onclick = function () {
     if (searchInputValue) {
         url = "/api/users?query=" + searchInputValue
     }
-    doFetch(url);
+    doFetch(url, -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
+
 }
 function renderPagination(currentPage, totalPages, url) {
     // document.getElementById('usersPagination').style.display = 'block';
@@ -60,11 +61,18 @@ function renderPagination(currentPage, totalPages, url) {
         });
     });
 }
-function doFetch(url, page = 1, onSuccess = addUserToTable, changeModals = changeEditModal) {
+function doFetch(
+    url,
+    page = 1,
+    onSuccess = addUserToTable,
+    changeModals = changeEditModal,
+    emptyContentHandler = showEmptyMessage
+) {
     if (page < 1) {
         page = 1;
     }
     const connector = url.includes('?') ? '&' : '?';
+
     fetch(`${url}${connector}page=${page}`)
         .then(response => {
             if (!response.ok) {
@@ -73,102 +81,124 @@ function doFetch(url, page = 1, onSuccess = addUserToTable, changeModals = chang
             return response.json();
         })
         .then(data => {
-            // console.log('Ответ сервера:', data);
-            if (data.length === 0) {
+            const contentArray = Array.isArray(data.content)
+                ? data.content
+                : Array.isArray(data)
+                    ? data
+                    : [];
+            console.log(contentArray);
 
+            if (contentArray.length === 0) {
+                emptyContentHandler();
+                return;
             } else {
-                onSuccess(data)
-                changeModals()
-                initDropdownBehavior()
-                // addUserToTable(data.content)
-                // renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
+                onSuccess(data);
+                changeModals();
+                initDropdownBehavior();
             }
-
         })
-        .catch(error => {});
+        .catch(error => {
+            console.error("Ошибка загрузки данных:", error);
+        });
 }
+
+
+
+function showEmptyMessage(containerId = 'usersContentList', message = '😕 Ничего не найдено') {
+    const container = document.getElementById(containerId);
+    console.log(container);
+    container.innerHTML = `
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            <h5 class="mb-0">${message}</h5>
+            <p class="mb-0">Попробуйте изменить параметры поиска или фильтрации.</p>
+        </div>
+    `;
+}
+
+
 //
 function addUserToTable(content) {
-    let users = content.content
-    userContentList.innerHTML =  "<div class=\"table-responsive\" style=\"max-height: 400px; overflow-y: auto;\">\n" +
-        "        <table class=\"table table-hover table-striped\">\n" +
-        "            <thead>\n" +
-        "            <tr>\n" +
-        "                <th>ID</th>\n" +
-        "                <th>Имя пользователя</th>\n" +
-        "                <th>Email</th>\n" +
-        "                <th>Роль</th>\n" +
-        "                <th>Статус</th>\n" +
-        "                <th>Действия</th>\n" +
-        "            </tr>\n" +
-        "            </thead>\n" +
-        "            <tbody id=\"resultTableUsers\">\n" +
-        "            </tbody>\n" +
-        "        </table>\n" +
-        "    </div>";
-    let resultTableUsers = document.getElementById('resultTableUsers')
+    const users = content.content;
+
+    if (!Array.isArray(users) || users.length === 0) {
+        showEmptyMessage('usersContentList');
+        return;
+    }
+
+    userContentList.innerHTML = `
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя пользователя</th>
+                        <th>Email</th>
+                        <th>Роль</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableUsers"></tbody>
+            </table>
+        </div>
+    `;
+
+    const resultTableUsers = document.getElementById('resultTableUsers');
     users.forEach(user => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-  <td>${user.id}</td>
-  <td>${user.name}</td>
-  <td>${user.email}</td>
-  <td><span class="badge bg-secondary">${user.role.name}</span></td>
-  <td>
-    <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
-      ${user.enabled ? 'Активен' : 'Неактивен'}
-    </span>
-  </td>
-  <td>
-    <div class="dropdown">
-      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Действия
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <a class="dropdown-item edit-button" 
-             href="#" 
-             data-bs-toggle="modal" 
-             data-bs-target="#editUserModal"
-             data-user-id="${user.id}" 
-             data-user-name="${user.name}" 
-             data-user-surname="${user.surname}" 
-             data-user-role="${user.role.name}" 
-             data-user-type="${user.type?.id || ''}">
-            ✏️ Изменить
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item delete-button" 
-             href="#" 
-             data-bs-toggle="modal" 
-             data-bs-target="#deleteUserModal"
-             data-user-id="${user.id}">
-            🗑️ Удалить
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item block-button text-warning" 
-             href="#" 
-             data-user-id="${user.id}">
-            ${user.enabled ? '🔒 Заблокировать' : '🔓 Разблокировать'}
-          </a>
-        </li>
-      </ul>
-    </div>
-  </td>
-`;
-
-
-
-
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td><span class="badge bg-secondary">${user.role.name}</span></td>
+            <td>
+                <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
+                    ${user.enabled ? 'Активен' : 'Неактивен'}
+                </span>
+            </td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Действия
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item edit-button"
+                               href="#"
+                               data-bs-toggle="modal"
+                               data-bs-target="#editUserModal"
+                               data-user-id="${user.id}"
+                               data-user-name="${user.name}"
+                               data-user-surname="${user.surname}"
+                               data-user-role="${user.role.name}"
+                               data-user-type="${user.type?.id || ''}">
+                                ✏️ Изменить
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item delete-button"
+                               href="#"
+                               data-bs-toggle="modal"
+                               data-bs-target="#deleteUserModal"
+                               data-user-id="${user.id}">
+                                🗑️ Удалить
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item block-button text-warning"
+                               href="#"
+                               data-user-id="${user.id}">
+                                ${user.enabled ? '🔒 Заблокировать' : '🔓 Разблокировать'}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        `;
         resultTableUsers.appendChild(tr);
-
     });
-    // initDropdownBehavior();
-    // console.log('changeEditModal')
-    // changeEditModal();
 }
+
 function initDropdownBehavior() {
     document.querySelectorAll('.dropdown').forEach(dropdown => {
         const toggleButton = dropdown.querySelector('[data-bs-toggle="dropdown"]');

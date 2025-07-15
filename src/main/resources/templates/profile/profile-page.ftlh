@@ -287,23 +287,35 @@
                                     </div>
                                     <div class="users-filters mb-4">
                                         <div class="row g-2">
-                                            <div class="col-md-8">
+                                            <div class="col-md-4">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="typeSearch"
                                                            placeholder="Поиск по названию...">
-                                                    <button class="btn btn-outline-secondary" type="button"
-                                                            id="typeSearchBtn">
-                                                        <i class="fas fa-search"></i>
-                                                    </button>
+
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
+                                                <select class="form-select form-select-sm" id="languageTypeSortBy">
+                                                    <option disabled>Язык</option>
+                                                    <option value="en">Английский</option>
+                                                    <option value="kg">Кыргызский</option>
+                                                    <option value="ru">Русский</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-sm">
                                                 <select class="form-select form-select-sm" id="staticTypeSortBy">
                                                     <option value="categories">Категория</option>
-                                                    <option value="events">Тип мероприятий</option>
-                                                    <option value="posts">Тип публикаций</option>
-                                                    <option value="user-types">Тип пользователей</option>
+                                                    <option value="eventTypes">Тип мероприятий</option>
+                                                    <option value="postTypes">Тип публикаций</option>
+                                                    <option value="userTypes">Тип пользователей</option>
                                                 </select>
+                                                <button class="btn btn-outline-secondary ms-3" type="button"
+                                                            id="typeSearchBtn">
+                                                        <i class="fas fa-search"></i>
+                                                </button>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

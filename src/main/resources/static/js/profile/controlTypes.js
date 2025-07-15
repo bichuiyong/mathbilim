@@ -4,6 +4,16 @@ let staticTypeSortBy = document.getElementById('staticTypeSortBy');
 let createTypeBtn = document.getElementById('createTypeBtn');
 
 
+
+document.getElementById('typeSearchBtn').addEventListener('click', function () {
+    const search = document.getElementById('typeSearch').value;
+    const type = document.getElementById('staticTypeSortBy').value;
+    const lang = document.getElementById('languageTypeSortBy').value;
+    doFetch(`/api/${type}?lang=${lang}&name=${search}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'));
+});
+
+
+
 createTypeBtn.onclick = function () {
     const typeId = document.getElementById('typeIdForChange').value;
     const form = document.getElementById('categoryForm');
@@ -92,7 +102,7 @@ function getLinkByName(name) {
 
 
 categoryTab.addEventListener('show.bs.tab', function () {
-    doFetch(`/api/dict/${staticTypeSortBy.value}`, -1, addContentInList, changeModalForTypes)
+    doFetch(`/api/${staticTypeSortBy.value}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'))
 });
 
 function openCreateModal() {
@@ -154,7 +164,7 @@ function changeModalForTypes() {
 
 staticTypeSortBy.addEventListener('change', function () {
     const value = this.value;
-    doFetch(`/api/dict/${value}`, -1, addContentInList, changeModalForTypes);
+    doFetch(`/api/${value}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'));
 })
 
 function addContentInList(content) {
