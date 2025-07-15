@@ -21,14 +21,32 @@ createTypeBtn.onclick = function () {
     const isEdit = !!typeId;
     const method = isEdit ? 'PUT' : 'POST';
 
+
+    const errorId = 'staticTypeError';
+    const oldError = document.getElementById(errorId);
+    if (oldError) {
+        oldError.remove();
+    }
+
+    if (!selectedType) {
+        const selectWrapper = document.getElementById('selectWrapper');
+        const errorElem = document.createElement('div');
+        errorElem.id = errorId;
+        errorElem.style.color = 'red';
+        errorElem.style.marginTop = '5px';
+        errorElem.textContent = 'Пожалуйста, выберите тип.';
+
+        selectWrapper.appendChild(errorElem);
+        return;
+    }
+
     let url = getLinkByName(selectedType);
     if (isEdit) {
         url += `/${typeId}`;
     }
 
-    sendForm(form, url, method, 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, url)
-
-}
+    sendForm(form, url, method, 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, url);
+};
 
 function onCreateTypeError(response) {
     let form = document.getElementById('categoryForm');
