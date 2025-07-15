@@ -108,11 +108,11 @@ function getTranslationsFromForm(form) {
 function getLinkByName(name) {
     if (name === 'categories') {
         return '/api/categories';
-    } else if (name === 'event_type') {
+    } else if (name === 'eventTypes') {
         return '/api/eventTypes'
-    } else if (name === 'post_type') {
+    } else if (name === 'postTypes') {
         return '/api/postTypes'
-    } else if (name === 'user_type') {
+    } else if (name === 'userTypes') {
         return '/api/userTypes'
     }
 }
