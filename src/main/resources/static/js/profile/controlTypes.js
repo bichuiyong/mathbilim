@@ -45,7 +45,17 @@ createTypeBtn.onclick = function () {
         url += `/${typeId}`;
     }
 
-    sendForm(form, url, method, 'createTypeModal', getTranslationsFromForm(form), onCreateTypeError, url);
+    sendForm(
+        form,
+        url,
+        method,
+        'createTypeModal',
+        getTranslationsFromForm(form),
+        onCreateTypeError,
+        () => doFetch(`/api/${staticTypeSortBy.value}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'))
+    );
+
+
 };
 
 function onCreateTypeError(response) {
@@ -94,10 +104,10 @@ function getTranslationsFromForm(form) {
         },
         {
             translation: form.querySelector('#nameKg').value.trim(),
-            languageCode: 'kg'
+            languageCode: 'ky'
         }
     ];
-
+    console.log(translations);
 
 
     return {translations};
@@ -186,29 +196,35 @@ staticTypeSortBy.addEventListener('change', function () {
 })
 
 function addContentInList(content) {
-    typeContentList.innerHTML = "<div class=\"table-responsive\" style=\"max-height: 400px; overflow-y: auto;\">\n" +
-        "    <table class=\"table table-hover table-striped\">\n" +
-        "        <thead>\n" +
-        "            <tr>\n" +
-        "                <th>ID</th>\n" +
-        "                <th>Перевод</th>\n" +
-        "                <th>Локаль</th>\n" +
-        "                <th>Действия</th>\n" +
-        "            </tr>\n" +
-        "        </thead>\n" +
-        "        <tbody id=\"resultTableContent\">\n" +
-        "        </tbody>\n" +
-        "    </table>\n" +
-        "</div>";
+    typeContentList.innerHTML = `<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Перевод</th>
+                    <th>Локаль</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="resultTableContent">
+            </tbody>
+        </table>
+    </div>`;
 
-    let resultTableContent = document.getElementById('resultTableContent')
+    let resultTableContent = document.getElementById('resultTableContent');
+
     content.forEach(c => {
-        console.log(`Элемент ${c}`);
+        const ru = c.translations.find(t => t.languageCode === 'ru')?.translation || '';
+        const en = c.translations.find(t => t.languageCode === 'en')?.translation || '';
+        const ky = c.translations.find(t => t.languageCode === 'ky')?.translation || '';
+        const firstLang = c.translations[0]?.languageCode || '';
+        const firstTranslation = c.translations[0]?.translation || '';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
   <td>${c.id}</td>
-  <td>${c.translations[0].translation}</td>
-  <td>${c.translations[0].languageCode}</td>
+  <td>${firstTranslation}</td>
+  <td>${firstLang}</td>
   <td>
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -221,9 +237,9 @@ function addContentInList(content) {
              data-bs-toggle="modal" 
              data-bs-target="#createTypeModal"
              data-type-id="${c.id}" 
-             data-type-ru="${c.translations[0].translation}" 
-             data-type-en="${c.translations[1].translation}" 
-             data-type-kg="${c.translations[2].translation}">
+             data-type-ru="${ru}" 
+             data-type-en="${en}" 
+             data-type-kg="${ky}">
             ✏️ Изменить
           </a>
         </li>
@@ -241,7 +257,9 @@ function addContentInList(content) {
   </td>
 `;
         resultTableContent.appendChild(tr);
-})}
+    });
+}
+
 
 
 

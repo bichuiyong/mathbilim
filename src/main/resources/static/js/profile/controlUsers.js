@@ -223,7 +223,16 @@ function initDropdownBehavior() {
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
-    sendForm(form, '/api/users', 'POST', 'createUserModal', getModelFromFormCreateUpdateUser(form, 'createUserModal'), onUserSaveError, "/api/users");
+    sendForm(
+        form,
+        '/api/users',
+        'POST',
+        'createUserModal',
+        getModelFromFormCreateUpdateUser(form, 'createUserModal'),
+        onUserSaveError,
+        () => doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
+    );
+
 }
 
 async function handleUserAction(method, successMessage, errorMessage, url, modalId, successUrlFetch) {
@@ -325,9 +334,19 @@ function changeEditModal() {
             deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
 
         } else if (button.classList.contains('block-button')) {
-            await handleUserAction('PATCH',
+            await handleUserAction(
+                'PATCH',
                 `Пользователь с id=${userId} успешно заблокирован/изменён`,
-                'Ошибка блокировки/изменения пользователя', userId);
+                'Ошибка блокировки/изменения пользователя',
+                `/api/users/${userId}`,
+                null,
+                {
+                    url: '/api/users',
+                    onSuccess: addUserToTable,
+                    changeModals: changeEditModal
+                }
+            );
+
         }
     });
 }
@@ -336,34 +355,46 @@ let editUserBtn = document.getElementById('editUserBtn');
 editUserBtn.onclick = function () {
     let editUserForm = document.getElementById('editUserForm');
     let userId = document.getElementById('editUserId').value
-    sendForm(editUserForm, `/api/users/${userId}`, 'PUT', 'editUserModal', getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'), onUserSaveError, "/api/users");
+    sendForm(
+        editUserForm,
+        `/api/users/${userId}`,
+        'PUT',
+        'editUserModal',
+        getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'),
+        onUserSaveError,
+        () => doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
+    );
+
 }
 //
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
     let userId = deleteUserBtn.dataset.userId
     let typeId = deleteUserBtn.dataset.typeId
-    let url
-    let successUrl
+    let url, successUrl, onSuccess, changeModals;
     if (userId) {
         url = `/api/users/${userId}`
         successUrl = '/api/users'
+        onSuccess = addUserToTable;
+        changeModals = changeEditModal;
     }
     if (typeId) {
         let contentType = deleteUserBtn.dataset.contentType
-        url = `/api/${contentType}/${typeId}`
-        successUrl = '/api/dict/' + contentType
+        url = `/api/${contentType}/${typeId}`;
+        successUrl = `/api/${contentType}`;
+        onSuccess = addContentInList;
+        changeModals = changeModalForTypes;
     }
     await handleUserAction(
         'DELETE',
         `Объект успешно удалён`,
-        'Ошибка удаления ',
+        'Ошибка удаления',
         url,
         'deleteUserModal',
         {
             url: successUrl,
-            onSuccess: addContentInList,
-            changeModals: changeModalForTypes
+            onSuccess,
+            changeModals
         }
     );
 }
@@ -390,8 +421,7 @@ function getModelFromFormCreateUpdateUser(form, modalId) {
     return data;
 }
 
-function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetchUrl) {
-    // console.log(data);
+function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetch) {
     fetch(fetchUrl, {
         method: method,
         headers: {
@@ -399,10 +429,8 @@ function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetch
             'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify(data),
-        // credentials: "include"
     })
         .then(async response => {
-            // console.log(response)
             if (!response.ok) {
                 onError(response, form)
             } else {
@@ -418,14 +446,14 @@ function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetch
                 form.reset();
                 form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                 form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-                doFetch(onSuccessFetchUrl);
+
+                if (typeof onSuccessFetch === 'function') {
+                    onSuccessFetch();
+                }
             }
-        })
-
-
-
-
+        });
 }
+
 
 function onUserSaveError(response, form) {
     response.json().then(errorBody => {
