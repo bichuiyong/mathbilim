@@ -17,4 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostTypeDto extends BaseTypeDto<PostTypeTranslationDto> {
 
+    public PostTypeDto() {
+        super();
+    }
 }

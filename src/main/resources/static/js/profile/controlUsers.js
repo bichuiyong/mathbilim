@@ -241,6 +241,8 @@ async function handleUserAction(method, successMessage, errorMessage, url, modal
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
             }
+            
+            clearErrorMessage(modalId);
 
             if (typeof successUrlFetch === 'string') {
                 doFetch(successUrlFetch);
@@ -251,12 +253,56 @@ async function handleUserAction(method, successMessage, errorMessage, url, modal
 
         } else {
             const errorData = await response.json();
-            throw new Error(errorData.message || errorMessage);
+            const errorMsg = errorData.message || errorMessage || 'Что-то пошло не так.';
+
+            showErrorMessage(modalId, errorMsg);
+
+            throw new Error(errorMsg);
         }
     } catch (error) {
         console.error('Ошибка:', error.message);
+        showErrorMessage(modalId, 'Что-то пошло не так.');
     }
 }
+
+function showErrorMessage(modalId, message) {
+    if (!modalId) return;
+
+    const modalEl = document.getElementById(modalId);
+    if (!modalEl) return;
+
+    let errorBox = modalEl.querySelector('#errorMessageBox');
+
+    if (!errorBox) {
+        errorBox = document.createElement('div');
+        errorBox.id = 'errorMessageBox';
+        errorBox.style.color = 'red';
+        errorBox.style.marginBottom = '1rem';
+        errorBox.style.fontWeight = 'bold';
+
+        const modalBody = modalEl.querySelector('.modal-body');
+        if (modalBody) {
+            modalBody.prepend(errorBox);
+        } else {
+            modalEl.prepend(errorBox);
+        }
+    }
+
+    errorBox.textContent = message;
+}
+
+function clearErrorMessage(modalId) {
+    if (!modalId) return;
+
+    const modalEl = document.getElementById(modalId);
+    if (!modalEl) return;
+
+    const errorBox = modalEl.querySelector('#errorMessageBox');
+    if (errorBox) {
+        errorBox.remove();
+    }
+}
+
 
 //
 function changeEditModal() {
