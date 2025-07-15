@@ -89,8 +89,8 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     @Override
     public List<CategoryDto> getAllCategoriesByQuery(String name, String lang) {
         return categoryRepository.findAllByQuery(
-                lang,
-                name).stream().map(categoryMapper::toDto).collect(Collectors.toList());
+                name,
+                lang).stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
