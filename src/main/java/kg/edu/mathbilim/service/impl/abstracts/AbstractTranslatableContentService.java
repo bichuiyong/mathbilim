@@ -72,7 +72,6 @@ public abstract class AbstractTranslatableContentService<
             Function<Pageable, Page<E>> statusFinder,
             BiFunction<String, Pageable, Page<E>> queryFinder
     ) {
-//        ContentStatus contentStatus = ContentStatus.fromName(status);
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
 
         Page<E> result = (query == null || query.isEmpty())

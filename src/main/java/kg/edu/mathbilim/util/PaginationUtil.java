@@ -25,6 +25,7 @@ public class PaginationUtil {
                                          Function<E, D> mapper,
                                          String notFoundMessage) {
         Page<E> page = supplier.get();
+        if(page == null) throw new IllegalArgumentException();
         if (page.isEmpty()) {
             return Page.empty(page.getPageable());
         }
