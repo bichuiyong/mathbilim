@@ -28,4 +28,6 @@ public interface EventTypeService {
 
     @Transactional
     EventTypeDto removeTranslation(Integer eventTypeId, String languageCode);
+
+    List<EventTypeDto> getAllEventTypesByQuery(String lang, String name);
 }

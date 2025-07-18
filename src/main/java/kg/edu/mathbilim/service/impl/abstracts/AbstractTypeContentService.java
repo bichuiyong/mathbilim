@@ -123,7 +123,6 @@ public abstract class AbstractTypeContentService<
 
     @Transactional
     protected void saveTranslations(E entity, List<DT> translationDtos) {
-        translationRepository.deleteByTypeId(entity.getId());
 
         translationDtos.stream()
                 .peek(dto -> setTypeIdInTranslation(dto, entity.getId()))

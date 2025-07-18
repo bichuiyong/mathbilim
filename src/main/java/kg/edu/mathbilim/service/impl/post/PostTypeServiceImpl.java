@@ -25,11 +25,15 @@ public class PostTypeServiceImpl
         PostTypeTranslationRepository,
         PostTypeMapper>
         implements PostTypeService {
+    private final PostTypeRepository postTypeRepository;
+    private final PostTypeMapper postTypeMapper;
 
     public PostTypeServiceImpl(PostTypeRepository repository,
                                PostTypeTranslationRepository translationRepository,
                                PostTypeMapper mapper) {
         super(repository, translationRepository, mapper);
+        this.postTypeRepository = repository;
+        this.postTypeMapper = mapper;
     }
 
     @Override
@@ -75,6 +79,13 @@ public class PostTypeServiceImpl
     @Override
     public PostTypeDto removeTranslation(Integer postTypeId, String languageCode) {
         return removeTranslation(postTypeId, languageCode);
+    }
+
+    @Override
+    public List<PostTypeDto> getAllPostTypesWithQuery(String name, String lang) {
+        return postTypeRepository.findAllByQuery(name, lang).stream()
+                .map(postTypeMapper::toDto)
+                .toList();
     }
 
     @Override

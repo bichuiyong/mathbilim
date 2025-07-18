@@ -25,11 +25,15 @@ public class EventTypeServiceImpl
         EventTypeTranslationRepository,
         EventTypeMapper>
         implements EventTypeService {
+    private final EventTypeRepository eventTypeRepository;
+    private final EventTypeMapper eventTypeMapper;
 
     public EventTypeServiceImpl(EventTypeRepository repository,
                                 EventTypeTranslationRepository translationRepository,
                                 EventTypeMapper mapper) {
         super(repository, translationRepository, mapper);
+        this.eventTypeRepository = repository;
+        this.eventTypeMapper = mapper;
     }
 
     @Override
@@ -75,6 +79,13 @@ public class EventTypeServiceImpl
     @Override
     public EventTypeDto removeTranslation(Integer eventTypeId, String languageCode) {
         return removeTranslation(eventTypeId, languageCode);
+    }
+
+    @Override
+    public List<EventTypeDto> getAllEventTypesByQuery(String lang, String name) {
+        return eventTypeRepository.findAllByQuery(name, lang).stream()
+                .map(eventTypeMapper::toDto)
+                .toList();
     }
 
     @Override
