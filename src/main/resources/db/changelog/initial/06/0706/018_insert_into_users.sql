@@ -1,4 +1,0 @@
-insert into users(name, surname, email, password, enabled, role_id, type_id)
-values ('admin', 'admin', 'admin@gmail.com', '$2a$10$Io9CTQ3.c/089PJHoU8jduxiSECqSzrmZqQr09vsTz32j61N.USse', true, (select id from roles r where r.name = 'ADMIN'), null),
-       ('moder', 'moder', 'moder@gmail.com', '$2a$10$Io9CTQ3.c/089PJHoU8jduxiSECqSzrmZqQr09vsTz32j61N.USse', true, (select id from roles r where r.name = 'MODER'), null),
-       ('user', 'user', 'user@gmail.com', '$2a$10$Io9CTQ3.c/089PJHoU8jduxiSECqSzrmZqQr09vsTz32j61N.USse', true, (select id from roles r where r.name = 'USER'), (select id from user_types ut where ut.name = 'STUDENT'));
