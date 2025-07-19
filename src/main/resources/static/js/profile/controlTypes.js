@@ -71,7 +71,7 @@ function onCreateTypeError(response) {
         const inputs = [
             { id: 'nameRu', message: 'Поле обязательно (Русский)' },
             { id: 'nameEn', message: 'Поле обязательно (English)' },
-            { id: 'nameKg', message: 'Поле обязательно (Кыргызча)' }
+            { id: 'nameKy', message: 'Поле обязательно (Кыргызча)' }
         ];
 
         inputs.forEach(inputData => {
@@ -103,7 +103,7 @@ function getTranslationsFromForm(form) {
             languageCode: 'en'
         },
         {
-            translation: form.querySelector('#nameKg').value.trim(),
+            translation: form.querySelector('#nameKy').value.trim(),
             languageCode: 'ky'
         }
     ];
@@ -159,11 +159,11 @@ function changeModalForTypes() {
             const typeId = editButton.dataset.typeId;
             const nameRu = editButton.dataset.typeRu;
             const nameEn = editButton.dataset.typeEn;
-            const nameKg = editButton.dataset.typeKg;
+            const nameKy = editButton.dataset.typeKy;
 
             document.getElementById('nameRu').value = nameRu;
             document.getElementById('nameEn').value = nameEn;
-            document.getElementById('nameKg').value = nameKg;
+            document.getElementById('nameKy').value = nameKy;
             document.getElementById('typeIdForChange').value = typeId;
 
             const selectWrapper = document.getElementById('selectWrapper');
@@ -239,7 +239,7 @@ function addContentInList(content) {
              data-type-id="${c.id}" 
              data-type-ru="${ru}" 
              data-type-en="${en}" 
-             data-type-kg="${ky}">
+             data-type-ky="${ky}">
             ✏️ Изменить
           </a>
         </li>

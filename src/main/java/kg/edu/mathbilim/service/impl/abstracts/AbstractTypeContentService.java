@@ -90,7 +90,6 @@ public abstract class AbstractTypeContentService<
         return entities.stream()
                 .map(mapper::toDto)
                 .toList();
-//        return .stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional

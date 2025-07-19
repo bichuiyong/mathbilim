@@ -304,7 +304,7 @@
                                                 <select class="form-select form-select-sm" id="languageTypeSortBy">
                                                     <option disabled>Язык</option>
                                                     <option value="en">Английский</option>
-                                                    <option value="kg">Кыргызский</option>
+                                                    <option value="ky">Кыргызский</option>
                                                     <option value="ru">Русский</option>
                                                 </select>
                                             </div>
@@ -492,8 +492,8 @@
                             <input type="text" class="form-control" id="nameEn" name="nameEn" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nameKg" class="form-label">Название (Кыргызча)</label>
-                            <input type="text" class="form-control" id="nameKg" name="nameKg" required>
+                            <label for="nameKy" class="form-label">Название (Кыргызча)</label>
+                            <input type="text" class="form-control" id="nameKy" name="nameKy" required>
                         </div>
                         <div class="mb-3" id="selectWrapper">
                             <label for="type" class="form-label">Что вы хотите создать?</label>
