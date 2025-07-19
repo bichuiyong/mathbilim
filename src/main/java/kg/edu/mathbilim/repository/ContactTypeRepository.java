@@ -1,8 +1,0 @@
-package kg.edu.mathbilim.repository;
-
-import kg.edu.mathbilim.model.ContactType;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface ContactTypeRepository extends JpaRepository<ContactType, Integer> {
-    ContactType getContactTypeById(Integer id);
-}
