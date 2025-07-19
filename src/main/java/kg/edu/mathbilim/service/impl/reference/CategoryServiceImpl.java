@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl.reference;
 
+import kg.edu.mathbilim.config.LocaleConfig;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.reference.CategoryTranslationDto;
 import kg.edu.mathbilim.mapper.reference.CategoryMapper;
@@ -8,7 +9,9 @@ import kg.edu.mathbilim.model.reference.CategoryTranslation;
 import kg.edu.mathbilim.repository.reference.CategoryRepository;
 import kg.edu.mathbilim.repository.reference.CategoryTranslationRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTypeContentService;
+import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,9 +91,21 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
 
     @Override
     public List<CategoryDto> getAllCategoriesByQuery(String name, String lang) {
-        return categoryRepository.findAllByQuery(
-                name,
-                lang).stream().map(categoryMapper::toDto).collect(Collectors.toList());
+        return getAllByQuery(name, lang);
+//        List<Category> categories = categoryRepository.findAllByQuery(name, lang);
+//        String preferredLang = LocaleConfig.getCurrentLocale().getLanguage();
+//        for (Category category : categories) {
+//            List<CategoryTranslation> translations = category.getTranslations();
+//            translations.sort((a, b) -> {
+//                if (a.getId().getLanguageCode().equals(preferredLang)) return -1;
+//                if (b.getId().getLanguageCode().equals(preferredLang)) return 1;
+//                return 0;
+//            });
+//        }
+//        return categories.stream()
+//                .map(categoryMapper::toDto)
+//                .toList();
+//        return .stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Override

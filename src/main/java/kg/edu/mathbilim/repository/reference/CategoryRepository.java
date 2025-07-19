@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface CategoryRepository extends AbstractTypeRepository<Category> {
 
+    @Override
     @Query(value = "SELECT DISTINCT ON (c.id) c.*\n" +
             "FROM categories c\n" +
             "JOIN category_translations ct ON c.id = ct.type_id\n" +

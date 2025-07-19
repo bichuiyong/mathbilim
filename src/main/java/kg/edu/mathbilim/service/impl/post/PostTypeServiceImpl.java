@@ -83,9 +83,10 @@ public class PostTypeServiceImpl
 
     @Override
     public List<PostTypeDto> getAllPostTypesWithQuery(String name, String lang) {
-        return postTypeRepository.findAllByQuery(name, lang).stream()
-                .map(postTypeMapper::toDto)
-                .toList();
+        return getAllByQuery(name, lang);
+//        return postTypeRepository.findAllByQuery(name, lang).stream()
+//                .map(postTypeMapper::toDto)
+//                .toList();
     }
 
     @Override

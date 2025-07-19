@@ -34,7 +34,7 @@ public class CustomLocaleResolver implements LocaleResolver {
         Cookie cookie = new Cookie("lang", locale.getLanguage());
         cookie.setMaxAge(365 * 24 * 60 * 60);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+//        cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }
 

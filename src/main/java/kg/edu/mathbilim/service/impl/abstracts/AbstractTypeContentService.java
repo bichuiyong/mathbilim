@@ -1,12 +1,16 @@
 package kg.edu.mathbilim.service.impl.abstracts;
 
+import kg.edu.mathbilim.config.LocaleConfig;
 import kg.edu.mathbilim.dto.abstracts.BaseTypeDto;
 import kg.edu.mathbilim.dto.abstracts.TypeTranslationDto;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.exception.nsee.TypeNotFoundException;
 import kg.edu.mathbilim.mapper.BaseTranslationMapper;
 import kg.edu.mathbilim.mapper.TypeBaseMapper;
 import kg.edu.mathbilim.model.abstracts.BaseType;
 import kg.edu.mathbilim.model.abstracts.TypeTranslation;
+import kg.edu.mathbilim.model.reference.Category;
+import kg.edu.mathbilim.model.reference.CategoryTranslation;
 import kg.edu.mathbilim.repository.abstracts.AbstractTypeRepository;
 import kg.edu.mathbilim.repository.abstracts.AbstractTypeTranslationRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +73,24 @@ public abstract class AbstractTypeContentService<
                     return dto;
                 })
                 .toList();
+    }
+
+//    @Override
+    public List<D> getAllByQuery(String name, String lang) {
+        List<E> entities = repository.findAllByQuery(name, lang);
+        String preferredLang = LocaleConfig.getCurrentLocale().getLanguage();
+        for (E entity : entities) {
+            List<T> translations = entity.getTranslations();
+            translations.sort((a, b) -> {
+                if (a.getId().getLanguageCode().equals(preferredLang)) return -1;
+                if (b.getId().getLanguageCode().equals(preferredLang)) return 1;
+                return 0;
+            });
+        }
+        return entities.stream()
+                .map(mapper::toDto)
+                .toList();
+//        return .stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public interface UserTypeRepository extends AbstractTypeRepository<UserType> {
+    @Override
     @Query(value = "SELECT DISTINCT ON (u.id) u.*\n" +
             "FROM user_types u\n" +
             "JOIN user_type_translations ut ON u.id = ut.type_id\n" +

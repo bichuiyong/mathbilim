@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface PostTypeRepository extends AbstractTypeRepository<PostType> {
 
+    @Override
     @Query(value = "SELECT DISTINCT ON (p.id) p.*\n" +
             "FROM post_types p\n" +
             "JOIN post_type_translations pt ON p.id = pt.type_id\n" +

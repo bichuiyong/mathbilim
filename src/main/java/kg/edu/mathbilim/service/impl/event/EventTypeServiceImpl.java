@@ -83,9 +83,10 @@ public class EventTypeServiceImpl
 
     @Override
     public List<EventTypeDto> getAllEventTypesByQuery(String lang, String name) {
-        return eventTypeRepository.findAllByQuery(name, lang).stream()
-                .map(eventTypeMapper::toDto)
-                .toList();
+       return getAllByQuery(name, lang);
+//        return eventTypeRepository.findAllByQuery(name, lang).stream()
+//                .map(eventTypeMapper::toDto)
+//                .toList();
     }
 
     @Override
