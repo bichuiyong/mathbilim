@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper extends BaseMapper<Book, BookDto> {
