@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl;
 
+import kg.edu.mathbilim.config.LocaleConfig;
 import kg.edu.mathbilim.dto.event.EventTypeDto;
 import kg.edu.mathbilim.dto.post.PostTypeDto;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
@@ -24,26 +25,27 @@ public class TranslationServiceImpl implements TranslationService {
     private final EventTypeService eventTypeService;
     private final PostTypeService postTypeService;
 
-    public Locale getCurrentLocale() {
-        return LocaleContextHolder.getLocale();
-    }
+//    @Override
+//    public Locale getCurrentLocale() {
+//        return LocaleContextHolder.getLocale();
+//    }
 
     @Override
     public List<UserTypeDto> getUserTypesByLanguage() {
-        return userTypeService.getUserTypesByLanguage(getCurrentLocale().getLanguage());
+        return userTypeService.getUserTypesByLanguage(LocaleConfig.getCurrentLocale().getLanguage());
     }
 
     @Override
     public List<CategoryDto> getCategoriesByLanguage() {
-        return categoryService.getCategoriesByLanguage(getCurrentLocale().getLanguage());
+        return categoryService.getCategoriesByLanguage(LocaleConfig.getCurrentLocale().getLanguage());
     }
     @Override
     public List<EventTypeDto> getEventTypesByLanguage() {
-        return eventTypeService.getEventTypesByLanguage(getCurrentLocale().getLanguage());
+        return eventTypeService.getEventTypesByLanguage(LocaleConfig.getCurrentLocale().getLanguage());
     }
     @Override
     public List<PostTypeDto> getPostTypesByLanguage() {
-        return postTypeService.getPostTypesByLanguage(getCurrentLocale().getLanguage());
+        return postTypeService.getPostTypesByLanguage(LocaleConfig.getCurrentLocale().getLanguage());
     }
 
 

@@ -6,8 +6,11 @@ import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.user.UserTypeDto;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface TranslationService {
+//    Locale getCurrentLocale();
+
     List<UserTypeDto> getUserTypesByLanguage();
 
     List<CategoryDto> getCategoriesByLanguage();

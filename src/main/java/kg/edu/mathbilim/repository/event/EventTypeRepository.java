@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public interface EventTypeRepository extends AbstractTypeRepository<EventType> {
+    @Override
     @Query(value = "SELECT DISTINCT ON (e.id) e.*\n" +
             "FROM event_types e\n" +
             "JOIN event_type_translations et ON e.id = et.type_id\n" +

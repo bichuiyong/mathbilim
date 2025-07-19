@@ -90,9 +90,10 @@ public class UserTypeServiceImpl
 
     @Override
     public List<UserTypeDto> getUserTypesByQuery(String name, String lang) {
-        return userTypeRepository.findAllByQuery(name, lang).stream()
-                .map(userTypeMapper::toDto)
-                .toList();
+        return getAllByQuery(name, lang);
+//        return userTypeRepository.findAllByQuery(name, lang).stream()
+//                .map(userTypeMapper::toDto)
+//                .toList();
     }
 
     @Override
