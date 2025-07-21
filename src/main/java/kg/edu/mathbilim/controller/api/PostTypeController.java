@@ -33,7 +33,7 @@ public class PostTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllPostTypesWithQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
-        return ResponseEntity.ok(postTypeService.getAllPostTypesWithQuery(name, lang));
+    public ResponseEntity<?> getAllPostTypesWithQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String language) {
+        return ResponseEntity.ok(postTypeService.getAllPostTypesWithQuery(name, language));
     }
 }

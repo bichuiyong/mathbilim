@@ -32,7 +32,7 @@ public class EventTypeController {
 
 
     @GetMapping
-    public ResponseEntity<?> getAllEventTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
-        return ResponseEntity.ok(eventTypeService.getAllEventTypesByQuery(lang, name));
+    public ResponseEntity<?> getAllEventTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String language) {
+        return ResponseEntity.ok(eventTypeService.getAllEventTypesByQuery(name, language));
     }
 }

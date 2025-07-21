@@ -32,7 +32,7 @@ public class UserTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getUserTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
-        return ResponseEntity.ok(userTypeService.getUserTypesByQuery(name, lang));
+    public ResponseEntity<?> getUserTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String language) {
+        return ResponseEntity.ok(userTypeService.getUserTypesByQuery(name, language));
     }
 }

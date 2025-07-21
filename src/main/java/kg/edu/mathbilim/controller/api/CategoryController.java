@@ -31,7 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllCategoriesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
-        return ResponseEntity.ok(categoryService.getAllCategoriesByQuery(name, lang));
+    public ResponseEntity<?> getAllCategoriesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String language) {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByQuery(name, language));
     }
 }

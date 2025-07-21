@@ -78,12 +78,13 @@ public abstract class AbstractTypeContentService<
 //    @Override
     public List<D> getAllByQuery(String name, String lang) {
         List<E> entities = repository.findAllByQuery(name, lang);
-        String preferredLang = LocaleConfig.getCurrentLocale().getLanguage();
+        String localeLang = LocaleConfig.getCurrentLocale().getLanguage();
+        String finalLang = lang == null || lang.isBlank() ? localeLang : lang;
         for (E entity : entities) {
             List<T> translations = entity.getTranslations();
             translations.sort((a, b) -> {
-                if (a.getId().getLanguageCode().equals(preferredLang)) return -1;
-                if (b.getId().getLanguageCode().equals(preferredLang)) return 1;
+                if (a.getId().getLanguageCode().equals(finalLang)) return -1;
+                if (b.getId().getLanguageCode().equals(finalLang)) return 1;
                 return 0;
             });
         }

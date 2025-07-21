@@ -9,7 +9,7 @@ document.getElementById('typeSearchBtn').addEventListener('click', function () {
     const search = document.getElementById('typeSearch').value;
     const type = document.getElementById('staticTypeSortBy').value;
     const lang = document.getElementById('languageTypeSortBy').value;
-    doFetch(`/api/${type}?lang=${lang}&name=${search}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'));
+    doFetch(`/api/${type}?language=${lang}&name=${search}`, -1, addContentInList, changeModalForTypes, () => showEmptyMessage('typeContentList'));
 });
 
 
