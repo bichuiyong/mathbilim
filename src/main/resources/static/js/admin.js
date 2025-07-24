@@ -4,7 +4,6 @@ switchOnUserButton.onclick = function () {
     doFetch('/api/users');
 }
 
-
 const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
     document.querySelector('input[name="csrf"]')?.value ||
     document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
@@ -20,42 +19,88 @@ searchButton.onclick = function () {
 }
 
 function renderPagination(currentPage, totalPages, url) {
-    // document.getElementById('usersPagination').style.display = 'block';
-    const paginationContainer = document.querySelector('.pagination');
-    console.log(paginationContainer);
+    const paginationNav = document.getElementById('usersPagination');
+    paginationNav.style.display = 'block';
+    const paginationContainer = document.querySelector('#usersPagination .pagination');
     paginationContainer.innerHTML = '';
 
-    const createPageItem = (page, text = null, active = false, disabled = false) => {
+    const createPageItem = (page, text = null, active = false, disabled = false, isNavigation = false) => {
         const li = document.createElement('li');
         li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
 
         const a = document.createElement('a');
-        a.className = 'page-link';
+        a.className = `page-link${isNavigation ? ' nav-link' : ''}`;
         a.href = '#';
         a.textContent = text || page;
-        a.dataset.page = page;
+
+        if (!disabled) {
+            a.dataset.page = page;
+        }
 
         li.appendChild(a);
         return li;
     };
-    paginationContainer.appendChild(
-        createPageItem(currentPage - 1, 'Предыдущая', false, currentPage === 1)
-    );
-    for (let i = 1; i <= totalPages; i++) {
+
+    if (currentPage > 1) {
         paginationContainer.appendChild(
-            createPageItem(i, (i).toString(), i === currentPage)
+            createPageItem(currentPage - 1, 'Назад', false, false, true)
         );
     }
-    paginationContainer.appendChild(
-        createPageItem(currentPage + 1, 'Следующая', false, currentPage === totalPages)
-    );
 
-    paginationContainer.querySelectorAll('a.page-link').forEach(link => {
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+        paginationContainer.appendChild(createPageItem(1, '1', 1 === currentPage));
+        if (startPage > 2) {
+            const li = document.createElement('li');
+            li.className = 'page-item disabled';
+            const span = document.createElement('span');
+            span.className = 'page-link';
+            span.textContent = '...';
+            li.appendChild(span);
+            paginationContainer.appendChild(li);
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        paginationContainer.appendChild(
+            createPageItem(i, i.toString(), i === currentPage)
+        );
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const li = document.createElement('li');
+            li.className = 'page-item disabled';
+            const span = document.createElement('span');
+            span.className = 'page-link';
+            span.textContent = '...';
+            li.appendChild(span);
+            paginationContainer.appendChild(li);
+        }
+        paginationContainer.appendChild(
+            createPageItem(totalPages, totalPages.toString(), totalPages === currentPage)
+        );
+    }
+
+    if (currentPage < totalPages) {
+        paginationContainer.appendChild(
+            createPageItem(currentPage + 1, 'Вперед', false, false, true)
+        );
+    }
+
+    paginationContainer.querySelectorAll('a.page-link[data-page]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const page = parseInt(e.target.dataset.page);
-            if (!isNaN(page)) {
-                doFetch(url, page)
+            if (!isNaN(page) && page !== currentPage && page >= 1 && page <= totalPages) {
+                doFetch(url, page);
             }
         });
     });
@@ -72,19 +117,22 @@ function doFetch(url, page = 1) {
         })
         .then(data => {
             console.log('Ответ сервера:', data);
-            if (data.length === 0) {
-
+            if (data.length === 0 || !data.content || data.content.length === 0) {
+                document.getElementById('usersPagination').style.display = 'none';
+                userContentList.innerHTML = '<div class="alert alert-info text-center">Пользователи не найдены</div>';
             } else {
-                addUserToTable(data.content)
-                renderPagination(data.number + 1, data.totalPages, `${url}${connector}`)
+                addUserToTable(data.content);
+                renderPagination(data.number + 1, data.totalPages, `${url}${connector}`);
             }
-
         })
         .catch(error => {
+            console.error('Ошибка:', error);
+            // Скрываем пагинацию при ошибке
+            document.getElementById('usersPagination').style.display = 'none';
+            userContentList.innerHTML = '<div class="alert alert-danger text-center">Произошла ошибка при загрузке данных</div>';
         });
 }
 
-//
 function addUserToTable(users) {
     userContentList.innerHTML = "<div class=\"table-responsive\">\n" +
         "        <table class=\"table table-hover table-striped\">\n" +
@@ -102,14 +150,15 @@ function addUserToTable(users) {
         "            </tbody>\n" +
         "        </table>\n" +
         "    </div>";
-    let resultTableUsers = document.getElementById('resultTableUsers')
+
+    let resultTableUsers = document.getElementById('resultTableUsers');
     users.forEach(user => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
   <td>${user.id}</td>
-  <td>${user.name}</td>
-  <td>${user.email}</td>
-  <td><span class="badge bg-secondary">${user.role.name}</span></td>
+  <td>${user.name || ''}</td>
+  <td>${user.email || ''}</td>
+  <td><span class="badge bg-secondary">${user.role?.name || 'Не указано'}</span></td>
   <td>
     <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
       ${user.enabled ? 'Активен' : 'Неактивен'}
@@ -127,9 +176,9 @@ function addUserToTable(users) {
              data-bs-toggle="modal" 
              data-bs-target="#editUserModal"
              data-user-id="${user.id}" 
-             data-user-name="${user.name}" 
-             data-user-surname="${user.surname}" 
-             data-user-role="${user.role.name}" 
+             data-user-name="${user.name || ''}" 
+             data-user-surname="${user.surname || ''}" 
+             data-user-role="${user.role?.name || ''}" 
              data-user-type="${user.type?.id || ''}">
             ✏️ Изменить
           </a>
@@ -154,13 +203,10 @@ function addUserToTable(users) {
     </div>
   </td>
 `;
-
-
         resultTableUsers.appendChild(tr);
-
     });
+
     initDropdownBehavior();
-    // console.log('changeEditModal')
     changeEditModal();
 }
 
@@ -341,7 +387,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalContent = document.getElementById('modalContent');
     const modalApproveBtn = document.getElementById('modalApproveBtn');
     const modalRejectBtn = document.getElementById('modalRejectBtn');
+    const typeFilter = document.getElementById("moderationTypeFilter");
+    const searchInput = document.getElementById("moderationSearch");
+    const searchBtn = document.getElementById("moderationSearchBtn");
+    const paginationContainer = document.getElementById("moderationPagination");
     let currentItem = null;
+    let currentPage = 0;
+    let currentSize = 10;
+    let currentType = 'all';
+    let currentQuery = '';
+    let totalPages = 0;
+
 
     // Получение CSRF токена
     function getCsrfToken() {
@@ -371,7 +427,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getContentTitle(item, type) {
-        // For different content types, get title from different fields
         switch (type) {
             case 'event':
                 return item.eventTranslations && item.eventTranslations[0] && item.eventTranslations[0].title
@@ -382,7 +437,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     ? item.blogTranslations[0].title
                     : item.title || 'Без заголовка';
             case 'post':
-                // Both blog and post use postTranslations structure
                 return item.postTranslations && item.postTranslations[0] && item.postTranslations[0].title
                     ? item.postTranslations[0].title
                     : item.title || 'Без заголовка';
@@ -404,7 +458,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     ? item.blogTranslations[0].content
                     : item.content || 'Нет контента';
             case 'post':
-                // Both blog and post use postTranslations structure with content field
                 return item.postTranslations && item.postTranslations[0] && item.postTranslations[0].content
                     ? item.postTranslations[0].content
                     : item.content || 'Нет контента';
@@ -460,7 +513,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let additionalInfo = '';
 
-        // Add type-specific information
         if (type === 'event') {
             const eventDateTime = formatEventDateTime(item.startDate, item.endDate);
             const location = getEventLocation(item);
@@ -484,7 +536,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ${item.category && item.category.name ? `<div class="mb-3"><strong>Категория:</strong> ${item.category.name}</div>` : ''}
             `;
         } else if (type === 'post' || type === 'blog') {
-            console.log('Debug blog/post item:', item);
             additionalInfo = `
                 ${item.postFiles && item.postFiles.length > 0 ? `<div class="mb-3"><strong>Файлы:</strong> ${item.postFiles.length} файл(ов)</div>` : ''}
             `;
@@ -497,7 +548,7 @@ document.addEventListener("DOMContentLoaded", function () {
                      onerror="this.src='/static/images/img.png'">
             </div>
             <div class="mb-3">
-                <strong>Загаловок:</strong> ${title}
+                <strong>Заголовок:</strong> ${title}
             </div>
             <div class="mb-3">
                 <strong>Тип:</strong> <span class="badge bg-secondary">${getTypeName(type)}</span>
@@ -538,7 +589,6 @@ document.addEventListener("DOMContentLoaded", function () {
             'Content-Type': 'application/json'
         };
 
-        // Добавляем CSRF токен в заголовки
         const csrfToken = getCsrfToken();
         const csrfHeader = getCsrfHeader();
         if (csrfToken) {
@@ -559,7 +609,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 showContentDetails(item, type);
             })
             .catch(error => {
-                console.log(`${endpoint}/${id}`);
                 console.error('Ошибка при загрузке деталей:', error);
                 showNotification('Ошибка при загрузке деталей контента', 'error');
             });
@@ -580,14 +629,11 @@ document.addEventListener("DOMContentLoaded", function () {
         performModerationAction(action);
     }
 
-    // ИСПРАВЛЕНО: Новая функция для выполнения действий модерации
     function performModerationAction(action) {
         if (!currentItem) return;
 
-        // Используем новые endpoints из AdminController
         const url = `/api/admin/${action}/${currentItem.type}/${currentItem.id}`;
 
-        // Подготавливаем заголовки с CSRF токеном
         const headers = {
             'Content-Type': 'application/json'
         };
@@ -607,7 +653,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     throw new Error(`Ошибка: ${response.status}`);
                 }
                 return response.text().then(text => {
-                    // Пытаемся распарсить JSON, если не получается - возвращаем пустой объект
                     try {
                         return text ? JSON.parse(text) : {};
                     } catch (e) {
@@ -625,7 +670,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         cardElement.remove();
                         const remainingCards = contentList.querySelectorAll('.content-card');
                         if (remainingCards.length === 0) {
-                            showNoContent();
+                            // Если на текущей странице больше нет элементов, перезагрузим
+                            loadContent();
                         }
                     }, 300);
                 }
@@ -635,6 +681,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     result.message || `Контент ${actionMessage}`,
                     'success'
                 );
+
+                updateModerationCount();
             })
             .catch(error => {
                 console.error('Ошибка при выполнении действия:', error);
@@ -643,21 +691,51 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showNotification(message, type) {
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const alertHtml = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        const toastContainerId = 'toastContainer';
+
+        let toastContainer = document.getElementById(toastContainerId);
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = toastContainerId;
+            toastContainer.className = 'position-fixed top-0 end-0 p-4';
+            toastContainer.style.zIndex = '1080';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toastId = `toast-${Date.now()}`;
+        const bgColor = type === 'success' ? 'rgba(40, 167, 69, 0.85)' : 'rgba(220, 53, 69, 0.85)';
+
+        const toastHtml = `
+        <div id="${toastId}" class="toast fade show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true"
+             style="
+                 min-width: 320px;
+                 max-width: 420px;
+                 margin-bottom: 1rem;
+                 background-color: ${bgColor};
+                 color: #fff;
+                 border: none;
+                 border-radius: 12px;
+                 backdrop-filter: blur(8px);
+                 font-size: 1rem;
+                 padding: 1rem 1.5rem;
+                 transition: opacity 0.5s ease-in-out;
+             ">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="toast" aria-label="Закрыть"></button>
             </div>
+        </div>
         `;
 
-        const alertContainer = document.createElement('div');
-        alertContainer.innerHTML = alertHtml;
-        document.body.insertBefore(alertContainer, document.body.firstChild);
+        toastContainer.insertAdjacentHTML('beforeend', toastHtml);
 
-        setTimeout(() => {
-            alertContainer.remove();
-        }, 5000);
+        const toastElement = document.getElementById(toastId);
+        const bsToast = new bootstrap.Toast(toastElement, { delay: 5000 });
+        bsToast.show();
+
+        toastElement.addEventListener('hidden.bs.toast', () => {
+            toastElement.remove();
+        });
     }
 
     function showNoContent() {
@@ -673,6 +751,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p class="fs-5">Нет контента на модерации</p>
             </div>
         `;
+        paginationContainer.style.display = 'none';
     }
 
     function createContentCard(item, type) {
@@ -682,11 +761,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const imageId = item.mainImageId || (item.mainImage && item.mainImage.id) || '';
 
         return `
-            <div class="content-card d-flex" data-item-id="${item.id}" data-item-type="${type}">
-                <div class="p-3">
+            <div class="content-card" data-item-id="${item.id}" data-item-type="${type}">
+                <div class="moderation-image-wrapper">
                     <img src="/api/files/${imageId}/view" 
                          alt="${getTypeName(type)} Image" 
-                         class="content-image" 
+                         class="moderation-image" 
                          onclick="showContentDetailsById(${item.id}, '${type}')"
                          onerror="this.src='/static/images/img.png'">
                 </div>
@@ -708,11 +787,186 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    function loadAllContent() {
-        showLoading();
+    function buildPagination(currentPage, totalPages) {
+        if (totalPages <= 1) {
+            paginationContainer.style.display = 'none';
+            return;
+        }
 
+        paginationContainer.style.display = 'block';
+        const pagination = paginationContainer.querySelector('.pagination');
+        pagination.innerHTML = '';
+
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `
+            <a class="page-link" href="#" data-page="${currentPage - 1}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        `;
+        pagination.appendChild(prevLi);
+
+        // Номера страниц
+        const maxVisiblePages = 5;
+        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(0, endPage - maxVisiblePages + 1);
+        }
+
+        // Первая страница, если не видна
+        if (startPage > 0) {
+            const firstLi = document.createElement('li');
+            firstLi.className = 'page-item';
+            firstLi.innerHTML = `<a class="page-link" href="#" data-page="0">1</a>`;
+            pagination.appendChild(firstLi);
+
+            if (startPage > 1) {
+                const dotsLi = document.createElement('li');
+                dotsLi.className = 'page-item disabled';
+                dotsLi.innerHTML = '<span class="page-link">...</span>';
+                pagination.appendChild(dotsLi);
+            }
+        }
+
+        // Видимые страницы
+        for (let i = startPage; i <= endPage; i++) {
+            const li = document.createElement('li');
+            li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
+            pagination.appendChild(li);
+        }
+
+        // Последняя страница, если не видна
+        if (endPage < totalPages - 1) {
+            if (endPage < totalPages - 2) {
+                const dotsLi = document.createElement('li');
+                dotsLi.className = 'page-item disabled';
+                dotsLi.innerHTML = '<span class="page-link">...</span>';
+                pagination.appendChild(dotsLi);
+            }
+
+            const lastLi = document.createElement('li');
+            lastLi.className = 'page-item';
+            lastLi.innerHTML = `<a class="page-link" href="#" data-page="${totalPages - 1}">${totalPages}</a>`;
+            pagination.appendChild(lastLi);
+        }
+
+        // Следующая страница
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+        nextLi.innerHTML = `
+            <a class="page-link" href="#" data-page="${currentPage + 1}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        `;
+        pagination.appendChild(nextLi);
+
+        // Добавляем обработчики событий
+        pagination.querySelectorAll('a.page-link[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = parseInt(e.target.closest('a').dataset.page);
+                if (page >= 0 && page < totalPages && page !== currentPage) {
+                    currentPage = page;
+                    loadContent();
+                }
+            });
+        });
+    }
+
+    function loadContent() {
+        showLoading();
+        updateModerationCount();
+
+        const types = currentType === 'all' ? ['post', 'blog', 'event', 'book'] : [currentType === 'posts' ? 'post' : currentType];
+
+        if (currentType === 'all') {
+            loadAllContent();
+        } else {
+            loadSpecificContent(currentType === 'posts' ? 'post' : currentType);
+        }
+    }
+
+    function loadAllContent() {
         const types = ['post', 'blog', 'event', 'book'];
-        const urls = types.map(type => `/api/users/moder?type=${type}&page=0&size=10`);
+        const promises = types.map(type => loadTypeContent(type, currentPage, currentSize));
+
+        Promise.all(promises)
+            .then(results => {
+                let allItems = [];
+
+                results.forEach((result, index) => {
+                    if (result && result.content && Array.isArray(result.content)) {
+                        result.content.forEach(item => {
+                            allItems.push({ item, type: types[index] });
+                        });
+                    }
+                });
+
+                // Сортировка по дате создания (новые сначала)
+                allItems.sort((a, b) => {
+                    const dateA = new Date(a.item.createdAt || 0);
+                    const dateB = new Date(b.item.createdAt || 0);
+                    return dateB - dateA;
+                });
+
+                // Пагинация для всех элементов
+                const startIndex = currentPage * currentSize;
+                const endIndex = startIndex + currentSize;
+                const pageItems = allItems.slice(startIndex, endIndex);
+
+                totalPages = Math.ceil(allItems.length / currentSize);
+
+                if (pageItems.length === 0) {
+                    showNoContent();
+                } else {
+                    let html = '';
+                    pageItems.forEach(({ item, type }) => {
+                        html += createContentCard(item, type);
+                    });
+                    contentList.innerHTML = html;
+                    buildPagination(currentPage, totalPages);
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при загрузке контента: ", error);
+                contentList.innerHTML = `<p class="text-danger text-center py-5">Ошибка загрузки контента.</p>`;
+                paginationContainer.style.display = 'none';
+            });
+    }
+
+    function loadSpecificContent(type) {
+        loadTypeContent(type, currentPage, currentSize)
+            .then(result => {
+                if (!result || !result.content || !Array.isArray(result.content)) {
+                    showNoContent();
+                    return;
+                }
+
+                totalPages = result.totalPages || 0;
+
+                if (result.content.length === 0) {
+                    showNoContent();
+                } else {
+                    let html = '';
+                    result.content.forEach(item => {
+                        html += createContentCard(item, type);
+                    });
+                    contentList.innerHTML = html;
+                    buildPagination(currentPage, totalPages);
+                }
+            })
+            .catch(error => {
+                console.error(`Ошибка при загрузке ${type} контента:`, error);
+                contentList.innerHTML = `<p class="text-danger text-center py-5">Ошибка загрузки контента.</p>`;
+                paginationContainer.style.display = 'none';
+            });
+    }
+
+    function loadTypeContent(type, page, size) {
+        const url = `/api/users/moder?type=${type}&page=${page}&size=${size}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
 
         const headers = {
             'Content-Type': 'application/json'
@@ -724,47 +978,62 @@ document.addEventListener("DOMContentLoaded", function () {
             headers[csrfHeader] = csrfToken;
         }
 
-        Promise.all(urls.map(url =>
-            fetch(url, {
-                method: 'GET',
-                headers: headers
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Ошибка загрузки: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .catch(error => {
-                    console.warn(`Ошибка загрузки для ${url}:`, error);
-                    return { content: [] };
-                })
-        ))
-            .then(results => {
-                let html = '';
-                let hasContent = false;
-
-                results.forEach((result, index) => {
-                    const type = types[index];
-                    if (result.content && Array.isArray(result.content)) {
-                        result.content.forEach(item => {
-                            hasContent = true;
-                            html += createContentCard(item, type);
-                        });
-                    }
-                });
-
-                if (!hasContent) {
-                    showNoContent();
-                } else {
-                    contentList.innerHTML = html;
+        return fetch(url, {
+            method: 'GET',
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка загрузки: ${response.status}`);
                 }
+                return response.json();
             })
             .catch(error => {
-                console.error("Ошибка при загрузке контента: ", error);
-                contentList.innerHTML = `<p class="text-danger text-center py-5">Ошибка загрузки контента.</p>`;
+                console.warn(`Ошибка загрузки для ${type}:`, error);
+                return { content: [] };
             });
     }
+
+    function performSearch() {
+        currentQuery = searchInput.value.trim();
+        currentPage = 0; // Сбрасываем на первую страницу при поиске
+        loadContent();
+    }
+
+    function resetFilters() {
+        currentQuery = '';
+        currentPage = 0;
+        currentType = 'all';
+        searchInput.value = '';
+        typeFilter.value = 'all';
+        loadContent();
+    }
+
+    // Обработчики событий
+    typeFilter.addEventListener('change', (e) => {
+        currentType = e.target.value;
+        currentPage = 0; // Сбрасываем на первую страницу при смене фильтра
+        loadContent();
+    });
+
+    searchBtn.addEventListener('click', performSearch);
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    // Дебаунсинг для поиска по вводу
+    let searchTimeout;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            if (searchInput.value.trim() !== currentQuery) {
+                performSearch();
+            }
+        }, 500);
+    });
 
     window.showContentDetailsById = showContentDetailsById;
     window.performModerationActionById = performModerationActionById;
@@ -772,6 +1041,28 @@ document.addEventListener("DOMContentLoaded", function () {
     modalApproveBtn.addEventListener('click', () => performModerationAction('approve'));
     modalRejectBtn.addEventListener('click', () => performModerationAction('reject'));
 
-    loadAllContent();
+    loadContent();
 });
+
+function updateModerationCount() {
+    fetch('/api/users/count')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка при получении данных');
+            }
+            return response.text();
+        })
+        .then(countStr => {
+            const badge = document.getElementById('moderationCount');
+            if (badge) {
+                badge.textContent = countStr;
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+}
+
+
+
 
