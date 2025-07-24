@@ -78,45 +78,73 @@ public class UserController {
     public ResponseEntity<Page<?>> getContentByCreator(
             Pageable pageable,
             @RequestParam Long creatorId,
-            @RequestParam String type) {
+            @RequestParam String type,
+            @RequestParam(required = false) String query) {
+
+        log.info("Получен запрос на контент: creatorId={}, type={}, page={}, size={}, query={}",
+                creatorId, type, pageable.getPageNumber(), pageable.getPageSize(), query);
 
         Page<?> contentPage;
-        switch (type.toLowerCase()) {
-            case "post" -> contentPage = postService.getPostsByCreator(creatorId, pageable);
-            case "event" -> contentPage = eventService.getContentByCreatorIdEvent(creatorId, pageable);
-            case "book" -> contentPage = bookService.getContentByCreatorIdBook(creatorId, pageable);
-            case "blog" -> contentPage = blogService.getContentByCreatorIdBlog(creatorId, pageable);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
+
+        try {
+            switch (type.toLowerCase()) {
+                case "post" -> {
+                    contentPage = postService.getPostsByCreator(creatorId, pageable, query);
+                    log.info("Получено {} постов", contentPage.getNumberOfElements());
+                }
+                case "event" -> {
+                    contentPage = eventService.getContentByCreatorIdEvent(creatorId, pageable, query);
+                    log.info("Получено {} событий", contentPage.getNumberOfElements());
+                }
+                case "book" -> {
+                    contentPage = bookService.getContentByCreatorIdBook(creatorId, pageable, query);
+                    log.info("Получено {} книг", contentPage.getNumberOfElements());
+                }
+                case "blog" -> {
+                    contentPage = blogService.getContentByCreatorIdBlog(creatorId, pageable, query);
+                    log.info("Получено {} блогов", contentPage.getNumberOfElements());
+                }
+                default -> {
+                    log.warn("Неверный тип контента: {}", type);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
+                }
+            }
+        } catch (Exception e) {
+            log.error("Ошибка при получении контента для creatorId={}, type={}", creatorId, type, e);
+            throw e; // Можно кастомизировать обработку ошибки
         }
+
         return ResponseEntity.ok(contentPage);
     }
+
 
 
     @GetMapping("history")
     public ResponseEntity<Page<?>> getHistoryByCreator(
             Pageable pageable,
             @RequestParam Long id,
-            @RequestParam String type) {
+            @RequestParam String type,
+            @RequestParam String status,
+            @RequestParam(required = false) String query) {
 
         Page<?> historyPage;
         switch (type.toLowerCase()) {
-            case "post" -> historyPage = postService.getHisotryPost(id, pageable);
-            case "event" -> historyPage = eventService.getHisotryEvent(id, pageable);
-            case "book" -> historyPage = bookService.getHisotryBook(id, pageable);
-            case "blog" -> historyPage = blogService.getHisotryBlog(id, pageable);
+            case "post" -> historyPage = postService.getHisotryPost(id, pageable, query, status);
+            case "event" -> historyPage = eventService.getHistoryEvent(id, pageable, query, status);
+            case "book" -> historyPage = bookService.getHisotryBook(id, pageable, query, status);
+            case "blog" -> historyPage = blogService.getHistoryBlog(id, pageable, query, status);
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
         }
         return ResponseEntity.ok(historyPage);
     }
 
 
-
-
     @GetMapping("moder")
     public ResponseEntity<Page<?>> getContentForModeration(
             Pageable pageable,
-            @RequestParam String type) {
-        Page<BlogDto> blogs = blogService.getBlogsForModeration(pageable);
+            @RequestParam String type,
+            @RequestParam(required = false) String query) {
+        Page<BlogDto> blogs = blogService.getBlogsForModeration(pageable, query);
 
         for (BlogDto blog : blogs) {
             for (BlogTranslationDto translation : blog.getBlogTranslations()) {
@@ -124,7 +152,7 @@ public class UserController {
             }
         }
 
-        Page<PostDto> post = postService.getPostsForModeration(pageable);
+        Page<PostDto> post = postService.getPostsForModeration(pageable, query);
 
         for (PostDto blog : post) {
             for (PostTranslationDto translation : blog.getPostTranslations()) {
@@ -135,18 +163,31 @@ public class UserController {
         Page<?> contentPage;
 
         switch (type.toLowerCase()) {
-            case "post" -> contentPage = postService.getPostsForModeration(pageable);
-            case "event" -> contentPage = eventService.getEventsForModeration(pageable);
-            case "book" -> contentPage = bookService.getBooksForModeration(pageable);
-            case "blog" -> contentPage = blogService.getBlogsForModeration(pageable);
+            case "post" -> contentPage = postService.getPostsForModeration(pageable, query);
+            case "event" -> contentPage = eventService.getEventsForModeration(pageable, query);
+            case "book" -> contentPage = bookService.getBooksForModeration(pageable, query);
+            case "blog" -> contentPage = blogService.getBlogsForModeration(pageable, query);
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
         }
-        Page<BookDto> contentPageBook = bookService.getBooksForModeration(pageable);
+        Page<BookDto> contentPageBook = bookService.getBooksForModeration(pageable, query);
         contentPageBook.getContent().forEach(book -> {
-            log.info("Book ID: {}", book.getId());
+            log.info("Book query: {}", query);
         });
 
         return ResponseEntity.ok(contentPage);
+    }
+
+
+    @GetMapping("count")
+    public ResponseEntity<String> count() {
+        int totalCount = 0;
+        totalCount += postService.countPostsForModeration();
+        totalCount += eventService.countEventForModeration();
+        totalCount += bookService.countBookForModeration();
+        totalCount += blogService.countBlogForModeration();
+
+        String result = totalCount > 99 ? "99+" : String.valueOf(totalCount);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("{type}/{id}")

@@ -8,10 +8,36 @@
 
     <style>
 
+
+
+
         .collapsed {
             max-height: 150px;
             overflow: hidden;
             position: relative;
+        }
+
+        .moderation-image-wrapper {
+            margin-right: 16px;
+        }
+
+        .moderation-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+
+        .moderation-card {
+            display: flex;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
         .expanded {
@@ -292,7 +318,6 @@
             </div>
 
             <div class="col-lg-8">
-                <!-- Табы для разных разделов -->
                 <div class="card">
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
@@ -333,29 +358,23 @@
                             <!-- Вкладка "Мой контент" -->
                             <div class="tab-pane fade show active" id="content" role="tabpanel">
                                 <!-- Фильтры -->
-                                <div class="content-filters mb-4">
+                                <div class="moderation-filters mb-4">
                                     <div class="row g-2">
-                                        <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="contentTypeFilter">
+                                        <div class="col-md-4">
+                                            <select class="form-select form-select-sm" id="contentFilter">
                                                 <option value="all">Все типы</option>
                                                 <option value="posts">Публикации</option>
                                                 <option value="blog">Блог</option>
                                                 <option value="events">Мероприятия</option>
                                                 <option value="books">Книги</option>
-                                                <option value="olympiads">Олимпиады</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="contentStatusFilter">
-                                                <option value="all">Все статусы</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-8">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" class="form-control" id="contentSearch"
-                                                       placeholder="Поиск по контенту...">
+                                                       placeholder="Поиск...">
                                                 <button class="btn btn-outline-secondary" type="button"
-                                                        id="contentSearchBtn">
+                                                        id="moderationSearchBtn">
                                                     <i class="fas fa-search"></i>
                                                 </button>
                                             </div>
@@ -384,16 +403,15 @@
                                         <div class="col-md-3">
                                             <select class="form-select form-select-sm" id="historyTypeFilter">
                                                 <option value="all">Все типы</option>
-                                                <option value="posts">Публикации</option>
+                                                <option value="post">Публикации</option>
                                                 <option value="blog">Блог</option>
-                                                <option value="events">Мероприятия</option>
-                                                <option value="books">Книги</option>
-                                                <option value="olympiads">Олимпиады</option>
+                                                <option value="event">Мероприятия</option>
+                                                <option value="book">Книги</option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">
                                             <select class="form-select form-select-sm" id="historyStatusFilter">
-                                                <option value="all">Все статусы</option>
+                                                <option value=" ">Все статусы</option>
                                                 <option value="APPROVED">Одобрено</option>
                                                 <option value="REJECTED">Отклонено</option>
                                                 <option value="PENDING_REVIEW">На рассмотрении</option>
@@ -434,10 +452,10 @@
                                             <div class="col-md-4">
                                                 <select class="form-select form-select-sm" id="moderationTypeFilter">
                                                     <option value="all">Все типы</option>
-                                                    <option value="posts">Публикации</option>
+                                                    <option value="post">Публикации</option>
                                                     <option value="blog">Блог</option>
-                                                    <option value="events">Мероприятия</option>
-                                                    <option value="books">Книги</option>
+                                                    <option value="event">Мероприятия</option>
+                                                    <option value="book">Книги</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-8">
