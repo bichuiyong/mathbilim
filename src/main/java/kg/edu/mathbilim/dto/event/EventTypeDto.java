@@ -14,4 +14,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventTypeDto extends BaseTypeDto<EventTypeTranslationDto> {
 
+    public EventTypeDto() {
+        super();
+    }
 }

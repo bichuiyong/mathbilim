@@ -1,0 +1,37 @@
+package kg.edu.mathbilim.controller.api;
+
+import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequiredArgsConstructor
+@RestController("restCategories")
+@RequestMapping("api/categories")
+public class CategoryController {
+    private final CategoryService categoryService;
+
+    @PostMapping
+    public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryDto category) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(category));
+    }
+
+    @PutMapping("{categoryId}")
+    public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryDto category, @PathVariable Integer categoryId) {
+        return ResponseEntity.ok(categoryService.updateCategory(categoryId, category));
+    }
+
+    @DeleteMapping("{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Integer categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllCategoriesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String lang) {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByQuery(name, lang));
+    }
+}
