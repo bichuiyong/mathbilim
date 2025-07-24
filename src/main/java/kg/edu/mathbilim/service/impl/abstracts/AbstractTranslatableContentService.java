@@ -5,8 +5,10 @@ import kg.edu.mathbilim.dto.abstracts.ContentTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.abstracts.AdminContent;
+import kg.edu.mathbilim.model.abstracts.Content;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.notifications.NotificationType;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -81,10 +83,19 @@ public abstract class AbstractTranslatableContentService<
         return result.map(mapper::toDto);
     }
 
-    protected void approveContent(Long id, NotificationEnum notificationType, String notificationMessage) {
+    protected void approveContent(Long id, NotificationEnum notificationType, String notificationMessage, User users) {
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);
         content.setStatus(ContentStatus.APPROVED);
+        ((Content) content).setApprovedBy(users);
         repository.save(content);
         notificationService.notifyAllSubscribed(notificationType, notificationMessage);
+    }
+
+
+    protected void rejectContent(Long id, User users) {
+        E content = repository.findById(id).orElseThrow(this::getNotFoundException);
+        content.setStatus(ContentStatus.REJECTED);
+        ((Content) content).setApprovedBy(users);
+        repository.save(content);
     }
 }

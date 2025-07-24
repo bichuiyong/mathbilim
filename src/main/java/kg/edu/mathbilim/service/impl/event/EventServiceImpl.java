@@ -11,7 +11,7 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.event.EventRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
@@ -19,14 +19,17 @@ import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
+import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -96,6 +99,12 @@ public class EventServiceImpl extends
     }
 
     @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
+    }
+
+    @Override
     public DisplayEventDto getDisplayEventById(Long id) {
         DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
@@ -119,8 +128,9 @@ public class EventServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id, NotificationEnum.EVENT, "New event");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id, NotificationEnum.EVENT, "New event", user);
     }
 
     private void setEventOrganizations(List<Long> organizationIds, Event event) {
@@ -129,5 +139,69 @@ public class EventServiceImpl extends
             event.setOrganizations(organizations);
             log.info("Added event {} to {} organizations", event.getId(), organizations.size());
         }
+    }
+
+    @Override
+    public Page<EventDto> getContentByCreatorIdEvent(Long creatorId, Pageable pageable, String query) {
+        if (query != null && !query.isEmpty()) {
+            Page<Event> allEventWithQuery = repository.getEventsByStatusWithQuery(ContentStatus.APPROVED, query, pageable);
+            return allEventWithQuery.map(mapper::toDto);
+        }
+
+        Page<EventDto> allEvents = getContentByCreatorId(creatorId, pageable);
+
+        List<EventDto> approvedEvents = allEvents.stream()
+                .filter(event -> event.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedEvents, pageable, approvedEvents.size());
+    }
+
+    @Override
+    public Page<EventDto> getHistoryEvent(Long creatorId, Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getEventsByCreatorAndStatusAndQuery(
+                        contentStatus, creatorId, query.trim(), pageable
+                ).map(mapper::toDto);
+            } else {
+                return repository.getEventsWithQuery(
+                        query, creatorId, pageable
+                ).map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getEventsByStatusAndCreator(contentStatus, creatorId, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
+
+    @Override
+    public Long countEventForModeration() {
+        return repository.countByStatus(ContentStatus.PENDING_REVIEW);
+    }
+
+
+    @Override
+    public Page<EventDto> getEventsForModeration(Pageable pageable, String query) {
+        if (query != null && !query.trim().isEmpty()) {
+            Page<Event> allEventsWithQuery = repository.getEventsByStatusWithQuery(ContentStatus.PENDING_REVIEW, query, pageable);
+            return allEventsWithQuery.map(mapper::toDto);
+        }
+        Page<Event> events = repository.findEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+        return PaginationUtil.getPage(() -> events, mapper::toDto);
     }
 }

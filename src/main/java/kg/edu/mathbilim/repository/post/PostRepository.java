@@ -40,22 +40,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
 
     @Query("""
             SELECT DISTINCT p FROM Post p
-            JOIN p.postTranslations t
-            WHERE p.status = :contentStatus
-            ORDER BY p.createdAt DESC
+               WHERE p.status = :contentStatus
             """)
     Page<Post> getPostsByStatus(ContentStatus contentStatus, Pageable pageable);
-
-
-    @Query("""
-    SELECT DISTINCT p FROM Post p
-    JOIN p.postTranslations t
-    WHERE p.status = :contentStatus
-      AND t.id.languageCode = :languageCode
-    """)
-    Page<Post> getPostsByStatusWithLang(@Param("contentStatus") ContentStatus contentStatus,
-                                        @Param("languageCode") String languageCode,
-                                        Pageable pageable);
 
     @Query("""
             SELECT DISTINCT p FROM Post p
@@ -69,6 +56,68 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     Page<Post> getPostsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
                                          Pageable pageable, String languageCode);
+
+
+    @Query("""
+    SELECT DISTINCT p FROM Post p
+    JOIN p.postTranslations t
+    WHERE p.status = :status
+      AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+      AND p.creator.id = :userId
+    ORDER BY p.createdAt DESC
+""")
+    Page<Post> getPostsByStatusAndQuery(
+            @Param("status") ContentStatus status,
+            @Param("query") String query,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+
+
+    @Query("""
+            SELECT DISTINCT p FROM Post p
+            JOIN p.postTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            p.creator.id = :userId
+            """)
+    Page<Post> findPostByStatus(ContentStatus contentStatus,
+                                Long userId,
+                                Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p FROM Post p
+            JOIN p.postTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> getPostsByQuery(ContentStatus contentStatus,
+                               String query,
+                               Pageable pageable);
+
+
+    @Query("""
+            SELECT DISTINCT p FROM Post p
+            JOIN p.postTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> getPostsByStatus(ContentStatus contentStatus,
+                                String query,
+                                Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            JOIN p.blogTranslations t
+            WHERE p.status = :contentStatus
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> findPostsByStatus(ContentStatus status, Pageable pageable);
 
     @Override
     @Query("""
@@ -114,4 +163,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     Page<Post> findByTranslationQueryAndStatuses(@Param("query") String query,
                                                  @Param("statuses") List<ContentStatus> statuses,
                                                  Pageable pageable);
+
+
+    Long countByStatus(ContentStatus status);
 }

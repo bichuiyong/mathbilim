@@ -8,6 +8,7 @@ import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.blog.BlogRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -18,11 +19,14 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -82,6 +86,28 @@ public class BlogServiceImpl extends
         log.debug("Share count incremented for blog {}", id);
     }
 
+
+    @Override
+    public Page<BlogDto> getBlogsForModeration(Pageable pageable, String query) {
+
+        if (query != null) {
+            Page<Blog> allBlogWithQuery = repository.getBlogsByStatusWithQuery(ContentStatus.PENDING_REVIEW, query, pageable);
+            return allBlogWithQuery.map(mapper::toDto);
+        }
+        Page<Blog> blogs = repository.getBlogsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+
+        blogs.forEach(blog -> {
+            if (blog.getBlogTranslations() != null) {
+                blog.getBlogTranslations().forEach(translation -> {
+                    log.info("Blog entity ID: {}, translation languageCode: {}", blog.getId(), translation.getId().getLanguageCode());
+                });
+            } else {
+                log.warn("Blog entity ID: {} has no translations", blog.getId());
+            }
+        });
+        return PaginationUtil.getPage(() -> blogs, mapper::toDto);
+    }
+
     public DisplayContentDto getDisplayBlogById(Long id) {
         return repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
@@ -112,11 +138,70 @@ public class BlogServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id, NotificationEnum.BLOG, "New blog");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id, NotificationEnum.BLOG, "New blog", user);
+    }
+
+    @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
     }
 
 
+    @Override
+    public Page<BlogDto> getContentByCreatorIdBlog(Long creatorId, Pageable pageable, String query) {
+
+        if (query != null) {
+            Page<Blog> allBlogWithQuery = repository.getBlogsByStatusWithQuery(ContentStatus.APPROVED, query, pageable);
+
+            return allBlogWithQuery.map(mapper::toDto);
+        }
+
+        Page<BlogDto> allBlogs = getContentByCreatorId(creatorId, pageable);
+
+        List<BlogDto> approvedBlogs = allBlogs.stream()
+                .filter(blog -> blog.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedBlogs, pageable, approvedBlogs.size());
+    }
+
+    @Override
+    public Page<BlogDto> getHistoryBlog(Long creatorId, Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getBlogsByCreatorAndStatusAndQuery(contentStatus, creatorId, query, pageable)
+                        .map(mapper::toDto);
+            } else {
+                return repository.getBlogsWithQuery(query.trim(), creatorId, pageable)
+                        .map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getBlogsByCreatorAndStatus(contentStatus, creatorId, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
+
+    @Override
+    public Long countBlogForModeration() {
+        return repository.countByStatus(ContentStatus.PENDING_REVIEW);
+    }
 
     @Override
     public Blog findByBlogId(Long blogId) {

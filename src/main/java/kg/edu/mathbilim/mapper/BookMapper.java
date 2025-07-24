@@ -12,5 +12,6 @@ public interface BookMapper extends BaseMapper<Book, BookDto> {
 
     @Mapping(source = "creator", target = "creator")
     @Mapping(source = "mainImage", target = "mainImage")
+    @Mapping(target = "id", source = "id")
     BookDto toDto(Book book);
 }

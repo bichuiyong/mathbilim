@@ -20,76 +20,76 @@ import java.util.Optional;
 public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRepository<Blog> {
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
-            b.id,
-            b.creator.id,
-            b.createdAt, 
-            b.updatedAt, 
-            b.viewCount, 
-            b.shareCount,
-            b.mainImage.id,
-            b.approvedBy.id,
-            b.status,
-            bt.title, 
-            bt.content
-        )
-        FROM Blog b 
-        JOIN b.blogTranslations bt 
-        WHERE b.id = :blogId 
-        AND bt.id.languageCode = :languageCode
-    """)
+                SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
+                    b.id,
+                    b.creator.id,
+                    b.createdAt, 
+                    b.updatedAt, 
+                    b.viewCount, 
+                    b.shareCount,
+                    b.mainImage.id,
+                    b.approvedBy.id,
+                    b.status,
+                    bt.title, 
+                    bt.content
+                )
+                FROM Blog b 
+                JOIN b.blogTranslations bt 
+                WHERE b.id = :blogId 
+                AND bt.id.languageCode = :languageCode
+            """)
     Optional<DisplayContentDto> findDisplayBlogById(@Param("blogId") Long blogId,
                                                     @Param("languageCode") String languageCode);
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
-            b.id,
-            b.creator.id,
-            b.createdAt, 
-            b.updatedAt, 
-            b.viewCount, 
-            b.shareCount,
-            b.mainImage.id,
-            b.approvedBy.id,
-            b.status,
-            bt.title, 
-            bt.content
-        )
-        FROM Blog b 
-        JOIN b.blogTranslations bt 
-        WHERE bt.id.languageCode = :languageCode
-        AND bt.title IS NOT NULL 
-        AND bt.title != ''
-        ORDER BY b.createdAt DESC
-    """)
+                SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
+                    b.id,
+                    b.creator.id,
+                    b.createdAt, 
+                    b.updatedAt, 
+                    b.viewCount, 
+                    b.shareCount,
+                    b.mainImage.id,
+                    b.approvedBy.id,
+                    b.status,
+                    bt.title, 
+                    bt.content
+                )
+                FROM Blog b 
+                JOIN b.blogTranslations bt 
+                WHERE bt.id.languageCode = :languageCode
+                AND bt.title IS NOT NULL 
+                AND bt.title != ''
+                ORDER BY b.createdAt DESC
+            """)
     Page<DisplayContentDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,
-                                                       Pageable pageable);
+                                                          Pageable pageable);
 
     @Query("""
-        SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
-            b.id,
-            b.creator.id,
-            b.createdAt, 
-            b.updatedAt, 
-            b.viewCount, 
-            b.shareCount,
-            b.mainImage.id,
-            b.approvedBy.id,
-            b.status,
-            bt.title, 
-            bt.content
-        )
-        FROM Blog b 
-        JOIN b.blogTranslations bt 
-        WHERE b.id != :excludeId
-        AND bt.id.languageCode = :languageCode
-        AND bt.title IS NOT NULL 
-        AND bt.title != ''
-        ORDER BY b.viewCount DESC, b.createdAt DESC
-    """)
+                SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
+                    b.id,
+                    b.creator.id,
+                    b.createdAt, 
+                    b.updatedAt, 
+                    b.viewCount, 
+                    b.shareCount,
+                    b.mainImage.id,
+                    b.approvedBy.id,
+                    b.status,
+                    bt.title, 
+                    bt.content
+                )
+                FROM Blog b 
+                JOIN b.blogTranslations bt 
+                WHERE b.id != :excludeId
+                AND bt.id.languageCode = :languageCode
+                AND bt.title IS NOT NULL 
+                AND bt.title != ''
+                ORDER BY b.viewCount DESC, b.createdAt DESC
+            """)
     List<DisplayContentDto> findRelatedBlogs(@Param("excludeId") Long excludeId,
-                                          @Param("languageCode") String languageCode,
-                                          Pageable pageable);
+                                             @Param("languageCode") String languageCode,
+                                             Pageable pageable);
 
     @Modifying
     @Query("UPDATE Blog b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
@@ -118,4 +118,49 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     Page<Blog> getBlogsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
                                          Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT p FROM Blog p
+                JOIN p.blogTranslations t
+                WHERE p.status = :contentStatus
+                  AND p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
+                                                  @Param("userId") Long userId,
+                                                  @Param("query") String query,
+                                                  Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT p FROM Blog p
+                JOIN p.blogTranslations t
+                WHERE p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsWithQuery(@Param("query") String query,
+                                 @Param("userId") Long userId,
+                                 Pageable pageable);
+
+
+    @Query("""
+            SELECT DISTINCT b FROM Blog b
+               WHERE b.status = :contentStatus
+            """)
+    Page<Blog> getBlogsByStatus(ContentStatus contentStatus, Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT b FROM Blog b
+                WHERE b.status = :contentStatus
+                  AND b.creator.id = :userId
+            """)
+    Page<Blog> getBlogsByCreatorAndStatus(@Param("contentStatus") ContentStatus contentStatus,
+                                          @Param("userId") Long userId,
+                                          Pageable pageable);
+
+    Long countByStatus(ContentStatus contentStatus);
 }

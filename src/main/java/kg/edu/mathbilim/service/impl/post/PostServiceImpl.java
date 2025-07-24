@@ -8,10 +8,9 @@ import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
-import kg.edu.mathbilim.model.notifications.NotificationType;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -21,12 +20,14 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class PostServiceImpl extends
 
 
     public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService,notificationService );
+        super(repository, mapper, userService, fileService, translationService, notificationService);
     }
 
     @Override
@@ -87,6 +88,11 @@ public class PostServiceImpl extends
         );
     }
 
+    @Override
+    public Long countPostsForModeration() {
+        return repository.countByStatus(ContentStatus.PENDING_REVIEW);
+    }
+
     @Transactional
     public void togglePostApproving(Long id) {
         Post post = getEntityById(id);
@@ -105,7 +111,7 @@ public class PostServiceImpl extends
     }
 
 
-    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection,  String lang) {
+    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang) {
         return getContentByStatus(
                 status,
                 query,
@@ -119,8 +125,15 @@ public class PostServiceImpl extends
     }
 
     @Override
-    public void approve(Long id) {
-        approveContent(id,NotificationEnum.POST, "New event");
+    public void approve(Long id, String email) {
+        User user = userService.findByEmail(email);
+        approveContent(id, NotificationEnum.POST, "New event", user);
+    }
+
+    @Override
+    public void reject(Long id, String email) {
+        User user = userService.findByEmail(email);
+        rejectContent(id, user);
     }
 
 
@@ -131,7 +144,80 @@ public class PostServiceImpl extends
     }
 
     @Override
+    public Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable, String query) {
+        if (query != null) {
+            Page<Post> allPostWithQuery = repository.getPostsByQuery(ContentStatus.APPROVED, query, pageable);
+
+            return allPostWithQuery.map(mapper::toDto);
+        }
+        Page<PostDto> allPosts = getContentByCreatorId(creatorId, pageable);
+
+        List<PostDto> approvedPosts = allPosts.stream()
+                .filter(post -> post.getStatus() == ContentStatus.APPROVED)
+                .toList();
+
+        return new PageImpl<>(approvedPosts, pageable, approvedPosts.size());
+    }
+
+    @Override
+    public Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid content status: " + status);
+            }
+        }
+        if (query != null && !query.isBlank()) {
+            if (status != null && !status.isBlank()) {
+                return repository.getPostsByStatusAndQuery(
+                        contentStatus, query, creatorId, pageable
+                ).map(mapper::toDto);
+            } else {
+                return repository.getUserPostsWithQuery(creatorId, query, pageable)
+                        .map(mapper::toDto);
+            }
+        }
+
+        if (status != null && !status.isBlank()) {
+            return repository.findPostByStatus(contentStatus, creatorId, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
+
+    @Override
+    public Page<PostDto> getPostsForModeration(Pageable pageable, String query) {
+        if (query != null) {
+            Page<Post> allPostWithQuery = repository.getPostsByQuery(ContentStatus.PENDING_REVIEW, query, pageable);
+
+            return allPostWithQuery.map(mapper::toDto);
+        }
+
+        Page<Post> posts = repository.getPostsByStatus(ContentStatus.PENDING_REVIEW, pageable);
+        return PaginationUtil.getPage(() -> posts, mapper::toDto);
+    }
+
+    @Override
+    public Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection) {
+        return getContentByStatus(
+                status,
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                pageable -> repository.findPostsByStatus(ContentStatus.fromName(status), pageable),
+                (q, pageable) -> repository.getPostsByStatus(ContentStatus.fromName(status), q, pageable)
+        );
+    }
+
+    @Override
     public Post findByPostId(Long id) {
         return repository.findById(id).orElseThrow(PostNotFoundException::new);
     }
+
 }
