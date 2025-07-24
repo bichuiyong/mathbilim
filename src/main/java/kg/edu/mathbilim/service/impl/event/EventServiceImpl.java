@@ -25,12 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -143,7 +142,12 @@ public class EventServiceImpl extends
     }
 
     @Override
-    public Page<EventDto> getContentByCreatorIdEvent(Long creatorId, Pageable pageable) {
+    public Page<EventDto> getContentByCreatorIdEvent(Long creatorId, Pageable pageable, String query) {
+        if (query != null && !query.isEmpty()) {
+            Page<Event> allEventWithQuery = repository.getEventsByStatusWithQuery(ContentStatus.APPROVED, query, pageable);
+            return allEventWithQuery.map(mapper::toDto);
+        }
+
         Page<EventDto> allEvents = getContentByCreatorId(creatorId, pageable);
 
         List<EventDto> approvedEvents = allEvents.stream()
@@ -154,13 +158,50 @@ public class EventServiceImpl extends
     }
 
     @Override
-    public Page<EventDto> getHisotryEvent(Long creatorId, Pageable pageable) {
+    public Page<EventDto> getHistoryEvent(Long creatorId, Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getEventsByCreatorAndStatusAndQuery(
+                        contentStatus, creatorId, query.trim(), pageable
+                ).map(mapper::toDto);
+            } else {
+                return repository.getEventsWithQuery(
+                        query, creatorId, pageable
+                ).map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getEventsByStatusAndCreator(contentStatus, creatorId, pageable)
+                    .map(mapper::toDto);
+        }
+
         return getContentByCreatorId(creatorId, pageable);
     }
 
 
     @Override
-    public Page<EventDto> getEventsForModeration(Pageable pageable) {
+    public Long countEventForModeration() {
+        return repository.countByStatus(ContentStatus.PENDING_REVIEW);
+    }
+
+
+    @Override
+    public Page<EventDto> getEventsForModeration(Pageable pageable, String query) {
+        if (query != null && !query.trim().isEmpty()) {
+            Page<Event> allEventsWithQuery = repository.getEventsByStatusWithQuery(ContentStatus.PENDING_REVIEW, query, pageable);
+            return allEventsWithQuery.map(mapper::toDto);
+        }
         Page<Event> events = repository.findEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
-        return PaginationUtil.getPage(() -> events, mapper::toDto);    }
+        return PaginationUtil.getPage(() -> events, mapper::toDto);
+    }
 }

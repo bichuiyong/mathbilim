@@ -121,8 +121,46 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
 
 
     @Query("""
+                SELECT DISTINCT p FROM Blog p
+                JOIN p.blogTranslations t
+                WHERE p.status = :contentStatus
+                  AND p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
+                                                  @Param("userId") Long userId,
+                                                  @Param("query") String query,
+                                                  Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT p FROM Blog p
+                JOIN p.blogTranslations t
+                WHERE p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsWithQuery(@Param("query") String query,
+                                 @Param("userId") Long userId,
+                                 Pageable pageable);
+
+
+    @Query("""
             SELECT DISTINCT b FROM Blog b
                WHERE b.status = :contentStatus
             """)
     Page<Blog> getBlogsByStatus(ContentStatus contentStatus, Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT b FROM Blog b
+                WHERE b.status = :contentStatus
+                  AND b.creator.id = :userId
+            """)
+    Page<Blog> getBlogsByCreatorAndStatus(@Param("contentStatus") ContentStatus contentStatus,
+                                          @Param("userId") Long userId,
+                                          Pageable pageable);
+
+    Long countByStatus(ContentStatus contentStatus);
 }

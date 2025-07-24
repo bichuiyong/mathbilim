@@ -20,15 +20,17 @@ public interface BookService extends BaseContentService<BookDto> {
 
     void reject(Long id, String email);
 
-    Page<BookDto> getContentByCreatorIdBook(Long creatorId, Pageable pageable);
+    Page<BookDto> getContentByCreatorIdBook(Long creatorId, Pageable pageable, String quary);
 
-    Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable);
+    Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable, String query, String status);
 
-    Page<BookDto> getBooksForModeration(Pageable pageable);
+    Page<BookDto> getBooksForModeration(Pageable pageable, String query);
 
 
     BookDto createBook(MultipartFile attachment,MultipartFile file, BookDto bookDto);
     BookDto updateBook(long id,MultipartFile file,BookDto bookDto, MultipartFile mpImage);
 
     Page<BookDto> getAllBooks(String status, String query, int page, int size, String sortBy, String sortDirection, Long categoryId);
+
+    Long countBookForModeration();
 }

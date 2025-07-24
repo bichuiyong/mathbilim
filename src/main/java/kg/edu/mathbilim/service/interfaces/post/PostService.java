@@ -16,6 +16,8 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     Page<PostDto> getUserPosts(Long userId, String query, int page, int size, String sortBy, String sortDirection);
 
+    Long countPostsForModeration();
+
     void togglePostApproving(Long id);
 
 //    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
@@ -27,11 +29,11 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     PostDto getPostById(Long id);
 
-    Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable);
+    Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable, String query);
 
-    Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable);
+    Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable, String query, String status);
 
-    Page<PostDto> getPostsForModeration(Pageable pageable);
+    Page<PostDto> getPostsForModeration(Pageable pageable, String query);
 
     Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 

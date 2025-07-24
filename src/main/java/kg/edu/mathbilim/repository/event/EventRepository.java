@@ -61,10 +61,10 @@ public interface EventRepository extends BaseContentRepository<Event> {
                                                    @Param("languageCode") String languageCode);
 
     @Query("""
-        SELECT o.id FROM Event e 
-        JOIN e.organizations o 
-        WHERE e.id = :eventId
-    """)
+                SELECT o.id FROM Event e 
+                JOIN e.organizations o 
+                WHERE e.id = :eventId
+            """)
     List<Long> findOrganizationIdsByEventId(@Param("eventId") Long eventId);
 
     @Query("""
@@ -84,14 +84,52 @@ public interface EventRepository extends BaseContentRepository<Event> {
             ORDER BY p.createdAt DESC
             """)
     Page<Event> getEventsByStatusWithQuery(ContentStatus contentStatus,
-                                         String query,
-                                         Pageable pageable);
+                                           String query,
+                                           Pageable pageable);
 
 
+    @Query("""
+                SELECT DISTINCT p FROM Event p
+                JOIN p.eventTranslations t
+                WHERE p.status = :contentStatus
+                  AND p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Event> getEventsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
+                                                    @Param("userId") Long userId,
+                                                    @Param("query") String query,
+                                                    Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT e FROM Event e
+                JOIN e.eventTranslations t
+                WHERE e.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY e.createdAt DESC
+            """)
+    Page<Event> getEventsWithQuery(@Param("query") String query,
+                                   @Param("userId") Long userId,
+                                   Pageable pageable);
+
+
+    Long countByStatus(ContentStatus status);
 
     @Query("""
             SELECT DISTINCT e FROM Event e
                WHERE e.status = :contentStatus
             """)
     Page<Event> getEventsByStatus(ContentStatus contentStatus, Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT e FROM Event e
+                WHERE e.status = :contentStatus
+                  AND e.creator.id = :userId
+                ORDER BY e.createdAt DESC
+            """)
+    Page<Event> getEventsByStatusAndCreator(@Param("contentStatus") ContentStatus contentStatus,
+                                            @Param("userId") Long userId,
+                                            Pageable pageable);
 }

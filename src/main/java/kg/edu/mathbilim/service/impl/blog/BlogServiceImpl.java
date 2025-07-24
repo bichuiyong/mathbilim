@@ -22,9 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -86,7 +88,12 @@ public class BlogServiceImpl extends
 
 
     @Override
-    public Page<BlogDto> getBlogsForModeration(Pageable pageable) {
+    public Page<BlogDto> getBlogsForModeration(Pageable pageable, String query) {
+
+        if (query != null) {
+            Page<Blog> allBlogWithQuery = repository.getBlogsByStatusWithQuery(ContentStatus.PENDING_REVIEW, query, pageable);
+            return allBlogWithQuery.map(mapper::toDto);
+        }
         Page<Blog> blogs = repository.getBlogsByStatus(ContentStatus.PENDING_REVIEW, pageable);
 
         blogs.forEach(blog -> {
@@ -143,9 +150,15 @@ public class BlogServiceImpl extends
     }
 
 
-
     @Override
-    public Page<BlogDto> getContentByCreatorIdBlog(Long creatorId, Pageable pageable) {
+    public Page<BlogDto> getContentByCreatorIdBlog(Long creatorId, Pageable pageable, String query) {
+
+        if (query != null) {
+            Page<Blog> allBlogWithQuery = repository.getBlogsByStatusWithQuery(ContentStatus.APPROVED, query, pageable);
+
+            return allBlogWithQuery.map(mapper::toDto);
+        }
+
         Page<BlogDto> allBlogs = getContentByCreatorId(creatorId, pageable);
 
         List<BlogDto> approvedBlogs = allBlogs.stream()
@@ -156,8 +169,38 @@ public class BlogServiceImpl extends
     }
 
     @Override
-    public Page<BlogDto> getHisotryBlog(Long creatorId, Pageable pageable) {
+    public Page<BlogDto> getHistoryBlog(Long creatorId, Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getBlogsByCreatorAndStatusAndQuery(contentStatus, creatorId, query, pageable)
+                        .map(mapper::toDto);
+            } else {
+                return repository.getBlogsWithQuery(query.trim(), creatorId, pageable)
+                        .map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getBlogsByCreatorAndStatus(contentStatus, creatorId, pageable)
+                    .map(mapper::toDto);
+        }
+
         return getContentByCreatorId(creatorId, pageable);
+    }
+
+
+    @Override
+    public Long countBlogForModeration() {
+        return repository.countByStatus(ContentStatus.PENDING_REVIEW);
     }
 
     @Override

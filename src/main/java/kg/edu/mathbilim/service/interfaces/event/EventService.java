@@ -7,9 +7,6 @@ import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface EventService extends BaseTranslatableService<EventDto, EventTranslationDto> {
     EventDto create(CreateEventDto createEventDto);
@@ -22,9 +19,11 @@ public interface EventService extends BaseTranslatableService<EventDto, EventTra
 
     void approve(Long id, String email);
 
-    Page<EventDto> getContentByCreatorIdEvent(Long id, Pageable pageable);
+    Page<EventDto> getContentByCreatorIdEvent(Long id, Pageable pageable, String query);
 
-    Page<EventDto> getHisotryEvent(Long creatorId, Pageable pageable);
+    Page<EventDto> getHistoryEvent(Long creatorId, Pageable pageable, String query, String status);
 
-    Page<EventDto> getEventsForModeration(Pageable pageable);
+    Long countEventForModeration();
+
+    Page<EventDto> getEventsForModeration(Pageable pageable, String query);
 }
