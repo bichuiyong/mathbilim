@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentType = 'all';
     let currentQuery = '';
     let totalPages = 0;
-
+    let totalElements = 0;
 
     // Получение CSRF токена
     function getCsrfToken() {
@@ -669,9 +669,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     setTimeout(() => {
                         cardElement.remove();
                         const remainingCards = contentList.querySelectorAll('.content-card');
-                        if (remainingCards.length === 0) {
-                            // Если на текущей странице больше нет элементов, перезагрузим
+                        if (remainingCards.length === 0 && totalElements > currentSize) {
+                            // Если элементов больше чем на одной странице, но текущая страница пуста
+                            if (currentPage > 0) {
+                                currentPage--;
+                            }
                             loadContent();
+                        } else if (remainingCards.length === 0) {
+                            // Если это последние элементы
+                            showNoContent();
                         }
                     }, 300);
                 }
@@ -787,35 +793,43 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    function buildPagination(currentPage, totalPages) {
-        if (totalPages <= 1) {
+    function buildPagination(currentPageNum, totalPagesNum) {
+        if (totalPagesNum <= 1) {
             paginationContainer.style.display = 'none';
             return;
         }
 
         paginationContainer.style.display = 'block';
-        const pagination = paginationContainer.querySelector('.pagination');
+
+        // Создаем контейнер пагинации если его нет
+        let pagination = paginationContainer.querySelector('.pagination');
+        if (!pagination) {
+            pagination = document.createElement('nav');
+            pagination.innerHTML = '<ul class="pagination justify-content-center"></ul>';
+            paginationContainer.appendChild(pagination);
+            pagination = pagination.querySelector('.pagination');
+        }
+
         pagination.innerHTML = '';
 
+        // Предыдущая страница
         const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+        prevLi.className = `page-item ${currentPageNum === 0 ? 'disabled' : ''}`;
         prevLi.innerHTML = `
-            <a class="page-link" href="#" data-page="${currentPage - 1}">
+            <a class="page-link" href="#" data-page="${currentPageNum - 1}" ${currentPageNum === 0 ? 'tabindex="-1"' : ''}>
                 <i class="fas fa-chevron-left"></i>
             </a>
         `;
         pagination.appendChild(prevLi);
 
-        // Номера страниц
         const maxVisiblePages = 5;
-        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+        let startPage = Math.max(0, currentPageNum - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPagesNum - 1, startPage + maxVisiblePages - 1);
 
         if (endPage - startPage < maxVisiblePages - 1) {
             startPage = Math.max(0, endPage - maxVisiblePages + 1);
         }
 
-        // Первая страница, если не видна
         if (startPage > 0) {
             const firstLi = document.createElement('li');
             firstLi.className = 'page-item';
@@ -830,17 +844,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Видимые страницы
         for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement('li');
-            li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            li.className = `page-item ${i === currentPageNum ? 'active' : ''}`;
             li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
             pagination.appendChild(li);
         }
 
-        // Последняя страница, если не видна
-        if (endPage < totalPages - 1) {
-            if (endPage < totalPages - 2) {
+        if (endPage < totalPagesNum - 1) {
+            if (endPage < totalPagesNum - 2) {
                 const dotsLi = document.createElement('li');
                 dotsLi.className = 'page-item disabled';
                 dotsLi.innerHTML = '<span class="page-link">...</span>';
@@ -849,30 +861,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const lastLi = document.createElement('li');
             lastLi.className = 'page-item';
-            lastLi.innerHTML = `<a class="page-link" href="#" data-page="${totalPages - 1}">${totalPages}</a>`;
+            lastLi.innerHTML = `<a class="page-link" href="#" data-page="${totalPagesNum - 1}">${totalPagesNum}</a>`;
             pagination.appendChild(lastLi);
         }
 
         // Следующая страница
         const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+        nextLi.className = `page-item ${currentPageNum === totalPagesNum - 1 ? 'disabled' : ''}`;
         nextLi.innerHTML = `
-            <a class="page-link" href="#" data-page="${currentPage + 1}">
+            <a class="page-link" href="#" data-page="${currentPageNum + 1}" ${currentPageNum === totalPagesNum - 1 ? 'tabindex="-1"' : ''}>
                 <i class="fas fa-chevron-right"></i>
             </a>
         `;
         pagination.appendChild(nextLi);
 
-        // Добавляем обработчики событий
-        pagination.querySelectorAll('a.page-link[data-page]').forEach(link => {
-            link.addEventListener('click', (e) => {
+        // Добавляем обработчики событий для всех ссылок
+        pagination.addEventListener('click', function(e) {
+            if (e.target.matches('a[data-page], a[data-page] *')) {
                 e.preventDefault();
-                const page = parseInt(e.target.closest('a').dataset.page);
-                if (page >= 0 && page < totalPages && page !== currentPage) {
+                const link = e.target.closest('a[data-page]');
+                const page = parseInt(link.dataset.page);
+
+                if (!link.closest('.page-item').classList.contains('disabled') &&
+                    page >= 0 && page < totalPagesNum && page !== currentPageNum) {
                     currentPage = page;
                     loadContent();
                 }
-            });
+            }
         });
     }
 
@@ -880,18 +895,18 @@ document.addEventListener("DOMContentLoaded", function () {
         showLoading();
         updateModerationCount();
 
-        const types = currentType === 'all' ? ['post', 'blog', 'event', 'book'] : [currentType === 'posts' ? 'post' : currentType];
-
         if (currentType === 'all') {
             loadAllContent();
         } else {
-            loadSpecificContent(currentType === 'posts' ? 'post' : currentType);
+            const type = currentType === 'posts' ? 'post' : currentType;
+            loadSpecificContent(type);
         }
     }
 
     function loadAllContent() {
         const types = ['post', 'blog', 'event', 'book'];
-        const promises = types.map(type => loadTypeContent(type, currentPage, currentSize));
+
+        const promises = types.map(type => loadTypeContent(type, 0, 1000)); // Большой размер для получения всех элементов
 
         Promise.all(promises)
             .then(results => {
@@ -905,19 +920,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
 
-                // Сортировка по дате создания (новые сначала)
+                // Сортируем по дате создания
                 allItems.sort((a, b) => {
                     const dateA = new Date(a.item.createdAt || 0);
                     const dateB = new Date(b.item.createdAt || 0);
                     return dateB - dateA;
                 });
 
-                // Пагинация для всех элементов
+                // Применяем пагинацию
+                totalElements = allItems.length;
+                totalPages = Math.ceil(totalElements / currentSize);
+
+                // Проверяем, не превышает ли текущая страница общее количество страниц
+                if (currentPage >= totalPages && totalPages > 0) {
+                    currentPage = totalPages - 1;
+                }
+
                 const startIndex = currentPage * currentSize;
                 const endIndex = startIndex + currentSize;
                 const pageItems = allItems.slice(startIndex, endIndex);
-
-                totalPages = Math.ceil(allItems.length / currentSize);
 
                 if (pageItems.length === 0) {
                     showNoContent();
@@ -946,6 +967,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 totalPages = result.totalPages || 0;
+                totalElements = result.totalElements || result.content.length;
+
+                // Проверяем, не превышает ли текущая страница общее количество страниц
+                if (currentPage >= totalPages && totalPages > 0) {
+                    currentPage = totalPages - 1;
+                    // Перезагружаем с исправленной страницей
+                    loadSpecificContent(type);
+                    return;
+                }
 
                 if (result.content.length === 0) {
                     showNoContent();
@@ -990,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => {
                 console.warn(`Ошибка загрузки для ${type}:`, error);
-                return { content: [] };
+                return { content: [], totalPages: 0, totalElements: 0 };
             });
     }
 
@@ -1024,7 +1054,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Дебаунсинг для поиска по вводу
     let searchTimeout;
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
@@ -1041,6 +1070,7 @@ document.addEventListener("DOMContentLoaded", function () {
     modalApproveBtn.addEventListener('click', () => performModerationAction('approve'));
     modalRejectBtn.addEventListener('click', () => performModerationAction('reject'));
 
+    // Инициализация
     loadContent();
 });
 
