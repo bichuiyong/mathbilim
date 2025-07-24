@@ -120,6 +120,6 @@ public class BlogServiceImpl extends
 
     @Override
     public Blog findByBlogId(Long blogId) {
-        return repository.findById(blogId).orElseThrow();
+        return repository.findById(blogId).orElseThrow(BlogNotFoundException::new);
     }
 }

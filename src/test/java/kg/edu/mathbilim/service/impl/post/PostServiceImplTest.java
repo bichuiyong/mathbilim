@@ -1,4 +1,4 @@
-package kg.edu.mathbilim;
+package kg.edu.mathbilim.service.impl.post;
 
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
@@ -14,8 +14,6 @@ import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.notification.UserNotificationServiceImpl;
-import kg.edu.mathbilim.service.impl.post.PostServiceImpl;
-import kg.edu.mathbilim.service.impl.post.PostTranslationServiceImpl;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
@@ -40,7 +38,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PostsServiceTest {
+class PostServiceImplTest {
     @Mock
     private PostMapper postMapper;
     @Mock
