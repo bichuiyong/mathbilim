@@ -147,7 +147,7 @@ class PostServiceImplTest {
         doNothing().when(notificationService)
                 .notifyAllSubscribed(any(NotificationEnum.class), any(String.class));
 
-        postService.approve(postDto.getId());
+        postService.approve(postDto.getId(), anyString());
         Post post = postService.findByPostId(postDto.getId());
         assertThat(post).isNotNull();
         assertThat(post.getId()).isEqualTo(postDto.getId());

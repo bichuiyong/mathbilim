@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -58,7 +59,7 @@ public class EmailServiceImpl {
                 "<p style='color: #999; font-size: 12px; text-align: center;'>© 2025 MathBilim. Все права защищены.</p>" +
                 "</div></body></html>";
     }
-
+    @Async
     public void sendVerificationEmail(String email, String verificationLink)
             throws MessagingException, UnsupportedEncodingException {
 
