@@ -58,8 +58,9 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 FROM Blog b 
                 JOIN b.blogTranslations bt 
                 WHERE bt.id.languageCode = :languageCode
-                AND bt.title IS NOT NULL 
-                AND bt.title != ''
+                  AND bt.title IS NOT NULL 
+                  AND bt.title != ''
+                  AND b.status = kg.edu.mathbilim.enums.ContentStatus.APPROVED
                 ORDER BY b.createdAt DESC
             """)
     Page<DisplayContentDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,

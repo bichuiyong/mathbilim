@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.File;
@@ -112,10 +113,17 @@ public abstract class AbstractContentService<
     }
 
     protected void setupDtoBeforeSave(D dto) {
-        dto.setCreator(userService.getAuthUser());
+        UserDto creator = userService.getAuthUser();
+        dto.setCreator(creator);
 
         if (dto instanceof ContentDto contentDto) {
-            contentDto.setStatus(ContentStatus.PENDING_REVIEW);
+            if (creator.getRole().getName().equalsIgnoreCase("admin") ||
+                    creator.getRole().getName().equalsIgnoreCase("moder")) {
+                contentDto.setStatus(ContentStatus.APPROVED);
+            } else {
+                contentDto.setStatus(ContentStatus.PENDING_REVIEW);
+            }
+
         }
     }
 
