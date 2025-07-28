@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl.blog;
 
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
+import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
@@ -61,6 +62,11 @@ class BlogServiceImplTest {
         UserDto creatorDto = UserDto.builder()
                 .id(1L)
                 .name("Test")
+                .role(
+                        RoleDto.builder()
+                                .name("USER")
+                                .build()
+                )
                 .build();
         User creator = User.builder()
                 .id(1L)
