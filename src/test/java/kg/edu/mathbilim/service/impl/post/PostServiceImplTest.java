@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
+import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
@@ -74,6 +75,9 @@ class PostServiceImplTest {
                 .name("test")
                 .surname("test")
                 .email("test@test.com")
+                .role(RoleDto.builder()
+                        .name("USER")
+                        .build())
                 .build();
         user = User.builder()
                 .id(1L)

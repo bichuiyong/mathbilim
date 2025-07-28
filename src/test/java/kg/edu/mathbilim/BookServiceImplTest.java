@@ -2,6 +2,7 @@ package kg.edu.mathbilim;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
+import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
@@ -80,6 +81,11 @@ class BookServiceImplTest {
                 .name("Test")
                 .surname("User")
                 .email("test@example.com")
+                .role(
+                        RoleDto.builder()
+                                .name("USER")
+                                .build()
+                )
                 .build();
 
         book = Book.builder()
