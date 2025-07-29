@@ -16,8 +16,6 @@ import java.util.List;
 public interface BlogService extends BaseTranslatableService<BlogDto, BlogTranslationDto> {
     BlogDto create(@Valid BlogDto blogDto, MultipartFile mainImage);
 
-    @Transactional
-    void incrementBlogShareCount(Long id);
 
     Page<BlogDto> getBlogsForModeration(Pageable pageable, String query);
 

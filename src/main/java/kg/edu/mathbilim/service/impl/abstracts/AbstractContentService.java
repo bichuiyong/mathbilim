@@ -161,26 +161,35 @@ public abstract class AbstractContentService<
 
     @Transactional
     public void incrementViewCount(Long id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);
+
+        if (userAuthCheckAndContentOwner(content.getCreator().getId())) {
+            repository.incrementViewCount(id);
+            log.debug("View count incremented for {} with id = {}", getEntityName(), id);
+        }
+
+    }
+
+    private boolean userAuthCheckAndContentOwner(Long creatorId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user;
 
         try {
             user = userService.findByEmail(auth.getName());
         } catch (UserNotFoundException e) {
-            return;
+            return false;
         }
-        if (!content.getCreator().getId().equals(user.getId())) {
-            repository.incrementViewCount(id);
-            log.debug("View count incremented for blog {}", id);
-        }
-
+        return !user.getId().equals(creatorId);
     }
 
     @Transactional
     public void incrementShareCount(Long id) {
-        repository.incrementShareCount(id);
-        log.debug("Share count incremented for blog {}", id);
+        E content = repository.findById(id).orElseThrow(this::getNotFoundException);
+        if (userAuthCheckAndContentOwner(content.getCreator().getId())) {
+            repository.incrementShareCount(id);
+            log.debug("Share count incremented for {} with id = {}", getEntityName(), id);
+        }
+
     }
 
     protected void handleNewsTranslations(NewsDto dto, Long entityId) {
