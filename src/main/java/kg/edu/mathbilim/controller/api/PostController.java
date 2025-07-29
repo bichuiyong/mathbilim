@@ -60,4 +60,10 @@ public class PostController {
         postService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("{id}/share")
+    public ResponseEntity<Void> sharePost(@PathVariable Long id) {
+        postService.incrementShareCount(id);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -8,12 +8,16 @@ import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface BlogService extends BaseTranslatableService<BlogDto, BlogTranslationDto> {
     BlogDto create(@Valid BlogDto blogDto, MultipartFile mainImage);
+
+    @Transactional
+    void incrementBlogShareCount(Long id);
 
     Page<BlogDto> getBlogsForModeration(Pageable pageable, String query);
 

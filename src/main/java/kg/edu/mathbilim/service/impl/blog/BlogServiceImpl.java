@@ -3,10 +3,8 @@ package kg.edu.mathbilim.service.impl.blog;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
-import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
@@ -25,8 +23,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,10 +73,10 @@ public class BlogServiceImpl extends
     }
 
 
-    @Override
     @Transactional
-    public void incrementShareCount(Long id) {
-        repository.incrementShareCount(id);
+    @Override
+    public void incrementBlogShareCount(Long id) {
+        incrementShareCount(id);
         log.debug("Share count incremented for blog {}", id);
     }
 

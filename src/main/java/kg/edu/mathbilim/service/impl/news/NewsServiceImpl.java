@@ -126,6 +126,7 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElse(null);
         incrementViewCount(id);
