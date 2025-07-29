@@ -3,8 +3,10 @@ package kg.edu.mathbilim.service.impl.blog;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
+import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
@@ -23,6 +25,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,12 +76,6 @@ public class BlogServiceImpl extends
         return createBase(blogDto, multipartFile, null);
     }
 
-    @Override
-    @Transactional
-    public void incrementViewCount(Long id) {
-        repository.incrementViewCount(id);
-        log.debug("View count incremented for blog {}", id);
-    }
 
     @Override
     @Transactional
@@ -107,10 +105,13 @@ public class BlogServiceImpl extends
         });
         return PaginationUtil.getPage(() -> blogs, mapper::toDto);
     }
-
+    @Transactional
     public DisplayContentDto getDisplayBlogById(Long id) {
-        return repository.findDisplayBlogById(id, getCurrentLanguage())
+        DisplayContentDto blogDisplayDto = repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
+        incrementViewCount(id);
+
+        return blogDisplayDto;
     }
 
     public Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {

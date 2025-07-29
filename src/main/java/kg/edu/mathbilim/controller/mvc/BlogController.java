@@ -77,7 +77,6 @@ public class BlogController {
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
-        blogService.incrementViewCount(id);
         DisplayContentDto blog = blogService.getDisplayBlogById(id);
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;

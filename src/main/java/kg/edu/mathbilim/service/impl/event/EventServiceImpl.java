@@ -110,6 +110,9 @@ public class EventServiceImpl extends
                 .orElseThrow(this::getNotFoundException);
         List<Long> organizationIds = repository.findOrganizationIdsByEventId(id);
         event.setOrganizationIds(organizationIds);
+        incrementViewCount(id);
+
+
         return event;
     }
 

@@ -36,9 +36,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.time.Instant;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static kg.edu.mathbilim.util.PaginationUtil.getPage;
 
@@ -215,8 +213,8 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
-
-    private User getEntityByEmail(String email) {
+    @Override
+    public User getEntityByEmail(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + "not found"));
     }

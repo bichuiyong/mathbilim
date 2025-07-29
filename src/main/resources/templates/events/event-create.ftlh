@@ -146,7 +146,7 @@
                                                    id="offlineEvent"
                                                    name="event.isOffline"
                                                    value="true"
-                                                   <#if spring.status.value?? && spring.status.value>checked</#if>>
+                                                   <#if spring.status.value?? && spring.status.value == "true">checked</#if>>
                                             <label class="form-check-label" for="offlineEvent">
                                                 <i class="fas fa-map-marker-alt me-2"></i>Офлайн мероприятие
                                             </label>
