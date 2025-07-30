@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class OlympiadStageServiceImpl implements OlympiadStageService {
     private final OlympiadStageRepository repository;
+    private final OlympiadStageRepository olympiadStageRepository;
 
     @Override
     public void save(OlympiadCreateDto dto, Olympiad olympiad) {
@@ -93,5 +94,11 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
     @Override
     public List<OlympiadStage> saveAll(List<OlympiadStage> olympiadStages) {
         return repository.saveAll(olympiadStages);
+    }
+
+    @Override
+    public void updateTime(OlympiadStage olympiadStage) {
+        olympiadStage.setUpdatedAt(LocalDateTime.now());
+        olympiadStageRepository.save(olympiadStage);
     }
 }
