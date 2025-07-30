@@ -10,6 +10,7 @@ import kg.edu.mathbilim.service.interfaces.ContactTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
+import kg.edu.mathbilim.service.interfaces.olympiad.ResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/olympiad")
@@ -28,6 +30,7 @@ public class OlympiadController {
     private final SubscriptionModelPopulator subscriptionModelPopulator;
     private final OrganizationService organizationService;
     private final ContactTypeService contactTypeService;
+    private final ResultService resultService;
 
     @GetMapping()
     public String olympiadPage(@RequestParam(defaultValue = "0") int page,
@@ -118,5 +121,19 @@ public class OlympiadController {
             olympiadService.olympiadUpdate(olympiadCreateDto);
         }
         return "redirect:/olympiad";
+    }
+
+//    @GetMapping("registration")
+//    public String olympiadRegistration(Model model, Authentication auth,
+//                                       @RequestParam long stageid) {
+//    if ()
+//
+//    return "olympiad/registration";
+//    }
+
+    @PostMapping("add-result")
+    public String addStageResult(@RequestParam("stageId") long stageId,
+                               @RequestParam("file") MultipartFile file) {
+        return resultService.uploadResult(file, stageId);
     }
 }

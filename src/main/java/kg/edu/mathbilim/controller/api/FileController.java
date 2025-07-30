@@ -59,7 +59,7 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
                 .contentLength(fileContent.length)
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + fileDto.getFilename() + "\"; filename*=UTF-8''" + encodedFilename)
+                        "attachment; filename*=UTF-8''" + encodedFilename)
                 .body(resource);
     }
 

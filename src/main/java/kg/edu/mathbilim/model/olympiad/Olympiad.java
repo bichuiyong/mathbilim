@@ -26,10 +26,10 @@ public class Olympiad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 300)
     String title;
 
-    @Column(name = "info")
+    @Column(name = "info", columnDefinition = "TEXT")
     String info;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,7 +40,7 @@ public class Olympiad {
     @JoinColumn(name = "creator_id", nullable = false)
     User creator;
 
-    @Column(name = "rules")
+    @Column(name = "rules", columnDefinition = "TEXT")
     String rules;
 
     @Column(name = "start_date", nullable = false)

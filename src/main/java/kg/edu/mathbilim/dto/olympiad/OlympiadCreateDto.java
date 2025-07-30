@@ -31,11 +31,11 @@ public class OlympiadCreateDto {
     String title;
 
     @NotEmpty
-    @Size(max = 1000, message = "Информация об олимпиаде не должна превышать 1000 символов")
+    @Size(max = 5000, message = "Информация об олимпиаде не должна превышать 5000 символов")
     String info;
 
     @NotEmpty
-    @Size(max = 1000, message = "Правила олимпиады не должны превышать 1000 символов")
+    @Size(max = 5000, message = "Правила олимпиады не должны превышать 5000 символов")
     String rules;
 
     @NotNull(message = "Дата начала обязательна")

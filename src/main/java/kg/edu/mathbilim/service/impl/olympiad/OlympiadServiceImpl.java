@@ -309,4 +309,11 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .stages(olympiadStageService.getOlympStageDtos(id))
                 .build();
     }
+
+//    public boolean olympiadHasStarted(long id, LocalDate nowDate){
+//        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
+//        if (nowDate.isBefore(olympiad.getStartDate())){
+//
+//        }
+//    }
 }

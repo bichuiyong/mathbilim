@@ -98,7 +98,8 @@ public class SecurityConfig {
 
                             .requestMatchers(
                                     "/olympiad/create",
-                                    "/olympiad/edit"
+                                    "/olympiad/edit",
+                                    "/olympiad/add-result"
                             ).hasAnyAuthority("ADMIN","MODER")
 
                         .requestMatchers(

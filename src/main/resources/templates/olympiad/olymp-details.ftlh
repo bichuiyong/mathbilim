@@ -39,6 +39,43 @@
                 padding: 0.1rem 0.2rem;
             }
         }
+
+        .mybtn {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #77a6ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            user-select: none;
+
+            border: none;
+            outline: none;
+            box-shadow: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            min-height: 0;
+        }
+
+
+        .mybtn:hover,
+        .mybtn:focus {
+            background-color: #5388fb;
+            outline: none;
+            color: white;
+        }
+
+        .mybtn:active {
+            background-color: #707176;
+            color: white;
+        }
+
+
     </style>
 
     <#if SPRING_SECURITY_CONTEXT??>
@@ -72,10 +109,6 @@
                         type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results"
-                        type="button" role="tab" aria-controls="results" aria-selected="false">Результаты</button>
-            </li>
-            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"
                         type="button" role="tab" aria-controls="organization" aria-selected="false">Организации</button>
             </li>
@@ -97,7 +130,7 @@
                 <#if olympiad.stages?? && (olympiad.stages?size > 0)>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-sm small" style="margin-top: 20px;
-                         width: 80%">
+                         width: 85%">
                             <thead class="table-light">
                             <tr>
                                 <th>#</th>
@@ -127,7 +160,7 @@
                                     </td>
                                     <td>
                                         <#if stage.result?? && (stage.result?size > 0)>
-                                            <a href="#" class="btn btn-sm btn-primary">
+                                            <a href="/api/files/${stage.result[0].file.id}/download" class="mybtn">
                                                 результаты
                                             </a>
                                         <#else>
@@ -136,9 +169,19 @@
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
                                         <td>
-                                            <a href="#" class="btn btn-primary btn-xs">
-                                                Добавить результаты
-                                            </a>
+                                            <form action="/olympiad/add-result" method="post" enctype="multipart/form-data" id="uploadForm">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                                </#if>
+                                                <input type="file" name="file" id="uploadFile" style="display:none" required />
+                                                <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
+                                                <#if stage.result?? && (stage.result?size > 0)>
+                                                <button type="button" id="uploadBtn" class="mybtn">поменять результат</button>
+                                                <#else>
+                                                    <button type="button" id="uploadBtn" class="mybtn">добавить результат</button>
+                                                </#if>
+                                            </form>
                                         </td>
                                     </#if>
                                 </tr>
@@ -149,11 +192,6 @@
                 <#else>
                     <p>Этапы ещё не добавлены.</p>
                 </#if>
-            </div>
-
-            <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
-                <h4>Результаты</h4>
-                <p><a href="#" class="btn btn-outline-success">Смотреть результаты 2025</a></p>
             </div>
 
             <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
@@ -198,5 +236,19 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadFile = document.getElementById('uploadFile');
+        const form = document.getElementById('uploadForm');
 
+        uploadBtn.addEventListener('click', () => {
+            uploadFile.click();
+        });
+
+        uploadFile.addEventListener('change', () => {
+            if(uploadFile.files.length > 0) {
+                form.submit();
+            }
+        });
+    </script>
 </@main.layout>
