@@ -326,4 +326,11 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .collect(Collectors.toList());
     }
 
+
+//    public boolean olympiadHasStarted(long id, LocalDate nowDate){
+//        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
+//        if (nowDate.isBefore(olympiad.getStartDate())){
+//
+//        }
+//    }
 }

@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OlympiadStageServiceImpl implements OlympiadStageService {
     private final OlympiadStageRepository repository;
 
-
     @Override
     public void save(OlympiadCreateDto dto, Olympiad olympiad) {
         if (dto.getStages() == null) return;

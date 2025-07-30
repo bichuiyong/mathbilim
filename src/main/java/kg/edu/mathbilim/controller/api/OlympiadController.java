@@ -2,14 +2,20 @@ package kg.edu.mathbilim.controller.api;
 
 import kg.edu.mathbilim.dto.olympiad.OlympListDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
+import kg.edu.mathbilim.model.user.User;
+import kg.edu.mathbilim.service.impl.olympiad.ResultServiceImpl;
+import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
+import kg.edu.mathbilim.service.interfaces.olympiad.ResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController("apiOlympiadController")
