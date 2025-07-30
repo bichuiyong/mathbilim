@@ -25,11 +25,6 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public String uploadResult(MultipartFile uploadFile, long stageId) {
         OlympiadStage olympStage = olympiadStageService.getOlympiadStageById((int) stageId);
-//        LocalDateTime now = LocalDateTime.now();if
-//        (now.isBefore(olympStage.getRegistrationStart().atStartOfDay())
-//                || now.isAfter(olympStage.getRegistrationEnd().atTime(LocalTime.MAX))) {
-//            return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
-//        }
         File file = fileService.uploadFileReturnEntity(uploadFile, "general");
         Result result = resultRepository.findByOlympiadStage(olympStage)
                 .map(r -> {
@@ -45,6 +40,8 @@ public class ResultServiceImpl implements ResultService {
                         .build()
                 );
         resultRepository.save(result);
+        olympStage.setUpdatedAt(LocalDateTime.now());
+        olympiadStageService.updateTime(olympStage);
         return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
     }
 }

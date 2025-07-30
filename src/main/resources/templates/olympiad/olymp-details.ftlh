@@ -101,12 +101,12 @@
                         type="button" role="tab" aria-controls="stages" aria-selected="false">Этапы проведения</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts"
-                        type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты</button>
-            </li>
-            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="rules-tab" data-bs-toggle="tab" data-bs-target="#rules"
                         type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts"
+                        type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"

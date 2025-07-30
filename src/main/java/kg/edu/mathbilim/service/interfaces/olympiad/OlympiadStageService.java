@@ -18,6 +18,7 @@ public interface OlympiadStageService {
 
     OlympiadStage getOlympiadStageById(Integer stageId);
 
-
     List<OlympiadStage> saveAll(List<OlympiadStage> olympiadStages);
+
+    void updateTime(OlympiadStage olympiadStage);
 }
