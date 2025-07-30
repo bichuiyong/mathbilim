@@ -169,17 +169,17 @@
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
                                         <td>
-                                            <form action="/olympiad/add-result" method="post" enctype="multipart/form-data" id="uploadForm">
+                                            <form action="/olympiad/add-result" method="post" enctype="multipart/form-data" class="uploadForm">
                                                 <#if _csrf??>
                                                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                                            value="${(_csrf.token)!'csrf-token'}"/>
                                                 </#if>
-                                                <input type="file" name="file" id="uploadFile" style="display:none" required />
+                                                <input type="file" name="file" class="uploadFile" style="display:none" required />
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.result?? && (stage.result?size > 0)>
-                                                <button type="button" id="uploadBtn" class="mybtn">поменять результат</button>
+                                                    <button type="button" class="uploadBtn mybtn">поменять результат</button>
                                                 <#else>
-                                                    <button type="button" id="uploadBtn" class="mybtn">добавить результат</button>
+                                                    <button type="button" class="uploadBtn mybtn">добавить результат</button>
                                                 </#if>
                                             </form>
                                         </td>
@@ -237,18 +237,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const uploadBtn = document.getElementById('uploadBtn');
-        const uploadFile = document.getElementById('uploadFile');
-        const form = document.getElementById('uploadForm');
+        document.querySelectorAll('.uploadBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const form = btn.closest('.uploadForm');
+                const inputFile = form.querySelector('.uploadFile');
+                inputFile.click();
 
-        uploadBtn.addEventListener('click', () => {
-            uploadFile.click();
-        });
-
-        uploadFile.addEventListener('change', () => {
-            if(uploadFile.files.length > 0) {
-                form.submit();
-            }
+                inputFile.addEventListener('change', () => {
+                    if (inputFile.files.length > 0) {
+                        form.submit();
+                    }
+                }, { once: true });
+            });
         });
     </script>
 </@main.layout>
