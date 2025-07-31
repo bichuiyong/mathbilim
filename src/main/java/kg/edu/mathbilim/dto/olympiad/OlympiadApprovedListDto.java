@@ -1,5 +1,6 @@
-package kg.edu.mathbilim.dto;
+package kg.edu.mathbilim.dto.olympiad;
 
+import kg.edu.mathbilim.dto.FileDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResultDto {
+public class OlympiadApprovedListDto {
     Long id;
 
     FileDto file;

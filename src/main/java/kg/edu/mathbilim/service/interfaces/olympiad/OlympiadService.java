@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.olympiad.OlympiadDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface OlympiadService {
     @Transactional
@@ -19,4 +20,6 @@ public interface OlympiadService {
     OlympiadCreateDto getOlympiadCreateDto(Long olympId);
 
     OlympiadDto getById(long id);
+
+    String uploadRegistrationResult(MultipartFile uploadFile, long stageId);
 }

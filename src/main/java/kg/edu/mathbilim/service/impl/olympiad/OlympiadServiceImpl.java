@@ -9,12 +9,10 @@ import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.model.ContactType;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
-import kg.edu.mathbilim.model.olympiad.Olympiad;
-import kg.edu.mathbilim.model.olympiad.OlympiadContact;
-import kg.edu.mathbilim.model.olympiad.OlympiadContactId;
-import kg.edu.mathbilim.model.olympiad.OlympiadStage;
+import kg.edu.mathbilim.model.olympiad.*;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.organization.OlympiadOrganizationKey;
+import kg.edu.mathbilim.repository.olympiad.OlympiadApprovedListRepository;
 import kg.edu.mathbilim.repository.olympiad.OlympiadRepository;
 import kg.edu.mathbilim.service.interfaces.ContactTypeService;
 import kg.edu.mathbilim.service.interfaces.FileService;
@@ -30,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,6 +50,7 @@ public class OlympiadServiceImpl implements OlympiadService {
     private final FileService fileService;
     private final ContactTypeService contactTypeService;
     private final EntityManager entityManager;
+    private final OlympiadApprovedListRepository olympiadApprovedListRepository;
 
     @Transactional
     @Override
@@ -310,10 +310,26 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .build();
     }
 
-//    public boolean olympiadHasStarted(long id, LocalDate nowDate){
-//        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
-//        if (nowDate.isBefore(olympiad.getStartDate())){
-//
-//        }
-//    }
+    @Override
+    public String uploadRegistrationResult(MultipartFile uploadFile, long stageId) {
+        OlympiadStage olympStage = olympiadStageService.getOlympiadStageById((int) stageId);
+        File file = fileService.uploadFileReturnEntity(uploadFile, "general");
+        OlympiadApprovedList olympiadApprovedList = olympiadApprovedListRepository.findByOlympiadStage(olympStage)
+                .map(r -> {
+                    r.setFile(file);
+                    r.setUpdatedAt(LocalDateTime.now());
+                    return r;
+                })
+                .orElseGet(() -> OlympiadApprovedList.builder()
+                        .file(file)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .olympiadStage(olympStage)
+                        .build()
+                );
+        olympiadApprovedListRepository.save(olympiadApprovedList);
+        olympiadStageService.updateTime(olympStage);
+        return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
+    }
+
 }
