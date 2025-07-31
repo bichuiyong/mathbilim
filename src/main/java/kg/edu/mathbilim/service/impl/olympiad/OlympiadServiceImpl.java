@@ -383,4 +383,26 @@ public class OlympiadServiceImpl implements OlympiadService {
 //
 //        }
 //    }
+    @Override
+    public String uploadRegistrationResult(MultipartFile uploadFile, long stageId) {
+        OlympiadStage olympStage = olympiadStageService.getOlympiadStageById((int) stageId);
+        File file = fileService.uploadFileReturnEntity(uploadFile, "general");
+        OlympiadApprovedList olympiadApprovedList = olympiadApprovedListRepository.findByOlympiadStage(olympStage)
+                .map(r -> {
+                    r.setFile(file);
+                    r.setUpdatedAt(LocalDateTime.now());
+                    return r;
+                })
+                .orElseGet(() -> OlympiadApprovedList.builder()
+                        .file(file)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .olympiadStage(olympStage)
+                        .build()
+                );
+        olympiadApprovedListRepository.save(olympiadApprovedList);
+        olympiadStageService.updateTime(olympStage);
+        return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
+    }
+
 }

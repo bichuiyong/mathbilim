@@ -28,4 +28,6 @@ public interface OlympiadService {
     String uploadRegistrationResult(MultipartFile uploadFile, long stageId);
 
     List<OlympListDto> getOlympiadForMainPage();
+
+    String uploadRegistrationResult(MultipartFile uploadFile, long stageId);
 }
