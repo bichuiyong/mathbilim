@@ -38,55 +38,52 @@ public class PostTypeServiceImpl
 
     @Override
     public List<PostTypeDto> getAllPostTypes() {
-        return getAll();
+        return super.getAll();
     }
 
     @Override
     public PostTypeDto getPostTypeById(Integer id) {
-        return getByIdOrThrow(id);
+        return super.getByIdOrThrow(id);
     }
 
     @Override
     public List<PostTypeDto> getPostTypesByLanguage(String languageCode) {
-        return getByLanguage(languageCode);
+        return super.getByLanguage(languageCode);
     }
 
     @Transactional
     @Override
     public PostTypeDto createPostType(PostTypeDto postTypeDto) {
-        return create(postTypeDto);
+        return super.create(postTypeDto);
     }
 
     @Transactional
     @Override
     public PostTypeDto updatePostType(Integer id, PostTypeDto postTypeDto) {
-        return update(id, postTypeDto);
+        return super.update(id, postTypeDto);
     }
 
     @Transactional
     @Override
     public void deletePostType(Integer id) {
-        delete(id);
+        super.delete(id);
     }
 
     @Transactional
     @Override
     public PostTypeDto addTranslation(Integer postTypeId, String languageCode, String translation) {
-        return addTranslation(postTypeId, languageCode, translation);
+        return super.addTranslation(postTypeId, languageCode, translation);
     }
 
     @Transactional
     @Override
     public PostTypeDto removeTranslation(Integer postTypeId, String languageCode) {
-        return removeTranslation(postTypeId, languageCode);
+        return super.removeTranslation(postTypeId, languageCode);
     }
 
     @Override
     public List<PostTypeDto> getAllPostTypesWithQuery(String name, String lang) {
         return getAllByQuery(name, lang);
-//        return postTypeRepository.findAllByQuery(name, lang).stream()
-//                .map(postTypeMapper::toDto)
-//                .toList();
     }
 
     @Override

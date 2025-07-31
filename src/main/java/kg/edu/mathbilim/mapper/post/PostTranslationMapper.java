@@ -20,6 +20,7 @@ public interface PostTranslationMapper extends BaseMapper<PostTranslation, PostT
     @Mapping(target = "id.postId", source = "postId")
     @Mapping(target = "post.id", source = "postId")
     @Mapping(target = "post.postTranslations", ignore = true)
+    @Mapping(target = "title", source = "title")
     PostTranslation toEntity(PostTranslationDto dto);
 
     @AfterMapping
