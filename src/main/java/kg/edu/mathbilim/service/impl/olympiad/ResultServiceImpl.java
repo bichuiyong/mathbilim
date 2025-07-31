@@ -20,7 +20,6 @@ public class ResultServiceImpl implements ResultService {
     private final ResultRepository resultRepository;
     private final FileService fileService;
     private final OlympiadStageService olympiadStageService;
-    private final UserService userService;
 
     @Override
     public String uploadResult(MultipartFile uploadFile, long stageId) {

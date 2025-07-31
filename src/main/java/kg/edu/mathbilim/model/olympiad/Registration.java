@@ -23,8 +23,8 @@ public class Registration {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "olympiad_id")
-    private Olympiad olympiad;
+    @JoinColumn(name = "olympiad_stage_id")
+    private OlympiadStage olympiadStage;
 
     @Column(length = 100)
     private String email;

@@ -62,6 +62,27 @@
             min-height: 0;
         }
 
+        .mybtn-off {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #a9a8a8;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            user-select: none;
+
+            border: none;
+            outline: none;
+            box-shadow: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            min-height: 0;
+        }
 
         .mybtn:hover,
         .mybtn:focus {
@@ -71,7 +92,41 @@
         }
 
         .mybtn:active {
-            background-color: #707176;
+            background-color: #a9a8a8;
+            color: white;
+        }
+
+        .mybtn-admin {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #b56df1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            user-select: none;
+
+            border: none;
+            outline: none;
+            box-shadow: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            min-height: 0;
+        }
+
+        .mybtn-admin:hover,
+        .mybtn-admin:focus {
+            background-color: #a94eed;
+            outline: none;
+            color: white;
+        }
+
+        .mybtn-admin:active {
+            background-color: #a9a8a8;
             color: white;
         }
 
@@ -130,7 +185,11 @@
                 <#if olympiad.stages?? && (olympiad.stages?size > 0)>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-sm small" style="margin-top: 20px;
-                         width: 85%">
+                            <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                                width: 100%
+                            <#else>
+                                width: 85%"
+                            </#if>>
                             <thead class="table-light">
                             <tr>
                                 <th>#</th>
@@ -141,8 +200,13 @@
                                 <th>Обновлено</th>
                                 <th>Результаты</th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                    <th>Действие</th>
+                                    <th>Результат</th>
                                 </#if>
+                                <th>Список участников</th>
+                                <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                                    <th>участники</th>
+                                </#if>
+                                <th>Регистрация</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -177,11 +241,46 @@
                                                 <input type="file" name="file" class="uploadFile" style="display:none" required />
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.result?? && (stage.result?size > 0)>
-                                                    <button type="button" class="uploadBtn mybtn">поменять результат</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">поменять</button>
                                                 <#else>
-                                                    <button type="button" class="uploadBtn mybtn">добавить результат</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">добавить</button>
                                                 </#if>
                                             </form>
+                                        </td>
+                                    </#if>
+                                    <td>
+                                        <#if stage.approvedList?? && (stage.approvedList?size > 0)>
+                                            <a href="/api/files/${stage.approvedList[0].file.id}/download" class="mybtn">
+                                                список
+                                            </a>
+                                        <#else>
+                                            отсутствует
+                                        </#if>
+                                    </td>
+                                    <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                                        <td>
+                                            <form action="/olympiad/add-list" method="post" enctype="multipart/form-data" class="uploadForm">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                                </#if>
+                                                <input type="file" name="file" class="uploadFile" style="display:none" required />
+                                                <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
+                                                <#if stage.approvedList?? && (stage.approvedList?size > 0)>
+                                                    <button type="button" class="uploadBtn mybtn-admin">поменять</button>
+                                                <#else>
+                                                    <button type="button" class="uploadBtn mybtn-admin">добавить</button>
+                                                </#if>
+                                            </form>
+                                        </td>
+                                    </#if>
+                                    <#if (stage.registrationDate?long <= today?long) && (stage.registrationEndDate?long >= today?long)>
+                                        <td>
+                                            <a href="/olympiad/registration?stageId=${stage.id}" class="mybtn">зарегистрироваться</a>
+                                        </td>
+                                    <#else>
+                                        <td>
+                                            <p class="mybtn-off">недоступно</p>
                                         </td>
                                     </#if>
                                 </tr>

@@ -1,7 +1,7 @@
 create table registration(
     id serial primary key,
     user_id bigint references users(id),
-    olympiad_id bigint references olympiads(id),
+    olympiad_stage_id bigint references olympiad_stages(id),
     email varchar(100),
     region varchar(200),
     district varchar(100),

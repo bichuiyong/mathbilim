@@ -62,4 +62,10 @@ public class OlympiadStage {
 
     @OneToMany(mappedBy = "olympiadStage", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Result> result = new ArrayList<>();
+
+    @OneToMany(mappedBy = "olympiadStage", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Registration> registration = new ArrayList<>();
+
+    @OneToMany(mappedBy = "olympiadStage", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<OlympiadApprovedList> approvedList = new ArrayList<>();
 }
