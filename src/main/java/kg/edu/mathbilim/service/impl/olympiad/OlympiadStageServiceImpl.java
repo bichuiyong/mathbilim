@@ -18,6 +18,8 @@ import kg.edu.mathbilim.repository.olympiad.RegistrationRepository;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadStageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -185,4 +187,28 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
         OlympiadStage olympiadStage = olympiadStageRepository.findById(stageId).orElse(null);
         return registrationRepository.existsByOlympiadStageAndUser(olympiadStage,user);
     }
+
+    @Override
+    public Page<RegistrationDto> getOlympiadRegistrations(Long stageId, Pageable pageable, String keyword) {
+        return registrationRepository.getByOlympiadStage_Id(stageId, keyword,pageable)
+                .map(reg -> RegistrationDto.builder()
+                        .classNumber(reg.getClassNumber())
+                        .email(reg.getEmail())
+                        .classTeacherFullName(reg.getClassTeacherFullName())
+                        .district(reg.getDistrict())
+                        .fullName(reg.getFullName())
+                        .locality(reg.getLocality())
+                        .parentEmail(reg.getParentEmail())
+                        .phoneNumber(reg.getPhoneNumber())
+                        .telegram(reg.getTelegram())
+                        .parentPhoneNumber(reg.getParentPhoneNumber())
+                        .olympiadName(reg.getOlympiadStage().getOlympiad().getTitle())
+                        .userName(reg.getUser().getEmail())
+                        .parentFullName(reg.getParentFullName())
+                        .school(reg.getSchool())
+                        .region(reg.getRegion())
+                        .build());
+    }
+
+
 }

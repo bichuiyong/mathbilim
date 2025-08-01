@@ -6,6 +6,8 @@ import kg.edu.mathbilim.dto.olympiad.RegistrationDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import kg.edu.mathbilim.model.olympiad.Registration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +32,6 @@ public interface OlympiadStageService {
     boolean checkRegisterActually(long stageId);
 
     boolean userHasRegistered(String userName, long stageId);
+
+    Page<RegistrationDto> getOlympiadRegistrations(Long stageId, Pageable pageable, String keyword);
 }

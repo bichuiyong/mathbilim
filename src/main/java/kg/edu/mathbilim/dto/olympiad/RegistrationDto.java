@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RegistrationDto {
+    private String userName;
+    private String olympiadName;
+
     @NotNull
     private Long userId;
     @NotNull
