@@ -1,13 +1,12 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.dto.olympiad.RegistrationDto;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.dto.interfacePack.OnCreate;
-import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
-import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.service.impl.olympiad.OlympiadStageServiceImpl;
 import kg.edu.mathbilim.service.interfaces.ContactTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
@@ -23,11 +22,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.http.HttpRequest;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.glassfish.grizzly.http.util.Header.Date;
 
 @Controller
 @RequestMapping("/olympiad")
@@ -53,8 +53,9 @@ public class OlympiadController {
     }
 
     @GetMapping("details")
-    public String olympiadPageDetails(@RequestParam long id, Model model) {
+    public String olympiadPageDetails(@RequestParam long id, Model model, @ModelAttribute("message") String message) {
         model.addAttribute("today", java.sql.Date.valueOf(LocalDate.now()));
+        model.addAttribute("message", message);
         model.addAttribute("olympiad", olympiadService.getById(id));
         return "olympiad/olymp-details";
     }
@@ -136,37 +137,57 @@ public class OlympiadController {
     @GetMapping("registration")
     public String olympiadRegistration(Model model,
                                        Authentication auth,
-                                       @RequestParam long stageId) {
+                                       @RequestParam long stageId,
+                                       HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
             return "redirect:/auth/login";
         }
-
-    model.addAttribute("registrationDto",new RegistrationDto());
-    return "olympiad/registration";
+        if (!olympiadStageServiceImpl.checkRegisterActually(stageId)) {
+            return "redirect:/olympiad";
+        }
+        if (olympiadStageServiceImpl.userHasRegistered(auth.getName(),stageId)) {
+            redirectAttributes.addFlashAttribute("message","Вы уже отправили данные на регистрацию!");
+            redirectAttributes.addFlashAttribute("messageType","error");
+            String referer = Optional.ofNullable(request.getHeader("Referer"))
+                    .orElse("/");
+            return "redirect:" + referer;
+        }
+        model.addAttribute("user", userService.getUserByEmail(auth.getName()));
+        model.addAttribute("stageId", stageId);
+        model.addAttribute("registrationDto",new RegistrationDto());
+        return "olympiad/registration";
     }
 
     @PostMapping("registration")
     public String olympiadRegistration(Model model,
                                        Authentication auth,
                                        @RequestParam long stageId,
-                                       RegistrationDto registrationDto) {
-        model.addAttribute("user", userService.getUserByEmail(auth.getName()));
-        model.addAttribute("registrationDto", registrationDto);
+                                       @ModelAttribute RegistrationDto registrationDto,
+                                       RedirectAttributes redirectAttributes) {
+            model.addAttribute("registrationDto", registrationDto);
 
         Optional<Long> id = olympiadStageServiceImpl.createRegistrationOlympiad(registrationDto, stageId, auth.getName());
+        redirectAttributes.addFlashAttribute("message","Успешно зарегистрировано!");
+        redirectAttributes.addFlashAttribute("messageType","success");
         return id.map(aLong -> "redirect:/olympiad/details?id=" + aLong).orElse("redirect:/olympiad");
     }
 
     @PostMapping("add-result")
     public String addStageResult(@RequestParam("stageId") long stageId,
-                               @RequestParam("file") MultipartFile file) {
+                               @RequestParam("file") MultipartFile file,
+                                 RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message","Результаты успешно добавлены!");
+        redirectAttributes.addFlashAttribute("messageType","success");
         return resultService.uploadResult(file, stageId);
     }
 
     @PostMapping("add-list")
     public String addStageRegistrationList(@RequestParam("stageId") long stageId,
-                                 @RequestParam("file") MultipartFile file) {
+                                 @RequestParam("file") MultipartFile file,
+                                           RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message","Список участников успешно добавлен!");
+        redirectAttributes.addFlashAttribute("messageType","success");
         return olympiadService.uploadRegistrationResult(file, stageId);
     }
 }

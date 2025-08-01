@@ -26,4 +26,8 @@ public interface OlympiadStageService {
     void updateTime(OlympiadStage olympiadStage);
 
     Optional<Long> createRegistrationOlympiad(RegistrationDto dto, Long stageId, String userName);
+
+    boolean checkRegisterActually(long stageId);
+
+    boolean userHasRegistered(String userName, long stageId);
 }

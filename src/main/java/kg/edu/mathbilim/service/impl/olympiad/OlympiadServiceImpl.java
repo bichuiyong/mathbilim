@@ -89,6 +89,9 @@ public class OlympiadServiceImpl implements OlympiadService {
             if (contact.getInfo() == null || contact.getInfo().isBlank()) {
                 continue;
             }
+            if (contact.getInfo().startsWith("https://")) {
+                contact.setInfo(contact.getInfo().substring(8));
+            }
             ContactType contactType = contactTypeService.getById(Math.toIntExact(contact.getContactType()));
 
             OlympiadContactId contactId = new OlympiadContactId();
@@ -177,6 +180,9 @@ public class OlympiadServiceImpl implements OlympiadService {
         for (OlympiadContactDto contact : dto.getContacts()) {
             if (contact.getInfo() == null || contact.getInfo().isBlank()) {
                 continue;
+            }
+            if (contact.getInfo().startsWith("https://")) {
+                contact.setInfo(contact.getInfo().substring(8));
             }
             ContactType contactType = contactTypeService.getById(Math.toIntExact(contact.getContactType()));
 
