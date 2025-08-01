@@ -10,6 +10,7 @@ import kg.edu.mathbilim.dto.olympiad.RegistrationDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
 import kg.edu.mathbilim.model.olympiad.Registration;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.ResultRepository;
 import kg.edu.mathbilim.repository.olympiad.OlympiadApprovedListRepository;
 import kg.edu.mathbilim.repository.olympiad.OlympiadStageRepository;
@@ -137,8 +138,6 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
         Optional<OlympiadStage> olympiadStage = olympiadStageRepository.findById(stageId);
         if(olympiadStage.isPresent()) {
             OlympiadStage stage = olympiadStage.get();
-            if (!stage.getRegistrationStart().isAfter(LocalDate.now())
-                    && !stage.getRegistrationEnd().isBefore(LocalDate.now())) {
                 Registration registration = Registration.builder()
                         .user(userService.findByEmail(userName))
                         .olympiadStage(stage)
@@ -152,18 +151,38 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
                         .school(dto.getSchool())
                         .region(dto.getRegion())
                         .parentFullName(dto.getParentFullName())
-                        .phoneNumber(String.valueOf(dto.getPhoneNumber()))
+                        .phoneNumber(dto.getPhoneNumber())
                         .telegram(dto.getTelegram())
-                        .created(LocalDate.now())
+                        .parentPhoneNumber(dto.getParentPhoneNumber())
+                        .created(LocalDateTime.now())
                         .build();
                 registrationRepository.save(registration);
-                return Optional.ofNullable(stage.getOlympiad().getId());
-            } else {
-                return Optional.empty();
-            }
+            System.out.println("parentPhoneNumber: " + dto.getParentPhoneNumber());
+            System.out.println("Entity parentPhoneNumber: " + registration.getParentPhoneNumber());
+
+            return Optional.ofNullable(stage.getOlympiad().getId());
         } else {
             return Optional.empty();
         }
     }
 
+    @Override
+    public boolean checkRegisterActually(long stageId) {
+        Optional<OlympiadStage> olympiadStage = olympiadStageRepository.findById(stageId);
+        if(olympiadStage.isPresent()) {
+            OlympiadStage stage = olympiadStage.get();
+            return !stage.getRegistrationStart().isAfter(LocalDate.now())
+                    && !stage.getRegistrationEnd().isBefore(LocalDate.now());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean userHasRegistered(String userName, long stageId) {
+        User user = userService.findByEmail(userName);
+        if (user.getRole().getName().equalsIgnoreCase("admin") || user.getRole().getName().equalsIgnoreCase("MODER")) {
+            return false;}
+        OlympiadStage olympiadStage = olympiadStageRepository.findById(stageId).orElse(null);
+        return registrationRepository.existsByOlympiadStageAndUser(olympiadStage,user);
+    }
 }

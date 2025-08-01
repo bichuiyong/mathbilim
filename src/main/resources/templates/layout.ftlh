@@ -22,6 +22,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
               rel="stylesheet">
         <link rel="stylesheet" href="/static/css/main.css">
+        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     </head>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -65,5 +65,5 @@ public class Registration {
     @Column(name = "parent_email", length = 100)
     private String parentEmail;
 
-    private LocalDate created;
+    private LocalDateTime created;
 }

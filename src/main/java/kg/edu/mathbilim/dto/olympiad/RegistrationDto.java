@@ -6,17 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RegistrationDto {
     @NotNull
-    private Long user_id;
+    private Long userId;
     @NotNull
-    private Long olympiadStage_id;
+    private Long olympiadStageId;
     @Email
     private String email;
     @NotEmpty

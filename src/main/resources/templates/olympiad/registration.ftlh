@@ -3,6 +3,7 @@
     <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.22.9/babel.min.js"></script>
+
     <style>
         :root {
             --olympiad-primary: #4361ee;
@@ -305,10 +306,51 @@
             color: var(--olympiad-error);
             margin-left: 4px;
         }
+
+        .olympiad-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(229, 62, 62, 0.85);
+            /* Semi-transparent red using --olympiad-error */
+            color: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.4s ease-out, fadeOut 0.4s ease-in 4.6s forwards;
+            font-size: 15px;
+            font-weight: 500;
+            max-width: 320px;
+            backdrop-filter: blur(4px);
+            /* Adds a subtle blur effect for elegance */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            /* Subtle white border for contrast */
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(120%);
+            }
+        }
     </style>
 
     <div id="olympiad-root"></div>
     <script type="text/babel">
+
         const regions = [
             { id: 1, name: "Чуйская область" },
             { id: 2, name: "Бишкек" },
@@ -322,53 +364,21 @@
         ];
 
         const Alldistricts = [
-            "Ак-Суйский район",
-            "Ак-Талинский район",
-            "Аксыйский район",
-            "Ала-Букинский район",
-            "Алайский район",
-            "Аламудунский район",
-            "Араванский район",
-            "Ат-Башинский район",
-            "Базар-Коргонский район",
-            "Бакай-Атинский район",
-            "Баткенский район",
-            "Бишкек",
-            "Жайыльский район",
-            "Жети-Огузский район",
-            "Жумгальский район",
-            "Иссык-Кульский район",
-            "Кадамжайский район",
-            "Кара-Бууринский район",
-            "Кара-Кульджинский район",
-            "Кара-Сууский район",
-            "Кеминский район",
-            "Кочкорский район",
-            "Лейлекский район",
-            "Манасский район",
-            "Московский район",
-            "Нарынский район",
-            "Ноокатский район",
-            "Ноокенский район",
-            "Ош",
-            "Панфиловский район",
-            "Сокулукский район",
-            "Сузакский район",
-            "Таласский район",
-            "Тогуз-Тороуский район",
-            "Токтогульский район",
-            "Тонский район",
-            "Тюпский район",
-            "Узгенский район",
-            "Чаткальский район",
-            "Чон-Алайский район",
-            "Чуйский район",
-            "Ыссык-Атинский район"
+            "Ак-Суйский район", "Ак-Талинский район", "Аксыйский район", "Ала-Букинский район",
+            "Алайский район", "Аламудунский район", "Араванский район", "Ат-Башинский район",
+            "Базар-Коргонский район", "Бакай-Атинский район", "Баткенский район", "Бишкек",
+            "Жайыльский район", "Жети-Огузский район", "Жумгальский район", "Иссык-Кульский район",
+            "Кадамжайский район", "Кара-Бууринский район", "Кара-Кульджинский район", "Кара-Сууский район",
+            "Кеминский район", "Кочкорский район", "Лейлекский район", "Манасский район",
+            "Московский район", "Нарынский район", "Ноокатский район", "Ноокенский район", "Ош",
+            "Панфиловский район", "Сокулукский район", "Сузакский район", "Таласский район",
+            "Тогуз-Тороуский район", "Токтогульский район", "Тонский район", "Тюпский район",
+            "Узгенский район", "Чаткальский район", "Чон-Алайский район", "Чуйский район", "Ыссык-Атинский район"
         ];
 
         function RegistrationForm() {
             const [formData, setFormData] = React.useState({
-                userId: '',
+                userId: '${user.id}',
                 olympiadId: '',
                 email: '',
                 region: '',
@@ -377,7 +387,7 @@
                 phoneNumber: '',
                 school: '',
                 telegram: '',
-                className: '',
+                classNumber: '',
                 locality: '',
                 classTeacherFullName: '',
                 parentFullName: '',
@@ -389,6 +399,14 @@
             const [error, setError] = React.useState('');
             const [isSubmitting, setIsSubmitting] = React.useState(false);
             const [submitSuccess, setSubmitSuccess] = React.useState(false);
+            const [showNotification, setShowNotification] = React.useState(true);
+
+            React.useEffect(() => {
+                const timer = setTimeout(() => {
+                    setShowNotification(false);
+                }, 6000);
+                return () => clearTimeout(timer);
+            }, []);
 
             const handleChange = (e) => {
                 const { name, value, type, checked } = e.target;
@@ -398,7 +416,7 @@
                 }));
             };
 
-            const handleSubmit = async (e) => {
+            const handleSubmit = (e) => {
                 e.preventDefault();
 
                 if (!formData.consent) {
@@ -410,34 +428,37 @@
                 setError('');
                 setIsSubmitting(true);
 
-                <#noparse>
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/olympiad/registration?stageId=${stageId}';
+                form.style.display = 'none';
 
-                    // const response = await fetch('/olympiad/registration', {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
-                    //         'X-CSRF-TOKEN': csrfToken,
-                    //     },
-                    //     body: JSON.stringify(formData),
-                    // });
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_csrf';
+                csrfInput.value = '${_csrf.token}';
+                form.appendChild(csrfInput);
 
-                    // if (!response.ok) {
-                    //     throw new Error(`Ошибка ${response.status}`);
-                    // }
-
-                    // const result = await response.json();
-
-                    setSubmitSuccess(true);
-                } catch (err) {
-                    setError('Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.');
-                    console.error('Ошибка:', err);
-                } finally {
-                    setIsSubmitting(false);
+                for (const key in formData) {
+                    if (key !== 'consent') {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = formData[key];
+                        form.appendChild(input);
+                    }
                 }
+
+                const consentInput = document.createElement('input');
+                consentInput.type = 'hidden';
+                consentInput.name = 'consent';
+                consentInput.value = formData.consent ? 'true' : 'false';
+                form.appendChild(consentInput);
+
+                document.body.appendChild(form);
+                form.submit();
             };
-            </#noparse>
+
             if (submitSuccess) {
                 return (
                     <div className="olympiad-form-container">
@@ -447,13 +468,7 @@
                         <div className="olympiad-success-message">
                             <div className="olympiad-success-icon">✓</div>
                             <h2>Спасибо за регистрацию!</h2>
-                            <button
-                                className="olympiad-submit-btn"
-                                onClick={() => setSubmitSuccess(false)}
-                                style={{ maxWidth: '300px', margin: '0 auto' }}
-                            >
-                                Вернуться к форме
-                            </button>
+                            <p>Вы будете перенаправлены через 3 секунды...</p>
                         </div>
                     </div>
                 );
@@ -461,6 +476,13 @@
 
             return (
                 <div className="olympiad-form-container">
+                    <#if user.role.name != "ADMIN" && user.role.name != "MODER">
+                    {showNotification && (
+                        <div className="olympiad-notification">
+                            Внимание: Форму можно отправить только один раз!
+                        </div>
+                    )}
+                    </#if>
                     <div className="olympiad-form-header">
                         <h1>Форма регистрации</h1>
                         <p>Заполните все необходимые поля</p>
@@ -479,7 +501,7 @@
                                             value={formData.email}
                                             onChange={handleChange}
                                             required
-                                            placeholder="example@mail.com"
+                                            placeholder="example@gmail.com"
                                         />
                                     </div>
                                     <div className="olympiad-form-row">
@@ -508,8 +530,8 @@
                                                 required
                                             >
                                                 <option value="">Выберите район</option>
-                                                {Alldistricts.map(district => (
-                                                    <option key={district} value={district}>{district}</option>
+                                                {Alldistricts.map(d => (
+                                                    <option key={d} value={d}>{d}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -523,7 +545,7 @@
                                             value={formData.fullName}
                                             onChange={handleChange}
                                             required
-                                            placeholder="Иванов Иван Иванович"
+                                            placeholder="Иванов Азамат Иванович"
                                         />
                                     </div>
                                     <div className="olympiad-form-row">
@@ -535,7 +557,8 @@
                                                 name="phoneNumber"
                                                 value={formData.phoneNumber}
                                                 onChange={handleChange}
-                                                placeholder="+996 __ ___ __ __"
+                                                required
+                                                placeholder="+996 ___ ___ ___"
                                             />
                                         </div>
                                         <div className="olympiad-form-group">
@@ -565,6 +588,7 @@
                                                 name="school"
                                                 value={formData.school}
                                                 onChange={handleChange}
+                                                required
                                                 placeholder="Название школы"
                                             />
                                         </div>
@@ -573,10 +597,11 @@
                                             <input
                                                 className="olympiad-input"
                                                 type="text"
-                                                name="className"
-                                                value={formData.className}
+                                                name="classNumber"
+                                                value={formData.classNumber}
                                                 onChange={handleChange}
-                                                placeholder="11A"
+                                                required
+                                                placeholder="10А"
                                             />
                                         </div>
                                     </div>
@@ -588,6 +613,7 @@
                                             name="locality"
                                             value={formData.locality}
                                             onChange={handleChange}
+                                            required
                                             placeholder="Город/село"
                                         />
                                     </div>
@@ -599,7 +625,8 @@
                                             name="classTeacherFullName"
                                             value={formData.classTeacherFullName}
                                             onChange={handleChange}
-                                            placeholder="Петрова Мария Сергеевна"
+                                            required
+                                            placeholder="ФИО"
                                         />
                                     </div>
                                 </div>
@@ -614,23 +641,25 @@
                                             name="parentFullName"
                                             value={formData.parentFullName}
                                             onChange={handleChange}
-                                            placeholder="Иванова Анна Петровна"
+                                            required
+                                            placeholder="ФИО"
                                         />
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Номер телефона родителя</label>
+                                            <label className="olympiad-label">Номер телефона</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="tel"
                                                 name="parentPhoneNumber"
                                                 value={formData.parentPhoneNumber}
                                                 onChange={handleChange}
-                                                placeholder="+996 __ ___ __ __"
+                                                required
+                                                placeholder="+996 ___ ___ ___"
                                             />
                                         </div>
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Email родителя</label>
+                                            <label className="olympiad-label">Email</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="email"
