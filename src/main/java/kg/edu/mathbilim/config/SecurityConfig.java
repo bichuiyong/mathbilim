@@ -100,7 +100,9 @@ public class SecurityConfig {
                                     "/olympiad/create",
                                     "/olympiad/edit",
                                     "/olympiad/add-result",
-                                    "/olympiad/add-list"
+                                    "/olympiad/add-list",
+                                    "/olympiad/stage/register-list",
+                                    "/olympiad/stage/*/register-list"
                             ).hasAnyAuthority("ADMIN","MODER")
 
                         .requestMatchers(

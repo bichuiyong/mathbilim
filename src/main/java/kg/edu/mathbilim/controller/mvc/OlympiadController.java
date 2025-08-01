@@ -190,4 +190,21 @@ public class OlympiadController {
         redirectAttributes.addFlashAttribute("messageType","success");
         return olympiadService.uploadRegistrationResult(file, stageId);
     }
+
+    @GetMapping("stage/{stageId}/register-list")
+    public String getStageRegisteredUsersPage(@PathVariable long stageId,
+                                              Model model,
+                                              @RequestParam(defaultValue = "") String keyword,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "fullName") String sortBy,
+                                              @RequestParam(defaultValue = "asc") String direction) {
+        model.addAttribute("page",page);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("sortBy",sortBy);
+        model.addAttribute("direction",direction);
+        model.addAttribute("size",size);
+
+        return "olympiad/stageRegiteredList";
+    }
 }

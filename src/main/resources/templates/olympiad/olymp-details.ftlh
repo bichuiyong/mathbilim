@@ -519,6 +519,9 @@
                                     <th>участники</th>
                                 </#if>
                                 <th>Регистрация</th>
+                                <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                                <th>Данные</th>
+                                </#if>
                             </tr>
                             </thead>
                             <tbody>
@@ -595,6 +598,18 @@
                                             <p class="mybtn-off">недоступно</p>
                                         </td>
                                     </#if>
+                                    <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                                        <td>
+                                            <a href="/olympiad/stage/${stage.id}/register-list" style="color: inherit; text-decoration: none;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                          d="M9.146 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L11.293 8H2.5a.5.5 0 0 1 0-1h8.793L9.146 4.854a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </#if>
+
                                 </tr>
                             </#list>
                             </tbody>
