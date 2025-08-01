@@ -40,11 +40,6 @@ public class OlympiadController {
         return ResponseEntity.ofNullable(olympiadService.getOlympiadCreateDto(id));
     }
 
-    @GetMapping("main")
-    public ResponseEntity<?> getLatestEvents() {
-        return ResponseEntity.ofNullable(olympiadService.getOlympiadForMainPage());
-    }
-
     @GetMapping("stage/list")
     public ResponseEntity<Page<RegistrationDto>> getRegisteredUsersList(long stageId,
                                                                         @RequestParam(defaultValue = "") String keyword,
