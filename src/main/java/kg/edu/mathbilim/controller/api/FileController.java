@@ -142,6 +142,26 @@ public class FileController {
         }
     }
 
+    @PostMapping("/froala/image")
+    public ResponseEntity<Map<String, String>> uploadImageForFroala(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер изображения не должен превышать 5MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/images");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("link", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки изображения"));
+        }
+    }
+
     @PostMapping("/tinymce/video")
     public ResponseEntity<Map<String, String>> uploadVideoForTinyMCE(
             @RequestParam("file") MultipartFile file) {

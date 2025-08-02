@@ -542,23 +542,41 @@
         </div>
     </div>
 
-    <#noparse>
-        <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
         <script src="/static/js/components/content-create/ImageCropManager.js"></script>
 
         <script>
-            tinymce.init({
-                selector: 'textarea.rich-text-editor',
-                menubar: false,
-                plugins: 'lists link image code preview',
-                toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
-                height: 300,
+            const csrfHeader = 'X-XSRF-TOKEN';
+            const csrfToken = '${_csrf.token}';
+            <#noparse>
+            new FroalaEditor('textarea.rich-text-editor', {
+                toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
+                height: 600,
+                requestHeaders: {
+                    [csrfHeader]: csrfToken
+                },
                 language: 'ru',
-                branding: false,
-                content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
+                placeholderText: 'Введите текст...',
+                contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
+                imageUploadURL: '/api/files/froala/image',
+                imageUploadParam: 'file',
+                imageUploadMethod: 'POST',
+                imageMaxSize: 5 * 1024 * 1024,
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                events: {
+                    'image.uploaded': function (response) {
+                        console.log('Изображение загружено:', response);
+                    },
+                    'image.error': function (error, response) {
+                        console.error('Ошибка загрузки изображения:', error.message);
+                        alert('Ошибка при загрузке изображения: ' + error.message);
+                    }
+                }
             });
 
             let imageCropManager;
