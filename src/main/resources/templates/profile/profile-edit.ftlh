@@ -81,7 +81,7 @@
                     <div class="card-body">
                         <h6 class="card-title mb-3">Дополнительные настройки</h6>
                         <div class="d-grid gap-2">
-                            <a href="/users/${userEditDto.id}/change-password" class="btn btn-outline-warning btn-sm">
+                            <a href="/users/change-password" class="btn btn-outline-warning btn-sm">
                                 <i class="fas fa-key me-2"></i>Изменить пароль
                             </a>
                             <a href="/users/${userEditDto.id}/notifications" class="btn btn-outline-info btn-sm">

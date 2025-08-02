@@ -92,4 +92,8 @@ public interface UserService {
     void subscribe(Long chatId);
 
     boolean isSubscribed(Long chatId);
+
+    void changePassword(String password, String newPassword) throws IllegalArgumentException;
+
+    boolean checkOldPassword(String oldPassword);
 }
