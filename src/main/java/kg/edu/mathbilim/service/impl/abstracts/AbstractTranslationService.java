@@ -90,7 +90,7 @@ public abstract class AbstractTranslationService<
         E translation = mapper.toEntity(dto);
         repository.save(translation);
         log.info("Save translation to language {}: {}",
-                dto.getLanguageCode(), translation.getTitle());
+                dto.getLanguageCode(),dto.getTitle());
         return dto;
     }
 
