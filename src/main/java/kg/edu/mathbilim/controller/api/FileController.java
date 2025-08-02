@@ -59,7 +59,7 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
                 .contentLength(fileContent.length)
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + fileDto.getFilename() + "\"; filename*=UTF-8''" + encodedFilename)
+                        "attachment; filename*=UTF-8''" + encodedFilename)
                 .body(resource);
     }
 
@@ -135,6 +135,26 @@ public class FileController {
             FileDto fileDto = fileService.uploadFile(file, "blog/images");
             String viewUrl = "/api/files/" + fileDto.getId() + "/view";
             Map<String, String> response = Map.of("location", viewUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Ошибка загрузки изображения"));
+        }
+    }
+
+    @PostMapping("/froala/image")
+    public ResponseEntity<Map<String, String>> uploadImageForFroala(
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Размер изображения не должен превышать 5MB"));
+        }
+
+        try {
+            FileDto fileDto = fileService.uploadFile(file, "blog/images");
+            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+            Map<String, String> response = Map.of("link", viewUrl);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest()

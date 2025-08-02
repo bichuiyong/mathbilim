@@ -3,42 +3,48 @@
 <@main.layout>
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --primary-dark: #1d4ed8;
-            --bg: #f8fafc;
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --primary-dark: #2563eb;
+            --bg: #f1f5f9;
             --card: #ffffff;
             --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --error: #dc2626;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --error: #ef4444;
+            --highlight-bg: #eff6ff;
+            --highlight-border: #bfdbfe;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease-in-out;
         }
 
         .olympiad-body {
-            background-color: var(--bg);
+            background: linear-gradient(180deg, var(--bg) 0%, #e5e7eb 100%);
             color: var(--text);
-            line-height: 1.5;
-            padding: 2rem;
+            line-height: 1.6;
+            padding: 2.5rem;
             min-height: 100vh;
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
         .olympiad-container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             background-color: var(--card);
-            border-radius: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
         .olympiad-header {
-            padding: 1.5rem 2rem;
+            padding: 2rem;
             border-bottom: 1px solid var(--border);
+            background: linear-gradient(90deg, #f8fafc, #ffffff);
         }
 
         .olympiad-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.75rem;
+            font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
@@ -46,22 +52,23 @@
         }
 
         .olympiad-title svg {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 1.75rem;
+            height: 1.75rem;
+            stroke: var(--primary-dark);
         }
 
         .form-content {
-            padding: 2rem;
+            padding: 2.5rem;
         }
 
         .olympiad-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
 
         .form-group.full-width {
@@ -71,26 +78,28 @@
         .olympiad-label {
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--text);
+            letter-spacing: -0.01em;
         }
 
         .olympiad-label.required::after {
             content: '*';
             color: var(--error);
-            margin-left: 0.25rem;
+            margin-left: 0.3rem;
         }
 
         .olympiad-input,
         .olympiad-select,
         .olympiad-textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1.25rem;
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            transition: all 0.15s ease;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background-color: #fff;
         }
 
         .olympiad-input:focus,
@@ -98,24 +107,33 @@
         .olympiad-textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .olympiad-textarea {
-            min-height: 120px;
+        .olympiad-textarea.rich-text-editor {
+            min-height: 180px;
             resize: vertical;
+            background-color: var(--highlight-bg);
+            border: 2px solid var(--highlight-border);
+            font-size: 1.05rem;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .olympiad-textarea.rich-text-editor:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .olympiad-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: var(--transition);
             border: none;
         }
 
@@ -126,6 +144,8 @@
 
         .olympiad-btn-primary:hover {
             background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
         }
 
         .olympiad-btn-outline {
@@ -135,71 +155,79 @@
         }
 
         .olympiad-btn-outline:hover {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
+            border-color: var(--primary-light);
+            color: var(--primary);
         }
 
         .olympiad-btn svg {
-            width: 1rem;
-            height: 1rem;
+            width: 1.1rem;
+            height: 1.1rem;
             margin-right: 0.5rem;
         }
 
         .olympiad-btn-sm {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.75rem;
+            padding: 0.625rem 1rem;
+            font-size: 0.8rem;
             line-height: 1;
         }
 
         .olympiad-btn-sm svg {
-            width: 0.875rem;
-            height: 0.875rem;
-            margin-right: 0.25rem;
+            width: 0.9rem;
+            height: 0.9rem;
+            margin-right: 0.3rem;
         }
 
         .stages-container {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .stage-card {
-            padding: 1.25rem;
+            padding: 1.5rem;
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             background-color: white;
+            transition: var(--transition);
+        }
+
+        .stage-card:hover {
+            box-shadow: var(--shadow);
         }
 
         .stage-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .stage-title {
             font-weight: 600;
-            color: var(--primary);
+            color: var(--primary-dark);
+            font-size: 1.1rem;
         }
 
         .contacts-container {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .contact-card {
             display: grid;
             grid-template-columns: 1fr 2fr auto;
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: center;
         }
 
         .checkbox-group {
             padding: 0;
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             background-color: white;
             max-height: 0;
             overflow: hidden;
@@ -208,7 +236,7 @@
 
         .checkbox-group.open {
             max-height: 300px;
-            padding: 1rem;
+            padding: 1.25rem;
         }
 
         .checkbox-item {
@@ -216,7 +244,7 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.5rem 0;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
 
         .checkbox-item input[type="checkbox"] {
@@ -224,6 +252,7 @@
             height: 1.25rem;
             accent-color: var(--primary);
             cursor: pointer;
+            border-radius: 4px;
         }
 
         .checkbox-item label {
@@ -233,20 +262,22 @@
 
         .submit-btn {
             width: 100%;
-            padding: 1rem;
+            padding: 1.25rem;
             font-size: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 0.75rem;
         }
 
         .image-upload-container {
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: border-color 0.3s ease;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: var(--transition);
         }
 
         .image-upload-container:hover {
-            border-color: #2563eb;
+            border-color: var(--primary-light);
+            background-color: #f8fafc;
         }
 
         .crop-container {
@@ -261,7 +292,7 @@
             max-width: 600px;
             aspect-ratio: 1.2 / 1;
             overflow: hidden;
-            border-radius: 8px;
+            border-radius: 10px;
         }
 
         .cropped-image-container img {
@@ -271,18 +302,18 @@
         }
 
         .crop-hint {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
             text-align: center;
         }
 
         .cropper-crop-box {
-            border: 2px solid #2563eb;
+            border: 2px solid var(--primary);
         }
 
         .cropper-view-box {
-            border: 1px dashed #3b82f6;
+            border: 1px dashed var(--primary-light);
         }
 
         @media (max-width: 768px) {
@@ -297,6 +328,10 @@
             .contact-card {
                 grid-template-columns: 1fr;
             }
+
+            .olympiad-body {
+                padding: 1.5rem;
+            }
         }
     </style>
 
@@ -304,10 +339,6 @@
         <div class="olympiad-container">
             <header class="olympiad-header">
                 <h1 class="olympiad-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
                     Создание новой олимпиады
                 </h1>
             </header>
@@ -354,7 +385,7 @@
 
                         <div class="form-group full-width">
                             <label for="rules" class="olympiad-label required">Правила участия</label>
-                            <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea olympiad-textarea rich-text-editor"'/>
+                            <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea rich-text-editor"'/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
@@ -511,23 +542,41 @@
         </div>
     </div>
 
-    <#noparse>
-        <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
         <script src="/static/js/components/content-create/ImageCropManager.js"></script>
 
         <script>
-            tinymce.init({
-                selector: 'textarea.rich-text-editor',
-                menubar: false,
-                plugins: 'lists link image code preview',
-                toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
-                height: 300,
+            const csrfHeader = 'X-XSRF-TOKEN';
+            const csrfToken = '${_csrf.token}';
+            <#noparse>
+            new FroalaEditor('textarea.rich-text-editor', {
+                toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
+                height: 600,
+                requestHeaders: {
+                    [csrfHeader]: csrfToken
+                },
                 language: 'ru',
-                branding: false,
-                content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
+                placeholderText: 'Введите текст...',
+                contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
+                imageUploadURL: '/api/files/froala/image',
+                imageUploadParam: 'file',
+                imageUploadMethod: 'POST',
+                imageMaxSize: 5 * 1024 * 1024,
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                events: {
+                    'image.uploaded': function (response) {
+                        console.log('Изображение загружено:', response);
+                    },
+                    'image.error': function (error, response) {
+                        console.error('Ошибка загрузки изображения:', error.message);
+                        alert('Ошибка при загрузке изображения: ' + error.message);
+                    }
+                }
             });
 
             let imageCropManager;

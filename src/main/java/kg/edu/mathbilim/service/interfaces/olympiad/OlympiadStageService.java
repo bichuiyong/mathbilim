@@ -2,10 +2,15 @@ package kg.edu.mathbilim.service.interfaces.olympiad;
 
 import kg.edu.mathbilim.dto.olympiad.OlympiadCreateDto;
 import kg.edu.mathbilim.dto.olympiad.OlympiadStageDto;
+import kg.edu.mathbilim.dto.olympiad.RegistrationDto;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.olympiad.OlympiadStage;
+import kg.edu.mathbilim.model.olympiad.Registration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OlympiadStageService {
     void save(OlympiadCreateDto dto, Olympiad olympiad);
@@ -18,6 +23,17 @@ public interface OlympiadStageService {
 
     OlympiadStage getOlympiadStageById(Integer stageId);
 
-
     List<OlympiadStage> saveAll(List<OlympiadStage> olympiadStages);
+
+    void updateTime(OlympiadStage olympiadStage);
+
+    Optional<Long> createRegistrationOlympiad(RegistrationDto dto, Long stageId, String userName);
+
+    boolean checkRegisterActually(long stageId);
+
+    boolean userHasRegistered(String userName, long stageId);
+
+    Page<RegistrationDto> getOlympiadRegistrations(Long stageId, Pageable pageable, String keyword);
+
+    List<RegistrationDto> getOlympiadRegistrationsForExcel(Long stageId);
 }
