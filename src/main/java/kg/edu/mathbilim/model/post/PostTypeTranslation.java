@@ -16,11 +16,5 @@ public class PostTypeTranslation extends TypeTranslation<PostType> {
     public PostTypeTranslation() {
         super();
     }
-//    @EmbeddedId
-//    TranslationId translationId;
-//
-//    @MapsId("typeId")
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "type_id", nullable = false)
-//    PostType postType;
+
 }
