@@ -67,14 +67,56 @@
             margin-bottom: 15px;
             fill: #999;
         }
+
+        .excel-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 5px;
+            width: 70px;
+            height: 49px;
+            background-color: #38993e;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 825px) {
+            .search-container .d-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .search-container input {
+                width: 80%;
+                margin-bottom: 10px;
+            }
+
+            .excel-btn {
+                margin-left: 0;
+                width: 100%;
+                max-width: 100px;
+            }
+        }
     </style>
+
     <div class="heightControl">
-    <div class="search-container">
-        <input type="text" id="searchInputTop" class="form-control" placeholder="Поиск...">
-        <nav>
-            <ul id="paginationTop" class="pagination justify-content-center mb-0"></ul>
-        </nav>
-    </div>
+        <div class="search-container flex">
+            <div class="d-flex align-items-center">
+                <input type="text" id="searchInputTop" class="form-control" placeholder="Поиск...">
+                <a href="скачать в формате excel" onclick="window.location.href='/api/excel/download/registered?stageId=${stageId}'; return false;"
+                        id="excel" class="excel-btn">
+                    Excel
+                </a>
+            </div>
+            <nav>
+                <ul id="paginationTop" class="pagination justify-content-center mb-0"></ul>
+            </nav>
+        </div>
 
     <div class="table-container">
         <table class="table table-bordered table-hover" id="dataTable">
@@ -101,10 +143,7 @@
         </table>
 
         <div style="margin-top: 100px" id="noDataMessage">
-            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="11" cy="11" r="7" stroke="#808080" stroke-width="2" />
-                <path d="M16 16L21 21" stroke="#808080" stroke-width="2" stroke-linecap="round" />
-            </svg>
+            <svg width="256px" height="256px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 14H16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 17.5H13" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M22 2L17 6.99998M17 1.99998L22 6.99996" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
             <div>Данные не найдены</div>
         </div>
     </div>
@@ -145,7 +184,7 @@
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
-
+                const excelButton = document.getElementById('excel');
                 const tbody = document.getElementById('registrationBody');
                 const noDataMessage = document.getElementById('noDataMessage');
                 const table = document.getElementById('dataTable');
@@ -157,10 +196,20 @@
                     table.style.display = 'none';
                     paginationContainer.style.display = 'none';
                     noDataMessage.style.display = 'block';
+                    excelButton.classList.remove('btn-success');
+                    excelButton.classList.add('btn-secondary', 'disabled');
+                    excelButton.setAttribute('tabindex', '-1');
+                    excelButton.setAttribute('aria-disabled', 'true');
+                    excelButton.style.pointerEvents = 'none';
                 } else {
                     noDataMessage.style.display = 'none';
                     table.style.display = '';
                     paginationContainer.style.display = '';
+                    excelButton.classList.remove('btn-secondary', 'disabled');
+                    excelButton.classList.add('btn-success');
+                    excelButton.removeAttribute('tabindex');
+                    excelButton.removeAttribute('aria-disabled');
+                    excelButton.style.pointerEvents = '';
 
                     tbody.innerHTML = '';
                     data.content.forEach(reg => {

@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
@@ -30,4 +32,11 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
           LOWER(r.locality) LIKE LOWER(CONCAT('%', :keyword, '%'))
       )
 """)    Page<Registration> getByOlympiadStage_Id(@Param("stageId") Long stageId, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query("""
+    SELECT r FROM Registration r
+    WHERE r.olympiadStage.id = :stageId
+""")
+    List<Registration> getByOlympiadStage_IdForExcel(@Param("stageId") Long stageId);
+
 }
