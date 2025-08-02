@@ -23,6 +23,12 @@
             top: 0;
         }
 
+        @media (max-width: 1000px) {
+            .edit {
+                position: relative;
+            }
+        }
+
         @media (max-width: 576px) {
             .edit {
                 position: relative;

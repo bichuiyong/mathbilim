@@ -590,110 +590,132 @@
         </div>
     </div>
 
-    <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-    <script src="/static/js/components/content-create/ImageCropManager.js"></script>
-    <script>
-        const contactTypes = [
-            <#if contactTypes??>
-            <#list contactTypes as type>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+        <script src="/static/js/components/content-create/ImageCropManager.js"></script>
+        <script>
+            const csrfHeader = 'X-XSRF-TOKEN';
+            const csrfToken = '${_csrf.token}';
+            const contactTypes = [
+                <#if contactTypes??>
+                <#list contactTypes as type>
             { id: "${type.id}", name: "${type.name?js_string}" }<#if type_has_next>,</#if>
             </#list>
             </#if>
-        ];
-        <#noparse>
-        tinymce.init({
-            selector: 'textarea.rich-text-editor',
-            menubar: false,
-            plugins: 'lists link image code preview',
-            toolbar: 'undo redo | bold italic underline | bullist numlist | link | preview',
-            height: 300,
-            language: 'ru',
-            branding: false,
-            content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }'
-        });
+            ];
+            <#noparse>
+            console.log('CSRF header:', csrfHeader);
+            console.log('CSRF token:', csrfToken);
 
-        let imageCropManager;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            imageCropManager = new ImageCropManager({
-                inputId: 'mainImageInput',
-                previewId: 'imagePreview',
-                previewContainerSelector: '.image-preview-container',
-                croppedPreviewSelector: '.cropped-preview',
-                cropButtonId: 'cropButton',
-                cancelCropId: 'cancelCrop',
-                changeCropId: 'changeCrop',
-                croppedImageId: 'croppedImage',
-                aspectRatio: 1.2,
-                autoCropArea: 0.8,
-                cropBoxResizable: true,
-                maxFileSize: 5 * 1024 * 1024,
-                outputWidth: 1200,
-                outputHeight: 1000,
-                outputQuality: 0.9,
-                onError: function(message) {
-                    const errorElement = document.getElementById('imageError');
-                    errorElement.textContent = message;
-                    errorElement.style.display = 'block';
+            new FroalaEditor('textarea.rich-text-editor', {
+                toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
+                height: 600,
+                requestHeaders: {
+                    [csrfHeader]: csrfToken
                 },
-                onCropComplete: function(blob, dataUrl) {
-                    const errorElement = document.getElementById('imageError');
-                    errorElement.style.display = 'none';
+                language: 'ru',
+                placeholderText: 'Введите текст...',
+                contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
+                imageUploadURL: '/api/files/froala/image',
+                imageUploadParam: 'file',
+                imageUploadMethod: 'POST',
+                imageMaxSize: 5 * 1024 * 1024,
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                events: {
+                    'image.uploaded': function (response) {
+                        console.log('Изображение загружено:', response);
+                    },
+                    'image.error': function (error, response) {
+                        console.error('Ошибка загрузки изображения:', error.message);
+                        alert('Ошибка при загрузке изображения: ' + error.message);
+                    }
                 }
             });
 
-            const toggleBtn = document.getElementById('toggleOrganizers');
-            const container = document.getElementById('organizersContainer');
+            let imageCropManager;
 
-            toggleBtn.addEventListener('click', () => {
-                const isHidden = container.style.display === 'none';
-                container.style.display = isHidden ? 'block' : 'none';
-                container.classList.toggle('open', isHidden);
+            document.addEventListener('DOMContentLoaded', () => {
+                imageCropManager = new ImageCropManager({
+                    inputId: 'mainImageInput',
+                    previewId: 'imagePreview',
+                    previewContainerSelector: '.image-preview-container',
+                    croppedPreviewSelector: '.cropped-preview',
+                    cropButtonId: 'cropButton',
+                    cancelCropId: 'cancelCrop',
+                    changeCropId: 'changeCrop',
+                    croppedImageId: 'croppedImage',
+                    aspectRatio: 1.2,
+                    autoCropArea: 0.8,
+                    cropBoxResizable: true,
+                    maxFileSize: 5 * 1024 * 1024,
+                    outputWidth: 1200,
+                    outputHeight: 1000,
+                    outputQuality: 0.9,
+                    onError: function(message) {
+                        const errorElement = document.getElementById('imageError');
+                        errorElement.textContent = message;
+                        errorElement.style.display = 'block';
+                    },
+                    onCropComplete: function(blob, dataUrl) {
+                        const errorElement = document.getElementById('imageError');
+                        errorElement.style.display = 'none';
+                    }
+                });
 
-                const pathD = isHidden ? 'M19 14l-7-7-7 7' : 'M19 9l-7 7-7-7';
-                const labelText = isHidden ? 'Скрыть организаторов' : 'Показать организаторов';
-                toggleBtn.innerHTML = `
+                const toggleBtn = document.getElementById('toggleOrganizers');
+                const container = document.getElementById('organizersContainer');
+
+                toggleBtn.addEventListener('click', () => {
+                    const isHidden = container.style.display === 'none';
+                    container.style.display = isHidden ? 'block' : 'none';
+                    container.classList.toggle('open', isHidden);
+
+                    const pathD = isHidden ? 'M19 14l-7-7-7 7' : 'M19 9l-7 7-7-7';
+                    const labelText = isHidden ? 'Скрыть организаторов' : 'Показать организаторов';
+                    toggleBtn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${pathD}" />
                     </svg>
                     ${labelText}
                 `;
-            });
-
-            function updateContactTypeOptions() {
-                const contactCards = document.querySelectorAll('#contacts .contact-card');
-                const selectedTypes = Array.from(contactCards)
-                    .map(card => card.querySelector('.contact-type-select').value)
-                    .filter(value => value !== '');
-
-                contactCards.forEach(card => {
-                    const select = card.querySelector('.contact-type-select');
-                    const currentValue = select.value;
-                    select.innerHTML = `<option value="" disabled ${!currentValue ? 'selected' : ''}>Выберите тип контакта</option>`;
-                    contactTypes.forEach(type => {
-                        if (!selectedTypes.includes(type.id) || type.id === currentValue) {
-                            const option = document.createElement('option');
-                            option.value = type.id;
-                            option.textContent = type.name;
-                            if (type.id === currentValue) {
-                                option.selected = true;
-                            }
-                            select.appendChild(option);
-                        }
-                    });
                 });
-            }
 
-            document.getElementById('addContact').addEventListener('click', function() {
-                const contactsDiv = document.getElementById('contacts');
-                const contactCards = contactsDiv.querySelectorAll('.contact-card');
-                const contactCount = contactCards.length;
+                function updateContactTypeOptions() {
+                    const contactCards = document.querySelectorAll('#contacts .contact-card');
+                    const selectedTypes = Array.from(contactCards)
+                        .map(card => card.querySelector('.contact-type-select').value)
+                        .filter(value => value !== '');
 
-                const newContact = document.createElement('div');
-                newContact.className = 'contact-card';
-                newContact.innerHTML = `
+                    contactCards.forEach(card => {
+                        const select = card.querySelector('.contact-type-select');
+                        const currentValue = select.value;
+                        select.innerHTML = `<option value="" disabled ${!currentValue ? 'selected' : ''}>Выберите тип контакта</option>`;
+                        contactTypes.forEach(type => {
+                            if (!selectedTypes.includes(type.id) || type.id === currentValue) {
+                                const option = document.createElement('option');
+                                option.value = type.id;
+                                option.textContent = type.name;
+                                if (type.id === currentValue) {
+                                    option.selected = true;
+                                }
+                                select.appendChild(option);
+                            }
+                        });
+                    });
+                }
+
+                document.getElementById('addContact').addEventListener('click', function() {
+                    const contactsDiv = document.getElementById('contacts');
+                    const contactCards = contactsDiv.querySelectorAll('.contact-card');
+                    const contactCount = contactCards.length;
+
+                    const newContact = document.createElement('div');
+                    newContact.className = 'contact-card';
+                    newContact.innerHTML = `
                     <div>
                         <select name="contacts[${contactCount}].contactType" class="olympiad-select contact-type-select" required>
                             <option value="" disabled selected>Выберите тип контакта</option>
@@ -711,46 +733,46 @@
                         Удалить
                     </button>
                 `;
-                contactsDiv.appendChild(newContact);
-                reindexContacts();
-                updateContactTypeOptions();
+                    contactsDiv.appendChild(newContact);
+                    reindexContacts();
+                    updateContactTypeOptions();
 
-                newContact.querySelector('.contact-type-select').addEventListener('change', updateContactTypeOptions);
-            });
+                    newContact.querySelector('.contact-type-select').addEventListener('change', updateContactTypeOptions);
+                });
 
-            document.getElementById('contacts').addEventListener('click', function(e) {
-                if (e.target.closest('.remove-contact')) {
-                    const contactItem = e.target.closest('.contact-card');
-                    const contactsDiv = document.getElementById('contacts');
-                    if (contactItem) {
-                        contactsDiv.removeChild(contactItem);
-                        reindexContacts();
+                document.getElementById('contacts').addEventListener('click', function(e) {
+                    if (e.target.closest('.remove-contact')) {
+                        const contactItem = e.target.closest('.contact-card');
+                        const contactsDiv = document.getElementById('contacts');
+                        if (contactItem) {
+                            contactsDiv.removeChild(contactItem);
+                            reindexContacts();
+                            updateContactTypeOptions();
+                        }
+                    }
+                });
+
+                document.getElementById('contacts').addEventListener('change', function(e) {
+                    if (e.target.classList.contains('contact-type-select')) {
                         updateContactTypeOptions();
                     }
-                }
-            });
-
-            document.getElementById('contacts').addEventListener('change', function(e) {
-                if (e.target.classList.contains('contact-type-select')) {
-                    updateContactTypeOptions();
-                }
-            });
-
-            function reindexContacts() {
-                const contactCards = document.querySelectorAll('#contacts .contact-card');
-                contactCards.forEach(function(card, index) {
-                    const select = card.querySelector('select');
-                    const input = card.querySelector('input[type="text"]');
-                    select.name = `contacts[${index}].contactType`;
-                    input.name = `contacts[${index}].info`;
                 });
-            }
 
-            updateContactTypeOptions();
-            document.querySelectorAll('.contact-type-select').forEach(select => {
-                select.addEventListener('change', updateContactTypeOptions);
+                function reindexContacts() {
+                    const contactCards = document.querySelectorAll('#contacts .contact-card');
+                    contactCards.forEach(function(card, index) {
+                        const select = card.querySelector('select');
+                        const input = card.querySelector('input[type="text"]');
+                        select.name = `contacts[${index}].contactType`;
+                        input.name = `contacts[${index}].info`;
+                    });
+                }
+
+                updateContactTypeOptions();
+                document.querySelectorAll('.contact-type-select').forEach(select => {
+                    select.addEventListener('change', updateContactTypeOptions);
+                });
             });
-        });
-        </#noparse>
-    </script>
+        </script>
+    </#noparse>
 </@main.layout>
