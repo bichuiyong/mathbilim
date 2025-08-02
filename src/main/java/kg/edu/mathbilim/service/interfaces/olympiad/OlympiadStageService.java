@@ -34,4 +34,6 @@ public interface OlympiadStageService {
     boolean userHasRegistered(String userName, long stageId);
 
     Page<RegistrationDto> getOlympiadRegistrations(Long stageId, Pageable pageable, String keyword);
+
+    List<RegistrationDto> getOlympiadRegistrationsForExcel(Long stageId);
 }

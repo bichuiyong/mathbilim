@@ -608,8 +608,6 @@
             </#if>
             ];
             <#noparse>
-            console.log('CSRF header:', csrfHeader);
-            console.log('CSRF token:', csrfToken);
 
             new FroalaEditor('textarea.rich-text-editor', {
                 toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],

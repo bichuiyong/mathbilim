@@ -23,6 +23,11 @@
             top: 0;
         }
 
+        .table th,td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
         @media (max-width: 1000px) {
             .edit {
                 position: relative;
@@ -416,6 +421,7 @@
             .organization-name {
                 font-size: 18px;
             }
+
         }
     </style>
 
@@ -510,7 +516,7 @@
                             </#if>>
                             <thead class="table-light">
                             <tr>
-                                <th>#</th>
+                                <th>Этап</th>
                                 <th>Начало регистрации</th>
                                 <th>Окончание регистрации</th>
                                 <th>Дата начала этапа</th>
@@ -549,7 +555,7 @@
                                                 результаты
                                             </a>
                                         <#else>
-                                            отсутствует
+                                            <span class="mybtn-off">отсутствует</span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -575,7 +581,7 @@
                                                 список
                                             </a>
                                         <#else>
-                                            отсутствует
+                                            <span class="mybtn-off">отсутствует</span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -601,7 +607,7 @@
                                         </td>
                                     <#else>
                                         <td>
-                                            <p class="mybtn-off">недоступно</p>
+                                            <span class="mybtn-off">недоступно</span>
                                         </td>
                                     </#if>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>

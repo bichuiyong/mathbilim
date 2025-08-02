@@ -61,7 +61,7 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
 
     @Override
     public List<OlympiadStageDto> getOlympStageDtos(Long id) {
-        return repository.getOlympiadStageByOlympiad_Id(id)
+        return repository.getOlympiadStageByOlympiad_IdOrderByStageOrderAsc(id)
                 .stream()
                 .map(olympiadStage -> OlympiadStageDto
                         .builder()
@@ -208,6 +208,29 @@ public class OlympiadStageServiceImpl implements OlympiadStageService {
                         .school(reg.getSchool())
                         .region(reg.getRegion())
                         .build());
+    }
+
+    @Override
+    public List<RegistrationDto> getOlympiadRegistrationsForExcel(Long stageId) {
+        return registrationRepository.getByOlympiadStage_IdForExcel(stageId).stream()
+                .map(reg -> RegistrationDto.builder()
+                        .classNumber(reg.getClassNumber())
+                        .email(reg.getEmail())
+                        .classTeacherFullName(reg.getClassTeacherFullName())
+                        .district(reg.getDistrict())
+                        .fullName(reg.getFullName())
+                        .locality(reg.getLocality())
+                        .parentEmail(reg.getParentEmail())
+                        .phoneNumber(reg.getPhoneNumber())
+                        .telegram(reg.getTelegram())
+                        .parentPhoneNumber(reg.getParentPhoneNumber())
+                        .olympiadName(reg.getOlympiadStage().getOlympiad().getTitle())
+                        .userName(reg.getUser().getEmail())
+                        .parentFullName(reg.getParentFullName())
+                        .school(reg.getSchool())
+                        .region(reg.getRegion())
+                        .build())
+                .toList();
     }
 
 

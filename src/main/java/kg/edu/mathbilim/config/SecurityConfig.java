@@ -102,7 +102,8 @@ public class SecurityConfig {
                                     "/olympiad/add-result",
                                     "/olympiad/add-list",
                                     "/olympiad/stage/register-list",
-                                    "/olympiad/stage/*/register-list"
+                                    "/olympiad/stage/*/register-list",
+                                    "/api/excel/download/excel/*"
                             ).hasAnyAuthority("ADMIN","MODER")
 
                         .requestMatchers(
