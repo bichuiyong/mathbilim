@@ -733,7 +733,7 @@
                         📅 ${newsDto.formattedDate}
                     </div>
                     <div class="meta-item">
-                        👁 ${newsDto.viewCount!0}
+                        👁 ${newsDto.viewCount + 1!0}
                     </div>
                     <#if newsDto.shareCount?? && newsDto.shareCount gt 0>
                         <div class="meta-item">

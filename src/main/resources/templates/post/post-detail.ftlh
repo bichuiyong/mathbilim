@@ -733,7 +733,7 @@
                         📅 ${post.formattedDate}
                     </div>
                     <div class="meta-item">
-                        👁 ${post.viewCount!0}
+                        👁 ${post.viewCount + 1!0}
                     </div>
                     <#if post.shareCount?? && post.shareCount gt 0>
                         <div class="meta-item">

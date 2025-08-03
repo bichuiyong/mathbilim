@@ -35,7 +35,7 @@ public class BlogController {
 
     @PostMapping("{id}/share")
     public ResponseEntity<Void> shareBlog(@PathVariable Long id) {
-        blogService.incrementBlogShareCount(id);
+        blogService.incrementShareCount(id);
         return ResponseEntity.ok().build();
     }
 }

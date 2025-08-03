@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
             height: 500,
             language: 'ru',
             plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
+                'advlist', 'autolink', 'lists', 'link', 'charmap',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                'insertdatetime', 'table', 'preview', 'help', 'wordcount',
                 'emoticons', 'template', 'codesample'
             ],
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | codesample | fullscreen preview | help',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | codesample | fullscreen preview | help',
             content_style: `
                 body { 
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
@@ -68,32 +68,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     overflow-x: auto; 
                 }
             `,
-
-            images_upload_handler: function (blobInfo, success, failure) {
-                uploadFileToAPI(blobInfo.blob(), blobInfo.filename(), 'editor/images')
-                    .then(result => {
-                        if (result.s3Link) {
-                            success(result.s3Link);
-                        } else {
-                            failure('Ошибка загрузки изображения');
-                        }
-                    })
-                    .catch(error => {
-                        failure('Ошибка загрузки изображения: ' + error.message);
-                    });
-            },
-
-            file_picker_callback: function (callback, value, meta) {
-                if (meta.filetype === 'image') {
-                    selectAndUploadFile('image/*', 'editor/images', callback);
-                } else if (meta.filetype === 'file') {
-                    selectAndUploadFile('.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx', 'editor/documents', callback);
-                }
-            },
-
             setup: function (editor) {
                 editor.on('change', function () {
                     formChanged = true;
+                });
+
+                editor.on('Paste', function (e) {
+                    const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+                    if (items && Array.from(items).some(item => item.type.indexOf('image') !== -1)) {
+                        e.preventDefault();
+                        alert('Вставка изображений отключена.');
+                    }
+                });
+
+                editor.on('Drop', function (e) {
+                    const files = e.dataTransfer?.files;
+                    if (files && Array.from(files).some(file => file.type.startsWith('image'))) {
+                        e.preventDefault();
+                        alert('Загрузка изображений перетаскиванием отключена.');
+                    }
                 });
             }
         });
@@ -149,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validateFiles(files) {
-        const maxSize = 50 * 1024 * 1024; // 50MB
+        const maxSize = 50 * 1024 * 1024;
         const maxFiles = 10;
 
         if (files.length > maxFiles) {
@@ -220,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function getFileIcon(fileName) {
         const ext = fileName.split('.').pop().toLowerCase();
         const iconMap = {
-            // Документы
             'pdf': 'fa-file-pdf text-danger',
             'doc': 'fa-file-word text-primary',
             'docx': 'fa-file-word text-primary',
@@ -228,16 +220,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'xlsx': 'fa-file-excel text-success',
             'ppt': 'fa-file-powerpoint text-warning',
             'pptx': 'fa-file-powerpoint text-warning',
-
-            // Архивы
             'zip': 'fa-file-archive text-secondary',
             'rar': 'fa-file-archive text-secondary',
             '7z': 'fa-file-archive text-secondary',
-
-            // Текст
             'txt': 'fa-file-text text-info',
-
-            // Изображения
             'jpg': 'fa-file-image text-success',
             'jpeg': 'fa-file-image text-success',
             'png': 'fa-file-image text-success',
@@ -245,13 +231,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'bmp': 'fa-file-image text-success',
             'svg': 'fa-file-image text-success',
             'webp': 'fa-file-image text-success',
-
-            // Аудио
             'mp3': 'fa-file-audio text-purple',
             'wav': 'fa-file-audio text-purple',
             'flac': 'fa-file-audio text-purple',
-
-            // Видео
             'mp4': 'fa-file-video text-dark',
             'avi': 'fa-file-video text-dark',
             'mkv': 'fa-file-video text-dark',
@@ -323,49 +305,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.returnValue = 'У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?';
             }
         });
-    }
-
-    async function uploadFileToAPI(file, filename, context) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch(`/api/files?context=${encodeURIComponent(context)}`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                [csrfHeader]: csrfToken
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Ошибка сервера: ' + response.status);
-        }
-
-        return await response.json();
-    }
-
-    function selectAndUploadFile(accept, context, callback) {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', accept);
-
-        input.onchange = function () {
-            const file = this.files[0];
-            if (file) {
-                uploadFileToAPI(file, file.name, context)
-                    .then(result => {
-                        if (context.includes('images')) {
-                            callback(result.s3Link, {alt: file.name});
-                        } else {
-                            callback(result.s3Link, {text: result.filename});
-                        }
-                    })
-                    .catch(error => {
-                        alert('Ошибка загрузки файла: ' + error.message);
-                    });
-            }
-        };
-
-        input.click();
     }
 });
