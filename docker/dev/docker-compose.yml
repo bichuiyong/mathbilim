@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: mathbilim-postgres
+    environment:
+      POSTGRES_DB: mathbilim
+      POSTGRES_USER: mathbilim_user
+      POSTGRES_PASSWORD: mathbilim_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U mathbilim_user -d mathbilim" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  app:
+    image: mathbilim_image:001
+    container_name: mathbilim-app
+    ports:
+      - "9999:9999"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=mathbilim
+      - DB_USERNAME=mathbilim_user
+      - DB_PASSWORD=mathbilim_password
+
+      - TGBOTKEY=${TGBOTKEY}
+      - TELEGRAM_NAME=${TELEGRAM_NAME}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - RESET_EMAIL=${RESET_EMAIL}
+      - RESET_PASSWORD=${RESET_PASSWORD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
+      - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local

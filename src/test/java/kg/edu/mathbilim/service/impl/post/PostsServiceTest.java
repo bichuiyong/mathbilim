@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
+import kg.edu.mathbilim.dto.reference.RoleDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
@@ -69,12 +70,19 @@ class PostsServiceTest {
 
     @BeforeEach
     void setUp() {
+        RoleDto roleDto = RoleDto.builder()
+                .id(1)
+                .name("USER")
+                .build();
+
         userDto = UserDto.builder()
                 .id(1L)
                 .name("test")
                 .surname("test")
                 .email("test@test.com")
+                .role(roleDto)
                 .build();
+
         user = User.builder()
                 .id(1L)
                 .name("test")
@@ -147,7 +155,7 @@ class PostsServiceTest {
         doNothing().when(notificationService)
                 .notifyAllSubscribed(any(NotificationEnum.class), any(String.class));
 
-        postService.approve(postDto.getId());
+        postService.approve(postDto.getId(), user.getEmail());
         Post post = postService.findByPostId(postDto.getId());
         assertThat(post).isNotNull();
         assertThat(post.getId()).isEqualTo(postDto.getId());
