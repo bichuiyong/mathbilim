@@ -34,3 +34,8 @@ build/
 /logs/
 /data/
 /.env
+
+/docker/dev/logs/
+/docker/dev/uploads/
+/docker/dev/backups/
+/docker/dev/.env
