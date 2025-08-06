@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         user.setEmail(userEmailDto.getEmail());
         user.setType(userType);
-        user.setUpdatedAt(LocalDateTime.from(Instant.now()));
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         try {
             generateEmailVerificationToken(request, user.getEmail());

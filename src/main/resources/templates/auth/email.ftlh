@@ -43,20 +43,20 @@
                                             <div class="account-type-card h-100 p-3 rounded border d-flex flex-column">
                                                 <div class="d-flex align-items-center flex-grow-1">
                                                     <div class="me-3">
-                                                        <#if type.userTypeTranslations[0].translation?contains("Ученик")>
+                                                        <#if type.translations[0].translation?contains("Ученик")>
                                                             <i class="fas fa-user-graduate text-primary fs-4"></i>
-                                                        <#elseif type.userTypeTranslations[0].translation?contains("Учитель")>
+                                                        <#elseif type.translations[0].translation?contains("Учитель")>
                                                             <i class="fas fa-chalkboard-teacher text-primary fs-4"></i>
                                                         <#else>
                                                             <i class="fas fa-user text-primary fs-4"></i>
                                                         </#if>
                                                     </div>
                                                     <div>
-                                                        <h6 class="mb-1">${type.userTypeTranslations[0].translation}</h6>
+                                                        <h6 class="mb-1">${type.translations[0].translation}</h6>
                                                         <p class="text-muted small mb-0">
-                                                            <#if type.userTypeTranslations[0].translation?contains("Ученик")>
+                                                            <#if type.translations[0].translation?contains("Ученик")>
                                                                 Доступ к учебным материалам
-                                                            <#elseif type.userTypeTranslations[0].translation?contains("Учитель")>
+                                                            <#elseif type.translations[0].translation?contains("Учитель")>
                                                                 Создание тестов и отслеживание прогресса
                                                             <#else>
                                                                 Полный доступ к платформе
