@@ -148,9 +148,7 @@ public class AuthController {
 
     @GetMapping("/reset_password")
     public String showResetPasswordForm(
-
             @RequestParam String token,
-
             Model model
 
     ) {
