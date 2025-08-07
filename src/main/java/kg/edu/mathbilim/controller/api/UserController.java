@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,6 +70,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> updateUser(@RequestBody @Valid UserEditDto userDto, @PathVariable Long id) {
         userService.updateUser(userDto, id);
         return ResponseEntity.ok().build();
@@ -208,4 +210,12 @@ public class UserController {
             ));
         }
     }
+
+//    @PostMapping("/users/validate-password")
+//    @ResponseBody
+//    public ResponseEntity<Boolean> validatePassword(@RequestParam String password) {
+//        boolean isValid = userService.checkOldPassword(password);
+//        return ResponseEntity.ok(isValid);
+//    }
+
 }

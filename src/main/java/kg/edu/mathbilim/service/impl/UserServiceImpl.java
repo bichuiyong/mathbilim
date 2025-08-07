@@ -21,11 +21,14 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,6 +158,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        checkBeforeUpdate(id);
         userRepository.deleteById(id);
         log.info("Deleted user with id: {}", id);
     }
@@ -176,6 +180,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void toggleUserBlocking(Long userId) {
+        checkBeforeUpdate(userId);
         User user = getEntityById(userId);
         user.setEnabled(!user.getEnabled().equals(Boolean.TRUE));
         userRepository.save(user);
@@ -242,6 +247,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserEditDto userDto, Long userId) {
+        checkBeforeUpdate(userId);
         User user = getEntityById(userId);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
@@ -422,6 +428,32 @@ public class UserServiceImpl implements UserService {
     public boolean isSubscribed(Long chatId) {
         User user = userRepository.findByTelegramId(chatId).orElseThrow(UserNotFoundException::new);
         return user != null && Boolean.TRUE.equals(user.getSubscribed());
+    }
+
+    @Override
+    public void changePassword(String password, String newPassword) throws IllegalStateException {
+        UserDto authUser = getAuthUser();
+        if(passwordEncoder.matches(password, authUser.getPassword())) {
+            authUser.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(userMapper.toEntity(authUser));
+        }
+        else{
+            throw new IllegalArgumentException("you previous password is incorrect");
+        }
+    }
+
+    @Override
+    public boolean checkOldPassword(String oldPassword) {
+        UserDto authUser = getAuthUser();
+        String encodedPassword = passwordEncoder.encode(oldPassword);
+        return authUser.getPassword().equals(encodedPassword);
+    }
+
+    private void checkBeforeUpdate(Long userId) {
+        UserDto userDto1 = getAuthUser();
+        if(Objects.equals(userId, userDto1.getId())) {
+            throw new IllegalStateException("User with id " + userId + " already exists");
+        }
     }
 
 }

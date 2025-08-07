@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.user.ChangePasswordDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
@@ -71,5 +72,28 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("userEditDto", userService.getEditUserById(userId));
         return "redirect:/users/" + userId + "/edit";
+    }
+
+    @GetMapping("change-password")
+    public String changePassword(Model model) {
+        model.addAttribute("changePasswordDto", new ChangePasswordDto());
+        return "profile/change-password";
+    }
+
+    @PostMapping("change-password")
+    public String changePassword(@Valid @ModelAttribute ChangePasswordDto dto,
+                                 BindingResult result,
+                                 Model model) {
+        if(result.hasErrors()) {
+            return "profile/change-password";
+        }
+        try{
+            userService.changePassword(dto.getOldPassword(),dto.getNewPassword());
+        }catch (IllegalArgumentException e){
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("changePasswordDto", dto);
+            return "profile/change-password";
+        }
+        return "redirect:/users/" + userService.getAuthUser().getId();
     }
 }
