@@ -103,11 +103,15 @@ public class EventServiceImpl extends
     }
 
     @Override
+    @Transactional
     public DisplayEventDto getDisplayEventById(Long id) {
         DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
         List<Long> organizationIds = repository.findOrganizationIdsByEventId(id);
         event.setOrganizationIds(organizationIds);
+        incrementViewCount(id);
+
+
         return event;
     }
 

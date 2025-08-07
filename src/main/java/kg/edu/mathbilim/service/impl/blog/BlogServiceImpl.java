@@ -72,19 +72,13 @@ public class BlogServiceImpl extends
         return createBase(blogDto, multipartFile, null);
     }
 
-    @Override
-    @Transactional
-    public void incrementViewCount(Long id) {
-        repository.incrementViewCount(id);
-        log.debug("View count incremented for blog {}", id);
-    }
 
-    @Override
-    @Transactional
-    public void incrementShareCount(Long id) {
-        repository.incrementShareCount(id);
-        log.debug("Share count incremented for blog {}", id);
-    }
+//    @Transactional
+//    @Override
+//    public void incrementBlogShareCount(Long id) {
+//        incrementShareCount(id);
+//        log.debug("Share count incremented for blog {}", id);
+//    }
 
 
     @Override
@@ -111,8 +105,9 @@ public class BlogServiceImpl extends
     public BlogDto getDisplayBlogById(Long id) {
         Blog blog = repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
+        incrementViewCount(id);
 
-        return mapper.toDto(blog);
+        mapper.toDto(blog);
     }
 
     public Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {

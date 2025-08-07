@@ -126,8 +126,10 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElse(null);
+        incrementViewCount(id);
         log.info("News {} with id {}", news.getId(), news.getCreator().getId());
 
         return mapper.toDto(news);

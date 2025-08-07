@@ -48,7 +48,7 @@ public class EventController {
                             HttpServletRequest request,
                             Model model) {
 
-        eventService.incrementViewCount(id);
+
         DisplayEventDto event = eventService.getDisplayEventById(id);
 
         model.addAttribute("eventType", eventTypeService.getEventTypeById(event.getTypeId()));

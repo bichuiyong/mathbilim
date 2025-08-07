@@ -6,12 +6,14 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.abstracts.AdminContent;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.news.NewsTranslation;
 import kg.edu.mathbilim.model.news.NewsTranslationId;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -23,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -157,14 +161,35 @@ public abstract class AbstractContentService<
 
     @Transactional
     public void incrementViewCount(Long id) {
-        repository.incrementViewCount(id);
-        log.debug("View count incremented for blog {}", id);
+        E content = repository.findById(id).orElseThrow(this::getNotFoundException);
+
+        if (userAuthCheckAndContentOwner(content.getCreator().getId())) {
+            repository.incrementViewCount(id);
+            log.debug("View count incremented for {} with id = {}", getEntityName(), id);
+        }
+
+    }
+
+    private boolean userAuthCheckAndContentOwner(Long creatorId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user;
+
+        try {
+            user = userService.findByEmail(auth.getName());
+        } catch (UserNotFoundException e) {
+            return false;
+        }
+        return !user.getId().equals(creatorId);
     }
 
     @Transactional
     public void incrementShareCount(Long id) {
-        repository.incrementShareCount(id);
-        log.debug("Share count incremented for blog {}", id);
+        E content = repository.findById(id).orElseThrow(this::getNotFoundException);
+        if (userAuthCheckAndContentOwner(content.getCreator().getId())) {
+            repository.incrementShareCount(id);
+            log.debug("Share count incremented for {} with id = {}", getEntityName(), id);
+        }
+
     }
 
     protected void handleNewsTranslations(NewsDto dto, Long entityId) {
