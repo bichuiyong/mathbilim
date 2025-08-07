@@ -29,6 +29,8 @@ public interface UserService {
 
     UserDto getDtoById(Long id);
 
+    User getEntityByEmail(String email);
+
     UserDto getUserByEmail(String email);
 
     void createUser(UserDto userDto, HttpServletRequest request);

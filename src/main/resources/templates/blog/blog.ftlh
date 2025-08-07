@@ -44,7 +44,7 @@
                                 <div class="blog-stats">
                                     <span class="stat-item">
                                         <i class="fas fa-eye me-1"></i>
-                                        ${blog.viewCount}
+                                        ${blog.viewCount + 1}
                                     </span>
                                     <span class="stat-item">
                                         <i class="fas fa-share me-1"></i>

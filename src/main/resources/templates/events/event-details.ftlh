@@ -60,7 +60,7 @@
                                 <div class="event-stats">
                                     <span class="stat-item">
                                         <i class="fas fa-eye me-1"></i>
-                                        ${event.viewCount}
+                                        ${event.viewCount + 1}
                                     </span>
                                     <span class="stat-item">
                                         <i class="fas fa-share me-1"></i>
