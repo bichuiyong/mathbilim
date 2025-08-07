@@ -3,10 +3,7 @@ package kg.edu.mathbilim.controller.api;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("restNews")
 @RequestMapping("api/news")
@@ -27,11 +24,6 @@ public class NewsController {
         return ResponseEntity.ofNullable(newsService.getPage(query,page, size, sortBy, sortDirection));
     }
 
-
-    @GetMapping("main")
-    public ResponseEntity<?> getLatestNews() {
-        return ResponseEntity.ofNullable(newsService.getNewsByMainPage());
-    }
 
     @PostMapping("{id}/share")
     public ResponseEntity<Void> shareNews(@PathVariable Long id) {

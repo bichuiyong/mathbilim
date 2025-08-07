@@ -61,11 +61,6 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("main")
-    public ResponseEntity<?> getLatestPost() {
-        return ResponseEntity.ofNullable(postService.getPostByMainPage());
-    }
-
     @PostMapping("{id}/share")
     public ResponseEntity<Void> sharePost(@PathVariable Long id) {
         postService.incrementShareCount(id);
