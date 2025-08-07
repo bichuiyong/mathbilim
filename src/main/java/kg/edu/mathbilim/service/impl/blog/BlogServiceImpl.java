@@ -105,7 +105,6 @@ public class BlogServiceImpl extends
     public BlogDto getDisplayBlogById(Long id) {
         Blog blog = repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
-
         incrementViewCount(id);
 
         return mapper.toDto(blog);
