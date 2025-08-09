@@ -20,6 +20,8 @@ public class Question {
     @JoinColumn(name = "test_page_id", nullable = false)
     private TestPage testPage;
 
+    private Boolean multipleChoice;
+
     @Column(name = "correct_answer", nullable = false, length = 200)
     private String correctAnswer;
 

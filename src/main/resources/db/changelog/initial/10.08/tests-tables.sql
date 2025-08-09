@@ -20,6 +20,7 @@ CREATE TABLE test_pages (
 CREATE TABLE questions (
                            id BIGSERIAL PRIMARY KEY,
                            test_page_id BIGINT NOT NULL REFERENCES test_pages(id) ON DELETE CASCADE,
+                            multiple_choice BOOLEAN ,
                            correct_answer VARCHAR(200) NOT NULL,
                            weight NUMERIC(5,2) DEFAULT 1.0,
                            topic_id INT REFERENCES topics(id)
