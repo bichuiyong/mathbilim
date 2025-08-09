@@ -160,6 +160,7 @@ public abstract class AbstractContentService<
     }
 
     @Transactional
+
     public void incrementViewCount(Long id) {
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);
 
@@ -180,6 +181,8 @@ public abstract class AbstractContentService<
             return false;
         }
         return !user.getId().equals(creatorId);
+
+
     }
 
     @Transactional
