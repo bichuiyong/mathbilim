@@ -63,6 +63,7 @@
                                                required
                                                readonly>
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
+                                        <@spring.showErrors '<br>',"text-danger small"/>
                                     </div>
                                     <#if spring.status.error>
                                         <div class="invalid-feedback">
@@ -159,7 +160,7 @@
                                                    id="onlineEvent"
                                                    name="event.isOffline"
                                                    value="false"
-                                                   <#if spring.status.value?? && !spring.status.value>checked</#if>>
+                                                   <#if spring.status.value?? && spring.status.value=="false">checked</#if>>
                                             <label class="form-check-label" for="onlineEvent">
                                                 <i class="fas fa-globe me-2"></i>Онлайн мероприятие
                                             </label>

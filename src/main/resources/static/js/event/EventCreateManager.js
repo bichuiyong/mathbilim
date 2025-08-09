@@ -70,7 +70,7 @@ class EventCreateManager extends BaseContentCreateManager {
         const style = document.createElement('style');
         style.textContent = `
             .form-check-label.selected {
-                background: linear-gradient(135deg, #2563eb, #3b82f6);
+                background: white;
                 color: white;
                 padding: 0.5rem 1rem;
                 border-radius: 6px;
@@ -684,4 +684,13 @@ window.addEventListener('beforeunload', () => {
     if (eventCreateManager) {
         eventCreateManager.destroy();
     }
+});
+
+flatpickr("#startDatePicker", {
+    enableTime: true,
+    time_24hr: true,
+    dateFormat: "Y-m-d\\TH:i",
+    defaultDate: new Date(),
+    altInput: true,
+    altFormat: "d.m.Y H:i",
 });
