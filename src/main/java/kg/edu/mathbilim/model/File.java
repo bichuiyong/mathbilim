@@ -9,6 +9,7 @@ import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.olympiad.Olympiad;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.model.test.Test;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -64,4 +65,6 @@ public class File {
     @OneToMany(mappedBy = "image")
     List<Olympiad> olympiads = new ArrayList<>();
 
+    @OneToMany(mappedBy = "file")
+    List<Test> tests = new ArrayList<>();
 }

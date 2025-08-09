@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.notifications.UserNotification;
 import kg.edu.mathbilim.model.reference.Role;
-import kg.edu.mathbilim.model.test.Test;
+import kg.edu.mathbilim.model.test.Attempt;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
@@ -74,9 +74,6 @@ public class User {
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
-    List<Test> tests = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "type_id")
     UserType type;
@@ -100,4 +97,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<UserNotification> notifications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attempt> attempts;
 }
