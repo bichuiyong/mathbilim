@@ -27,8 +27,8 @@ public class OrganizationController {
 
     @PostMapping("create")
     public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,
-                         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                          BindingResult bindingResult,
+                         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                          Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("organizationDto", organization);
