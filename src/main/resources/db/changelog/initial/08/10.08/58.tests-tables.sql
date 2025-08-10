@@ -7,20 +7,17 @@ CREATE TABLE tests (
                        id BIGSERIAL PRIMARY KEY,
                        name VARCHAR(255) NOT NULL,
                        file_id bigint not null references files(id),
-                       time_limit INT, -- секунды
+                        has_limit BOOLEAN,
+                       time_limit INT,
                        created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE test_pages (
-                            id BIGSERIAL PRIMARY KEY,
-                            test_id BIGINT NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
-                            page_number INT NOT NULL
 );
 
 CREATE TABLE questions (
                            id BIGSERIAL PRIMARY KEY,
-                           test_page_id BIGINT NOT NULL REFERENCES test_pages(id) ON DELETE CASCADE,
-                            multiple_choice BOOLEAN ,
+                            test_id bigint not null references tests(id),
+                            number_order bigint not null ,
+                           test_page_number BIGINT NOT NULL,
+                            text_format BOOLEAN ,
                            correct_answer VARCHAR(200) NOT NULL,
                            weight NUMERIC(5,2) DEFAULT 1.0,
                            topic_id INT REFERENCES topics(id)

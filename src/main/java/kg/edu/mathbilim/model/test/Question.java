@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.model.test;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,16 +12,22 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "test_page_id", nullable = false)
-    private TestPage testPage;
+    @JoinColumn(name = "test_id")
+    @ManyToOne
+    private Test test;
 
-    private Boolean multipleChoice;
+    private Integer numberOrder;
+
+    @Column(name = "test_page_number", nullable = false)
+    private Integer testPageNumber;
+
+    private Boolean textFormat;
 
     @Column(name = "correct_answer", nullable = false, length = 200)
     private String correctAnswer;
