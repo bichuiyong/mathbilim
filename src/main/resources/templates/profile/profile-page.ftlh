@@ -426,7 +426,7 @@
                 <!-- Быстрые действия -->
                 <div class="card mt-3">
                     <div class="card-body">
-                        <h6 class="card-title mb-3">Создать контент</h6>
+                        <h6 class="card-title mb-3">Создать</h6>
                         <div class="d-grid gap-2">
                             <a href="/posts/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-newspaper me-2"></i>Публикация
@@ -439,6 +439,9 @@
                             </a>
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i>Книга
+                            </a>
+                            <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-book me-2"></i>Организация
                             </a>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">

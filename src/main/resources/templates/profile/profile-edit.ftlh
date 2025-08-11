@@ -169,49 +169,12 @@
 
                             <!-- Вкладка "Настройки аккаунта" -->
                             <div class="tab-pane fade" id="settings" role="tabpanel">
-                                <#if isAdmin>
-                                    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-                                        <i class="fas fa-exclamation-triangle me-3"></i>
-                                        <div>
-                                            <strong>Административные настройки</strong><br>
-                                            Эти настройки доступны только администраторам и влияют на права доступа
-                                            пользователя.
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="roleId" class="form-label">
-                                            <i class="fas fa-shield-alt me-1 text-danger"></i>Роль пользователя
-                                        </label>
-                                        <#if roles?? && roles?size gt 0>
-                                            <#assign roleMap = {}>
-                                            <#list roles as role>
-                                                <#assign roleMap = roleMap + {role.id?string: role.name}>
-                                            </#list>
-                                            <@spring.formSingleSelect "userEditDto.role.id", roleMap, 'class="form-select admin-select" id="roleId"'/>
-                                        <#else>
-                                            <select class="form-select admin-select" id="roleId" disabled>
-                                                <option>Роли не загружены</option>
-                                            </select>
-                                        </#if>
-                                        <@spring.showErrors '<br>', 'text-danger small mt-1'/>
-                                        <div class="form-text">
-                                            <strong>Роли:</strong><br>
-                                            <small>• <strong>Пользователь</strong> - базовые права на создание контента</small><br>
-                                            <small>• <strong>Модератор</strong> - может модерировать контент других
-                                                пользователей</small><br>
-                                            <small>• <strong>Администратор</strong> - полные права на управление
-                                                системой</small>
-                                        </div>
-                                    </div>
-                                <#else>
                                     <div class="text-center py-5">
                                         <i class="fas fa-cog fa-3x text-muted mb-3"></i>
                                         <h5 class="text-muted">Дополнительные настройки</h5>
                                         <p class="text-muted">В этом разделе пока нет доступных настроек для вашего
                                             уровня доступа.</p>
                                     </div>
-                                </#if>
                             </div>
                         </div>
 

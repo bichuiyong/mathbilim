@@ -115,6 +115,10 @@
     </div>
 
     <style>
+        html, body {
+            overflow-x: hidden;
+        }
+
         .upload-area {
             transition: all 0.3s ease;
             cursor: pointer;
