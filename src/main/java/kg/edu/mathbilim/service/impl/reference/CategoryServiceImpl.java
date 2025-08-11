@@ -109,12 +109,12 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     }
 
     @Override
-    protected Category createNewEntity() {
+    public Category createNewEntity() {
         return new Category();
     }
 
     @Override
-    protected CategoryTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
+    public CategoryTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return CategoryTranslationDto.builder()
                 .typeId(typeId)
                 .languageCode(languageCode)
@@ -123,7 +123,7 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     }
 
     @Override
-    protected void setTypeIdInTranslation(CategoryTranslationDto translationDto, Integer typeId) {
+    public void setTypeIdInTranslation(CategoryTranslationDto translationDto, Integer typeId) {
         translationDto.setTypeId(typeId);
     }
 }
