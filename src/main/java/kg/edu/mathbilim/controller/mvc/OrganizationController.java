@@ -1,6 +1,8 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.OrganizationDto;
+import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,21 +19,23 @@ public class OrganizationController {
 
     @GetMapping("create")
     public String create(Model model) {
-        model.addAttribute("organization", new OrganizationDto());
+        model.addAttribute("organizationDto", OrganizationDto.builder()
+                        .creator(UserDto.builder().build())
+                .build());
         return "organizations/create-organization";
     }
 
     @PostMapping("create")
-    public String create(@ModelAttribute("organization") OrganizationDto organization,
-                         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
+    public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,
                          BindingResult bindingResult,
+                         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                          Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("organizationDto", organization);
             return "organizations/create-organization";
         }
         if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
-
         organizationService.create(organization, avatarFile);
-        return "redirect:/organizations";
+        return "redirect:/";
     }
 }

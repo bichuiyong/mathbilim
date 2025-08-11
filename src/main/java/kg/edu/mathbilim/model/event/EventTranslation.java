@@ -3,6 +3,7 @@ package kg.edu.mathbilim.model.event;
 import jakarta.persistence.*;
 import kg.edu.mathbilim.model.abstracts.ContentTranslation;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;

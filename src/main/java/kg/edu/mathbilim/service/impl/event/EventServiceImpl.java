@@ -47,12 +47,10 @@ public class EventServiceImpl extends
         implements EventService {
 
     private final OrganizationService organizationService;
-    private final EventRepository eventRepository;
 
-    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, EventRepository eventRepository, UserNotificationService notificationService) {
+    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, UserNotificationService notificationService) {
         super(repository, mapper, userService, fileService, translationService, notificationService);
         this.organizationService = organizationService;
-        this.eventRepository = eventRepository;
     }
 
     @Override
