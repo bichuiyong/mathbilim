@@ -1,4 +1,5 @@
 package kg.edu.mathbilim.dto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.user.UserDto;
@@ -27,13 +28,13 @@ public class OrganizationDto {
 
     FileDto avatar;
 
-    @NotNull
+
     UserDto creator;
 
     @Builder.Default
     UserDto approvedBy = null;
 
-    @NotNull
+//    @NotNull
     @Builder.Default
     ContentStatus status = ContentStatus.DRAFT;
 

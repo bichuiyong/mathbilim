@@ -25,15 +25,11 @@ public class EventTypeServiceImpl
         EventTypeTranslationRepository,
         EventTypeMapper>
         implements EventTypeService {
-    private final EventTypeRepository eventTypeRepository;
-    private final EventTypeMapper eventTypeMapper;
 
     public EventTypeServiceImpl(EventTypeRepository repository,
                                 EventTypeTranslationRepository translationRepository,
                                 EventTypeMapper mapper) {
         super(repository, translationRepository, mapper);
-        this.eventTypeRepository = repository;
-        this.eventTypeMapper = mapper;
     }
 
     @Override
@@ -54,13 +50,13 @@ public class EventTypeServiceImpl
     @Transactional
     @Override
     public EventTypeDto createEventType(EventTypeDto eventTypeDto) {
-        return create(eventTypeDto);
+        return super.create(eventTypeDto);
     }
 
     @Transactional
     @Override
     public EventTypeDto updateEventType(Integer id, EventTypeDto eventTypeDto) {
-        return update(id, eventTypeDto);
+        return super.update(id, eventTypeDto);
     }
 
     @Transactional
@@ -72,21 +68,18 @@ public class EventTypeServiceImpl
     @Transactional
     @Override
     public EventTypeDto addTranslation(Integer eventTypeId, String languageCode, String translation) {
-        return addTranslation(eventTypeId, languageCode, translation);
+        return super.addTranslation(eventTypeId, languageCode, translation);
     }
 
     @Transactional
     @Override
     public EventTypeDto removeTranslation(Integer eventTypeId, String languageCode) {
-        return removeTranslation(eventTypeId, languageCode);
+        return super.removeTranslation(eventTypeId, languageCode);
     }
 
     @Override
     public List<EventTypeDto> getAllEventTypesByQuery(String name, String lang) {
        return getAllByQuery(name, lang);
-//        return eventTypeRepository.findAllByQuery(name, lang).stream()
-//                .map(eventTypeMapper::toDto)
-//                .toList();
     }
 
     @Override

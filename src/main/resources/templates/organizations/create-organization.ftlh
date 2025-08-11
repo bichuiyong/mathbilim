@@ -5,7 +5,7 @@
     <div class="row justify-content-center mt-4">
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header  bg-light text-dark">
                     <h4 class="mb-0">
                         <i class="fas fa-building me-2"></i>
                         Создание новой организации
@@ -13,15 +13,16 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <form action="/organizations/create" method="POST" enctype="multipart/form-data" novalidate>
-                        <@main.csrf/>
+                    <form action="/organizations/create" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
 
                         <div class="mb-4">
                             <label for="name" class="form-label fw-semibold">
                                 Название организации <span class="text-danger">*</span>
                             </label>
-                            <@spring.formInput "organization.name", 'class="form-control form-control-lg" placeholder="Введите название организации"'/>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.formInput "organizationDto.name", 'class="form-control form-control-lg" placeholder="Введите название организации"'/>
+                            <@spring.showErrors "organizationDto.name", "text-danger small"/>
                             <div class="form-text">
                                 Полное официальное название вашей организации
                             </div>
@@ -31,8 +32,8 @@
                             <label for="description" class="form-label fw-semibold">
                                 Описание организации <span class="text-danger">*</span>
                             </label>
-                            <@spring.formTextarea "organization.description", 'class="form-control" rows="5" placeholder="Расскажите о деятельности, целях и достижениях вашей организации..."'/>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.formTextarea "organizationDto.description", 'class="form-control" rows="5" placeholder="Расскажите о деятельности, целях и достижениях вашей организации..."'/>
+                            <@spring.showErrors "organizationDto.description", "text-danger small"/>
                             <div class="form-text">
                                 Подробное описание деятельности организации (минимум 50 символов)
                             </div>
@@ -46,9 +47,9 @@
                                 <span class="input-group-text">
                                     <i class="fas fa-globe"></i>
                                 </span>
-                                <@spring.formInput "organization.url", 'class="form-control" placeholder="https://example.com" type="url"'/>
+                                <@spring.formInput "organizationDto.url", 'class="form-control" placeholder="https://example.com" type="url"'/>
                             </div>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.showErrors '<br>',"text-danger small"/>
                             <div class="form-text">
                                 Официальный сайт организации (необязательно)
                             </div>
@@ -176,23 +177,6 @@
             document.getElementById('avatarFile').value = '';
             document.getElementById('imagePreview').classList.add('d-none');
         }
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const name = document.querySelector('input[name="name"]').value.trim();
-            const description = document.querySelector('textarea[name="description"]').value.trim();
-
-            if (!name) {
-                alert('Пожалуйста, введите название организации');
-                e.preventDefault();
-                return;
-            }
-
-            if (!description || description.length < 50) {
-                alert('Описание должно содержать минимум 50 символов');
-                e.preventDefault();
-                return;
-            }
-        });
     </script>
 
 </@main.layout>
