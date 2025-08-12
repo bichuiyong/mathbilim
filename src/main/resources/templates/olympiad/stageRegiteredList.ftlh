@@ -107,10 +107,11 @@
     <div class="heightControl">
         <div class="search-container flex">
             <div class="d-flex align-items-center">
-                <input type="text" id="searchInputTop" class="form-control" placeholder="Поиск...">
-                <a href="скачать в формате excel" onclick="window.location.href='/api/excel/download/registered?stageId=${stageId}'; return false;"
-                        id="excel" class="excel-btn">
-                    Excel
+                <input type="text" id="searchInputTop" class="form-control" placeholder="<@spring.message "registration.search.placeholder">Поиск...</@spring.message>">
+                <a href="скачать в формате excel"
+                   onclick="window.location.href='/api/excel/download/registered?stageId=${stageId}'; return false;"
+                   id="excel" class="excel-btn">
+                    <@spring.message "registration.button.excel">Excel</@spring.message>
                 </a>
             </div>
             <nav>
@@ -118,42 +119,43 @@
             </nav>
         </div>
 
-    <div class="table-container">
-        <table class="table table-bordered table-hover" id="dataTable">
-            <thead id="tableHead">
-            <tr>
-                <th class="sortable" data-sort="fullName">ФИО</th>
-                <th class="sortable" data-sort="email">Email</th>
-                <th class="sortable" data-sort="phoneNumber">Телефон</th>
-                <th class="sortable" data-sort="telegram">Telegram</th>
-                <th class="sortable" data-sort="school">Школа</th>
-                <th class="sortable" data-sort="classNumber">Класс</th>
-                <th class="sortable" data-sort="classTeacherFullName">Учитель</th>
-                <th class="sortable" data-sort="region">Регион</th>
-                <th class="sortable" data-sort="district">Район</th>
-                <th class="sortable" data-sort="locality">Город</th>
-                <th class="sortable" data-sort="parentFullName">Родитель</th>
-                <th class="sortable" data-sort="parentEmail">Email Родителя</th>
-                <th class="sortable" data-sort="parentPhoneNumber">Телефон Родителя</th>
-                <th class="sortable" data-sort="olympiadName">Олимпиада</th>
-                <th class="sortable" data-sort="userName">Пользователь</th>
-            </tr>
-            </thead>
-            <tbody id="registrationBody"></tbody>
-        </table>
+        <div class="table-container">
+            <table class="table table-bordered table-hover" id="dataTable">
+                <thead id="tableHead">
+                <tr>
+                    <th class="sortable" data-sort="fullName"><@spring.message "registration.table.fullName">ФИО</@spring.message></th>
+                    <th class="sortable" data-sort="email"><@spring.message "registration.table.email">Email</@spring.message></th>
+                    <th class="sortable" data-sort="phoneNumber"><@spring.message "registration.table.phoneNumber">Телефон</@spring.message></th>
+                    <th class="sortable" data-sort="telegram"><@spring.message "registration.table.telegram">Telegram</@spring.message></th>
+                    <th class="sortable" data-sort="school"><@spring.message "registration.table.school">Школа</@spring.message></th>
+                    <th class="sortable" data-sort="classNumber"><@spring.message "registration.table.classNumber">Класс</@spring.message></th>
+                    <th class="sortable" data-sort="classTeacherFullName"><@spring.message "registration.table.classTeacher">Учитель</@spring.message></th>
+                    <th class="sortable" data-sort="region"><@spring.message "registration.table.region">Регион</@spring.message></th>
+                    <th class="sortable" data-sort="district"><@spring.message "registration.table.district">Район</@spring.message></th>
+                    <th class="sortable" data-sort="locality"><@spring.message "registration.table.locality">Город</@spring.message></th>
+                    <th class="sortable" data-sort="parentFullName"><@spring.message "registration.table.parentName">Родитель</@spring.message></th>
+                    <th class="sortable" data-sort="parentEmail"><@spring.message "registration.table.parentEmail">Email Родителя</@spring.message></th>
+                    <th class="sortable" data-sort="parentPhoneNumber"><@spring.message "registration.table.parentPhone">Телефон Родителя</@spring.message></th>
+                    <th class="sortable" data-sort="olympiadName"><@spring.message "registration.table.olympiadName">Олимпиада</@spring.message></th>
+                    <th class="sortable" data-sort="userName"><@spring.message "registration.table.userName">Пользователь</@spring.message></th>
+                </tr>
+                </thead>
+                <tbody id="registrationBody"></tbody>
+            </table>
 
-        <div style="margin-top: 100px" id="noDataMessage">
-            <svg width="256px" height="256px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 14H16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 17.5H13" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M22 2L17 6.99998M17 1.99998L22 6.99996" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
-            <div>Данные не найдены</div>
+            <div style="margin-top: 100px" id="noDataMessage">
+                <svg width="256px" height="256px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 14H16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 17.5H13" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M22 2L17 6.99998M17 1.99998L22 6.99996" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+                <div><@spring.message "registration.noData">Данные не найдены</@spring.message></div>
+            </div>
+        </div>
+
+        <div class="pagination-container" id="paginationContainer">
+            <nav>
+                <ul id="pagination" class="pagination justify-content-center"></ul>
+            </nav>
         </div>
     </div>
 
-    <div class="pagination-container" id="paginationContainer">
-        <nav>
-            <ul id="pagination" class="pagination justify-content-center"></ul>
-        </nav>
-    </div>
-    </div>
     <script>
         let stageId = ${stageId!0};
         let currentPage = ${page!0};

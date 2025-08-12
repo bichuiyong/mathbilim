@@ -670,11 +670,11 @@
 
             <#assign allImages = []>
             <#if newsDto.mainImage??>
-                <#assign allImages = allImages + [{"url": "/api/files/${newsDto.mainImageId}/view", "alt": "Main Image"}]>
+                <#assign allImages = allImages + [{"url": "/api/files/${newsDto.mainImageId}/view", "alt": spring.message("news.mainImageAlt")} ]>
             </#if>
             <#if newsDto.newsFiles?? && newsDto.newsFiles?size gt 0>
                 <#list newsDto.newsFiles as file>
-                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": "Post Image " + (file_index + 1)}]>
+                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": spring.message("news.postImageAlt", [(file_index + 1)])}]>
                 </#list>
             </#if>
 
@@ -691,7 +691,7 @@
                             <#list 0..(allImages?size-1) as i>
                                 <button type="button" data-bs-target="#postCarousel" data-bs-slide-to="${i}"
                                         <#if i == 0>class="active" aria-current="true"</#if>
-                                        aria-label="Slide ${i + 1}"></button>
+                                        aria-label="${spring.message("news.slideLabel", [(i + 1)])}"></button>
                             </#list>
                         </div>
                     </#if>
@@ -708,12 +708,12 @@
                         <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel"
                                 data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
+                            <span class="visually-hidden">${spring.message("news.previous")}</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#postCarousel"
                                 data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
+                            <span class="visually-hidden">${spring.message("news.next")}</span>
                         </button>
                     </#if>
                 </div>
@@ -726,7 +726,7 @@
                 </#if>
                 <#if translation.content?? && translation.content?has_content>
                     <div class="publication-text collapsed" id="postContent">${translation.content?no_esc}</div>
-                    <div class="show-more-btn" id="toggleButton">Показать ещё</div>
+                    <div class="show-more-btn" id="toggleButton">${spring.message("news.showMore")}</div>
                 </#if>
                 <div class="publication-meta">
                     <div class="meta-item">
@@ -742,26 +742,25 @@
                     </#if>
                     <#if allImages?size gt 1>
                         <div class="meta-item">
-                            📷 ${allImages?size} фото
+                            📷 ${allImages?size} ${spring.message("news.photos")}
                         </div>
                     </#if>
                     <div class="meta-item">
                         <button id="viewCommentsBtn" data-post-id="${newsDto.id}"
-                                <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>💬 Посмотреть
-                            комментарии
+                                <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>💬 ${spring.message("news.viewComments")}
                         </button>
                     </div>
                 </div>
             </div>
         </article>
 
-        <a href="/posts" class="back-btn">← Вернуться к публикациям</a>
+        <a href="/posts" class="back-btn">← ${spring.message("news.backToPosts")}</a>
     </div>
 
     <div class="comments-modal-overlay" id="commentsModalOverlay">
         <div class="comments-modal">
             <div class="comments-modal-header">
-                <h3 class="comments-modal-title">Комментарии</h3>
+                <h3 class="comments-modal-title">${spring.message("comments.title")}</h3>
                 <button class="comments-modal-close" id="closeCommentsModal">×</button>
             </div>
             <div class="comments-modal-body">
@@ -769,18 +768,18 @@
                 </ul>
                 <div class="comments-empty" id="comments-empty" style="display: none;">
                     <div class="comments-empty-icon">💬</div>
-                    <div class="comments-empty-text">Пока нет комментариев</div>
-                    <div class="comments-empty-subtext">Начните обсуждение.</div>
+                    <div class="comments-empty-text">${spring.message("comments.emptyText")}</div>
+                    <div class="comments-empty-subtext">${spring.message("comments.emptySubtext")}</div>
                 </div>
             </div>
             <div class="comments-modal-footer">
                 <#if currentUser??>
                     <div class="comment-input-wrapper">
-                        <textarea id="newCommentInput" placeholder="Напишите комментарий..."></textarea>
-                        <button id="submitComment">Опубликовать</button>
+                        <textarea id="newCommentInput" placeholder="${spring.message("comments.placeholder")}"></textarea>
+                        <button id="submitComment">${spring.message("comments.submit")}</button>
                     </div>
                 <#else>
-                    <a href="/auth/login" class="btn btn-primary">Войдите в аккаунт, чтобы прокомментировать</a>
+                    <a href="/auth/login" class="btn btn-primary">${spring.message("comments.loginToComment")}</a>
                 </#if>
             </div>
         </div>

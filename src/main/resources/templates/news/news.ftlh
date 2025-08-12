@@ -441,12 +441,12 @@
     <div class="content-wrapper">
         <div class="search-container">
             <div class="search-header">
-                <div class="search-title">Поиск и фильтры</div>
+                <div class="search-title"><@spring.message "news.searchAndFilters" /></div>
             </div>
             <form method="get" action="/news">
                 <div class="search-row">
                     <div class="search-input-group">
-                        <input type="text" name="query" value="${query!}" placeholder="Найти новости..."/>
+                        <input type="text" name="query" value="${query!}" placeholder="<@spring.message 'news.searchPlaceholder' />"/>
                     </div>
                 </div>
 
@@ -454,21 +454,21 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>По дате</option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>По просмотрам</option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>По репостам</option>
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>><@spring.message "news.sortByDate" /></option>
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>><@spring.message "news.sortByViews" /></option>
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>><@spring.message "news.sortByShares" /></option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>><@spring.message "news.newestFirst" /></option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>><@spring.message "news.oldestFirst" /></option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">Применить</button>
+                    <button type="submit" class="search-button"><@spring.message "news.applyFilters" /></button>
                 </div>
 
                 <input type="hidden" name="lang" value="${currentLang!'ru'}"/>
@@ -478,21 +478,20 @@
             <@main.csrf/>
             <input type="hidden" name="type" value="NEWS">
             <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                <button class="btn btn-outline-danger"><@spring.message "news.notification_unsubscribe"/></button>
             <#else>
-                <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                <button class="btn btn-outline-primary"><@spring.message "news.notification_subscribe"/></button>
             </#if>
         </form>
-
 
         <#if news.content?size gt 0>
             <div class="posts-grid">
                 <#list news.content as p>
                     <div class="post-item" onclick="window.location.href='/news/${p.id}'">
                         <#if p.mainImage??>
-                            <img src="/api/files/${p.mainImageId}/view" alt="Post Image">
+                            <img src="/api/files/${p.mainImageId}/view" alt="<@spring.message 'news.postImageAlt'/>">
                         <#elseif p.newsFiles?? && p.newsFiles?size gt 0>
-                            <img src="/api/files/${p.newsFiles[0].id}/view" alt="Post Image">
+                            <img src="/api/files/${p.newsFiles[0].id}/view" alt="<@spring.message 'news.postImageAlt'/>">
                         <#else>
                             <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">📷</div>
                         </#if>
@@ -519,13 +518,13 @@
             <div class="posts-grid">
                 <#if news?? && news.content?size == 0>
                     <div class="no-posts">
-                        Новости не найдены
-                        <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
+                        <@spring.message "news.notFound" />
+                        <div style="margin-top: 8px; font-size: 14px;"><@spring.message "news.tryChangeFilters" /></div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Новости загружаются, пожалуйста подождите...</span>
+                        <span><@spring.message "news.loading" /></span>
                     </div>
                 </#if>
             </div>
@@ -536,23 +535,24 @@
                 <#if news.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn prev">
-                        Назад
+                        <@spring.message "news.prevPage" />
                     </a>
                 </#if>
 
                 <div class="pagination-info">
-                    Страница ${page + 1}
+                    <@spring.message "news.page" /> ${page + 1}
                 </div>
 
                 <#if news.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn next">
-                        Вперёд
+                        <@spring.message "news.nextPage" />
                     </a>
                 </#if>
             </div>
         </#if>
     </div>
+
 
     <script>
         function switchLanguage(langCode) {

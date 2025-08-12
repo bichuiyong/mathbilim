@@ -466,46 +466,58 @@
         <ul style="position: relative" class="nav nav-tabs mb-4" id="olympiadTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="stages-tab" data-bs-toggle="tab" data-bs-target="#stages"
-                        type="button" role="tab" aria-controls="stages" aria-selected="false">Этапы проведения</button>
+                        type="button" role="tab" aria-controls="stages" aria-selected="false">
+                    <@spring.message "olympiad.tab.stages">Этапы проведения</@spring.message>
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description"
-                        type="button" role="tab" aria-controls="description" aria-selected="true">Подробности</button>
+                        type="button" role="tab" aria-controls="description" aria-selected="true">
+                    <@spring.message "olympiad.tab.details">Подробности</@spring.message>
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="rules-tab" data-bs-toggle="tab" data-bs-target="#rules"
-                        type="button" role="tab" aria-controls="rules" aria-selected="false">Регламент</button>
+                        type="button" role="tab" aria-controls="rules" aria-selected="false">
+                    <@spring.message "olympiad.tab.rules">Регламент</@spring.message>
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts"
-                        type="button" role="tab" aria-controls="contacts" aria-selected="false">Контакты</button>
+                        type="button" role="tab" aria-controls="contacts" aria-selected="false">
+                    <@spring.message "olympiad.tab.contacts">Контакты</@spring.message>
+                </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"
-                        type="button" role="tab" aria-controls="organization" aria-selected="false">Организации</button>
+                        type="button" role="tab" aria-controls="organization" aria-selected="false">
+                    <@spring.message "olympiad.tab.organizations">Организации</@spring.message>
+                </button>
             </li>
 
             <#if (user??) && ((isModer!false) || (isAdmin!false))>
                 <li class="nav-item edit" role="presentation">
                     <button class="nav-link active" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"
-                            type="button" role="tab" aria-controls="organization" aria-selected="false"><a style="color: #ff6464; text-decoration: none;" href="/olympiad/edit?id=${olympiad.id}">Редактировать</a></button>
+                            type="button" role="tab" aria-controls="organization" aria-selected="false">
+                        <a style="color: #ff6464; text-decoration: none;" href="/olympiad/edit?id=${olympiad.id}">
+                            <@spring.message "olympiad.button.edit">Редактировать</@spring.message>
+                        </a>
+                    </button>
                 </li>
             </#if>
         </ul>
 
         <div class="tab-content" id="olympiadTabContent" style="margin-bottom: 100px">
 
-            <div style="" class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
-                <h4 class="h4head">Подробности / описание</h4>
+            <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
+                <h4 class="h4head"><@spring.message "olympiad.heading.details">Подробности / описание</@spring.message></h4>
                 <#if olympiad.info??>
-                    <p>
-                        ${olympiad.info?no_esc}
-                    </p>
+                    <p>${olympiad.info?no_esc}</p>
                 </#if>
             </div>
 
             <div class="tab-pane fade show active" id="stages" role="tabpanel" aria-labelledby="stages-tab">
-                <h4 class="h4head">Этапы проведения</h4>
+                <h4 class="h4head"><@spring.message "olympiad.heading.stages">Этапы проведения</@spring.message></h4>
                 <#if olympiad.stages?? && (olympiad.stages?size > 0)>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-sm small" style="margin-top: 20px;
@@ -516,23 +528,23 @@
                             </#if>>
                             <thead class="table-light">
                             <tr>
-                                <th>Этап</th>
-                                <th>Начало регистрации</th>
-                                <th>Окончание регистрации</th>
-                                <th>Дата начала этапа</th>
-                                <th>Дата окончания этапа</th>
-                                <th>Обновлено</th>
-                                <th>Результаты</th>
+                                <th><@spring.message "olympiad.stage.col.stage">Этап</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.regStart">Начало регистрации</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.regEnd">Окончание регистрации</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.startDate">Дата начала этапа</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.endDate">Дата окончания этапа</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.updatedAt">Обновлено</@spring.message></th>
+                                <th><@spring.message "olympiad.stage.col.results">Результаты</@spring.message></th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                    <th>Результат</th>
+                                    <th><@spring.message "olympiad.stage.col.resultAction">Результат</@spring.message></th>
                                 </#if>
-                                <th>Список участников</th>
+                                <th><@spring.message "olympiad.stage.col.participantList">Список участников</@spring.message></th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                    <th>участники</th>
+                                    <th><@spring.message "olympiad.stage.col.participants">участники</@spring.message></th>
                                 </#if>
-                                <th>Регистрация</th>
+                                <th><@spring.message "olympiad.stage.col.registration">Регистрация</@spring.message></th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                <th>Данные</th>
+                                    <th><@spring.message "olympiad.stage.col.data">Данные</@spring.message></th>
                                 </#if>
                             </tr>
                             </thead>
@@ -552,10 +564,10 @@
                                     <td>
                                         <#if stage.result?? && (stage.result?size > 0)>
                                             <a href="скачать результаты" onclick="window.location.href='/api/files/${stage.result[0].file.id}/download'; return false;" class="mybtn">
-                                                результаты
+                                                <@spring.message "olympiad.stage.results.link">результаты</@spring.message>
                                             </a>
                                         <#else>
-                                            <span class="mybtn-off">отсутствует</span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.results.none">отсутствует</@spring.message></span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -568,9 +580,13 @@
                                                 <input type="file" name="file" class="uploadFile" style="display:none" required />
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.result?? && (stage.result?size > 0)>
-                                                    <button type="button" class="uploadBtn mybtn-admin">поменять</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">
+                                                        <@spring.message "olympiad.stage.results.changeBtn">поменять</@spring.message>
+                                                    </button>
                                                 <#else>
-                                                    <button type="button" class="uploadBtn mybtn-admin">добавить</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">
+                                                        <@spring.message "olympiad.stage.results.addBtn">добавить</@spring.message>
+                                                    </button>
                                                 </#if>
                                             </form>
                                         </td>
@@ -578,10 +594,10 @@
                                     <td>
                                         <#if stage.approvedList?? && (stage.approvedList?size > 0)>
                                             <a href="скачать список участников" onclick="window.location.href='/api/files/${stage.approvedList[0].file.id}/download'; return false;" class="mybtn">
-                                                список
+                                                <@spring.message "olympiad.stage.participants.link">список</@spring.message>
                                             </a>
                                         <#else>
-                                            <span class="mybtn-off">отсутствует</span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.participants.none">отсутствует</@spring.message></span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -594,20 +610,26 @@
                                                 <input type="file" name="file" class="uploadFile" style="display:none" required />
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.approvedList?? && (stage.approvedList?size > 0)>
-                                                    <button type="button" class="uploadBtn mybtn-admin">поменять</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">
+                                                        <@spring.message "olympiad.stage.participants.changeBtn">поменять</@spring.message>
+                                                    </button>
                                                 <#else>
-                                                    <button type="button" class="uploadBtn mybtn-admin">добавить</button>
+                                                    <button type="button" class="uploadBtn mybtn-admin">
+                                                        <@spring.message "olympiad.stage.participants.addBtn">добавить</@spring.message>
+                                                    </button>
                                                 </#if>
                                             </form>
                                         </td>
                                     </#if>
                                     <#if (stage.registrationDate?long <= today?long) && (stage.registrationEndDate?long >= today?long)>
                                         <td>
-                                            <a href="/olympiad/registration?stageId=${stage.id}" class="mybtn">зарегистрироваться</a>
+                                            <a href="/olympiad/registration?stageId=${stage.id}" class="mybtn">
+                                                <@spring.message "olympiad.stage.registration.registerBtn">зарегистрироваться</@spring.message>
+                                            </a>
                                         </td>
                                     <#else>
                                         <td>
-                                            <span class="mybtn-off">недоступно</span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.registration.unavailable">недоступно</@spring.message></span>
                                         </td>
                                     </#if>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -628,19 +650,17 @@
                         </table>
                     </div>
                 <#else>
-                    <p>Этапы ещё не добавлены.</p>
+                    <p><@spring.message "olympiad.stage.none">Этапы ещё не добавлены.</@spring.message></p>
                 </#if>
             </div>
 
             <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
-                <h4 class="h4head">Регламент / правила участия</h4>
-                <p>
-                    ${olympiad.rules?no_esc}
-                </p>
+                <h4 class="h4head"><@spring.message "olympiad.heading.rules">Регламент / правила участия</@spring.message></h4>
+                <p>${olympiad.rules?no_esc}</p>
             </div>
 
             <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
-                <h4 class="h4head">Контакты</h4>
+                <h4 class="h4head"><@spring.message "olympiad.heading.contacts">Контакты</@spring.message></h4>
                 <#if olympiad.contacts?? && (olympiad.contacts?size > 0)>
                     <#list olympiad.contacts as contact>
                         <div class="contact-card">
@@ -653,38 +673,24 @@
                                 <p>
                                     <span class="contact-type">${contact.contactType}:</span>
                                     <span class="contact-details">
-                                        <#if contact.contactType == "Telegram">
-                                            <a href="https://${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "WhatsApp">
-                                            <a href="https://${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "Instagram">
-                                            <a href="https://${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "Facebook">
-                                            <a href="https://${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "TikTok">
-                                            <a href="https://${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "Email">
-                                            <a href="mailto:${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#elseif contact.contactType == "Phone">
-                                            <a href="tel:${contact.info}" target="_blank" class="social-link">
-                                                ${contact.info}
-                                            </a>
-                                        <#else>
-                                            ${contact.info}
-                                        </#if>
-                                    </span>
+                                    <#if contact.contactType == "Telegram">
+                                        <a href="https://${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "WhatsApp">
+                                        <a href="https://${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "Instagram">
+                                        <a href="https://${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "Facebook">
+                                        <a href="https://${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "TikTok">
+                                        <a href="https://${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "Email">
+                                        <a href="mailto:${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#elseif contact.contactType == "Phone">
+                                        <a href="tel:${contact.info}" target="_blank" class="social-link">${contact.info}</a>
+                                    <#else>
+                                        ${contact.info}
+                                    </#if>
+                                </span>
                                 </p>
                             </div>
                         </div>
@@ -697,13 +703,13 @@
                             <circle cx="12" cy="12" r="10" fill="none" stroke="#6c757d" stroke-width="0.5"/>
                             <path d="M1 1l22 22" stroke="#dc3545" stroke-width="1.5" stroke-linecap="round"/>
                         </svg>
-                        <p class="text-muted mt-3">Контактная информация не предоставлена</p>
+                        <p class="text-muted mt-3"><@spring.message "olympiad.contacts.none">Контактная информация не предоставлена</@spring.message></p>
                     </div>
                 </#if>
             </div>
 
             <div class="tab-pane fade" id="organization" role="tabpanel" aria-labelledby="organization-tab">
-                <h4 class="h4head">Организации</h4>
+                <h4 class="h4head"><@spring.message "olympiad.heading.organizations">Организации</@spring.message></h4>
                 <#if olympiad.organizations?? && (olympiad.organizations?size > 0)>
                     <div class="organization-grid">
                         <#list olympiad.organizations as organization>
@@ -727,7 +733,7 @@
                             <circle cx="12" cy="12" r="10" fill="none" stroke="#6c757d" stroke-width="0.5"/>
                             <path d="M1 1l22 22" stroke="#dc3545" stroke-width="1.5" stroke-linecap="round"/>
                         </svg>
-                        <p class="text-muted mt-3">Информация об организациях отсутствует</p>
+                        <p class="text-muted mt-3"><@spring.message "olympiad.organizations.none">Информация об организациях отсутствует</@spring.message></p>
                     </div>
                 </#if>
             </div>

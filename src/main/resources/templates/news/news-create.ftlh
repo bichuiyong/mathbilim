@@ -7,7 +7,7 @@
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="mb-0">Создание новости</h2>
+                        <h2 class="mb-0"><@spring.message "news.create.title" /></h2>
                     </div>
                     <div class="card-body">
                         <form id="newsForm" action="/news/create" method="post" enctype="multipart/form-data">
@@ -18,8 +18,9 @@
                                 </div>
                             </#if>
 
+                            <!-- Main image -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Главное изображение</label>
+                                <label class="form-label fw-bold"><@spring.message "news.create.mainImage" /></label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="image" accept="image/*"
                                            class="form-control mb-3">
@@ -28,28 +29,31 @@
                                             <img id="imagePreview" class="img-fluid">
                                         </div>
                                         <div class="crop-controls mt-3">
-                                            <button type="button" class="btn btn-primary" id="cropButton">Применить
-                                                кроп
+                                            <button type="button" class="btn btn-primary" id="cropButton">
+                                                <@spring.message "news.create.applyCrop" />
                                             </button>
-                                            <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить
+                                            <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                                <@spring.message "news.create.cancelCrop" />
                                             </button>
                                         </div>
                                     </div>
                                     <div class="cropped-preview" style="display: none;">
-                                        <label class="form-label">Предпросмотр (1200x400):</label>
+                                        <label class="form-label"><@spring.message "news.create.preview" /> (1200x400):</label>
                                         <div class="cropped-image-container">
                                             <img id="croppedImage" class="img-fluid border rounded">
                                         </div>
                                         <button type="button" class="btn btn-outline-secondary btn-sm mt-2"
-                                                id="changeCrop">Изменить кроп
+                                                id="changeCrop">
+                                            <@spring.message "news.create.changeCrop" />
                                         </button>
                                     </div>
                                 </div>
                                 <small class="form-text text-muted">
-                                    Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                                    <@spring.message "news.create.imageHint" />
                                 </small>
                             </div>
 
+                            <!-- Translations -->
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
@@ -82,16 +86,18 @@
                                         <#list newsDto.news.newsTranslations as trans>
                                             <div class="tab-pane fade <#if trans?is_first>show active</#if>"
                                                  id="lang-${trans.languageCode}">
-                                                <!-- Заголовок -->
+                                                <!-- Title -->
                                                 <div class="mb-4">
                                                     <@spring.bind "newsDto.news.newsTranslations[${trans?index}].title"/>
-                                                    <label class="form-label fw-bold">Заголовок</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "news.create.titleLabel" />
+                                                    </label>
                                                     <input type="text"
                                                            class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                            name="news.newsTranslations[${trans?index}].title"
                                                            data-lang="${trans.languageCode}"
                                                            value="${spring.status.value!''}"
-                                                           placeholder="Введите заголовок новости...">
+                                                           placeholder="<@spring.message "news.create.titlePlaceholder" />">
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -99,10 +105,12 @@
                                                     </#if>
                                                 </div>
 
-                                                <!-- Контент -->
+                                                <!-- Content -->
                                                 <div class="mb-4">
                                                     <@spring.bind "newsDto.news.newsTranslations[${trans?index}].content"/>
-                                                    <label class="form-label fw-bold">Содержание</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "news.create.contentLabel" />
+                                                    </label>
                                                     <textarea
                                                             class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="news.newsTranslations[${trans?index}].content"
@@ -125,26 +133,28 @@
                                 </div>
                             </div>
 
-                            <!-- Вложения -->
+                            <!-- Attachments -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Вложения</label>
+                                <label class="form-label fw-bold"><@spring.message "news.create.attachments" /></label>
                                 <input type="file" class="form-control" name="attachments" multiple>
                             </div>
 
-                            <!-- Кнопки -->
+                            <!-- Buttons -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <span class="text-muted">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Заполните хотя бы один перевод для публикации
+                                    <@spring.message "news.create.translationHint" />
                                 </span>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <a href="/news" class="btn btn-secondary">
-                                        <i class="fas fa-times me-2"></i>Отменить
+                                        <i class="fas fa-times me-2"></i>
+                                        <@spring.message "news.create.cancel" />
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Создать новость
+                                        <i class="fas fa-save me-2"></i>
+                                        <@spring.message "news.create.submit" />
                                     </button>
                                 </div>
                             </div>
@@ -154,6 +164,7 @@
             </div>
         </div>
     </div>
+
     <!-- Подключение TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
