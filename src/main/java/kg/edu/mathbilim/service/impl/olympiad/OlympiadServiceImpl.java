@@ -361,4 +361,19 @@ public class OlympiadServiceImpl implements OlympiadService {
         return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
     }
 
+
+    @Override
+    public List<OlympListDto> getOlympiadForMainPage() {
+        List<Olympiad> olympiads = olympiadRepository.findTop10ByOrderByCreatedAtDesc();
+
+        return olympiads.stream()
+                .map(olympiad -> new OlympListDto(
+                        Math.toIntExact(olympiad.getId()),
+                        olympiad.getCreatedAt(),
+                        olympiad.getTitle(),
+                        olympiad.getImage().getId()
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

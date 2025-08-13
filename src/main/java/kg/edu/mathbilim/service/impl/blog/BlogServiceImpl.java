@@ -107,7 +107,7 @@ public class BlogServiceImpl extends
                 .orElseThrow(this::getNotFoundException);
         incrementViewCount(id);
 
-        mapper.toDto(blog);
+        return mapper.toDto(blog);
     }
 
     public Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
