@@ -318,20 +318,6 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .build();
     }
 
-    @Override
-    public List<OlympListDto> getOlympiadForMainPage() {
-        List<Olympiad> olympiads = olympiadRepository.findTop10ByOrderByCreatedAtDesc();
-
-        return olympiads.stream()
-                .map(olympiad -> new OlympListDto(
-                        Math.toIntExact(olympiad.getId()),
-                        olympiad.getCreatedAt(),
-                        olympiad.getTitle(),
-                        olympiad.getImage().getId()
-                ))
-                .collect(Collectors.toList());
-    }
-
 
 //    public boolean olympiadHasStarted(long id, LocalDate nowDate){
 //        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
@@ -383,41 +369,5 @@ public class OlympiadServiceImpl implements OlympiadService {
 //
 //        }
 //    }
-    @Override
-    public String uploadRegistrationResult(MultipartFile uploadFile, long stageId) {
-        OlympiadStage olympStage = olympiadStageService.getOlympiadStageById((int) stageId);
-        File file = fileService.uploadFileReturnEntity(uploadFile, "general");
-        OlympiadApprovedList olympiadApprovedList = olympiadApprovedListRepository.findByOlympiadStage(olympStage)
-                .map(r -> {
-                    r.setFile(file);
-                    r.setUpdatedAt(LocalDateTime.now());
-                    return r;
-                })
-                .orElseGet(() -> OlympiadApprovedList.builder()
-                        .file(file)
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .olympiadStage(olympStage)
-                        .build()
-                );
-        olympiadApprovedListRepository.save(olympiadApprovedList);
-        olympiadStageService.updateTime(olympStage);
-        return "redirect:/olympiad/details?id="+olympStage.getOlympiad().getId();
-    }
-
-
-    @Override
-    public List<OlympListDto> getOlympiadForMainPage() {
-        List<Olympiad> olympiads = olympiadRepository.findTop10ByOrderByCreatedAtDesc();
-
-        return olympiads.stream()
-                .map(olympiad -> new OlympListDto(
-                        Math.toIntExact(olympiad.getId()),
-                        olympiad.getCreatedAt(),
-                        olympiad.getTitle(),
-                        olympiad.getImage().getId()
-                ))
-                .collect(Collectors.toList());
-    }
 
 }
