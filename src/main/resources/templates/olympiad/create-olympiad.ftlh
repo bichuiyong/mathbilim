@@ -355,13 +355,16 @@
 
                         <div class="form-group full-width">
                             <label for="title" class="olympiad-label required"><@spring.message "olympiad.create.label.title" /></label>
-                            <@spring.formInput "olympiadCreateDto.title" "placeholder='${spring.message('olympiad.create.placeholder.title')}' class='olympiad-input'"/>
+                            <@spring.formInput "olympiadCreateDto.title"
+                            "placeholder='${springMacroRequestContext.getMessage('olympiad.create.placeholder.title')}' class='olympiad-input'"
+                            />
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group full-width">
                             <label for="info" class="olympiad-label required"><@spring.message "olympiad.create.label.description" /></label>
-                            <@spring.formTextarea "olympiadCreateDto.info" "placeholder='${spring.message('olympiad.create.placeholder.description')}' class='olympiad-textarea rich-text-editor'"/>
+                            <@spring.formTextarea "olympiadCreateDto.info"
+                            "placeholder='${springMacroRequestContext.getMessage('olympiad.create.placeholder.description')}' class='olympiad-textarea rich-text-editor'"/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
@@ -485,7 +488,7 @@
                                         <div class="stage-card">
                                             <div class="stage-header">
                                             <span class="stage-title">
-                                                <@spring.message "olympiad.create.stageTitle" args=[stage.stageOrder] />
+                                                <@spring.message "olympiad.create.stageTitle"/>
                                             </span>
                                             </div>
                                             <div class="olympiad-grid" style="gap: 1rem;">

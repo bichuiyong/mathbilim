@@ -445,7 +445,7 @@
         <div class="search-container">
             <div class="search-header">
                 <div class="search-title">
-                    <@spring.message "search.title">Поиск и фильтры</@spring.message>
+                    <@spring.message "search.title"></@spring.message>"
                 </div>
             </div>
             <form method="get" action="/posts">

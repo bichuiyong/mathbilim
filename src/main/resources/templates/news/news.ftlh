@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         .content-wrapper {
             max-width: 975px;
@@ -441,7 +441,7 @@
     <div class="content-wrapper">
         <div class="search-container">
             <div class="search-header">
-                <div class="search-title"><@spring.message "news.searchAndFilters" /></div>
+                <div class="search-title"><@spring.message "news.searchAndFilters"/></div>
             </div>
             <form method="get" action="/news">
                 <div class="search-row">
