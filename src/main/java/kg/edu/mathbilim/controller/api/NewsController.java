@@ -26,4 +26,10 @@ public class NewsController {
 
         return ResponseEntity.ofNullable(newsService.getPage(query,page, size, sortBy, sortDirection));
     }
+
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestNews() {
+        return ResponseEntity.ofNullable(newsService.getNewsByMainPage());
+    }
 }

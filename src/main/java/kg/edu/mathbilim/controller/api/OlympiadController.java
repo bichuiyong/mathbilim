@@ -29,4 +29,9 @@ public class OlympiadController {
     public ResponseEntity<OlympiadCreateDto> getOlympById(@PathVariable long id) {
         return ResponseEntity.ofNullable(olympiadService.getOlympiadCreateDto(id));
     }
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestEvents() {
+        return ResponseEntity.ofNullable(olympiadService.getOlympiadForMainPage());
+    }
 }

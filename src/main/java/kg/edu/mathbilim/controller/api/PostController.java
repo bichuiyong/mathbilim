@@ -60,4 +60,9 @@ public class PostController {
         postService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestPost() {
+        return ResponseEntity.ofNullable(postService.getPostByMainPage());
+    }
 }
