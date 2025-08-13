@@ -11,6 +11,7 @@ import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller("mvcBlog")
 @RequestMapping("/blog")
 @RequiredArgsConstructor
@@ -32,10 +34,10 @@ public class BlogController {
     @GetMapping
     public String all(@RequestParam(required = false) String query,
                       @RequestParam(value = "page", defaultValue = "1") int page,
-                      @RequestParam(value = "size", defaultValue = "10") int size,
+                      @RequestParam(value = "size", defaultValue = "5") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                      @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
         model.addAttribute("blog", blogService.getAllDisplayBlogs(page, size, sortBy, sortDirection));
@@ -78,10 +80,11 @@ public class BlogController {
                            Model model, Principal principal) {
 
         blogService.incrementViewCount(id);
-        DisplayContentDto blog = blogService.getDisplayBlogById(id);
+        BlogDto blog = blogService.getDisplayBlogById(id);
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
+        log.info("Creator name {}", blog.getCreator().getName());
         model.addAttribute("shareUrl", shareUrl);
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 

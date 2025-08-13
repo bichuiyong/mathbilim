@@ -8,6 +8,7 @@ import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +36,21 @@ public class NewsController {
                       @RequestParam(value = "size", defaultValue = "10") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                      @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
                       Authentication auth,
                       Model model
     ) {
-        model.addAttribute("news", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang));
-        log.info("News {}", newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang).getSize());
+        Page<NewsDto> newsPage = newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang);
+
+        newsPage.getContent().forEach(news -> {
+            System.out.println("📰 News ID: " + news.getId());
+            System.out.println("🔁 Translations:");
+            news.getNewsTranslations().forEach(t -> {
+                System.out.println(" - Lang: " + t.getLanguageCode() + ", Title: " + t.getTitle());
+            });
+        });
+
+        model.addAttribute("news", newsPage);
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
