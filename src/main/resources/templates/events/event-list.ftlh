@@ -2,272 +2,764 @@
 <@main.layout>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/scss/main.css">
 
-    <section class="hero-section py-5">
-        <div class="container text-center">
-            <h1 class="display-3 fw-bold mb-3">Математические мероприятия</h1>
-        </div>
-    </section>
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+        }
 
-    <div class="container py-4">
+        .hero-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .event-card {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 280px;
+            color: white;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+            z-index: 1;
+        }
+
+        .event-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .event-date {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .event-type-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 3;
+            font-weight: 500;
+        }
+
+        .badge-олимпиада {
+            background: #dc3545;
+        }
+
+        .badge-семинар {
+            background: #28a745;
+        }
+
+        .badge-лекция {
+            background: #007bff;
+        }
+
+        .badge-онлайн {
+            background: #17a2b8;
+        }
+
+        .badge-офлайн {
+            background: #6f42c1;
+        }
+
+        .featured-event {
+            min-height: 400px;
+            margin-bottom: 2rem;
+        }
+
+        .event-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-add-event {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+        }
+
+        .btn-add-event:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .event-header {
+            margin-bottom: 40px;
+            padding: 40px 20px 40px;
+            border-radius: 24px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+    <div class="container pt-3">
+        <section class="hero-section event-header py-5 pt-5">
+            <div class="text-center">
+                <h1 class="display-3 fw-bold mb-3">Математические мероприятия</h1>
+            </div>
+        </section>
+    </div>
+
+
+    <div class="main-content py-4">
         <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-4">
             <a href="/events/create" class="btn btn-add-event text-white rounded-pill px-4 py-2">
                 <i class="fas fa-plus me-2"></i>Добавить мероприятие
             </a>
         </div>
 
-        <div class="row mb-5">
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <label for="typeFilter" class="form-label">Тип мероприятия:</label>
+                <select id="typeFilter" class="form-select">
+                    <option value="">Все типы</option>
+                    <option value="online">Онлайн</option>
+                    <option value="offline">Офлайн</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="sortFilter" class="form-label">Сортировка:</label>
+                <select id="sortFilter" class="form-select">
+                    <option value="startDate,desc">Сначала новые</option>
+                    <option value="startDate,asc">Сначала старые</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button id="applyFilters" class="btn btn-primary w-100 mt-4">
+                    <i class="fas fa-filter me-2"></i>Применить фильтры
+                </button>
+            </div>
+        </div>
+
+        <!-- Поиск -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <input type="text" id="searchInput" class="form-control" placeholder="Поиск мероприятий...">
+            </div>
+            <div class="col-md-4">
+                <button id="searchButton" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-search me-2"></i>Найти
+                </button>
+            </div>
+        </div>
+
+        <!-- Загрузка -->
+        <div id="loadingSpinner" class="text-center py-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+            <p class="mt-2">Загрузка мероприятий...</p>
+        </div>
+
+        <!-- Рекомендуемое мероприятие -->
+        <div id="featuredEventContainer" class="row mb-5" style="display: none;">
             <div class="col-12">
-                <div class="card event-card featured-event shadow-lg"
-                     style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80');"
-                     onclick="window.location.href='/events/event/1'">
-                    <div class="badge event-date px-3 py-2">20 июня</div>
-                    <div class="badge event-type-badge badge-олимпиада px-3 py-1">Олимпиада</div>
-                    <div class="event-content p-4">
-                        <h2 class="event-title mb-3">Республиканская олимпиада по математике</h2>
-                        <div class="mb-2 opacity-75">
-                            <i class="fas fa-user me-2"></i>Министерство образования КР
-                        </div>
-                        <div class="opacity-75">
-                            <i class="fas fa-map-marker-alt me-2"></i>АУЦА, Бишкек
-                        </div>
-                    </div>
+                <div id="featuredEventCard" class="card event-card featured-event shadow-lg">
+                    <!-- Контент будет загружен через JavaScript -->
                 </div>
             </div>
         </div>
 
-        <h3 class="h4 fw-semibold mb-4 text-dark">Ближайшие мероприятия</h3>
+        <h3 id="eventsTitle" class="h4 fw-semibold mb-4 text-dark">Ближайшие мероприятия</h3>
 
-        <div class="row g-4">
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card event-card shadow h-100"
-                     style="background-image: url('https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80');"
-                     onclick="window.location.href='/events/event/1'">
-                    <div class="badge event-date px-2 py-1">25 июня</div>
-                    <div class="badge event-type-badge badge-семинар px-2 py-1">Семинар</div>
-                    <div class="event-content p-3">
-                        <h4 class="event-title h5 mb-2">Современные методы преподавания математики</h4>
-                        <div class="small mb-1 opacity-75">
-                            <i class="fas fa-user me-1"></i>Ассоциация учителей математики
-                        </div>
-                        <div class="small opacity-75">
-                            <i class="fas fa-laptop me-1"></i>Онлайн
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Контейнер для мероприятий -->
+        <div id="eventsContainer" class="row g-4">
+            <!-- События будут загружены здесь -->
+        </div>
 
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card event-card shadow h-100"
-                     style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80');"
-                     onclick="window.location.href='/events/event/1'">
-                    <div class="badge event-date px-2 py-1">28 июня</div>
-                    <div class="badge event-type-badge badge-лекция px-2 py-1">Лекция</div>
-                    <div class="event-content p-3">
-                        <h4 class="event-title h5 mb-2">Лекция: Теория вероятностей</h4>
-                        <div class="small mb-1 opacity-75">
-                            <i class="fas fa-user me-1"></i>Проф. Иванов А.И.
-                        </div>
-                        <div class="small opacity-75">
-                            <i class="fas fa-globe me-1"></i>Zoom
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Сообщение об отсутствии данных -->
+        <div id="noEventsMessage" class="text-center py-5" style="display: none;">
+            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Мероприятия не найдены</h4>
+            <p class="text-muted">Попробуйте изменить фильтры поиска</p>
+        </div>
 
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card event-card shadow h-100"
-                     onclick="window.location.href='/events/event/1'">
-                    <div class="badge event-date px-2 py-1">1 июля</div>
-                    <div class="badge event-type-badge badge-олимпиада px-2 py-1">Олимпиада</div>
-                    <div class="event-content p-3">
-                        <h4 class="event-title h5 mb-2">Международная студенческая олимпиада</h4>
-                        <div class="small mb-1 opacity-75">
-                            <i class="fas fa-user me-1"></i>ИСОМО
-                        </div>
-                        <div class="small opacity-75">
-                            <i class="fas fa-map-marker-alt me-1"></i>Казань, Россия
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Пагинация -->
+        <div id="paginationContainer" class="d-flex justify-content-center mt-4">
+            <!-- Пагинация будет загружена здесь -->
+        </div>
 
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card event-card shadow h-100"
-                     onclick="window.location.href='/events/event/1'">
-                    <div class="badge event-date px-2 py-1">5 июля</div>
-                    <div class="badge event-type-badge badge-семинар px-2 py-1">Семинар</div>
-                    <div class="event-content p-3">
-                        <h4 class="event-title h5 mb-2">Математика в программировании</h4>
-                        <div class="small mb-1 opacity-75">
-                            <i class="fas fa-user me-1"></i>CodeMath KG
-                        </div>
-                        <div class="small opacity-75">
-                            <i class="fas fa-laptop me-1"></i>Гибридный формат
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Форма подписки -->
+        <div class="mt-5">
+            <form id="subscriptionForm"
+                  action="/notifications/${(isBlogSubscribed!false)?then('unsubscribe', 'subscribe')}"
+                  method="post">
+                <@main.csrf/>
+                <input type="hidden" name="type" value="EVENT">
+                <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
+                    <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                <#else>
+                    <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                </#if>
+            </form>
         </div>
     </div>
 
-    <form action="/notifications/${(isBlogSubscribed!false)?then('unsubscribe', 'subscribe')}" method="post">
-        <@main.csrf/>
-        <input type="hidden" name="type" value="EVENT">
-        <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-            <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
-        <#else>
-            <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
-        </#if>
-    </form>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>// News subscription handler
-        document.addEventListener('DOMContentLoaded', function() {
-            const subscriptionForm = document.querySelector('form[action="/notifications/subscribe"]');
-            const subscriptionButton = subscriptionForm.querySelector('button');
+    <script>
+        class EventsManager {
+            constructor() {
+                this.currentPage = 0;
+                this.pageSize = 9;
+                this.currentType = '';
+                this.currentSort = 'startDate,desc';
+                this.isOffline = null; // null, true, false
+                this.totalPages = 0;
+                this.searchQuery = '';
+                this.init();
+            }
 
-            subscriptionForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
+            init() {
+                this.setupEventListeners();
+                this.loadEvents();
+                this.setupSubscriptionForm();
+            }
 
-                const formData = new FormData(subscriptionForm);
-                const isSubscribed = subscriptionButton.textContent.includes('Подписаться');
+            setupEventListeners() {
+                document.getElementById('applyFilters').addEventListener('click', () => {
+                    this.applyFilters();
+                });
+
+                // Поиск по Enter
+                document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+
+                // Поиск по кнопке
+                document.getElementById('searchButton').addEventListener('click', () => {
+                    this.performSearch();
+                });
+
+                // Очистка поиска при изменении фильтров
+                document.getElementById('typeFilter').addEventListener('change', () => {
+                    document.getElementById('searchInput').value = '';
+                    this.searchQuery = '';
+                    this.applyFilters(); // Автоматически применяем фильтры при изменении
+                });
+
+                document.getElementById('sortFilter').addEventListener('change', () => {
+                    this.applyFilters();
+                });
+            }
+
+            applyFilters() {
+                this.currentPage = 0;
+                const filterValue = document.getElementById('typeFilter').value;
+
+                // Преобразуем значения фильтра в boolean или null
+                if (filterValue === 'online') {
+                    this.isOffline = false;
+                } else if (filterValue === 'offline') {
+                    this.isOffline = true;
+                } else {
+                    this.isOffline = null;
+                }
+
+                this.currentSort = document.getElementById('sortFilter').value;
+                this.loadEvents();
+            }
+
+            performSearch() {
+                this.searchQuery = document.getElementById('searchInput').value.trim();
+                this.currentPage = 0;
+                // Сбрасываем фильтры при поиске
+                document.getElementById('typeFilter').value = '';
+                this.isOffline = null;
+                this.loadEvents();
+            }
+
+            async loadEvents() {
+                this.showLoading(true);
 
                 try {
-                    if (isSubscribed) {
-                        subscriptionForm.action = '/notifications/subscribe';
-                        formData.set('type', 'EVENT');
-                    } else {
-                        subscriptionForm.action = '/notifications/unsubscribe';
-                        formData.set('type', 'EVENT');
-                    }
-
-                    subscriptionButton.disabled = true;
-                    subscriptionButton.textContent = '⏳ Обработка...';
-
-                    const response = await fetch(subscriptionForm.action, {
-                        method: 'POST',
-                        body: formData
+                    const urlParams = new URLSearchParams({
+                        page: this.currentPage,
+                        size: this.pageSize
                     });
 
-                    if (response.status === 401 || response.status === 403) {
-                        window.location.href = '/auth/login';
-                        return;
+                    // Добавляем параметр type только если isOffline не null
+                    if (this.isOffline !== null) {
+                        urlParams.append('type', this.isOffline ? 'offline' : 'online');
                     }
 
-                    if (response.ok) {
-                        if (isSubscribed) {
-                            showNotification('✅ Вы успешно подписались на уведомления мероприятий!', 'success');
-                            updateButtonToUnsubscribe();
-                        } else {
-                            showNotification('❌ Вы отписались от уведомлений мероприятий', 'info');
-                            updateButtonToSubscribe();
-                        }
-                    } else {
-                        throw new Error('Network response was not ok');
+                    if (this.currentSort) {
+                        urlParams.append('sort', this.currentSort);
                     }
+
+                    if (this.searchQuery) {
+                        urlParams.append('search', this.searchQuery);
+                    }
+
+                    console.log('Loading events with params:', urlParams.toString());
+
+                    const response = await fetch(`/api/event?` + urlParams.toString() + ``);
+
+                    if (!response.ok) {
+                        throw new Error('Ошибка загрузки данных');
+                    }
+
+                    const data = await response.json();
+                    console.log('Loaded events data:', data);
+
+                    this.renderEvents(data);
+                    this.renderPagination(data);
 
                 } catch (error) {
-                    console.error('Error:', error);
-                    showNotification('❌ Произошла ошибка. Попробуйте позже.', 'error');
-                    if (isSubscribed) {
-                        updateButtonToSubscribe();
-                    } else {
-                        updateButtonToUnsubscribe();
-                    }
+                    console.error('Error loading events:', error);
+                    this.showError('Ошибка загрузки мероприятий. Попробуйте позже.');
+                } finally {
+                    this.showLoading(false);
                 }
-            });
-
-            function updateButtonToUnsubscribe() {
-                subscriptionButton.textContent = '🔕 Отписаться от уведомлений';
-                subscriptionButton.className = 'btn btn-outline-secondary';
-                subscriptionButton.disabled = false;
-                subscriptionForm.action = '/notifications/unsubscribe';
             }
 
-            function updateButtonToSubscribe() {
-                subscriptionButton.textContent = '📩 Подписаться на уведомления';
-                subscriptionButton.className = 'btn btn-outline-primary';
-                subscriptionButton.disabled = false;
-                subscriptionForm.action = '/notifications/subscribe';
+            renderEvents(data) {
+                const container = document.getElementById('eventsContainer');
+                const featuredContainer = document.getElementById('featuredEventContainer');
+                const noEventsMessage = document.getElementById('noEventsMessage');
+
+                if (!data.content || data.content.length === 0) {
+                    container.innerHTML = '';
+                    featuredContainer.style.display = 'none';
+                    noEventsMessage.style.display = 'block';
+                    return;
+                }
+
+                noEventsMessage.style.display = 'none';
+
+                // Показываем первое мероприятие как рекомендуемое только на первой странице и без поиска
+                if (this.currentPage === 0 && data.content.length > 0 && !this.searchQuery) {
+                    this.renderFeaturedEvent(data.content[0]);
+                    featuredContainer.style.display = 'block';
+
+                    // Остальные события
+                    const remainingEvents = data.content.slice(1);
+                    container.innerHTML = remainingEvents.map(event => this.createEventCard(event)).join('');
+                } else {
+                    featuredContainer.style.display = 'none';
+                    container.innerHTML = data.content.map(event => this.createEventCard(event)).join('');
+                }
             }
 
-            function showNotification(message, type = 'info') {
-                const existingNotifications = document.querySelectorAll('.notification-toast');
-                existingNotifications.forEach(notification => notification.remove());
+            renderFeaturedEvent(event) {
+                console.log('Rendering featured event:', event);
 
-                const notification = document.createElement('div');
-                let alertType = 'info';
-                if (type === 'success') {
-                    alertType = 'success';
-                } else if (type === 'error') {
-                    alertType = 'danger';
+                const featuredCard = document.getElementById('featuredEventCard');
+                const backgroundImage = this.getEventBackgroundFromDB(event);
+
+                console.log('Background image for featured event:', backgroundImage);
+
+                featuredCard.style.backgroundImage = "url('" + backgroundImage + "')";
+                featuredCard.onclick = function () {
+                    window.location.href = "/events/" + event.id;
+                };
+
+
+                const dateSpan = this.formatDate(event.startDate);
+                const eventTypeName = event.type?.name || 'Мероприятие';
+                const typeClass = this.getTypeClass(eventTypeName);
+
+                // Получаем данные из переводов
+                const translation = event.eventTranslations && event.eventTranslations.length > 0 ? event.eventTranslations[0] : {};
+                const title = translation.title || 'Мероприятие';
+
+                const organizationName = event.organizations && event.organizations.length > 0 ?
+                    event.organizations[0].name : 'Организатор не указан';
+
+                const location = event.isOffline ? (event.address || 'Место не указано') : 'Онлайн';
+
+                featuredCard.innerHTML =
+                    '<div class="badge event-date px-3 py-2">' + dateSpan + '</div>' +
+                    '<div class="badge event-type-badge ' + typeClass + ' px-3 py-1">' + eventTypeName + '</div>' +
+                    '<div class="event-content p-4">' +
+                    '<h2 class="event-title mb-3">' + title + '</h2>' +
+                    '<div class="mb-2 opacity-75">' +
+                    '<i class="fas fa-user me-2"></i>' + organizationName +
+                    '</div>' +
+                    '<div class="opacity-75">' +
+                    '<i class="fas fa-' + this.getLocationIcon(location, event.isOffline) + ' me-2"></i>' + location +
+                    '</div>' +
+                    '</div>';
+
+            }
+
+            createEventCard(event) {
+                console.log('Creating event card for:', event);
+
+                const backgroundImage = this.getEventBackgroundFromDB(event);
+                console.log('Background image for event card:', backgroundImage);
+
+                const dateSpan = this.formatDate(event.startDate);
+                const eventTypeName = event.type?.name || 'Мероприятие';
+                const typeClass = this.getTypeClass(eventTypeName);
+
+                // Получаем данные из переводов
+                const translation = event.eventTranslations && event.eventTranslations.length > 0 ? event.eventTranslations[0] : {};
+                const title = translation.title || 'Мероприятие';
+
+                // Получаем первую организацию из списка
+                const organizationName = event.organizations && event.organizations.length > 0 ?
+                    event.organizations[0].name : 'Организатор не указан';
+
+                // Определяем локацию
+                const location = event.isOffline ? (event.address || 'Место не указано') : 'Онлайн';
+                const locationIcon = this.getLocationIcon(location, event.isOffline);
+
+                return (
+                    '<div class="col-12 col-md-6 col-xl-4">' +
+                    '<div class="card event-card shadow h-100" ' +
+                    'style="background-image: url(' + backgroundImage + ');" ' +
+                    'onclick="window.location.href=\'/events/' + event.id + '\'">' +
+                    '<div class="badge event-date px-2 py-1">' + dateSpan + '</div>' +
+                    '<div class="badge event-type-badge ' + typeClass + ' px-2 py-1">' + eventTypeName + '</div>' +
+                    '<div class="event-content p-3">' +
+                    '<h4 class="event-title h5 mb-2">' + title + '</h4>' +
+                    '<div class="small mb-1 opacity-75">' +
+                    '<i class="fas fa-user me-1"></i>' + organizationName +
+                    '</div>' +
+                    '<div class="small opacity-75">' +
+                    '<i class="fas fa-' + locationIcon + ' me-1"></i>' + location +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+                );
+
+            }
+
+            renderPagination(data) {
+                const container = document.getElementById('paginationContainer');
+                this.totalPages = data.totalPages;
+
+                if (data.totalPages <= 1) {
+                    container.innerHTML = '';
+                    return;
                 }
-                notification.className = 'notification-toast alert alert-' + alertType + ' alert-dismissible fade show';
-                notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-            min-width: 300px;
-            max-width: 500px;
-            animation: slideInRight 0.3s ease-out;
-        `;
 
-                notification.innerHTML =
-                    message +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                let paginationHtml = '<nav><ul class="pagination">';
 
-                if (!document.querySelector('#notification-styles')) {
-                    const style = document.createElement('style');
-                    style.id = 'notification-styles';
-                    style.textContent = `
-                @keyframes slideInRight {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
+                // Предыдущая страница
+                if (data.number > 0) {
+                    paginationHtml += `
+                        <li class="page-item">
+                            <a class="page-link" href="#" data-page="` + data.number - 1 + `">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    `;
                 }
 
-                @keyframes slideOutRight {
-                    from {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
+                // Номера страниц
+                const startPage = Math.max(0, data.number - 2);
+                const endPage = Math.min(data.totalPages - 1, data.number + 2);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const isActive = i === data.number ? 'active' : '';
+                    paginationHtml += `
+                        <li class="page-item ` + isActive + `">
+                            <a class="page-link" href="#" data-page="` + i + `">` + i + 1 + `</a>
+                        </li>
+                    `;
                 }
-            `;
-                    document.head.appendChild(style);
+
+                // Следующая страница
+                if (data.number < data.totalPages - 1) {
+                    paginationHtml += `
+                        <li class="page-item">
+                            <a class="page-link" href="#" data-page="` + data.number - 1 + `">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    `;
                 }
 
-                document.body.appendChild(notification);
+                paginationHtml += '</ul></nav>';
+                container.innerHTML = paginationHtml;
 
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.style.animation = 'slideOutRight 0.3s ease-in';
-                        setTimeout(() => {
-                            if (notification.parentNode) {
-                                notification.remove();
-                            }
-                        }, 300);
-                    }
-                }, 5000);
-
-                const closeButton = notification.querySelector('.btn-close');
-                if (closeButton) {
-                    closeButton.addEventListener('click', () => {
-                        notification.remove();
+                container.querySelectorAll('a[data-page]').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.currentPage = parseInt(e.target.closest('a').getAttribute('data-page'));
+                        this.loadEvents();
+                        window.scrollTo({top: 0, behavior: 'smooth'});
                     });
+                });
+            }
+
+            getEventBackgroundFromDB(event) {
+                console.log('Getting background for event:', event.id, 'mainImageId:', event.mainImageId);
+
+                if (event.mainImageId) {
+                    const imageUrl = `/api/files/` + event.mainImageId + `/view`;
+                    console.log('Using database image:', imageUrl);
+                    return imageUrl;
+                }
+
+                const defaultUrl = this.getEventBackground(event.type?.name || 'default');
+                console.log('Using default image:', defaultUrl);
+                return defaultUrl;
+            }
+
+            getEventBackground(category) {
+                const backgrounds = {
+                    'олимпиада': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+                    'семинар': 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80',
+                    'лекция': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+                    'online': 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80',
+                    'offline': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+                    'default': 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80'
+                };
+
+                return backgrounds[category?.toLowerCase()] || backgrounds.default;
+            }
+
+            getTypeClass(type) {
+                const typeClasses = {
+                    'олимпиада': 'badge-олимпиада',
+                    'семинар': 'badge-семинар',
+                    'лекция': 'badge-лекция',
+                    'online': 'badge-online',
+                    'offline': 'badge-offline'
+                };
+
+                return typeClasses[type?.toLowerCase()] || 'badge-семинар';
+            }
+
+            getLocationIcon(location, isOffline) {
+                if (isOffline === false) {
+                    return 'laptop';
+                }
+                if (location && location.toLowerCase().includes('гибрид')) {
+                    return 'globe';
+                }
+                return 'map-marker-alt';
+            }
+
+            formatDate(dateString) {
+                if (!dateString) return 'Дата не указана';
+
+                try {
+                    const date = new Date(dateString);
+                    const options = {day: 'numeric', month: 'long'};
+                    return date.toLocaleDateString('ru-RU', options);
+                } catch (error) {
+                    return dateString;
                 }
             }
+
+            showLoading(show) {
+                const spinner = document.getElementById('loadingSpinner');
+                const container = document.getElementById('eventsContainer');
+                const featuredContainer = document.getElementById('featuredEventContainer');
+
+                if (show) {
+                    spinner.style.display = 'block';
+                    container.style.display = 'none';
+                    featuredContainer.style.display = 'none';
+                } else {
+                    spinner.style.display = 'none';
+                    container.style.display = 'flex';
+                }
+            }
+
+            showError(message) {
+                const container = document.getElementById('eventsContainer');
+                const noEventsMessage = document.getElementById('noEventsMessage');
+
+                container.innerHTML = '';
+                noEventsMessage.innerHTML = `
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h4 class="text-muted">` + message + `</h4>
+                    <button class="btn btn-primary mt-3" onclick="location.reload()">
+                        <i class="fas fa-redo me-2"></i>Попробовать снова
+                    </button>
+                `;
+                noEventsMessage.style.display = 'block';
+            }
+
+            setupSubscriptionForm() {
+                const subscriptionForm = document.getElementById('subscriptionForm');
+                const subscriptionButton = subscriptionForm.querySelector('button');
+
+                subscriptionForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(subscriptionForm);
+                    const isSubscribed = subscriptionButton.textContent.includes('Подписаться');
+
+                    try {
+                        if (isSubscribed) {
+                            subscriptionForm.action = '/notifications/subscribe';
+                            formData.set('type', 'EVENT');
+                        } else {
+                            subscriptionForm.action = '/notifications/unsubscribe';
+                            formData.set('type', 'EVENT');
+                        }
+
+                        subscriptionButton.disabled = true;
+                        subscriptionButton.textContent = '⏳ Обработка...';
+
+                        const response = await fetch(subscriptionForm.action, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (response.status === 401 || response.status === 403) {
+                            window.location.href = '/auth/login';
+                            return;
+                        }
+
+                        if (response.ok) {
+                            if (isSubscribed) {
+                                showNotification('✅ Вы успешно подписались на уведомления мероприятий!', 'success');
+                                updateButtonToUnsubscribe();
+                            } else {
+                                showNotification('❌ Вы отписались от уведомлений мероприятий', 'info');
+                                updateButtonToSubscribe();
+                            }
+                        } else {
+                            throw new Error('Network response was not ok');
+                        }
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showNotification('❌ Произошла ошибка. Попробуйте позже.', 'error');
+                        if (isSubscribed) {
+                            updateButtonToSubscribe();
+                        } else {
+                            updateButtonToUnsubscribe();
+                        }
+                    }
+                });
+
+                function updateButtonToUnsubscribe() {
+                    subscriptionButton.textContent = '🔕 Отписаться от уведомлений';
+                    subscriptionButton.className = 'btn btn-outline-danger';
+                    subscriptionButton.disabled = false;
+                    subscriptionForm.action = '/notifications/unsubscribe';
+                }
+
+                function updateButtonToSubscribe() {
+                    subscriptionButton.textContent = '📩 Подписаться на уведомления';
+                    subscriptionButton.className = 'btn btn-outline-primary';
+                    subscriptionButton.disabled = false;
+                    subscriptionForm.action = '/notifications/subscribe';
+                }
+
+                function showNotification(message, type = 'info') {
+                    const existingNotifications = document.querySelectorAll('.notification-toast');
+                    existingNotifications.forEach(notification => notification.remove());
+
+                    const notification = document.createElement('div');
+                    let alertType = 'info';
+                    if (type === 'success') {
+                        alertType = 'success';
+                    } else if (type === 'error') {
+                        alertType = 'danger';
+                    }
+                    notification.className = `notification-toast alert alert-` + alertType + ` alert-dismissible fade show`;
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 1050;
+                        min-width: 300px;
+                        max-width: 500px;
+                        animation: slideInRight 0.3s ease-out;
+                    `;
+
+                    notification.innerHTML = `
+                        ` + message + `
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+
+                    if (!document.querySelector('#notification-styles')) {
+                        const style = document.createElement('style');
+                        style.id = 'notification-styles';
+                        style.textContent = `
+                            @keyframes slideInRight {
+                                from {
+                                    transform: translateX(100%);
+                                    opacity: 0;
+                                }
+                                to {
+                                    transform: translateX(0);
+                                    opacity: 1;
+                                }
+                            }
+
+                            @keyframes slideOutRight {
+                                from {
+                                    transform: translateX(0);
+                                    opacity: 1;
+                                }
+                                to {
+                                    transform: translateX(100%);
+                                    opacity: 0;
+                                }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+
+                    document.body.appendChild(notification);
+
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.style.animation = 'slideOutRight 0.3s ease-in';
+                            setTimeout(() => {
+                                if (notification.parentNode) {
+                                    notification.remove();
+                                }
+                            }, 300);
+                        }
+                    }, 5000);
+
+                    const closeButton = notification.querySelector('.btn-close');
+                    if (closeButton) {
+                        closeButton.addEventListener('click', () => {
+                            notification.remove();
+                        });
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            new EventsManager();
         });
     </script>
 </@main.layout>
