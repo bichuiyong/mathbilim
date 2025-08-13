@@ -9,61 +9,130 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #ffffff;
+            color: #2c3e50;
+            line-height: 1.5;
+            min-height: 100vh;
         }
 
         .content-wrapper {
-            max-width: 470px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px 0;
+            padding: 32px 20px;
         }
 
+        /* Кнопка возврата */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Основная карточка поста */
         .publication-item {
-            background: white;
-            border: 1px solid #dbdbdb;
-            border-radius: 8px;
+            background: #ffffff;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
+            box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.08),
+                    0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease-out;
         }
 
+        /* Заголовок с автором */
         .publication-header {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid #f1f3f4;
             display: flex;
             align-items: center;
-            padding: 16px;
-            border-bottom: 1px solid #efefef;
+            gap: 16px;
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #fd5949, #d6249f, #285aeb);
-            padding: 2px;
-            margin-right: 12px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid white;
+        .author-info {
+            flex: 1;
         }
 
         .publication-author {
-            font-weight: 600;
-            font-size: 15px;
-            color: #262626;
+            font-weight: 700;
+            font-size: 16px;
+            color: #2c3e50;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .publication-author:hover {
+            color: #2563eb;
             text-decoration: none;
         }
 
+        .publication-date {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Заголовок поста */
+        .publication-title {
+            padding: 0 28px 16px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #1f2937;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+        }
+
+        /* ИСПРАВЛЕННАЯ галерея изображений в стиле Bootstrap carousel */
         .publication-carousel {
-            height: 470px;
-            background: #f8f8f8;
+            position: relative;
+            margin-bottom: 24px;
+            background: #f8fafc;
+            height: 500px;
+        }
+
+        .publication-carousel.single-image .carousel-control-prev,
+        .publication-carousel.single-image .carousel-control-next,
+        .publication-carousel.single-image .carousel-indicators,
+        .publication-carousel.single-image .image-counter {
+            display: none !important;
         }
 
         .publication-carousel .carousel-inner {
@@ -84,41 +153,72 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            transition: transform 0.3s ease;
+        }
+
+        .publication-carousel:hover .carousel-item.active img {
+            transform: scale(1.02);
         }
 
         .publication-carousel .carousel-control-prev,
         .publication-carousel .carousel-control-next {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.5);
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
             border-radius: 50%;
             top: 50%;
             transform: translateY(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .publication-carousel:hover .carousel-control-prev,
+        .publication-carousel:hover .carousel-control-next {
             opacity: 1;
+            visibility: visible;
         }
 
         .publication-carousel .carousel-control-prev {
-            left: 12px;
+            left: 16px;
         }
 
         .publication-carousel .carousel-control-next {
-            right: 12px;
+            right: 16px;
         }
 
         .publication-carousel .carousel-control-prev:hover,
         .publication-carousel .carousel-control-next:hover {
-            background: rgba(0, 0, 0, 0.7);
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .publication-carousel .carousel-control-prev:active,
+        .publication-carousel .carousel-control-next:active {
+            transform: translateY(-50%) scale(0.95);
         }
 
         .publication-carousel .carousel-control-prev-icon,
         .publication-carousel .carousel-control-next-icon {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
+            filter: invert(0.3);
         }
 
         .publication-carousel .carousel-indicators {
-            bottom: 12px;
+            bottom: 16px;
             margin-bottom: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .publication-carousel:hover .carousel-indicators {
+            opacity: 1;
+            visibility: visible;
         }
 
         .publication-carousel .carousel-indicators [data-bs-target] {
@@ -127,116 +227,134 @@
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.4);
             border: none;
-            margin: 0 3px;
+            margin: 0 4px;
+            transition: all 0.3s ease;
         }
 
         .publication-carousel .carousel-indicators .active {
             background-color: white;
-            transform: scale(1.2);
+            transform: scale(1.25);
+        }
+
+        .publication-carousel .carousel-indicators [data-bs-target]:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(1.1);
         }
 
         .image-counter {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.7);
+            top: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
             z-index: 10;
         }
 
-        .single-image .carousel-control-prev,
-        .single-image .carousel-control-next,
-        .single-image .carousel-indicators,
-        .single-image .image-counter {
-            display: none !important;
-        }
-
+        /* Контент поста */
         .publication-content {
-            padding: 12px 16px;
-        }
-
-        .publication-title {
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            padding: 0 28px 24px;
         }
 
         .publication-text {
-            font-size: 15px;
-            color: #262626;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #374151;
+            margin-bottom: 24px;
             white-space: pre-wrap;
             word-break: break-word;
-            overflow-wrap: break-word;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
         }
 
         .publication-text.collapsed {
-            max-height: 120px;
+            max-height: 200px;
+            overflow: hidden;
             position: relative;
         }
 
-        .show-more-btn {
-            display: inline-block;
-            margin-top: 4px;
-            color: #0095f6;
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
+        .publication-text.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, white);
         }
 
+        .show-more-btn {
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .show-more-btn:hover {
+            color: #1d4ed8;
+        }
+
+        /* Метаинформация */
         .publication-meta {
-            font-size: 13px;
-            color: #8e8e8e;
-            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 24px;
             flex-wrap: wrap;
+            padding: 20px 28px;
+            background: #f8fafc;
+            border-top: 1px solid #f1f3f4;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
         }
 
-        .back-btn {
-            display: block;
-            text-align: center;
-            margin: 16px 0;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #0095f6, #0074cc);
-            color: white;
-            font-weight: 600;
+        .meta-item .icon {
+            font-size: 16px;
+        }
+
+        #viewCommentsBtn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
             border-radius: 8px;
-            text-decoration: none;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 149, 246, 0.3);
         }
 
-        .back-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 149, 246, 0.4);
-            text-decoration: none;
-            color: white;
+        #viewCommentsBtn:hover {
+            background: #f1f5f9;
+            color: #2563eb;
         }
 
-        /* Comments Modal */
+        /* Модальное окно комментариев */
         .comments-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1050;
             display: none;
             align-items: center;
@@ -252,16 +370,16 @@
 
         .comments-modal {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+            max-width: 600px;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transform: scale(0.9);
             transition: transform 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .comments-modal-overlay.show .comments-modal {
@@ -269,8 +387,8 @@
         }
 
         .comments-modal-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #efefef;
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid #f1f3f4;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -281,36 +399,34 @@
         }
 
         .comments-modal-title {
-            font-weight: 600;
-            font-size: 16px;
-            color: #262626;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1f2937;
             margin: 0;
         }
 
         .comments-modal-close {
-            background: none;
+            background: #f3f4f6;
             border: none;
-            font-size: 24px;
-            color: #8e8e8e;
-            cursor: pointer;
-            padding: 0;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6b7280;
         }
 
         .comments-modal-close:hover {
-            background: #f0f0f0;
+            background: #e5e7eb;
+            color: #374151;
         }
 
         .comments-modal-body {
             flex: 1;
             overflow-y: auto;
-            padding: 0;
             min-height: 200px;
             max-height: 400px;
         }
@@ -322,28 +438,23 @@
         }
 
         .comment-item {
-            padding: 12px 20px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 20px 28px;
+            border-bottom: 1px solid #f8fafc;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 16px;
             transition: background-color 0.2s ease;
-            position: relative;
         }
 
         .comment-item:hover {
-            background: #fafafa;
-        }
-
-        .comment-item:last-child {
-            border-bottom: none;
+            background: #f8fafc;
         }
 
         .comment-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #fd5949, #d6249f, #285aeb);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -360,143 +471,31 @@
 
         .comment-author {
             font-weight: 600;
-            font-size: 14px;
-            color: #262626;
-            margin-bottom: 2px;
+            font-size: 15px;
+            color: #1f2937;
+            margin-bottom: 4px;
         }
 
         .comment-text {
-            font-size: 14px;
-            color: #262626;
-            line-height: 1.4;
+            font-size: 15px;
+            color: #374151;
+            line-height: 1.5;
             word-break: break-word;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .comment-meta {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-top: 8px;
         }
 
         .comment-time {
-            font-size: 12px;
-            color: #8e8e8e;
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 500;
         }
 
-        .comment-like {
-            background: none;
-            border: none;
-            color: #8e8e8e;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 0;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .comment-like:hover {
-            color: #262626;
-        }
-
-        .comment-like.liked {
-            color: #ed4956;
-        }
-
-        .comment-delete {
-            background: none;
-            border: none;
-            color: #ed4956;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 0;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .comment-item:hover .comment-delete {
-            opacity: 1;
-        }
-
-        .comments-modal-footer {
-            padding: 16px 20px;
-            border-top: 1px solid #efefef;
-            background: white;
-            position: sticky;
-            bottom: 0;
-        }
-
-        .comment-input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .comment-input-wrapper textarea {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: #262626;
-            background: transparent;
-            resize: none;
-            max-height: 80px;
-            min-height: 18px;
-            line-height: 18px;
-            padding: 0;
-            font-family: inherit;
-        }
-
-        .comment-input-wrapper textarea::placeholder {
-            color: #8e8e8e;
-        }
-
-        .comment-input-wrapper button {
-            background: none;
-            border: none;
-            color: #0095f6;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 0;
-            opacity: 0.3;
-            transition: opacity 0.2s ease;
-        }
-
-        .comment-input-wrapper button.active {
-            opacity: 1;
-        }
-
-        .comment-input-wrapper button:hover.active {
-            opacity: 0.7;
-        }
-
-        .comments-empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: #8e8e8e;
-        }
-
-        .comments-empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .comments-empty-text {
-            font-size: 16px;
-            font-weight: 400;
-            margin-bottom: 8px;
-        }
-
-        .comments-empty-subtext {
-            font-size: 14px;
-            color: #c7c7c7;
-        }
-
-        /* Comment Menu */
         .comment-menu {
             position: relative;
             margin-left: auto;
@@ -506,10 +505,10 @@
         .comment-menu-btn {
             background: none;
             border: none;
-            padding: 4px;
+            padding: 8px;
             cursor: pointer;
-            color: #666;
-            border-radius: 4px;
+            color: #9ca3af;
+            border-radius: 6px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
@@ -517,8 +516,8 @@
         }
 
         .comment-menu-btn:hover {
-            background: #f0f0f0;
-            color: #333;
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         .comment-menu-dropdown {
@@ -526,112 +525,268 @@
             top: 100%;
             right: 0;
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            min-width: 120px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            min-width: 140px;
             z-index: 1000;
             overflow: hidden;
         }
 
         .comment-menu-item {
             width: 100%;
-            padding: 8px 12px;
+            padding: 12px 16px;
             background: none;
             border: none;
             text-align: left;
             cursor: pointer;
-            color: #666;
+            color: #6b7280;
             font-size: 14px;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
+            gap: 10px;
+            transition: all 0.2s;
         }
 
         .comment-menu-item:hover {
-            background: #f5f5f5;
-            color: #d73a49;
+            background: #fef2f2;
+            color: #dc2626;
         }
 
-        .comment-menu-item svg {
-            width: 14px;
-            height: 14px;
+        /* Футер модального окна */
+        .comments-modal-footer {
+            padding: 20px 28px 24px;
+            border-top: 1px solid #f1f3f4;
+            background: white;
+            position: sticky;
+            bottom: 0;
         }
 
-        /* View Comments Button */
-        #viewCommentsBtn {
-            background: none;
+        .comment-input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            transition: border-color 0.2s ease;
+        }
+
+        .comment-input-wrapper:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .comment-input-wrapper textarea {
+            flex: 1;
             border: none;
-            color: #8e8e8e;
+            outline: none;
+            font-size: 15px;
+            color: #374151;
+            background: transparent;
+            resize: none;
+            max-height: 100px;
+            min-height: 20px;
+            line-height: 20px;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .comment-input-wrapper textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .comment-submit-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            color: white;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            padding: 0;
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: color 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
-        #viewCommentsBtn:hover {
-            color: #262626;
+        .comment-submit-btn.active {
+            opacity: 1;
         }
 
-        /* Mobile Responsive */
+        .comment-submit-btn:hover.active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Пустое состояние комментариев */
+        .comments-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .comments-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .comments-empty-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #6b7280;
+        }
+
+        .comments-empty-subtext {
+            font-size: 15px;
+            color: #9ca3af;
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .comment-menu-btn {
-                padding: 8px;
+            .content-wrapper {
+                padding: 20px 16px;
             }
 
-            .comment-menu-dropdown {
-                min-width: 100px;
+            .publication-item {
+                border-radius: 16px;
+                margin: 0 -16px 24px;
             }
 
-            .comment-menu-item {
-                padding: 10px 12px;
+            .publication-header {
+                padding: 20px 24px 16px;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
                 font-size: 16px;
+            }
+
+            .publication-title {
+                padding: 0 24px 16px;
+                font-size: 22px;
+            }
+
+            .publication-content {
+                padding: 0 24px 20px;
+            }
+
+            .publication-meta {
+                padding: 16px 24px;
+                gap: 16px;
+            }
+
+            .publication-carousel {
+                height: 300px;
+            }
+
+            .publication-carousel .carousel-control-prev,
+            .publication-carousel .carousel-control-next {
+                width: 40px;
+                height: 40px;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .publication-carousel .carousel-control-prev {
+                left: 12px;
+            }
+
+            .publication-carousel .carousel-control-next {
+                right: 12px;
+            }
+
+            .publication-carousel .carousel-indicators {
+                opacity: 1 !important;
+                visibility: visible !important;
+                bottom: 12px;
+            }
+
+            .image-counter {
+                top: 12px;
+                right: 12px;
             }
 
             .comments-modal {
                 width: 95%;
                 max-height: 90vh;
-                border-radius: 8px;
+                border-radius: 16px;
             }
 
-            .comments-modal-header {
-                padding: 12px 16px;
-            }
-
+            .comments-modal-header,
             .comments-modal-footer {
-                padding: 12px 16px;
+                padding: 16px 20px;
             }
 
             .comment-item {
-                padding: 12px 16px;
+                padding: 16px 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .content-wrapper {
-                padding: 0;
+            .back-btn {
+                margin-bottom: 20px;
+                padding: 10px 16px;
+                font-size: 13px;
             }
 
             .publication-item {
                 border-radius: 0;
-                border-left: none;
-                border-right: none;
-                margin-bottom: 0;
+                margin: -20px -16px 20px;
             }
 
             .publication-carousel {
-                height: 400px;
+                height: 250px;
+            }
+
+            .publication-title {
+                font-size: 20px;
+                padding: 0 20px 14px;
+            }
+
+            .publication-header {
+                padding: 16px 20px 14px;
+            }
+
+            .publication-content {
+                padding: 0 20px 16px;
+            }
+
+            .publication-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 14px 20px;
+            }
+
+            .comments-modal {
+                width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
             }
 
             .publication-carousel .carousel-control-prev,
             .publication-carousel .carousel-control-next {
-                width: 32px;
-                height: 32px;
+                width: 36px;
+                height: 36px;
             }
 
             .publication-carousel .carousel-control-prev {
@@ -642,39 +797,79 @@
                 right: 8px;
             }
 
-            .back-btn {
-                margin: 12px;
-                border-radius: 8px;
+            .publication-carousel .carousel-control-prev-icon,
+            .publication-carousel .carousel-control-next-icon {
+                width: 16px;
+                height: 16px;
             }
 
-            .comments-modal {
-                width: 100%;
-                height: 100vh;
-                max-height: 100vh;
-                border-radius: 0;
+            .image-counter {
+                font-size: 12px;
+                padding: 6px 12px;
             }
 
-            .comments-modal-body {
-                max-height: calc(100vh - 140px);
+            .publication-carousel .carousel-indicators {
+                bottom: 8px;
+            }
+
+            .publication-carousel .carousel-indicators [data-bs-target] {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .publication-carousel {
+                height: 200px;
+            }
+
+            .publication-title {
+                font-size: 18px;
+            }
+
+            .avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
             }
         }
     </style>
 
     <div class="content-wrapper">
+        <a href="/posts" class="back-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
+            </svg>
+            Назад к публикациям
+        </a>
+
         <article class="publication-item">
             <header class="publication-header">
                 <div class="avatar">
+                    ${post.creator.name?substring(0, 1)?upper_case}
                 </div>
-                <a href="/profile/info/${post.creator.id}" class="publication-author">${post.creator.name}</a>
+                <div class="author-info">
+                    <a href="/profile/info/${post.creator.id}" class="publication-author">
+                        ${post.creator.name}
+                    </a>
+                    <div class="publication-date">
+                        ${post.formattedDate}
+                    </div>
+                </div>
             </header>
+
+            <#assign translation = post.postTranslations[0]>
+            <#if translation.title?? && translation.title?has_content>
+                <h1 class="publication-title">${translation.title}</h1>
+            </#if>
 
             <#assign allImages = []>
             <#if post.mainImage??>
-                <#assign allImages = allImages + [{"url": "/api/files/${post.mainImageId}/view", "alt": "Main Image"}]>
+                <#assign allImages = allImages + [{"url": "/api/files/${post.mainImageId}/view", "alt": "Главное изображение"}]>
             </#if>
             <#if post.postFiles?? && post.postFiles?size gt 0>
                 <#list post.postFiles as file>
-                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": "Post Image " + (file_index + 1)}]>
+                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": "Изображение ${file_index + 1}"}]>
                 </#list>
             </#if>
 
@@ -699,7 +894,7 @@
                     <div class="carousel-inner">
                         <#list allImages as image>
                             <div class="carousel-item <#if image_index == 0>active</#if>">
-                                <img src="${image.url}" alt="${image.alt}" class="d-block">
+                                <img src="${image.url}" alt="${image.alt}" class="d-block" loading="<#if image_index == 0>eager<#else>lazy</#if>">
                             </div>
                         </#list>
                     </div>
@@ -720,67 +915,68 @@
             </#if>
 
             <div class="publication-content">
-                <#assign translation = post.postTranslations[0]>
-                <#if translation.title?? && translation.title?has_content>
-                    <div class="publication-title">${translation.title}</div>
-                </#if>
                 <#if translation.content?? && translation.content?has_content>
                     <div class="publication-text collapsed" id="postContent">${translation.content?no_esc}</div>
-                    <div class="show-more-btn" id="toggleButton">Показать ещё</div>
+                    <button class="show-more-btn" id="toggleButton">Читать полностью</button>
                 </#if>
-                <div class="publication-meta">
-                    <div class="meta-item">
-                        📅 ${post.formattedDate}
-                    </div>
-                    <div class="meta-item">
-                        👁 ${post.viewCount!0}
-                    </div>
-                    <#if post.shareCount?? && post.shareCount gt 0>
-                        <div class="meta-item">
-                            📤 ${post.shareCount}
-                        </div>
-                    </#if>
-                    <#if allImages?size gt 1>
-                        <div class="meta-item">
-                            📷 ${allImages?size} фото
-                        </div>
-                    </#if>
-                    <div class="meta-item">
-                        <button id="viewCommentsBtn" data-post-id="${post.id}"
-                                <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>💬 Посмотреть
-                            комментарии
-                        </button>
-                    </div>
+            </div>
+
+            <div class="publication-meta">
+                <div class="meta-item">
+                    <span class="icon">👁️</span>
+                    <span>${post.viewCount!0} просмотров</span>
                 </div>
+                <#if post.shareCount?? && post.shareCount gt 0>
+                    <div class="meta-item">
+                        <span class="icon">📤</span>
+                        <span>${post.shareCount} репостов</span>
+                    </div>
+                </#if>
+                <#if allImages?size gt 1>
+                    <div class="meta-item">
+                        <span class="icon">📷</span>
+                        <span>${allImages?size} фотографий</span>
+                    </div>
+                </#if>
+                <button id="viewCommentsBtn" data-post-id="${post.id}"
+                        <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
+                    <span class="icon">💬</span>
+                    Комментарии
+                </button>
             </div>
         </article>
-
-        <a href="/posts" class="back-btn">← Вернуться к публикациям</a>
     </div>
 
     <div class="comments-modal-overlay" id="commentsModalOverlay">
         <div class="comments-modal">
             <div class="comments-modal-header">
                 <h3 class="comments-modal-title">Комментарии</h3>
-                <button class="comments-modal-close" id="closeCommentsModal">×</button>
+                <button class="comments-modal-close" id="closeCommentsModal" aria-label="Закрыть комментарии">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
             </div>
             <div class="comments-modal-body">
-                <ul class="comments-list" id="comments-list">
-                </ul>
+                <ul class="comments-list" id="comments-list"></ul>
                 <div class="comments-empty" id="comments-empty" style="display: none;">
                     <div class="comments-empty-icon">💬</div>
                     <div class="comments-empty-text">Пока нет комментариев</div>
-                    <div class="comments-empty-subtext">Начните обсуждение.</div>
+                    <div class="comments-empty-subtext">Станьте первым, кто оставит комментарий</div>
                 </div>
             </div>
             <div class="comments-modal-footer">
                 <#if currentUser??>
                     <div class="comment-input-wrapper">
-                        <textarea id="newCommentInput" placeholder="Напишите комментарий..."></textarea>
-                        <button id="submitComment">Опубликовать</button>
+                        <textarea id="newCommentInput" placeholder="Оставьте комментарий..."></textarea>
+                        <button class="comment-submit-btn" id="submitComment">Отправить</button>
                     </div>
                 <#else>
-                    <a href="/auth/login" class="btn btn-primary">Войдите в аккаунт, чтобы прокомментировать</a>
+                    <div style="text-align: center; padding: 16px;">
+                        <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
+                            Войти для комментирования
+                        </a>
+                    </div>
                 </#if>
             </div>
         </div>
@@ -788,6 +984,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Инициализация карусели
             const carouselElement = document.getElementById('postCarousel');
             const currentSlideSpan = document.getElementById('currentSlide');
 
@@ -805,7 +1002,12 @@
                     }
                 });
 
+                // Навигация клавиатурой
                 document.addEventListener('keydown', function (e) {
+                    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+                        return; // Не обрабатываем, если фокус в поле ввода
+                    }
+
                     if (e.key === 'ArrowLeft') {
                         carousel.prev();
                         e.preventDefault();
@@ -815,28 +1017,24 @@
                     }
                 });
             }
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+            // Инициализация контента (сворачивание/разворачивание)
             const contentElement = document.getElementById('postContent');
             const toggleButton = document.getElementById('toggleButton');
 
             if (contentElement && toggleButton) {
-                if (contentElement.scrollHeight <= 120) {
+                if (contentElement.scrollHeight <= 200) {
                     toggleButton.style.display = 'none';
+                    contentElement.classList.remove('collapsed');
                 }
                 toggleButton.addEventListener('click', function () {
+                    const isCollapsed = contentElement.classList.contains('collapsed');
                     contentElement.classList.toggle('collapsed');
-                    if (contentElement.classList.contains('collapsed')) {
-                        toggleButton.textContent = 'Показать ещё';
-                    } else {
-                        toggleButton.textContent = 'Скрыть';
-                    }
+                    toggleButton.textContent = isCollapsed ? 'Свернуть' : 'Читать полностью';
                 });
             }
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+            // Инициализация комментариев
             const viewCommentsBtn = document.getElementById('viewCommentsBtn');
             const commentsModalOverlay = document.getElementById('commentsModalOverlay');
             const closeCommentsModal = document.getElementById('closeCommentsModal');
@@ -846,57 +1044,69 @@
             const submitComment = document.getElementById('submitComment');
 
             const postId = document.getElementById('viewCommentsBtn').dataset.postId;
-
-            // Получаем ID текущего пользователя из data-атрибута или мета-тега
             const currentUserId = getCurrentUserId();
 
-            viewCommentsBtn.addEventListener('click', function () {
-                loadComments();
-                showModal();
-            });
+            if (viewCommentsBtn) {
+                viewCommentsBtn.addEventListener('click', function () {
+                    loadComments();
+                    showModal();
+                });
+            }
 
-            // Close modal
-            closeCommentsModal.addEventListener('click', hideModal);
-            commentsModalOverlay.addEventListener('click', function (e) {
-                if (e.target === commentsModalOverlay) {
-                    hideModal();
-                }
-            });
+            // Закрытие модального окна
+            if (closeCommentsModal) {
+                closeCommentsModal.addEventListener('click', hideModal);
+            }
 
-            // ESC key to close modal
+            if (commentsModalOverlay) {
+                commentsModalOverlay.addEventListener('click', function (e) {
+                    if (e.target === commentsModalOverlay) {
+                        hideModal();
+                    }
+                });
+            }
+
+            // ESC для закрытия модального окна
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && commentsModalOverlay.classList.contains('show')) {
+                if (e.key === 'Escape' && commentsModalOverlay && commentsModalOverlay.classList.contains('show')) {
                     hideModal();
                 }
             });
 
             function showModal() {
-                commentsModalOverlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                newCommentInput.focus();
+                if (commentsModalOverlay) {
+                    commentsModalOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    if (newCommentInput) {
+                        setTimeout(() => newCommentInput.focus(), 100);
+                    }
+                }
             }
 
             function hideModal() {
-                commentsModalOverlay.classList.remove('show');
-                document.body.style.overflow = '';
-                newCommentInput.value = '';
-                updateSubmitButton();
+                if (commentsModalOverlay) {
+                    commentsModalOverlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                    if (newCommentInput) {
+                        newCommentInput.value = '';
+                        updateSubmitButton();
+                        autoResize(newCommentInput);
+                    }
+                }
             }
 
             function getCurrentUserId() {
-                // Вариант 1: Получить из мета-тега
+                // Получаем ID текущего пользователя
                 const meta = document.querySelector('meta[name="current-user-id"]');
                 if (meta) {
                     return meta.getAttribute('content');
                 }
 
-                // Вариант 2: Получить из data-атрибута элемента
                 const element = document.querySelector('[data-current-user-id]');
                 if (element) {
                     return element.dataset.currentUserId;
                 }
 
-                // Вариант 3: Получить из глобальной переменной
                 if (typeof window.currentUserId !== 'undefined') {
                     return window.currentUserId;
                 }
@@ -908,22 +1118,31 @@
                 fetch('/api/comments/post/' + postId)
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
                         renderComments(data);
                     })
                     .catch(error => {
                         console.error('Error loading comments:', error);
-                        commentsEmpty.style.display = 'block';
+                        if (commentsEmpty) {
+                            commentsEmpty.style.display = 'block';
+                        }
                     });
             }
 
             function renderComments(commentsData) {
+                if (!commentsList) return;
+
                 commentsList.innerHTML = '';
                 if (commentsData.length === 0) {
-                    commentsEmpty.style.display = 'block';
+                    if (commentsEmpty) {
+                        commentsEmpty.style.display = 'block';
+                    }
                     return;
                 }
-                commentsEmpty.style.display = 'none';
+
+                if (commentsEmpty) {
+                    commentsEmpty.style.display = 'none';
+                }
+
                 commentsData.forEach(comment => {
                     const commentItem = document.createElement('li');
                     commentItem.classList.add('comment-item');
@@ -932,7 +1151,6 @@
                         : 'U';
                     const timeAgo = formatTimeAgo(comment.createdAt);
 
-                    // Проверяем, является ли текущий пользователь автором комментария
                     const isCurrentUserAuthor = currentUserId && comment.author &&
                         (comment.author.id == currentUserId || comment.author.id === currentUserId);
 
@@ -947,7 +1165,7 @@
                             </button>
                             <div class="comment-menu-dropdown" id="menu-` + comment.id + `" style="display: none;">
                                 <button class="comment-menu-item" onclick="deleteComment(` + comment.id + `)">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11zm1.958 1-.846 10.58a1 1 0 0 1-.997.92H5.883a1 1 0 0 1-.997-.92L3.042 3.5h9.916z"/>
                                     </svg>
                                     Удалить
@@ -960,7 +1178,7 @@
                         <div class="comment-avatar">` + authorInitial + `</div>
                         <div class="comment-content">
                             <div class="comment-author">` + comment.author.name + `</div>
-                            <div class="comment-text">` + comment.content + `</div>
+                            <div class="comment-text">` + escapeHtml(comment.content) + `</div>
                             <div class="comment-meta">
                                 <span class="comment-time">` + timeAgo + `</span>
                             </div>
@@ -1011,34 +1229,49 @@
                 return day + ' ' + months[month - 1];
             }
 
-            newCommentInput.addEventListener('input', function () {
-                updateSubmitButton();
-                autoResize(this);
-            });
+            function escapeHtml(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, m => map[m]);
+            }
 
-            newCommentInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (this.value.trim()) {
+            // Обработка ввода комментария
+            if (newCommentInput && submitComment) {
+                newCommentInput.addEventListener('input', function () {
+                    updateSubmitButton();
+                    autoResize(this);
+                });
+
+                newCommentInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (this.value.trim()) {
+                            addComment();
+                        }
+                    }
+                });
+
+                submitComment.addEventListener('click', function () {
+                    if (newCommentInput.value.trim()) {
                         addComment();
                     }
-                }
-            });
-
-            submitComment.addEventListener('click', function () {
-                if (newCommentInput.value.trim()) {
-                    addComment();
-                }
-            });
+                });
+            }
 
             function updateSubmitButton() {
+                if (!submitComment || !newCommentInput) return;
                 const hasContent = newCommentInput.value.trim().length > 0;
                 submitComment.classList.toggle('active', hasContent);
             }
 
             function autoResize(textarea) {
                 textarea.style.height = 'auto';
-                textarea.style.height = Math.min(textarea.scrollHeight, 80) + 'px';
+                textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
             }
 
             function getCsrfToken() {
@@ -1087,10 +1320,11 @@
                     })
                     .finally(() => {
                         submitComment.disabled = false;
-                        submitComment.textContent = 'Опубликовать';
+                        submitComment.textContent = 'Отправить';
                     });
             }
 
+            // Глобальные функции для меню комментариев
             window.toggleCommentMenu = function (commentId) {
                 const menu = document.getElementById('menu-' + commentId);
                 const allMenus = document.querySelectorAll('.comment-menu-dropdown');
@@ -1101,7 +1335,9 @@
                     }
                 });
 
-                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+                if (menu) {
+                    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+                }
             };
 
             window.deleteComment = function (commentId) {
@@ -1136,4 +1372,5 @@
             });
         });
     </script>
+
 </@main.layout>
