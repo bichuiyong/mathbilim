@@ -166,4 +166,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
 
 
     Long countByStatus(ContentStatus status);
+
 }

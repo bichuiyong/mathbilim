@@ -33,32 +33,34 @@ public interface EventRepository extends BaseContentRepository<Event> {
     void incrementShareCount(@Param("blogId") Long blogId);
 
     @Query("""
-                SELECT new kg.edu.mathbilim.dto.event.DisplayEventDto(
-                    e.id,
-                    e.creator.id,
-                    e.createdAt, 
-                    e.updatedAt, 
-                    e.viewCount, 
-                    e.shareCount,
-                    e.mainImage.id,
-                    e.approvedBy.id,
-                    e.status,
-                    et.title, 
-                    et.content,
-                    e.startDate,
-                    e.endDate,
-                    e.type.id,
-                    e.address,
-                    e.url,
-                    e.isOffline
-                )
-                FROM Event e 
-                JOIN e.eventTranslations et 
-                WHERE e.id = :eventId 
-                AND et.id.languageCode = :languageCode
-            """)
+ SELECT new kg.edu.mathbilim.dto.event.DisplayEventDto(
+     e.id,
+     e.creator.id,
+     e.creator.name,
+     e.createdAt,
+     e.updatedAt,
+     e.viewCount,
+     e.shareCount,
+     e.mainImage.id,
+     e.approvedBy.id,
+     e.status,
+     et.title,
+     et.content,
+     e.startDate,
+     e.endDate,
+     e.type.id,
+     e.address,
+     e.url,
+     e.isOffline
+ )
+    FROM Event e 
+    JOIN e.eventTranslations et 
+    WHERE e.id = :eventId 
+    AND et.id.languageCode = :languageCode
+""")
     Optional<DisplayEventDto> findDisplayEventById(@Param("eventId") Long eventId,
                                                    @Param("languageCode") String languageCode);
+
 
     @Query("""
                 SELECT o.id FROM Event e 
@@ -70,7 +72,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
     @Query("""
             SELECT DISTINCT p FROM Event p
             JOIN p.eventTranslations t
-            WHERE p.status = :contentStatus
+            WHERE p.status = :status
             ORDER BY p.createdAt DESC
             """)
     Page<Event> findEventsByStatus(ContentStatus status, Pageable pageable);
@@ -132,4 +134,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
     Page<Event> getEventsByStatusAndCreator(@Param("contentStatus") ContentStatus contentStatus,
                                             @Param("userId") Long userId,
                                             Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.isOffline = :offline")
+    Page<Event> getAllEventsByType(@Param("offline") Boolean offline, Pageable pageable);
 }
