@@ -444,12 +444,15 @@
     <div class="content-wrapper">
         <div class="search-container">
             <div class="search-header">
-                <div class="search-title">Поиск и фильтры</div>
+                <div class="search-title">
+                    <@spring.message "search.title">Поиск и фильтры</@spring.message>
+                </div>
             </div>
             <form method="get" action="/posts">
                 <div class="search-row">
                     <div class="search-input-group">
-                        <input type="text" name="query" value="${query!}" placeholder="Найти посты..."/>
+                        <input type="text" name="query" value="${query!}"
+                               placeholder="<@spring.message 'search.placeholder'>Найти посты...</@spring.message>"/>
                     </div>
                 </div>
 
@@ -457,21 +460,33 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>По дате</option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>По просмотрам</option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>По репостам</option>
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>
+                                    <@spring.message "search.sortBy.date">По дате</@spring.message>
+                                </option>
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>
+                                    <@spring.message "search.sortBy.views">По просмотрам</@spring.message>
+                                </option>
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>
+                                    <@spring.message "search.sortBy.shares">По репостам</@spring.message>
+                                </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>
+                                    <@spring.message "search.sortDirection.desc">Сначала новые</@spring.message>
+                                </option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>
+                                    <@spring.message "search.sortDirection.asc">Сначала старые</@spring.message>
+                                </option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">Применить</button>
+                    <button type="submit" class="search-button">
+                        <@spring.message "search.apply">Применить</@spring.message>
+                    </button>
                 </div>
 
                 <input type="hidden" name="lang" value="${currentLang!'ru'}"/>
@@ -483,22 +498,24 @@
                 <#list posts.content as p>
                     <div class="post-item" onclick="window.location.href='/posts/${p.id}'">
                         <#if p.mainImage??>
-                            <img src="/api/files/${p.mainImageId}/view" alt="Post Image">
+                            <img src="/api/files/${p.mainImageId}/view" alt="<@spring.message 'post.image.alt'>Post Image</@spring.message>">
                         <#elseif p.postFiles?? && p.postFiles?size gt 0>
-                            <img src="/api/files/${p.postFiles[0].id}/view" alt="Post Image">
+                            <img src="/api/files/${p.postFiles[0].id}/view" alt="<@spring.message 'post.image.alt'>Post Image</@spring.message>">
                         <#else>
-                            <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">📷</div>
+                            <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 24px;">
+                                <@spring.message "post.noImage">📷</@spring.message>
+                            </div>
                         </#if>
 
                         <#assign totalImages = (p.postFiles?size) + (p.mainImage?has_content?then(1, 0))>
                         <#if totalImages gt 1>
-                            <div class="multiple-images-indicator"></div>
+                            <div class="multiple-images-indicator" title="<@spring.message 'post.multipleImages'>Multiple images</@spring.message>"></div>
                         </#if>
 
                         <div class="post-overlay">
                             <div class="post-stats">
-                                <div class="stat-item stat-views">${p.viewCount!0}</div>
-                                <div class="stat-item stat-shares">${p.shareCount!0}</div>
+                                <div class="stat-item stat-views" title="<@spring.message 'post.views'>Views</@spring.message>">${p.viewCount!0}</div>
+                                <div class="stat-item stat-shares" title="<@spring.message 'post.shares'>Shares</@spring.message>">${p.shareCount!0}</div>
                             </div>
                             <#assign translation = p.postTranslations?first>
                             <#if translation.title?? && translation.title?has_content>
@@ -512,13 +529,15 @@
             <div class="posts-grid">
                 <#if posts?? && posts.content?size == 0>
                     <div class="no-posts">
-                        Посты не найдены
-                        <div style="margin-top: 8px; font-size: 14px;">Попробуйте изменить параметры поиска</div>
+                        <@spring.message "posts.notFound">Посты не найдены</@spring.message>
+                        <div style="margin-top: 8px; font-size: 14px;">
+                            <@spring.message "posts.notFoundSuggestion">Попробуйте изменить параметры поиска</@spring.message>
+                        </div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Посты загружаются, пожалуйста подождите...</span>
+                        <span><@spring.message "posts.loading">Посты загружаются, пожалуйста подождите...</@spring.message></span>
                     </div>
                 </#if>
             </div>
@@ -528,9 +547,9 @@
             <@main.csrf/>
             <input type="hidden" name="type" value="POST">
             <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                <button class="btn btn-outline-danger">🔕 <@spring.message "notifications.unsubscribe">Отписаться от уведомлений</@spring.message></button>
             <#else>
-                <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                <button class="btn btn-outline-primary">📩 <@spring.message "notifications.subscribe">Подписаться на уведомления</@spring.message></button>
             </#if>
         </form>
 
@@ -539,23 +558,24 @@
                 <#if posts.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn prev">
-                        Назад
+                        <@spring.message "pagination.prev">Назад</@spring.message>
                     </a>
                 </#if>
 
                 <div class="pagination-info">
-                    Страница ${page + 1}
+                    <@spring.message "pagination.page">Страница ${page + 1}</@spring.message>
                 </div>
 
                 <#if posts.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
                        class="pagination-btn next">
-                        Вперёд
+                        <@spring.message "pagination.next">Вперёд</@spring.message>
                     </a>
                 </#if>
             </div>
         </#if>
     </div>
+
 
     <script>
         function switchLanguage(langCode) {
