@@ -7,7 +7,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -27,6 +29,7 @@ public class DisplayEventDto extends DisplayContentDto {
 
     public DisplayEventDto(Long id,
                            Long creatorId,
+                           String creatorName,
                            LocalDateTime createdAt,
                            LocalDateTime updatedAt,
                            Long viewCount,
@@ -51,7 +54,12 @@ public class DisplayEventDto extends DisplayContentDto {
         this.url = url;
         this.isOffline = isOffline;
         this.organizationIds = null;
+        this.setCreator(kg.edu.mathbilim.dto.user.UserDto.builder()
+                .id(creatorId)
+                .name(creatorName)
+                .build());
     }
+
 
     public DisplayEventDto(Long id,
                            Long creatorId,
@@ -109,4 +117,18 @@ public class DisplayEventDto extends DisplayContentDto {
 
         return desc.toString();
     }
+
+
+    public String getFormattedStartDate() {
+        return startDate != null
+                ? startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm", new Locale("ru")))
+                : "";
+    }
+
+    public String getFormattedEndDate() {
+        return endDate != null
+                ? endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm", new Locale("ru")))
+                : "";
+    }
+
 }
