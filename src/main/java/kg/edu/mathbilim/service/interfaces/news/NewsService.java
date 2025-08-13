@@ -8,6 +8,8 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface NewsService extends BaseTranslatableService<NewsDto, NewsTranslationDto> {
     @Transactional
     NewsDto create(CreateNewsDto createNewsDto);
@@ -17,4 +19,6 @@ public interface NewsService extends BaseTranslatableService<NewsDto, NewsTransl
     Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang);
 
     News findByNewsId(Long newsId);
+
+    List<NewsDto> getNewsByMainPage();
 }

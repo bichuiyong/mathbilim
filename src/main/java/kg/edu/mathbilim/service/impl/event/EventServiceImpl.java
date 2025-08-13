@@ -22,9 +22,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -204,4 +202,48 @@ public class EventServiceImpl extends
         Page<Event> events = repository.findEventsByStatus(ContentStatus.PENDING_REVIEW, pageable);
         return PaginationUtil.getPage(() -> events, mapper::toDto);
     }
+
+    @Override
+    public Page<EventDto> getAllEvent(String type, String sort, Pageable pageable) {
+        Sort sortBy = Sort.by("createdAt").descending();
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortBy);
+
+        Page<Event> events;
+
+        if (type != null && !type.isEmpty()) {
+            log.info("Requested type: {}", type);
+            boolean offline = type.equalsIgnoreCase("offline");
+            log.info("Type as boolean: {}", offline);
+
+            events = repository.getAllEventsByType(offline, sortedPageable);
+            log.info("Events fetched: {}", events.getSize());
+        } else {
+            events = repository.findEventsByStatus(ContentStatus.APPROVED, sortedPageable);
+            log.info("Events fetched: {}", events.getSize());
+        }
+
+        // Логи для проверки creator перед конвертацией в DTO
+        events.forEach(event -> {
+            if (event.getCreator() != null) {
+                log.info("Event ID: {}, Creator ID: {}, Name: {}", event.getId(),
+                        event.getCreator().getId(), event.getCreator().getName());
+            } else {
+                log.warn("Event ID: {} has null creator!", event.getId());
+            }
+        });
+
+        Page<EventDto> eventDtos = PaginationUtil.getPage(() -> events, mapper::toDto);
+
+        eventDtos.forEach(dto -> {
+            if (dto.getCreator() != null) {
+                log.info("DTO Event ID: {}, Creator Name: {}", dto.getId(), dto.getCreator().getName());
+            } else {
+                log.warn("DTO Event ID: {} has null creator!", dto.getId());
+            }
+        });
+
+        return eventDtos;
+    }
+
+
 }

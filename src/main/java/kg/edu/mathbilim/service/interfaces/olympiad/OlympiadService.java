@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface OlympiadService {
     @Transactional
     void olympiadCreate(OlympiadCreateDto dto);
@@ -19,4 +21,6 @@ public interface OlympiadService {
     OlympiadCreateDto getOlympiadCreateDto(Long olympId);
 
     OlympiadDto getById(long id);
+
+    List<OlympListDto> getOlympiadForMainPage();
 }

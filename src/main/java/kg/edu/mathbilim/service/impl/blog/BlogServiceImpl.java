@@ -108,14 +108,17 @@ public class BlogServiceImpl extends
         return PaginationUtil.getPage(() -> blogs, mapper::toDto);
     }
 
-    public DisplayContentDto getDisplayBlogById(Long id) {
-        return repository.findDisplayBlogById(id, getCurrentLanguage())
+    public BlogDto getDisplayBlogById(Long id) {
+        Blog blog = repository.findDisplayBlogById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
+
+        return mapper.toDto(blog);
     }
 
-    public Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
+    public Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
-        return repository.findAllDisplayBlogsByLanguage(getCurrentLanguage(), pageable);
+        Page<Blog> blogs = repository.findAllDisplayBlogsByLanguageBlog(getCurrentLanguage(), pageable);
+        return blogs.map(mapper::toDto);
     }
 
     public List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit) {
@@ -206,5 +209,12 @@ public class BlogServiceImpl extends
     @Override
     public Blog findByBlogId(Long blogId) {
         return repository.findById(blogId).orElseThrow(BlogNotFoundException::new);
+    }
+
+
+    @Override
+    public List<BlogDto> getBlogsByMainPage() {
+        List<Blog> blogs = repository.findTop10ByOrderByCreatedAtDesc();
+        return blogs.stream().map(mapper::toDto).toList();
     }
 }

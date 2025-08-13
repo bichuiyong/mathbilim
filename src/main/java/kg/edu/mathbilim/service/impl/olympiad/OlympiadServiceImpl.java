@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,7 +56,7 @@ public class OlympiadServiceImpl implements OlympiadService {
     @Transactional
     @Override
     public void olympiadCreate(OlympiadCreateDto dto) {
-        FileDto file = fileService.uploadFile(dto.getImageFile(),"general");
+        FileDto file = fileService.uploadFile(dto.getImageFile(), "general");
         File olympFile = fileService.getEntityById(file.getId());
         List<OlympiadOrganization> organizations = new ArrayList<>();
         List<OlympiadContact> contacts = new ArrayList<>();
@@ -74,13 +75,13 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .build();
         olympiadRepository.saveAndFlush(olympiad);
 
-        for(Long id : dto.getOrganizationIds()) {
+        for (Long id : dto.getOrganizationIds()) {
             Organization organization = organizationService.getByIdModel(id);
             OlympiadOrganization olympiadOrganization = OlympiadOrganization
                     .builder()
                     .olympiad(olympiad)
                     .organization(organization)
-                    .id(new OlympiadOrganizationKey(olympiad.getId(),organization.getId()))
+                    .id(new OlympiadOrganizationKey(olympiad.getId(), organization.getId()))
                     .build();
             organizations.add(olympiadOrganization);
         }
@@ -222,6 +223,7 @@ public class OlympiadServiceImpl implements OlympiadService {
         return olympiadRepository.findAll(pageable)
                 .map(olympiad -> new OlympListDto(
                         Math.toIntExact(olympiad.getId()),
+                        olympiad.getCreatedAt(),
                         olympiad.getTitle(),
                         olympiad.getImage().getId()
                 ));
@@ -309,4 +311,19 @@ public class OlympiadServiceImpl implements OlympiadService {
                 .stages(olympiadStageService.getOlympStageDtos(id))
                 .build();
     }
+
+    @Override
+    public List<OlympListDto> getOlympiadForMainPage() {
+        List<Olympiad> olympiads = olympiadRepository.findTop10ByOrderByCreatedAtDesc();
+
+        return olympiads.stream()
+                .map(olympiad -> new OlympListDto(
+                        Math.toIntExact(olympiad.getId()),
+                        olympiad.getCreatedAt(),
+                        olympiad.getTitle(),
+                        olympiad.getImage().getId()
+                ))
+                .collect(Collectors.toList());
+    }
+
 }
