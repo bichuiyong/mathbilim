@@ -6,34 +6,33 @@
         <div class="row justify-content-center align-items-center min-vh-50">
             <div class="col-md-10 col-lg-8">
                 <div class="row g-0 shadow-lg rounded overflow-hidden">
-                    <!-- Левая панель с информацией -->
+
                     <div class="col-lg-5 bg-primary text-white p-5 d-flex flex-column justify-content-center">
                         <div class="text-center mb-4">
                             <i class="fas fa-graduation-cap mb-3" style="font-size: 4rem;"></i>
-                            <h2 class="fw-bold">Добро пожаловать!</h2>
+                            <h2 class="fw-bold"><@spring.message "register.welcome"/></h2>
                         </div>
                         <p class="mb-4 text-center opacity-90">
-                            Присоединяйтесь к сообществу MathBilim и откройте для себя мир математического образования
+                            <@spring.message "register.desc"/>
                         </p>
                         <div class="mt-auto">
                             <div class="d-flex align-items-center mb-3">
                                 <i class="fas fa-check-circle me-3"></i>
-                                <span>Доступ к олимпиадным задачам</span>
+                                <span><@spring.message "register.olymp"/></span>
                             </div>
                             <div class="d-flex align-items-center mb-3">
                                 <i class="fas fa-check-circle me-3"></i>
-                                <span>Интерактивные тесты</span>
+                                <span><@spring.message "register.tests"/></span>
                             </div>
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-check-circle me-3"></i>
-                                <span>Образовательные материалы</span>
+                                <span><@spring.message "register.materials"/></span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Правая панель с формой -->
                     <div class="col-lg-7 bg-white p-5">
-                        <h3 class="mb-4 fw-bold text-dark">Создать аккаунт</h3>
+                        <h3 class="mb-4 fw-bold text-dark"><@spring.message "register.create"/></h3>
 
                         <#if error??>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -50,7 +49,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="name" class="form-label small text-muted">
                                         <i class="fas fa-user text-muted me-1"></i>
-                                        Имя *
+                                        <@spring.message "Name"/> *
                                     </label>
                                     <@spring.formInput "userDto.name", "class='form-control' id='name' placeholder='Введите имя'", "text"/>
                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
@@ -59,7 +58,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="surname" class="form-label small text-muted">
                                         <i class="fas fa-user text-muted me-1"></i>
-                                        Фамилия *
+                                        <@spring.message "Surname"/> *
                                     </label>
                                     <@spring.formInput "userDto.surname", "class='form-control' id='surname' placeholder='Введите фамилию'", "text"/>
                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
@@ -69,7 +68,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label small text-muted">
                                     <i class="fas fa-envelope text-muted me-1"></i>
-                                    Email адрес *
+                                    Email <@spring.message "address"/> *
                                 </label>
                                 <@spring.formInput "userDto.email", "class='form-control' id='email' placeholder='example@email.com'", "email"/>
                                 <@spring.showErrors "<br>", "text-danger small mt-1"/>
@@ -78,7 +77,7 @@
                             <div class="mb-3">
                                 <label for="password" class="form-label small text-muted">
                                     <i class="fas fa-lock text-muted me-1"></i>
-                                    Пароль *
+                                    <@spring.message "Password"/> *
                                 </label>
                                 <div class="input-group">
                                     <@spring.formInput "userDto.password", "class='form-control border-end-0' id='password' placeholder='Минимум 6 символов'", "password"/>
@@ -92,7 +91,7 @@
                             <div class="mb-4">
                                 <label for="typeId" class="form-label small text-muted">
                                     <i class="fas fa-user-tag text-muted me-1"></i>
-                                    Тип аккаунта *
+                                    <@spring.message "account.type"/> *
                                 </label>
 
                                 <#assign typeMap = {} />
@@ -112,7 +111,7 @@
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary py-3">
                                     <i class="fas fa-user-plus me-2"></i>
-                                    Зарегистрироваться
+                                    <@spring.message "Register"/>
                                 </button>
                             </div>
                         </form>
@@ -120,18 +119,18 @@
                         <div class="text-center">
                             <div class="d-flex align-items-center my-4">
                                 <hr class="flex-grow-1">
-                                <span class="mx-3 text-muted small">или</span>
+                                <span class="mx-3 text-muted small"><@spring.message "or"/></span>
                                 <hr class="flex-grow-1">
                             </div>
 
                             <a href="/oauth2/authorization/google" class="btn btn-outline-secondary w-100 mb-3">
                                 <img src="https://www.google.com/favicon.ico" width="20" height="20" class="me-2">
-                                Продолжить с Google
+                                <@spring.message "register.google"/>
                             </a>
 
                             <p class="mb-0 small text-muted">
-                                Уже есть аккаунт?
-                                <a href="/auth/login" class="text-primary fw-bold">Войти</a>
+                                <@spring.message "register.acc-exist"/>
+                                <a href="/auth/login" class="text-primary fw-bold"><@spring.message "sign-in"/></a>
                             </p>
                         </div>
                     </div>

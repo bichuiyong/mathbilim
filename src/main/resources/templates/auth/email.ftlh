@@ -7,7 +7,7 @@
             <div class="col-md-10 col-lg-8">
                 <div class="text-center mb-4">
                     <h1 class="logo mb-1" style="font-size: 2.5rem;">mathbilim</h1>
-                    <p class="text-muted">Завершите регистрацию</p>
+                    <p class="text-muted"><@spring.message "auth.finish-register"/></p>
                 </div>
 
                 <form method="POST" action="/auth/add-email">
@@ -17,7 +17,7 @@
                     </#if>
                     <div class="bg-white rounded shadow-sm p-4">
                         <div class="mb-4">
-                            <h5 class="mb-3">1. Ваш email</h5>
+                            <h5 class="mb-3">1. <@spring.message "auth.your"/> email</h5>
                             <div class="position-relative mb-3">
                                 <@spring.formInput "userEmailDto.email"
                                 "class='form-control form-control-lg ps-5'
@@ -29,7 +29,7 @@
                         </div>
 
                         <div>
-                            <h5 class="mb-3">2. Тип аккаунта</h5>
+                            <h5 class="mb-3">2. <@spring.message "account.type"/></h5>
                             <div class="row g-3 mb-4">
                                 <#list userTypes as type>
                                     <div class="col-md-6 d-flex">
@@ -55,11 +55,11 @@
                                                         <h6 class="mb-1">${type.translations[0].translation}</h6>
                                                         <p class="text-muted small mb-0">
                                                             <#if type.translations[0].translation?contains("Ученик")>
-                                                                Доступ к учебным материалам
+                                                                <@spring.message "auth.type-1"/>
                                                             <#elseif type.translations[0].translation?contains("Учитель")>
-                                                                Создание тестов и отслеживание прогресса
+                                                                <@spring.message "auth.type-2"/>
                                                             <#else>
-                                                                Полный доступ к платформе
+                                                                <@spring.message "auth.type-3"/>
                                                             </#if>
                                                         </p>
                                                     </div>
@@ -74,7 +74,7 @@
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-check me-2"></i>
-                                Завершить регистрацию
+                                <@spring.message "auth.complete"/>
                             </button>
                         </div>
                     </div>
