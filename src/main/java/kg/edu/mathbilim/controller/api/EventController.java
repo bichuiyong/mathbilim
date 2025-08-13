@@ -29,7 +29,12 @@ public class EventController {
         Page<EventDto> allEvent = eventService.getAllEvent(type, sort, pageable);
         log.info(allEvent.getTotalElements() + " events found");
         return ResponseEntity.ok(allEvent);
+<<<<<<< HEAD
 }
+=======
+
+    }
+>>>>>>> 8481cb7 (feat: Add API endpoints for news, blog posts, publications, events, and olympiads)
 
     @PostMapping("{id}/share")
     public ResponseEntity<Void> shareEvent(@PathVariable Long id) {
