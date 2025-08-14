@@ -553,7 +553,7 @@
                                     <div class="stage-card">
                                         <div class="stage-header">
                                         <span class="stage-title">
-                                            <@spring.message "olympiad.stage.title" args=[stage.stageOrder]>
+                                            <@spring.message "olympiad.stage.title">
                                                 Этап ${stage.stageOrder}
                                             </@spring.message>
                                         </span>

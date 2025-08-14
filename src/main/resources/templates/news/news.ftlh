@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as main>
-<@main.layout ; spring>
+<#import "/spring.ftl" as spring>
+<@main.layout>
     <style>
         .content-wrapper {
             max-width: 975px;

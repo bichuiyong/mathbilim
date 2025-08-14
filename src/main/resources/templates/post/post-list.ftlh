@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring/>
 <@main.layout>
     <style>
         .content-wrapper {

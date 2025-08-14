@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<#import "/spring.ftl" as spring/>
+<@main.layout >
     <h2 style="margin: 30px 0 45px; color: #666666; text-align: center">
         <@spring.message "olympiads.page.title">Страница олимпиад</@spring.message>
     </h2>
