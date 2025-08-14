@@ -30,6 +30,7 @@ public class EventController {
         return ResponseEntity.ok(allEvent);
 }
 
+
     @PostMapping("{id}/share")
     public ResponseEntity<Void> shareEvent(@PathVariable Long id) {
         eventService.incrementShareCount(id);

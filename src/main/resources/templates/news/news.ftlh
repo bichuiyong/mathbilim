@@ -881,7 +881,7 @@
                     alertClass = 'error';
                 }
 
-                notification.className = `notification-toast alert-${alertClass}`;
+                notification.className = `notification-toast alert-`+alertClass+``;
                 notification.style.cssText = `
 position: fixed;
 top: 20px;
@@ -908,7 +908,7 @@ backdrop-filter: blur(10px);
 
                 notification.innerHTML = `
 <div style="display: flex; justify-content: space-between; align-items: center;">
-    <span>${message}</span>
+    <span>`+message+`</span>
     <button onclick="this.parentElement.parentElement.remove()"
             style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-left: 12px;">×</button>
 </div>
