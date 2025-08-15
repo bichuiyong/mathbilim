@@ -439,7 +439,7 @@
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
                             </a>
                             <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-book me-2"></i>Организация
+                                <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
                             </a>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
@@ -927,31 +927,43 @@
             <div class="modal-content">
                 <form id="categoryForm">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createTypeModalLabel">Категория / Тип контента</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        <h5 class="modal-title" id="createTypeModalLabel">
+                            <@spring.message "modal.createType.title"/>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<@spring.message 'button.close'/>"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="nameRu" class="form-label">Название (Русский)</label>
+                            <label for="nameRu" class="form-label">
+                                <@spring.message "modal.createType.nameRu"/>
+                            </label>
                             <input type="text" class="form-control" id="nameRu" name="nameRu" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nameEn" class="form-label">Название (English)</label>
+                            <label for="nameEn" class="form-label">
+                                <@spring.message "modal.createType.nameEn"/>
+                            </label>
                             <input type="text" class="form-control" id="nameEn" name="nameEn" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nameKy" class="form-label">Название (Кыргызча)</label>
+                            <label for="nameKy" class="form-label">
+                                <@spring.message "modal.createType.nameKy"/>
+                            </label>
                             <input type="text" class="form-control" id="nameKy" name="nameKy" required>
                         </div>
                         <div class="mb-3" id="selectWrapper">
-                            <label for="type" class="form-label">Что вы хотите создать?</label>
+                            <label for="type" class="form-label">
+                                <@spring.message "modal.createType.question"/>
+                            </label>
                             <div class="account-type-select">
                                 <select class="form-select" id="staticType">
-                                    <option selected disabled value="">Выберите объект создания</option>
-                                    <option value="categories">Категория</option>
-                                    <option value="event_type">Тип мероприятий</option>
-                                    <option value="post_type">Тип публикаций</option>
-                                    <option value="user_type">Тип пользователей</option>
+                                    <option selected disabled value="">
+                                        <@spring.message "modal.createType.selectPrompt"/>
+                                    </option>
+                                    <option value="categories"><@spring.message "modal.createType.option.category"/></option>
+                                    <option value="event_type"><@spring.message "modal.createType.option.eventType"/></option>
+                                    <option value="post_type"><@spring.message "modal.createType.option.postType"/></option>
+                                    <option value="user_type"><@spring.message "modal.createType.option.userType"/></option>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
@@ -960,13 +972,18 @@
                         <input type="hidden" id="staticTypeValue" name="staticTypeValue">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" id="createTypeBtn">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <@spring.message "button.cancel"/>
+                        </button>
+                        <button type="button" class="btn btn-primary" id="createTypeBtn">
+                            <@spring.message "button.save"/>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>

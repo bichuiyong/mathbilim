@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     User toEntity(UserDto dto);
 
-    @Mapping(target = "email", ignore = true)
+//    @Mapping(target = "email", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "isEmailVerified", ignore = true)
     @Mapping(target = "enabled", ignore = true)
