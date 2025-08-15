@@ -13,9 +13,9 @@
 
     <div class="container mt-4">
         <div class="row">
-            <!-- Левая колонка -->
+            <!-- Левая колонка - аватар и быстрые действия -->
             <div class="col-lg-4 mb-4">
-                <!-- Аватар -->
+                <!-- Карточка редактирования аватара -->
                 <div class="card profile-edit-card">
                     <div class="card-header">
                         <h5><i class="fas fa-user-edit me-2"></i><@spring.message "profile.edit.title"/></h5>
@@ -54,7 +54,7 @@
                             </div>
                         </div>
 
-                        <!-- Роль -->
+                        <!-- Текущий статус -->
                         <div class="text-center mb-3">
                             <h6 class="mb-2">${userEditDto.name!} ${userEditDto.surname!}</h6>
                             <div class="d-flex justify-content-center gap-2 mb-3">
@@ -124,7 +124,7 @@
                         </#if>
 
                         <div class="card-body tab-content" id="editTabsContent">
-                            <!-- Основная информация -->
+                            <!-- Вкладка "Основная информация" -->
                             <div class="tab-pane fade show active" id="basic" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -170,7 +170,7 @@
                                 </#if>
                             </div>
 
-                            <!-- Настройки аккаунта -->
+                            <!-- Вкладка "Настройки аккаунта" -->
                             <div class="tab-pane fade" id="settings" role="tabpanel">
                                 <#if isAdmin>
                                     <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">

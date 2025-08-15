@@ -421,7 +421,7 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
+                <!-- Быстрые действия -->
                 <div class="card mt-3">
                     <div class="card-body">
                         <h6 class="card-title mb-3"><@spring.message "content.create.title"/></h6>
@@ -437,6 +437,9 @@
                             </a>
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
+                            </a>
+                            <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-book me-2"></i>Организация
                             </a>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
@@ -492,9 +495,9 @@
 
                     <div class="card-body">
                         <div class="tab-content" id="profileTabsContent">
-                            <!-- Content Tab -->
+                            <!-- Вкладка "Мой контент" -->
                             <div class="tab-pane fade show active" id="content" role="tabpanel">
-                                <!-- Filters -->
+                                <!-- Фильтры -->
                                 <div class="moderation-filters mb-4">
                                     <div class="row g-2">
                                         <div class="col-md-4">
@@ -519,7 +522,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Content List -->
+                                <!-- Список контента -->
                                 <div id="userContentList" class="content-list">
                                     <div class="text-center text-muted py-5">
                                         <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
@@ -527,15 +530,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Pagination -->
+                                <!-- Пагинация -->
                                 <nav id="contentPagination" class="mt-3" style="display: none;">
                                     <ul class="pagination justify-content-center"></ul>
                                 </nav>
                             </div>
 
-                            <!-- History Tab -->
+                            <!-- Вкладка "Моя история" -->
                             <div class="tab-pane fade" id="history" role="tabpanel">
-                                <!-- History Filters -->
+                                <!-- Фильтры для истории -->
                                 <div class="history-filters mb-4">
                                     <div class="row g-2">
                                         <div class="col-md-3">
@@ -575,16 +578,16 @@
                                     </div>
                                 </div>
 
-                                <!-- Pagination -->
+                                <!-- Пагинация -->
                                 <nav id="historyPagination" class="mt-3" style="display: none;">
                                     <ul class="pagination justify-content-center"></ul>
                                 </nav>
                             </div>
 
-                            <!-- Moderation Tab (for moderators) -->
+                            <!-- Вкладка "Модерация" (для модераторов) -->
                             <#if isModer>
                                 <div class="tab-pane fade" id="moderation" role="tabpanel">
-                                    <!-- Moderation Filters -->
+                                    <!-- Фильтры для модерации -->
                                     <div class="moderation-filters mb-4">
                                         <div class="row g-2">
                                             <div class="col-md-4">
@@ -622,10 +625,10 @@
                                 </div>
                             </#if>
 
-                            <!-- Users Tab (for admins) -->
+                            <!-- Вкладка "Пользователи" (для администраторов) -->
                             <#if isAdmin>
                                 <div class="tab-pane fade" id="users" role="tabpanel">
-                                    <!-- User Actions -->
+                                    <!-- Действия с пользователями -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0"><@spring.message "users.management.title"/></h5>
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -634,7 +637,7 @@
                                         </button>
                                     </div>
 
-                                    <!-- User Filters -->
+                                    <!-- Фильтры пользователей -->
                                     <div class="users-filters mb-4">
                                         <div class="row g-2">
                                             <div class="col-md-12">
@@ -650,7 +653,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Users List -->
+                                    <!-- Список пользователей -->
                                     <div id="usersContentList" class="users-list">
                                         <div class="text-center text-muted py-5">
                                             <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
@@ -658,7 +661,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Pagination -->
+                                    <!-- Пагинация -->
                                     <nav id="usersPagination" class="mt-3">
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
@@ -710,7 +713,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Pagination -->
+                                    <!-- Пагинация -->
                                     <nav class="mt-3">
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
@@ -751,7 +754,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Pagination -->
+                                    <!-- Пагинация -->
                                     <nav id="allcontentPagination" class="mt-3" style="display: none;">
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
@@ -764,7 +767,7 @@
         </div>
     </div>
 
-    <!-- Delete User Modal -->
+
     <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -834,7 +837,6 @@
         </div>
     </div>
 
-    <!-- Create User Modal -->
     <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -892,7 +894,7 @@
         </div>
     </div>
 
-    <!-- Content Modal -->
+
     <div class="modal fade" id="contentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -902,7 +904,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalContent">
-                        <!-- Content will be loaded here -->
+                        <!-- Контент будет загружен здесь -->
                     </div>
                 </div>
                 <div class="modal-footer">
