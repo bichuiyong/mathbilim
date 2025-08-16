@@ -1,13 +1,16 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.test.AttemptAnswerDto;
 import kg.edu.mathbilim.dto.test.TestCreateDto;
+import kg.edu.mathbilim.dto.test.TestPassDto;
 import kg.edu.mathbilim.service.interfaces.test.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 
 @Controller("mvcTest")
 @RequestMapping("tests")
@@ -26,8 +29,18 @@ public class TestController {
     }
 
     @GetMapping("{id}/pass")
-    public String passTest(@PathVariable("id") Long id) {
+    public String passTest(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("test", testService.getTestDtoForPassById(id));
         return "tests/test-pass";
+    }
+
+    @PostMapping("{id}/pass")
+    public String passTest(@PathVariable("id") Long id, @ModelAttribute("testPass")TestPassDto testPassDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/tests";
+        }
+        testService.passTest(testPassDto,id);
+        return "redirect:/tests";
     }
 
     @GetMapping("create")
