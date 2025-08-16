@@ -5,6 +5,7 @@ import kg.edu.mathbilim.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,7 +28,8 @@ public class Attempt {
     @JoinColumn(name = "test_id", nullable = false)
     private Test test;
 
-    @Column(name = "started_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
+    @CreationTimestamp
+    @Column(name = "started_at")
     private LocalDateTime startedAt;
 
     @Column(name = "finished_at")
