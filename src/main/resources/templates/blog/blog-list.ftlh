@@ -870,7 +870,7 @@
                     alertClass = 'error';
                 }
 
-                notification.className = `notification-toast alert-${alertClass}`;
+                notification.className = `notification-toast alert-`+ alertClass +``;
                 notification.style.cssText = `
                     position: fixed;
                     top: 20px;
@@ -897,7 +897,7 @@
 
                 notification.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>${message}</span>
+                        <span>`+ message +`</span>
                         <button onclick="this.parentElement.parentElement.remove()"
                                 style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-left: 12px;">×</button>
                     </div>
@@ -1029,7 +1029,7 @@
                 document.querySelectorAll('.blog-item').forEach((item, index) => {
                     item.style.opacity = '0';
                     item.style.transform = 'translateY(20px)';
-                    item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                    item.style.transition = `opacity 0.6s ease `+index * 0.1+`s, transform 0.6s ease `+index * 0.1+`s`;
                     observer.observe(item);
                 });
             }

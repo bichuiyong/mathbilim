@@ -4,15 +4,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        .hero-section {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
+        .page-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .hero-section .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
+        .page-title {
+            color: #495057;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            margin: 0;
         }
 
         .event-card {
@@ -101,12 +106,13 @@
         }
 
         .btn-add-event {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #007bff, #0056b3);
             border: none;
+            transition: all 0.3s ease;
         }
 
         .btn-add-event:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #0056b3, #004085);
             transform: translateY(-2px);
         }
 
@@ -116,62 +122,60 @@
             padding: 0 15px;
         }
 
-        .event-header {
-            margin-bottom: 40px;
-            padding: 40px 20px 40px;
-            border-radius: 24px;
-            color: white;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        .filters-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 30px;
         }
     </style>
-    <div class="container pt-3">
-        <section class="hero-section event-header py-5 pt-5">
-            <div class="text-center">
-                <h1 class="display-3 fw-bold mb-3">Математические мероприятия</h1>
+
+    <!-- Компактный заголовок -->
+    <div class="page-header py-4">
+        <div class="main-content">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="page-title h3">Математические мероприятия</h1>
+                    <p class="page-subtitle">Олимпиады, семинары и лекции</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="/events/create" class="btn btn-add-event text-white rounded-pill px-4 py-2">
+                        <i class="fas fa-plus me-2"></i>Добавить мероприятие
+                    </a>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
 
-
     <div class="main-content py-4">
-        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-4">
-            <a href="/events/create" class="btn btn-add-event text-white rounded-pill px-4 py-2">
-                <i class="fas fa-plus me-2"></i>Добавить мероприятие
-            </a>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-4 mb-3">
-                <label for="typeFilter" class="form-label">Тип мероприятия:</label>
-                <select id="typeFilter" class="form-select">
-                    <option value="">Все типы</option>
-                    <option value="online">Онлайн</option>
-                    <option value="offline">Офлайн</option>
-                </select>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="sortFilter" class="form-label">Сортировка:</label>
-                <select id="sortFilter" class="form-select">
-                    <option value="startDate,desc">Сначала новые</option>
-                    <option value="startDate,asc">Сначала старые</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <button id="applyFilters" class="btn btn-primary w-100 mt-4">
-                    <i class="fas fa-filter me-2"></i>Применить фильтры
-                </button>
-            </div>
-        </div>
-
-        <!-- Поиск -->
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <input type="text" id="searchInput" class="form-control" placeholder="Поиск мероприятий...">
-            </div>
-            <div class="col-md-4">
-                <button id="searchButton" class="btn btn-outline-primary w-100">
-                    <i class="fas fa-search me-2"></i>Найти
-                </button>
+        <!-- Фильтры в карточке -->
+        <div class="filters-card">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3">
+                    <label for="typeFilter" class="form-label fw-medium">Тип мероприятия:</label>
+                    <select id="typeFilter" class="form-select">
+                        <option value="">Все типы</option>
+                        <option value="online">Онлайн</option>
+                        <option value="offline">Офлайн</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="sortFilter" class="form-label fw-medium">Сортировка:</label>
+                    <select id="sortFilter" class="form-select">
+                        <option value="startDate,desc">Сначала новые</option>
+                        <option value="startDate,asc">Сначала старые</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="searchInput" class="form-label fw-medium">Поиск:</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Поиск мероприятий...">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button id="applyFilters" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-1"></i>Найти
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -249,7 +253,7 @@
 
             setupEventListeners() {
                 document.getElementById('applyFilters').addEventListener('click', () => {
-                    this.applyFilters();
+                    this.performSearch();
                 });
 
                 // Поиск по Enter
@@ -259,16 +263,9 @@
                     }
                 });
 
-                // Поиск по кнопке
-                document.getElementById('searchButton').addEventListener('click', () => {
-                    this.performSearch();
-                });
-
                 // Очистка поиска при изменении фильтров
                 document.getElementById('typeFilter').addEventListener('change', () => {
-                    document.getElementById('searchInput').value = '';
-                    this.searchQuery = '';
-                    this.applyFilters(); // Автоматически применяем фильтры при изменении
+                    this.applyFilters();
                 });
 
                 document.getElementById('sortFilter').addEventListener('change', () => {
@@ -295,11 +292,7 @@
 
             performSearch() {
                 this.searchQuery = document.getElementById('searchInput').value.trim();
-                this.currentPage = 0;
-                // Сбрасываем фильтры при поиске
-                document.getElementById('typeFilter').value = '';
-                this.isOffline = null;
-                this.loadEvents();
+                this.applyFilters(); // Применяем все фильтры включая поиск
             }
 
             async loadEvents() {
@@ -387,7 +380,6 @@
                     window.location.href = "/events/" + event.id;
                 };
 
-
                 const dateSpan = this.formatDate(event.startDate);
                 const eventTypeName = event.type?.name || 'Мероприятие';
                 const typeClass = this.getTypeClass(eventTypeName);
@@ -413,7 +405,6 @@
                     '<i class="fas fa-' + this.getLocationIcon(location, event.isOffline) + ' me-2"></i>' + location +
                     '</div>' +
                     '</div>';
-
             }
 
             createEventCard(event) {
@@ -457,7 +448,6 @@
                     '</div>' +
                     '</div>'
                 );
-
             }
 
             renderPagination(data) {
@@ -475,7 +465,7 @@
                 if (data.number > 0) {
                     paginationHtml += `
                         <li class="page-item">
-                            <a class="page-link" href="#" data-page="` + data.number - 1 + `">
+                            <a class="page-link" href="#" data-page="` + (data.number - 1) + `">
                                 <i class="fas fa-chevron-left"></i>
                             </a>
                         </li>
@@ -490,7 +480,7 @@
                     const isActive = i === data.number ? 'active' : '';
                     paginationHtml += `
                         <li class="page-item ` + isActive + `">
-                            <a class="page-link" href="#" data-page="` + i + `">` + i + 1 + `</a>
+                            <a class="page-link" href="#" data-page="` + i + `">` + (i + 1) + `</a>
                         </li>
                     `;
                 }
@@ -499,7 +489,7 @@
                 if (data.number < data.totalPages - 1) {
                     paginationHtml += `
                         <li class="page-item">
-                            <a class="page-link" href="#" data-page="` + data.number - 1 + `">
+                            <a class="page-link" href="#" data-page="` + (data.number + 1) + `">
                                 <i class="fas fa-chevron-right"></i>
                             </a>
                         </li>

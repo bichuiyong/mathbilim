@@ -86,9 +86,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center">
-                        <a href="/news" class="btn btn-outline-primary">Все новости</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -107,9 +104,6 @@
                                 <span class="visually-hidden">Загрузка...</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-center">
-                        <a href="/publications" class="btn btn-outline-primary">Все публикации</a>
                     </div>
                 </div>
             </div>

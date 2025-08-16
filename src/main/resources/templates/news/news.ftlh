@@ -611,7 +611,7 @@
                         </div>
 
                         <div class="select-wrapper">
-                            <select name="lang" class="language-selector">
+                            <select name="language" class="language-selector">
                                 <option value="ru" <#if currentLang=="ru">selected</#if>>🇷🇺 Русский</option>
                                 <option value="en" <#if currentLang=="en">selected</#if>>🇺🇸 English</option>
                                 <option value="ky" <#if currentLang=="ky">selected</#if>>🇰🇬 Кыргызча</option>
@@ -714,7 +714,7 @@
         <#if news?? && news.content?size gt 0 && (news.hasPrevious() || news.hasNext())>
             <div class="pagination-container">
                 <#if news.hasPrevious()>
-                    <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                    <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn prev">
                         ← Назад
                     </a>
@@ -725,7 +725,7 @@
                 </div>
 
                 <#if news.hasNext()>
-                    <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                    <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn next">
                         Вперёд →
                     </a>
@@ -737,13 +737,13 @@
     <script>
         function switchLanguage(langCode) {
             const url = new URL(window.location);
-            url.searchParams.set('lang', langCode);
+            url.searchParams.set('language', langCode);
             window.location.href = url.toString();
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-// Language selector change handler
-            const langSelect = document.querySelector('select[name="lang"]');
+            // Language selector change handler
+            const langSelect = document.querySelector('select[name="language"]');
             if (langSelect) {
                 langSelect.addEventListener('change', function () {
                     const form = this.closest('form');
@@ -753,7 +753,7 @@
                 });
             }
 
-// Keyboard navigation for posts
+            // Keyboard navigation for posts
             document.addEventListener('keydown', function (e) {
                 const posts = document.querySelectorAll('.post-item');
                 const currentPost = document.querySelector('.post-item:focus');
@@ -801,12 +801,12 @@
                 }
             });
 
-// Make posts focusable
+            // Make posts focusable
             document.querySelectorAll('.post-item').forEach(item => {
                 item.setAttribute('tabindex', '0');
             });
 
-// Subscription form handler
+            // Subscription form handler
             const subscriptionForm = document.querySelector('form[action*="/notifications/"]');
             if (subscriptionForm) {
                 const subscriptionButton = subscriptionForm.querySelector('button');
@@ -881,7 +881,7 @@
                     alertClass = 'error';
                 }
 
-                notification.className = `notification-toast alert-`+alertClass+``;
+                notification.className = `notification-toast alert-` + alertClass + ``;
                 notification.style.cssText = `
 position: fixed;
 top: 20px;
@@ -908,7 +908,7 @@ backdrop-filter: blur(10px);
 
                 notification.innerHTML = `
 <div style="display: flex; justify-content: space-between; align-items: center;">
-    <span>`+message+`</span>
+    <span>` + message + `</span>
     <button onclick="this.parentElement.parentElement.remove()"
             style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-left: 12px;">×</button>
 </div>
@@ -961,20 +961,20 @@ transform: scale(1.02);
                 }, 5000);
             }
 
-// Auto-submit form on language change
-            const currentLang = new URLSearchParams(window.location.search).get('lang') || 'ru';
+            // Auto-submit form on language change
+            const currentLang = new URLSearchParams(window.location.search).get('language') || 'ru';
 
-// Smooth scroll for pagination
+            // Smooth scroll for pagination
             const paginationLinks = document.querySelectorAll('.pagination-btn');
             paginationLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
-// Add loading state
+                    // Add loading state
                     this.style.opacity = '0.7';
                     this.style.pointerEvents = 'none';
                 });
             });
 
-// Enhanced hover effects for posts
+            // Enhanced hover effects for posts
             const postItems = document.querySelectorAll('.post-item');
             postItems.forEach(item => {
                 item.addEventListener('mouseenter', function () {
@@ -985,7 +985,7 @@ transform: scale(1.02);
                     this.style.zIndex = '1';
                 });
 
-// Add ripple effect on click
+                // Add ripple effect on click
                 item.addEventListener('click', function (e) {
                     const ripple = document.createElement('div');
                     ripple.style.cssText = `
