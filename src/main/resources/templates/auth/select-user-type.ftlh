@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 
 <@main.layout "Выбор типа аккаунта">
     <div class="container my-5">
@@ -18,8 +19,8 @@
                             </div>
                         </div>
                     </div>
-                    <h2 class="fw-bold mb-2">Добро пожаловать в MathBilim!</h2>
-                    <p class="text-muted fs-5">Выберите, как вы хотите использовать платформу</p>
+                    <h2 class="fw-bold mb-2"><@spring.message "userType.welcome"/></h2>
+                    <p class="text-muted fs-5"><@spring.message "userType.chose"/></p>
                 </div>
 
                 <form action="/auth/select-user-type" method="post">
@@ -37,11 +38,9 @@
                                            required>
 
                                     <div class="account-type-card h-100 p-4 rounded-3 border position-relative overflow-hidden">
-                                        <!-- Фоновый градиент при выборе -->
                                         <div class="selected-gradient position-absolute top-0 start-0 w-100 h-100"></div>
 
                                         <div class="position-relative">
-                                            <!-- Иконка в зависимости от типа -->
                                             <div class="mb-3">
                                                 <#if type.translations[0].translation?contains("Ученик") || type.translations[0].translation?contains("Student")>
                                                     <i class="fas fa-user-graduate text-primary" style="font-size: 2.5rem;"></i>
@@ -56,20 +55,18 @@
 
                                             <h4 class="mb-2">${type.translations[0].translation}</h4>
 
-                                            <!-- Примерное описание для каждого типа -->
                                             <p class="text-muted mb-3">
                                                 <#if type.translations[0].translation?contains("Ученик") || type.translations[0].translation?contains("Student")>
-                                                    Доступ к тестам, олимпиадным задачам и учебным материалам
+                                                    <@spring.message "userType.test"/>
                                                 <#elseif type.translations[0].translation?contains("Учитель") || type.translations[0].translation?contains("Teacher")>
-                                                    Создание тестов, отслеживание прогресса учеников, методические материалы
+                                                    <@spring.message "userType.createTest"/>
                                                 <#elseif type.translations[0].translation?contains("Родитель") || type.translations[0].translation?contains("Parent")>
-                                                    Контроль успеваемости, уведомления о прогрессе ребенка
+                                                    <@spring.message "userType.perfomance"/>
                                                 <#else>
-                                                    Полный доступ к функциям платформы
+                                                    <@spring.message "userType.function"/>
                                                 </#if>
                                             </p>
 
-                                            <!-- Чекбокс индикатор -->
                                             <div class="selection-indicator position-absolute top-0 end-0 p-3">
                                                 <div class="rounded-circle border-2 border-secondary d-flex align-items-center justify-content-center"
                                                      style="width: 24px; height: 24px;">
@@ -86,12 +83,12 @@
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg px-5" disabled id="continueBtn">
                             <i class="fas fa-arrow-right me-2"></i>
-                            Продолжить
+                            <@spring.message "Continue"/>
                         </button>
 
                         <p class="text-muted mt-3 mb-0">
                             <i class="fas fa-info-circle me-1"></i>
-                            Вы сможете изменить тип аккаунта позже в настройках профиля
+                            <@spring.message "userType.canChange"/>
                         </p>
                     </div>
                 </form>
@@ -148,7 +145,6 @@
     </style>
 
     <script>
-        // Активация кнопки при выборе
         const radioButtons = document.querySelectorAll('input[name="userTypeId"]');
         const continueBtn = document.getElementById('continueBtn');
 

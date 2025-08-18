@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-
+<#import "/spring.ftl" as spring>
 <@main.layout "Новый пароль">
     <div class="container my-5">
         <div class="row justify-content-center align-items-center min-vh-50">
@@ -9,7 +9,7 @@
                          style="width: 80px; height: 80px;">
                         <i class="fas fa-lock" style="font-size: 2rem;"></i>
                     </div>
-                    <h3 class="fw-bold">Создайте новый пароль</h3>
+                    <h3 class="fw-bold"><@spring.message "reset.create"/></h3>
                 </div>
 
                 <div class="bg-white rounded shadow-lg p-4 p-md-5">
@@ -20,7 +20,7 @@
                         </div>
                     <#elseif token??>
                         <p class="text-muted mb-4 text-center">
-                            Придумайте надежный пароль для защиты вашего аккаунта
+                            <@spring.message "reset.desc"/>
                         </p>
 
                         <form action="/auth/reset_password" method="post" id="resetPasswordForm">
@@ -28,7 +28,7 @@
                             <input type="hidden" name="token" value="${token}">
 
                             <div class="mb-4">
-                                <label for="password" class="form-label small text-muted">Новый пароль</label>
+                                <label for="password" class="form-label small text-muted"><@spring.message "reset.new"/></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="fas fa-lock text-muted"></i>
@@ -49,12 +49,12 @@
                                     <div class="progress" style="height: 5px;">
                                         <div class="progress-bar" role="progressbar" id="passwordStrength"></div>
                                     </div>
-                                    <small class="text-muted" id="strengthText">Введите пароль</small>
+                                    <small class="text-muted" id="strengthText"><@spring.message "reset.putNew"/></small>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label for="confirmPassword" class="form-label small text-muted">Подтвердите пароль</label>
+                                <label for="confirmPassword" class="form-label small text-muted"><@spring.message "reset.approve"/></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="fas fa-lock text-muted"></i>
@@ -71,27 +71,26 @@
                                     </button>
                                 </div>
                                 <div class="invalid-feedback" id="passwordMatchError">
-                                    Пароли не совпадают
+                                    <@spring.message "reset.notMatch"/>
                                 </div>
                             </div>
 
-                            <!-- Требования к паролю -->
                             <div class="bg-light rounded p-3 mb-4">
                                 <h6 class="mb-2">
                                     <i class="fas fa-shield-alt text-primary me-2"></i>
-                                    Требования к паролю:
+                                    <@spring.message "reset.requirements"/>
                                 </h6>
                                 <ul class="mb-0 small text-muted" style="padding-left: 1.5rem;">
-                                    <li>Минимум 6 символов</li>
-                                    <li>Рекомендуется использовать буквы и цифры</li>
-                                    <li>Чувствителен к регистру</li>
+                                    <li><@spring.message "reset.minSix"/></li>
+                                    <li><@spring.message "reset.recomend"/></li>
+                                    <li><@spring.message "reset.registr"/></li>
                                 </ul>
                             </div>
 
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                                     <i class="fas fa-save me-2"></i>
-                                    Сохранить новый пароль
+                                    <@spring.message "reset.save"/>
                                 </button>
                             </div>
                         </form>
@@ -100,7 +99,7 @@
                     <div class="text-center">
                         <a href="/auth/login" class="text-muted text-decoration-none">
                             <i class="fas fa-arrow-left me-1"></i>
-                            Вернуться к входу
+                            <@spring.message "reset.back"/>
                         </a>
                     </div>
                 </div>
@@ -109,7 +108,6 @@
     </div>
 
     <script>
-        // Показать/скрыть пароль
         function togglePasswordVisibility(inputId, buttonId) {
             const input = document.getElementById(inputId);
             const button = document.getElementById(buttonId);
@@ -131,7 +129,6 @@
         togglePasswordVisibility('password', 'togglePassword');
         togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword');
 
-        // Проверка силы пароля
         const passwordInput = document.getElementById('password');
         const strengthBar = document.getElementById('passwordStrength');
         const strengthText = document.getElementById('strengthText');
@@ -150,22 +147,21 @@
 
             if (strength <= 25) {
                 strengthBar.classList.add('bg-danger');
-                strengthText.textContent = 'Слабый пароль';
+                strengthText.textContent = <@spring.message "reset.weak"/>;
             } else if (strength <= 50) {
                 strengthBar.classList.add('bg-warning');
-                strengthText.textContent = 'Средний пароль';
+                strengthText.textContent = <@spring.message "reset.medium"/>;
             } else if (strength <= 75) {
                 strengthBar.classList.add('bg-info');
-                strengthText.textContent = 'Хороший пароль';
+                strengthText.textContent = <@spring.message "reset.good"/>;
             } else {
                 strengthBar.classList.add('bg-success');
-                strengthText.textContent = 'Надежный пароль';
+                strengthText.textContent = <@spring.message "reset.nice"/>;
             }
 
             checkPasswordMatch();
         });
 
-        // Проверка совпадения паролей
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const passwordMatchError = document.getElementById('passwordMatchError');
         const submitBtn = document.getElementById('submitBtn');
@@ -184,7 +180,6 @@
 
         confirmPasswordInput.addEventListener('input', checkPasswordMatch);
 
-        // Валидация при отправке формы
         document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
             if (passwordInput.value !== confirmPasswordInput.value) {
                 e.preventDefault();
