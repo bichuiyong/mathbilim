@@ -339,7 +339,7 @@
         <div class="olympiad-container">
             <header class="olympiad-header">
                 <h1 class="olympiad-title">
-                    Создание новой олимпиады
+                    <@spring.message "olympiad.create.title" />
                 </h1>
             </header>
 
@@ -354,26 +354,29 @@
                         <input type="hidden" name="creatorId" value="${user.id}">
 
                         <div class="form-group full-width">
-                            <label for="title" class="olympiad-label required">Название олимпиады</label>
-                            <@spring.formInput "olympiadCreateDto.title" "placeholder='Введите название' class='olympiad-input'"/>
+                            <label for="title" class="olympiad-label required"><@spring.message "olympiad.create.label.title" /></label>
+                            <@spring.formInput "olympiadCreateDto.title"
+                            "placeholder='${springMacroRequestContext.getMessage('olympiad.create.placeholder.title')}' class='olympiad-input'"
+                            />
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group full-width">
-                            <label for="info" class="olympiad-label required">Описание</label>
-                            <@spring.formTextarea "olympiadCreateDto.info" "placeholder='Введите подробное описание олимпиады' class='olympiad-textarea rich-text-editor'"/>
+                            <label for="info" class="olympiad-label required"><@spring.message "olympiad.create.label.description" /></label>
+                            <@spring.formTextarea "olympiadCreateDto.info"
+                            "placeholder='${springMacroRequestContext.getMessage('olympiad.create.placeholder.description')}' class='olympiad-textarea rich-text-editor'"/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="start_date" class="olympiad-label required">Дата начала</label>
+                            <label for="start_date" class="olympiad-label required"><@spring.message "olympiad.create.label.startDate" /></label>
                             <input
                                     name="startDate" type="date" class="olympiad-input" value="${olympiadCreateDto.startDate!''}" <#if olympiadCreateDto.hasStarted> readonly </#if>>
                             <@spring.showErrors "startDate" "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="end_date" class="olympiad-label required">Дата окончания</label>
+                            <label for="end_date" class="olympiad-label required"><@spring.message "olympiad.create.label.endDate" /></label>
                             <input
                                     name="endDate" type="date" class="olympiad-input" value="${olympiadCreateDto.endDate!''}" <#if olympiadCreateDto.hasEnded> readonly </#if>>
                             <@spring.showErrors "endDate" "text-danger small mt-1"/>
@@ -384,41 +387,41 @@
                         </#if>
 
                         <div class="form-group full-width">
-                            <label for="rules" class="olympiad-label required">Правила участия</label>
+                            <label for="rules" class="olympiad-label required"><@spring.message "olympiad.create.label.rules" /></label>
                             <@spring.formTextarea "olympiadCreateDto.rules" 'class="olympiad-textarea rich-text-editor"'/>
                             <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="form-group full-width">
-                            <label class="olympiad-label required">Главное изображение</label>
+                            <label class="olympiad-label required"><@spring.message "olympiad.create.label.mainImage" /></label>
                             <div class="image-upload-container">
                                 <input type="file" id="mainImageInput" name="imageFile" accept="image/*" class="form-control mb-3" required>
                                 <div class="image-preview-container" style="display: none;">
-                                    <p class="crop-hint">Перетаскивайте или масштабируйте, чтобы выбрать область обрезки (1200x1000)</p>
+                                    <p class="crop-hint"><@spring.message "olympiad.create.cropHint" /></p>
                                     <div class="crop-container">
                                         <img id="imagePreview" class="img-fluid">
                                     </div>
                                     <div class="crop-controls mt-3">
-                                        <button type="button" class="olympiad-btn olympiad-btn-primary" id="cropButton">Применить кроп</button>
-                                        <button type="button" class="olympiad-btn olympiad-btn-outline" id="cancelCrop">Отменить</button>
+                                        <button type="button" class="olympiad-btn olympiad-btn-primary" id="cropButton"><@spring.message "olympiad.create.cropApply" /></button>
+                                        <button type="button" class="olympiad-btn olympiad-btn-outline" id="cancelCrop"><@spring.message "olympiad.create.cropCancel" /></button>
                                     </div>
                                 </div>
                                 <div class="cropped-preview" style="display: none;">
-                                    <label class="olympiad-label">Предпросмотр:</label>
+                                    <label class="olympiad-label"><@spring.message "olympiad.create.previewLabel" />:</label>
                                     <div class="cropped-image-container">
                                         <img id="croppedImage" class="img-fluid border rounded">
                                     </div>
-                                    <button type="button" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                    <button type="button" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm mt-2" id="changeCrop"><@spring.message "olympiad.create.cropChange" /></button>
                                     <p id="imageError" class="text-danger small mt-1" style="display: none;"></p>
                                 </div>
                                 <small class="form-text text-muted">
-                                    Изображение будет обрезано до размера 1200x1000. Максимальный размер файла: 5MB.
+                                    <@spring.message "olympiad.create.imageHint" />
                                 </small>
                             </div>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Организаторы</label>
+                            <label><@spring.message "olympiad.create.label.organizers" /></label>
                             <button type="button" id="toggleOrganizers" class="olympiad-btn olympiad-btn-outline olympiad-btn-sm"
                                     style="margin-bottom: 0.5rem;">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -426,17 +429,17 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M19 9l-7 7-7-7" />
                                 </svg>
-                                Показать организаторов
+                                <@spring.message "olympiad.create.showOrganizers" />
                             </button>
                             <div id="organizersContainer" class="checkbox-group"></div>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Контакты</label>
+                            <label><@spring.message "olympiad.create.label.contacts" /></label>
                             <div id="contacts" class="contacts-container">
                                 <div class="contact-card">
                                     <select name="contacts[0].contactType" class="olympiad-select contact-type-select" required>
-                                        <option value="" disabled>Выберите тип контакта</option>
+                                        <option value="" disabled><@spring.message "olympiad.create.selectContactType" /></option>
                                         <#if contactTypes??>
                                             <#list contactTypes as type>
                                                 <option value="${type.id}" <#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0) && olympiadCreateDto.contacts[0].contactType?? && olympiadCreateDto.contacts[0].contactType.id == type.id>selected</#if>>${type.name}</option>
@@ -444,14 +447,14 @@
                                         </#if>
                                     </select>
                                     <input type="text" name="contacts[0].info" value="<#if olympiadCreateDto.contacts?? && (olympiadCreateDto.contacts?size > 0)>${olympiadCreateDto.contacts[0].info!}</#if>"
-                                           placeholder="Ссылка или контакт" class="olympiad-input">
+                                           placeholder="<@spring.message 'olympiad.create.contactPlaceholder' />" class="olympiad-input">
                                     <button type="button" class="olympiad-btn olympiad-btn-outline remove-contact">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                              stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
-                                        Удалить
+                                        <@spring.message "olympiad.create.removeContact" />
                                     </button>
                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                 </div>
@@ -462,21 +465,21 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
-                                Добавить контакт
+                                <@spring.message "olympiad.create.addContact" />
                             </button>
                         </div>
 
                         <div class="form-group full-width">
-                            <label style="margin-bottom: 10px" for="stageCount">Количество этапов</label>
+                            <label style="margin-bottom: 10px" for="stageCount"><@spring.message "olympiad.create.label.stageCount" /></label>
                             <select id="stageCount" name="stage_count" class="olympiad-select">
-                                <option value="" disabled selected>Выберите количество этапов</option>
-                                <option value="1">1 этап</option>
-                                <option value="2">2 этапа</option>
-                                <option value="3">3 этапа</option>
-                                <option value="4">4 этапа</option>
-                                <option value="5">5 этапа</option>
-                                <option value="6">6 этапа</option>
-                                <option value="7">7 этапа</option>
+                                <option value="" disabled selected><@spring.message "olympiad.create.selectStageCount" /></option>
+                                <option value="1">1 <@spring.message "olympiad.create.stage" /></option>
+                                <option value="2">2 <@spring.message "olympiad.create.stages" /></option>
+                                <option value="3">3 <@spring.message "olympiad.create.stages" /></option>
+                                <option value="4">4 <@spring.message "olympiad.create.stages" /></option>
+                                <option value="5">5 <@spring.message "olympiad.create.stages" /></option>
+                                <option value="6">6 <@spring.message "olympiad.create.stages" /></option>
+                                <option value="7">7 <@spring.message "olympiad.create.stages" /></option>
                             </select>
 
                             <div class="stages-container" id="stagesContainer">
@@ -484,27 +487,29 @@
                                     <#list olympiadCreateDto.stages as stage>
                                         <div class="stage-card">
                                             <div class="stage-header">
-                                                <span class="stage-title">Этап ${stage.stageOrder}</span>
+                                            <span class="stage-title">
+                                                <@spring.message "olympiad.create.stageTitle"/>
+                                            </span>
                                             </div>
                                             <div class="olympiad-grid" style="gap: 1rem;">
                                                 <input name="stages[${stage_index}].stageOrder" value="${stage.stageOrder}" type="hidden">
                                                 <div class="form-group">
-                                                    <label class="olympiad-label required">Дата начала</label>
+                                                    <label class="olympiad-label required"><@spring.message "olympiad.create.label.eventStartDate" /></label>
                                                     <input class="olympiad-input" name="stages[${stage_index}].eventStartDate" type="date" value="${stage.eventStartDate!}" required>
                                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="olympiad-label required">Дата окончания</label>
+                                                    <label class="olympiad-label required"><@spring.message "olympiad.create.label.eventEndDate" /></label>
                                                     <input class="olympiad-input" name="stages[${stage_index}].eventEndDate" type="date" value="${stage.eventEndDate!}" required>
                                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="olympiad-label required">Начало регистрации</label>
+                                                    <label class="olympiad-label required"><@spring.message "olympiad.create.label.registrationStart" /></label>
                                                     <input class="olympiad-input" name="stages[${stage_index}].registrationStart" type="date" value="${stage.registrationStart!}" required>
                                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="olympiad-label required">Конец регистрации</label>
+                                                    <label class="olympiad-label required"><@spring.message "olympiad.create.label.registrationEnd" /></label>
                                                     <input class="olympiad-input" name="stages[${stage_index}].registrationEnd" type="date" value="${stage.registrationEnd!}" required>
                                                     <@spring.showErrors "<br>", "text-danger small mt-1"/>
                                                 </div>
@@ -535,7 +540,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                         </svg>
-                        Сохранить олимпиаду
+                        <@spring.message "olympiad.create.button.save" />
                     </button>
                 </form>
             </div>

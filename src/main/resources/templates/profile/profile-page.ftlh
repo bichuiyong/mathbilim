@@ -357,7 +357,6 @@
         isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
-
     <div class="container mt-4" data-user-id="${user.id!}">
         <div class="row">
             <div class="col-lg-4 mb-4">
@@ -365,7 +364,7 @@
                     <div class="card-body text-center">
                         <div class="profile-avatar-container mb-3">
                             <#if user.avatar??>
-                                <img src="/api/files/${user.avatar.id}/download" alt="Аватар" class="profile-avatar">
+                                <img src="/api/files/${user.avatar.id}/download" alt="<@spring.message "profile.avatar.alt"/>" class="profile-avatar">
                             <#else>
                                 <div class="profile-avatar-placeholder">
                                     <i class="fas fa-user"></i>
@@ -382,14 +381,13 @@
                         </span>
                         </#if>
 
-
                         <div class="d-flex justify-content-center gap-2 mb-3">
                             <#if isAdmin>
-                                <span class="badge bg-danger">Администратор</span>
+                                <span class="badge bg-danger"><@spring.message "role.admin"/></span>
                             <#elseif isModer>
-                                <span class="badge bg-warning">Модератор</span>
+                                <span class="badge bg-warning"><@spring.message "role.moderator"/></span>
                             <#else>
-                                <span class="badge bg-info">Пользователь</span>
+                                <span class="badge bg-info"><@spring.message "role.user"/></span>
                             </#if>
                         </div>
 
@@ -397,15 +395,15 @@
                             <div class="row text-center">
                                 <div class="col-4">
                                     <div class="stat-value" id="totalContent">0</div>
-                                    <div class="stat-label">Контента</div>
+                                    <div class="stat-label"><@spring.message "profile.content.total"/></div>
                                 </div>
                                 <div class="col-4">
                                     <div class="stat-value" id="approvedContent">0</div>
-                                    <div class="stat-label">Одобрено</div>
+                                    <div class="stat-label"><@spring.message "profile.content.approved"/></div>
                                 </div>
                                 <div class="col-4">
                                     <div class="stat-value" id="pendingContent">0</div>
-                                    <div class="stat-label">На проверке</div>
+                                    <div class="stat-label"><@spring.message "profile.content.pending"/></div>
                                 </div>
                             </div>
                         </div>
@@ -413,12 +411,12 @@
                         <hr>
 
                         <a href="/users/${user.id}/edit" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                            <i class="fas fa-edit me-2"></i>Редактировать профиль
+                            <i class="fas fa-edit me-2"></i><@spring.message "button.edit.profile"/>
                         </a>
 
                         <a href="https://t.me/Math_Bilim_bot?start=${user.id}"
                            target="_blank" class="btn btn-outline-primary btn-sm w-100">
-                            📲 Подключить уведомления в Telegram
+                            📲 <@spring.message "button.connect.telegram"/>
                         </a>
                     </div>
                 </div>
@@ -426,26 +424,26 @@
                 <!-- Быстрые действия -->
                 <div class="card mt-3">
                     <div class="card-body">
-                        <h6 class="card-title mb-3">Создать</h6>
+                        <h6 class="card-title mb-3"><@spring.message "content.create.title"/></h6>
                         <div class="d-grid gap-2">
                             <a href="/posts/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-newspaper me-2"></i>Публикация
+                                <i class="fas fa-newspaper me-2"></i><@spring.message "content.type.post"/>
                             </a>
                             <a href="/blog/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-blog me-2"></i>Блог
+                                <i class="fas fa-blog me-2"></i><@spring.message "content.type.blog"/>
                             </a>
                             <a href="/events/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-calendar-alt me-2"></i>Мероприятие
+                                <i class="fas fa-calendar-alt me-2"></i><@spring.message "content.type.event"/>
                             </a>
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-book me-2"></i>Книга
+                                <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
                             </a>
                             <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-book me-2"></i>Организация
+                                <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
                             </a>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-book me-2"></i>Олимпиада
+                                    <i class="fas fa-book me-2"></i><@spring.message "content.type.olympiad"/>
                                 </a>
                             </#if>
                         </div>
@@ -460,20 +458,20 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="content-tab" data-bs-toggle="tab"
                                         data-bs-target="#content" type="button" role="tab">
-                                    <i class="fas fa-file-alt me-2"></i>Мой контент
+                                    <i class="fas fa-file-alt me-2"></i><@spring.message "tab.my.content"/>
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="history-tab" data-bs-toggle="tab"
                                         data-bs-target="#history" type="button" role="tab">
-                                    <i class="fas fa-history me-2"></i>Моя история
+                                    <i class="fas fa-history me-2"></i><@spring.message "tab.my.history"/>
                                 </button>
                             </li>
                             <#if isModer>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="moderation-tab" data-bs-toggle="tab"
                                             data-bs-target="#moderation" type="button" role="tab">
-                                        <i class="fas fa-tasks me-2"></i>Модерация
+                                        <i class="fas fa-tasks me-2"></i><@spring.message "tab.moderation"/>
                                         <span class="badge bg-danger ms-1" id="moderationCount">0</span>
                                     </button>
                                 </li>
@@ -482,13 +480,13 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users"
                                             type="button" role="tab">
-                                        <i class="fas fa-users me-2"></i>Пользователи
+                                        <i class="fas fa-users me-2"></i><@spring.message "tab.users"/>
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category"
                                             type="button" role="tab">
-                                        <i class="fa-solid fa-clipboard me-2"></i>Категории/Типы контента
+                                        <i class="fa-solid fa-clipboard me-2"></i><@spring.message "tab.categories"/>
                                     </button>
                                 </li>
                             </#if>
@@ -504,17 +502,17 @@
                                     <div class="row g-2">
                                         <div class="col-md-4">
                                             <select class="form-select form-select-sm" id="contentFilter">
-                                                <option value="all">Все типы</option>
-                                                <option value="posts">Публикации</option>
-                                                <option value="blog">Блог</option>
-                                                <option value="events">Мероприятия</option>
-                                                <option value="books">Книги</option>
+                                                <option value="all"><@spring.message "filter.all.types"/></option>
+                                                <option value="posts"><@spring.message "content.type.posts"/></option>
+                                                <option value="blog"><@spring.message "content.type.blog"/></option>
+                                                <option value="events"><@spring.message "content.type.events"/></option>
+                                                <option value="books"><@spring.message "content.type.books"/></option>
                                             </select>
                                         </div>
                                         <div class="col-md-8">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" class="form-control" id="contentSearch"
-                                                       placeholder="Поиск...">
+                                                       placeholder="<@spring.message "placeholder.search"/>">
                                                 <button class="btn btn-outline-secondary" type="button"
                                                         id="moderationSearchBtn">
                                                     <i class="fas fa-search"></i>
@@ -528,7 +526,7 @@
                                 <div id="userContentList" class="content-list">
                                     <div class="text-center text-muted py-5">
                                         <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                        <p>Загрузка контента...</p>
+                                        <p><@spring.message "message.loading.content"/></p>
                                     </div>
                                 </div>
 
@@ -545,25 +543,25 @@
                                     <div class="row g-2">
                                         <div class="col-md-3">
                                             <select class="form-select form-select-sm" id="historyTypeFilter">
-                                                <option value="all">Все типы</option>
-                                                <option value="post">Публикации</option>
-                                                <option value="blog">Блог</option>
-                                                <option value="event">Мероприятия</option>
-                                                <option value="book">Книги</option>
+                                                <option value="all"><@spring.message "filter.all.types"/></option>
+                                                <option value="post"><@spring.message "content.type.post"/></option>
+                                                <option value="blog"><@spring.message "content.type.blog"/></option>
+                                                <option value="event"><@spring.message "content.type.event"/></option>
+                                                <option value="book"><@spring.message "content.type.book"/></option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">
                                             <select class="form-select form-select-sm" id="historyStatusFilter">
-                                                <option value=" ">Все статусы</option>
-                                                <option value="APPROVED">Одобрено</option>
-                                                <option value="REJECTED">Отклонено</option>
-                                                <option value="PENDING_REVIEW">На рассмотрении</option>
+                                                <option value=" "><@spring.message "filter.all.statuses"/></option>
+                                                <option value="APPROVED"><@spring.message "status.approved"/></option>
+                                                <option value="REJECTED"><@spring.message "status.rejected"/></option>
+                                                <option value="PENDING_REVIEW"><@spring.message "status.pending"/></option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" class="form-control" id="historySearch"
-                                                       placeholder="Поиск по истории...">
+                                                       placeholder="<@spring.message "placeholder.search.history"/>">
                                                 <button class="btn btn-outline-secondary" type="button"
                                                         id="historySearchBtn">
                                                     <i class="fas fa-search"></i>
@@ -576,7 +574,7 @@
                                 <div id="historyContentList" class="content-list">
                                     <div class="text-center text-muted py-5">
                                         <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                        <p>Загрузка истории...</p>
+                                        <p><@spring.message "message.loading.history"/></p>
                                     </div>
                                 </div>
 
@@ -594,17 +592,17 @@
                                         <div class="row g-2">
                                             <div class="col-md-4">
                                                 <select class="form-select form-select-sm" id="moderationTypeFilter">
-                                                    <option value="all">Все типы</option>
-                                                    <option value="post">Публикации</option>
-                                                    <option value="blog">Блог</option>
-                                                    <option value="event">Мероприятия</option>
-                                                    <option value="book">Книги</option>
+                                                    <option value="all"><@spring.message "filter.all.types"/></option>
+                                                    <option value="post"><@spring.message "content.type.post"/></option>
+                                                    <option value="blog"><@spring.message "content.type.blog"/></option>
+                                                    <option value="event"><@spring.message "content.type.event"/></option>
+                                                    <option value="book"><@spring.message "content.type.book"/></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="moderationSearch"
-                                                           placeholder="Поиск...">
+                                                           placeholder="<@spring.message "placeholder.search"/>">
                                                     <button class="btn btn-outline-secondary" type="button"
                                                             id="moderationSearchBtn">
                                                         <i class="fas fa-search"></i>
@@ -617,7 +615,7 @@
                                     <div id="moderationContentList" class="content-list">
                                         <div class="text-center text-muted py-5">
                                             <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                            <p>Загрузка контента для модерации...</p>
+                                            <p><@spring.message "message.loading.moderation"/></p>
                                         </div>
                                     </div>
 
@@ -632,10 +630,10 @@
                                 <div class="tab-pane fade" id="users" role="tabpanel">
                                     <!-- Действия с пользователями -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h5 class="mb-0">Управление пользователями</h5>
+                                        <h5 class="mb-0"><@spring.message "users.management.title"/></h5>
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#createUserModal">
-                                            <i class="fas fa-user-plus me-2"></i>Создать пользователя
+                                            <i class="fas fa-user-plus me-2"></i><@spring.message "button.create.user"/>
                                         </button>
                                     </div>
 
@@ -645,7 +643,7 @@
                                             <div class="col-md-12">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="usersSearch"
-                                                           placeholder="Поиск по имени или email...">
+                                                           placeholder="<@spring.message "placeholder.search.users"/>">
                                                     <button class="btn btn-outline-secondary" type="button"
                                                             id="usersSearchBtn">
                                                         <i class="fas fa-search"></i>
@@ -659,7 +657,7 @@
                                     <div id="usersContentList" class="users-list">
                                         <div class="text-center text-muted py-5">
                                             <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                            <p>Загрузка пользователей...</p>
+                                            <p><@spring.message "message.loading.users"/></p>
                                         </div>
                                     </div>
 
@@ -670,9 +668,9 @@
                                 </div>
                                 <div class="tab-pane fade" id="category" role="tabpanel">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h5 class="mb-0">Управление типами/категориями</h5>
+                                        <h5 class="mb-0"><@spring.message "categories.management.title"/></h5>
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTypeModal" onclick="openCreateModal()">
-                                            <i class="fa-solid fa-clipboard me-2"></i>Создать
+                                            <i class="fa-solid fa-clipboard me-2"></i><@spring.message "button.create"/>
                                         </button>
                                     </div>
                                     <div class="users-filters mb-4">
@@ -680,41 +678,38 @@
                                             <div class="col-md-4">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="typeSearch"
-                                                           placeholder="Поиск по названию...">
-
+                                                           placeholder="<@spring.message "placeholder.search.types"/>">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <select class="form-select form-select-sm" id="languageTypeSortBy">
-                                                    <option disabled>Язык</option>
-                                                    <option value="en">Английский</option>
-                                                    <option value="ky">Кыргызский</option>
-                                                    <option value="ru">Русский</option>
+                                                    <option disabled><@spring.message "filter.language"/></option>
+                                                    <option value="en"><@spring.message "language.english"/></option>
+                                                    <option value="ky"><@spring.message "language.kyrgyz"/></option>
+                                                    <option value="ru"><@spring.message "language.russian"/></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="input-group input-group-sm">
-                                                <select class="form-select form-select-sm" id="staticTypeSortBy">
-                                                    <option value="categories">Категория</option>
-                                                    <option value="eventTypes">Тип мероприятий</option>
-                                                    <option value="postTypes">Тип публикаций</option>
-                                                    <option value="userTypes">Тип пользователей</option>
-                                                </select>
-                                                <button class="btn btn-outline-secondary ms-3" type="button"
+                                                    <select class="form-select form-select-sm" id="staticTypeSortBy">
+                                                        <option value="categories"><@spring.message "type.category"/></option>
+                                                        <option value="eventTypes"><@spring.message "type.event"/></option>
+                                                        <option value="postTypes"><@spring.message "type.post"/></option>
+                                                        <option value="userTypes"><@spring.message "type.user"/></option>
+                                                    </select>
+                                                    <button class="btn btn-outline-secondary ms-3" type="button"
                                                             id="typeSearchBtn">
                                                         <i class="fas fa-search"></i>
-                                                </button>
+                                                    </button>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
 
-<#--                                    ------------------------------------------------------------------>
                                     <div class="users-list" id="typeContentList">
                                         <div class="text-center text-muted py-5">
                                             <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                            <p>Загрузка...</p>
+                                            <p><@spring.message "message.loading"/></p>
                                         </div>
                                     </div>
 
@@ -724,32 +719,32 @@
                                     </nav>
                                 </div>
 
-                                <!-- Вкладка "Весь контент" (для администраторов) -->
+                                <!-- All Content Tab (for admins) -->
                                 <div class="tab-pane fade" id="allcontent" role="tabpanel">
-                                    <!-- Фильтры для всего контента -->
+                                    <!-- All Content Filters -->
                                     <div class="allcontent-filters mb-4">
                                         <div class="row g-2">
                                             <div class="col-md-3">
                                                 <select class="form-select form-select-sm" id="allcontentTypeFilter">
-                                                    <option value="all">Все типы</option>
-                                                    <option value="post">Публикации</option>
-                                                    <option value="blog">Блог</option>
-                                                    <option value="event">Мероприятия</option>
-                                                    <option value="book">Книги</option>
+                                                    <option value="all"><@spring.message "filter.all.types"/></option>
+                                                    <option value="post"><@spring.message "content.type.post"/></option>
+                                                    <option value="blog"><@spring.message "content.type.blog"/></option>
+                                                    <option value="event"><@spring.message "content.type.event"/></option>
+                                                    <option value="book"><@spring.message "content.type.book"/></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
                                                 <select class="form-select form-select-sm" id="allcontentStatusFilter">
-                                                    <option value="all">Все статусы</option>
-                                                    <option value="APPROVED">Одобрено</option>
-                                                    <option value="REJECTED">Отклонено</option>
-                                                    <option value="PENDING_REVIEW">На рассмотрении</option>
+                                                    <option value="all"><@spring.message "filter.all.statuses"/></option>
+                                                    <option value="APPROVED"><@spring.message "status.approved"/></option>
+                                                    <option value="REJECTED"><@spring.message "status.rejected"/></option>
+                                                    <option value="PENDING_REVIEW"><@spring.message "status.pending"/></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control" id="allcontentSearch"
-                                                           placeholder="Поиск по контенту...">
+                                                           placeholder="<@spring.message "placeholder.search.content"/>">
                                                     <button class="btn btn-outline-secondary" type="button"
                                                             id="allcontentSearchBtn">
                                                         <i class="fas fa-search"></i>
@@ -771,8 +766,6 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
 
 
     <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
@@ -780,40 +773,41 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteUserModalLabel">Подтвердить удаление</h5>
+                    <h5 class="modal-title" id="deleteUserModalLabel"><@spring.message "modal.delete.user.title"/></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="deleteUserModalBody">
                     <input type="hidden" value="" id="deleteUserInput">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-danger" id="deleteUserBtn">Удалить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-danger" id="deleteUserBtn"><@spring.message "button.delete"/></button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Edit User Modal -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Изменить пользователя</h5>
+                    <h5 class="modal-title" id="editUserModalLabel"><@spring.message "modal.edit.user.title"/></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editUserForm">
                         <input type="hidden" id="editUserId" name="id" value="">
                         <div class="mb-3">
-                            <label for="editUserName" class="form-label">First name</label>
+                            <label for="editUserName" class="form-label"><@spring.message "label.first.name"/></label>
                             <input type="text" class="form-control" id="editUserName" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="editUserSurname" class="form-label">Last name</label>
+                            <label for="editUserSurname" class="form-label"><@spring.message "label.last.name"/></label>
                             <input type="text" class="form-control" id="editUserSurname" name="surname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="editUserRole" class="form-label">Роль</label>
+                            <label for="editUserRole" class="form-label"><@spring.message "label.role"/></label>
                             <select class="form-select" id="editUserRole" name="role">
                                 <#list roles as role>
                                     <option value="${role.name}">${role.name}</option>
@@ -821,10 +815,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="editUserType" class="form-label">Тип аккаунта</label>
+                            <label for="editUserType" class="form-label"><@spring.message "label.account.type"/></label>
                             <div class="account-type-select">
                                 <select class="form-select" id="editUserType" name="type">
-                                    <option selected disabled value="">Выберите тип аккаунта</option>
+                                    <option selected disabled value=""><@spring.message "option.select.account.type"/></option>
                                     <#list types as type>
                                         <option value="${type.translations[0].typeId}"
                                                 data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
@@ -836,8 +830,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-primary" id="editUserBtn">Сохранить изменения</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-primary" id="editUserBtn"><@spring.message "button.save.changes"/></button>
                 </div>
             </div>
         </div>
@@ -848,32 +842,29 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createUserModalLabel">Создать нового пользователя</h5>
+                    <h5 class="modal-title" id="createUserModalLabel"><@spring.message "modal.create.user.title"/></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="createNewUser">
-                        <#--                        <#if _csrf??>-->
-                        <#--                            <input type="hidden" name="${_csrf.parameterName!}" value="${_csrf.token!}"/>-->
-                        <#--                        </#if>-->
                         <div class="mb-3">
-                            <label for="name" class="form-label">First name</label>
+                            <label for="name" class="form-label"><@spring.message "label.first.name"/></label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="surname" class="form-label">Last name</label>
+                            <label for="surname" class="form-label"><@spring.message "label.last.name"/></label>
                             <input type="text" class="form-control" id="surname" name="surname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label"><@spring.message "label.email"/></label>
                             <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
+                            <label for="password" class="form-label"><@spring.message "label.password"/></label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="mb-3">
-                            <label for="newUserRole" class="form-label">Роль</label>
+                            <label for="newUserRole" class="form-label"><@spring.message "label.role"/></label>
                             <select class="form-select" id="newUserRole" name="role">
                                 <#list roles as role>
                                     <option value="${role.name}">${role.name}</option>
@@ -881,10 +872,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="type" class="form-label">Тип аккаунта</label>
+                            <label for="type" class="form-label"><@spring.message "label.account.type"/></label>
                             <div class="account-type-select">
                                 <select class="form-select" id="type" name="type">
-                                    <option selected disabled value="">Выберите тип аккаунта</option>
+                                    <option selected disabled value=""><@spring.message "option.select.account.type"/></option>
                                     <#list types as type>
                                         <option value="${type.translations[0].typeId}"
                                                 data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
@@ -896,8 +887,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-primary" id="createUserBtn">Создать</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-primary" id="createUserBtn"><@spring.message "button.create"/></button>
                 </div>
             </div>
         </div>
@@ -908,7 +899,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Детали контента</h5>
+                    <h5 class="modal-title" id="modalTitle"><@spring.message "modal.content.details"/></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -917,12 +908,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.close"/></button>
                     <button type="button" class="btn btn-reject" id="modalRejectBtn">
-                        <i class="fas fa-times"></i> Отклонить
+                        <i class="fas fa-times"></i> <@spring.message "button.reject"/>
                     </button>
                     <button type="button" class="btn btn-approve" id="modalApproveBtn">
-                        <i class="fas fa-check"></i> Одобрить
+                        <i class="fas fa-check"></i> <@spring.message "button.approve"/>
                     </button>
                 </div>
             </div>
@@ -936,31 +927,43 @@
             <div class="modal-content">
                 <form id="categoryForm">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createTypeModalLabel">Категория / Тип контента</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        <h5 class="modal-title" id="createTypeModalLabel">
+                            <@spring.message "modal.createType.title"/>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<@spring.message 'button.close'/>"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="nameRu" class="form-label">Название (Русский)</label>
+                            <label for="nameRu" class="form-label">
+                                <@spring.message "modal.createType.nameRu"/>
+                            </label>
                             <input type="text" class="form-control" id="nameRu" name="nameRu" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nameEn" class="form-label">Название (English)</label>
+                            <label for="nameEn" class="form-label">
+                                <@spring.message "modal.createType.nameEn"/>
+                            </label>
                             <input type="text" class="form-control" id="nameEn" name="nameEn" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nameKy" class="form-label">Название (Кыргызча)</label>
+                            <label for="nameKy" class="form-label">
+                                <@spring.message "modal.createType.nameKy"/>
+                            </label>
                             <input type="text" class="form-control" id="nameKy" name="nameKy" required>
                         </div>
                         <div class="mb-3" id="selectWrapper">
-                            <label for="type" class="form-label">Что вы хотите создать?</label>
+                            <label for="type" class="form-label">
+                                <@spring.message "modal.createType.question"/>
+                            </label>
                             <div class="account-type-select">
                                 <select class="form-select" id="staticType">
-                                    <option selected disabled value="">Выберите объект создания</option>
-                                    <option value="categories">Категория</option>
-                                    <option value="event_type">Тип мероприятий</option>
-                                    <option value="post_type">Тип публикаций</option>
-                                    <option value="user_type">Тип пользователей</option>
+                                    <option selected disabled value="">
+                                        <@spring.message "modal.createType.selectPrompt"/>
+                                    </option>
+                                    <option value="categories"><@spring.message "modal.createType.option.category"/></option>
+                                    <option value="event_type"><@spring.message "modal.createType.option.eventType"/></option>
+                                    <option value="post_type"><@spring.message "modal.createType.option.postType"/></option>
+                                    <option value="user_type"><@spring.message "modal.createType.option.userType"/></option>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>
@@ -969,13 +972,18 @@
                         <input type="hidden" id="staticTypeValue" name="staticTypeValue">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" id="createTypeBtn">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <@spring.message "button.cancel"/>
+                        </button>
+                        <button type="button" class="btn btn-primary" id="createTypeBtn">
+                            <@spring.message "button.save"/>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>

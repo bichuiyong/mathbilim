@@ -1,12 +1,15 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
-    <h2 style="margin: 30px 0 45px; color: #666666; text-align: center">Страница олимпиад</h2>
+<#import "/spring.ftl" as spring/>
+<@main.layout >
+    <h2 style="margin: 30px 0 45px; color: #666666; text-align: center">
+        <@spring.message "olympiads.page.title">Страница олимпиад</@spring.message>
+    </h2>
+
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
             <main class="col-12 px-md-4">
                 <div style="max-width: 1200px; margin: 0 auto; position: relative;">
                     <div id="olympiad-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4" style="min-height: 200px;">
-
                     </div>
 
                     <div id="no-olympiads" class="text-center" style="display: none; min-height: 300px; align-items: center; justify-content: center; flex-direction: column;">
@@ -18,8 +21,12 @@
                             <circle cx="12" cy="16" r="1" fill="#6c757d"/>
                         </svg>
                         <div class="mt-3">
-                            <h5 class="text-muted mb-2">Олимпиады не найдены</h5>
-                            <p class="text-muted small">На этой странице пока нет олимпиад</p>
+                            <h5 class="text-muted mb-2">
+                                <@spring.message "olympiads.noOlymphiads.title">Олимпиады не найдены</@spring.message>
+                            </h5>
+                            <p class="text-muted small">
+                                <@spring.message "olympiads.noOlymphiads.text">На этой странице пока нет олимпиад</@spring.message>
+                            </p>
                         </div>
                     </div>
 
@@ -27,100 +34,37 @@
                         <@main.csrf/>
                         <input type="hidden" name="type" value="OLYMPIAD">
                         <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                            <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                            <button class="btn btn-outline-danger">
+                                🔕 <@spring.message "olympiads.button.unsubscribe">Отписаться от уведомлений</@spring.message>
+                            </button>
                         <#else>
-                            <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                            <button class="btn btn-outline-primary">
+                                📩 <@spring.message "olympiads.button.subscribe">Подписаться на уведомления</@spring.message>
+                            </button>
                         </#if>
                     </form>
 
                     <div id="loading-spinner" class="text-center" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: rgba(255, 255, 255, 0.8);">
                         <div class="spinner"></div>
                     </div>
-
                 </div>
 
                 <nav aria-label="Page navigation">
                     <ul id="pagination" class="pagination justify-content-center" style="display: none;">
                     </ul>
                 </nav>
-
-                <style>
-                    .card {
-                        transition: transform 0.2s ease;
-                        border-radius: 8px;
-                        overflow: hidden;
-                        background: #f8f9fa;
-                    }
-
-                    .card:hover {
-                        transform: translateY(-5px);
-                    }
-
-                    .pagination {
-                        display: flex;
-                        padding-left: 0;
-                        list-style: none;
-                        gap: 8px;
-                        margin: 50px 0 10px;
-                    }
-
-                    .page-item.active .page-link {
-                        background-color: #0d6efd;
-                        color: white;
-                        cursor: default;
-                    }
-
-                    .page-item.disabled .page-link {
-                        color: #6c757d;
-                        pointer-events: none;
-                        background-color: #fff;
-                        border-color: #ddd;
-                    }
-
-                    .page-link {
-                        position: relative;
-                        display: block;
-                        padding: 8px 16px;
-                        text-decoration: none;
-                        color: #333;
-                        background-color: #fff;
-                        border: 1px solid #ddd;
-                        border-radius: 6px;
-                        transition: all 0.2s ease;
-                    }
-
-                    .page-link:focus {
-                        outline: none;
-                        box-shadow: none;
-                    }
-
-                    .page-link:hover:not(.disabled) {
-                        background-color: #f0f0f0;
-                    }
-
-                    .spinner {
-                        width: 40px;
-                        height: 40px;
-                        border: 4px solid #ffffff;
-                        border-top: 4px solid #007bff;
-                        border-radius: 50%;
-                        animation: spin 1s linear infinite;
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                    }
-
-                    @keyframes spin {
-                        0% { transform: translate(-50%, -50%) rotate(0deg); }
-                        100% { transform: translate(-50%, -50%) rotate(360deg); }
-                    }
-                </style>
             </main>
         </div>
     </div>
 
+
 <script>
+
+    const i18n = {
+        subscribedSuccess: '<@spring.message "olympiads.notification.subscribed">✅ Вы успешно подписались на уведомления олимпиад!</@spring.message>',
+        unsubscribedSuccess: '<@spring.message "olympiads.notification.unsubscribed">❌ Вы отписались от уведомлений олимпиад</@spring.message>',
+        errorOccurred: '<@spring.message "olympiads.notification.error">❌ Произошла ошибка. Попробуйте позже.</@spring.message>'
+    };
 const urlParams = new URLSearchParams(window.location.search);
     const currentPage = ${page!"0"};
     const defaultSize = ${size!"8"};
@@ -293,10 +237,10 @@ const urlParams = new URLSearchParams(window.location.search);
 
                     if (response.ok) {
                         if (isSubscribed) {
-                            showNotification('✅ Вы успешно подписались на уведомления олимпиад!', 'success');
+                            showNotification(i18n.subscribedSuccess, 'success');
                             updateButtonToUnsubscribe();
                         } else {
-                            showNotification('❌ Вы отписались от уведомлений олимпиад', 'info');
+                            showNotification(i18n.unsubscribedSuccess, 'info');
                             updateButtonToSubscribe();
                         }
                     } else {
@@ -305,7 +249,7 @@ const urlParams = new URLSearchParams(window.location.search);
 
                 } catch (error) {
                     console.error('Error:', error);
-                    showNotification('❌ Произошла ошибка. Попробуйте позже.', 'error');
+                    showNotification(i18n.errorOccurred, 'error');
                     if (isSubscribed) {
                         updateButtonToSubscribe();
                     } else {
@@ -315,14 +259,14 @@ const urlParams = new URLSearchParams(window.location.search);
             });
 
             function updateButtonToUnsubscribe() {
-                subscriptionButton.textContent = '🔕 Отписаться от уведомлений';
+                subscriptionButton.textContent = '🔕 ' + '<@spring.message "olympiads.button.unsubscribe">Отписаться от уведомлений</@spring.message>';
                 subscriptionButton.className = 'btn btn-outline-secondary';
                 subscriptionButton.disabled = false;
                 subscriptionForm.action = '/notifications/unsubscribe';
             }
 
             function updateButtonToSubscribe() {
-                subscriptionButton.textContent = '📩 Подписаться на уведомления';
+                subscriptionButton.textContent = '📩 ' + '<@spring.message "olympiads.button.subscribe">Подписаться на уведомления</@spring.message>';
                 subscriptionButton.className = 'btn btn-outline-primary';
                 subscriptionButton.disabled = false;
                 subscriptionForm.action = '/notifications/subscribe';
