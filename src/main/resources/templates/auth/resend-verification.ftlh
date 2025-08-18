@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-
+<#import "/spring.ftl" as spring>
 <@main.layout "Повторная отправка подтверждения">
     <div class="container my-5">
         <div class="row justify-content-center align-items-center min-vh-50">
@@ -17,8 +17,8 @@
                             </div>
                         </div>
                     </div>
-                    <h3 class="fw-bold">Не получили письмо?</h3>
-                    <p class="text-muted">Мы можем отправить его повторно</p>
+                    <h3 class="fw-bold"><@spring.message "verification.letterDontExist"/></h3>
+                    <p class="text-muted"><@spring.message "verification.dontAgain"/></p>
                 </div>
 
                 <div class="bg-white rounded shadow-lg p-4 p-md-5">
@@ -33,7 +33,7 @@
                         <div class="alert alert-success" role="alert">
                             <div class="text-center">
                                 <i class="fas fa-check-circle mb-2" style="font-size: 2rem;"></i>
-                                <h5 class="mb-2">Письмо отправлено!</h5>
+                                <h5 class="mb-2"><@spring.message "verification.resend"/></h5>
                                 <p class="mb-0">${message}</p>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <@main.csrf/>
 
                             <div class="mb-4">
-                                <label for="email" class="form-label small text-muted">Email адрес</label>
+                                <label for="email" class="form-label small text-muted">Email <@spring.message "address"/></label>
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="fas fa-at text-muted"></i>
@@ -58,45 +58,43 @@
                                            required
                                            autofocus>
                                 </div>
-                                <small class="text-muted">Введите email, использованный при регистрации</small>
+                                <small class="text-muted"><@spring.message "verification.putEmail"/></small>
                             </div>
 
                             <div class="d-grid mb-4">
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="fas fa-paper-plane me-2"></i>
-                                    Отправить письмо повторно
+                                    <@spring.message "verification.again"/>
                                 </button>
                             </div>
                         </form>
                     </#if>
 
-                    <!-- Советы -->
                     <div class="bg-light rounded p-3 mb-4">
                         <h6 class="mb-2">
                             <i class="fas fa-lightbulb text-warning me-2"></i>
-                            Полезные советы:
+                            <@spring.message "verification.advice"/>
                         </h6>
                         <ul class="mb-0 small text-muted" style="padding-left: 1.5rem;">
-                            <li>Проверьте папку "Спам" или "Промоакции"</li>
-                            <li>Добавьте noreply@mathbilim.kg в контакты</li>
-                            <li>Письмо обычно приходит в течение 1-2 минут</li>
-                            <li>Если письмо не пришло, попробуйте через 5 минут</li>
+                            <li><@spring.message "verification.spam"/></li>
+                            <li><@spring.message "verification.contact"/></li>
+                            <li><@spring.message "verification.minute"/></li>
+                            <li><@spring.message "verification.fiveMinute"/></li>
                         </ul>
                     </div>
 
                     <div class="text-center">
                         <a href="/auth/login" class="text-muted text-decoration-none">
                             <i class="fas fa-arrow-left me-1"></i>
-                            Вернуться к входу
+                            <@spring.message "verification.back"/>
                         </a>
                     </div>
                 </div>
 
-                <!-- Дополнительная помощь -->
                 <div class="text-center mt-4">
                     <small class="text-muted">
-                        Все еще проблемы?
-                        <a href="/help" class="text-primary">Свяжитесь с поддержкой</a>
+                        <@spring.message "verification.problem"/>
+                        <a href="/help" class="text-primary"><@spring.message "verification.support"/></a>
                     </small>
                 </div>
             </div>
