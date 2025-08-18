@@ -32,8 +32,8 @@ public class Question {
     @Column(name = "correct_answer", nullable = false, length = 200)
     private String correctAnswer;
 
-    @Column(precision = 5, scale = 2)
-    private BigDecimal weight = BigDecimal.valueOf(1.0);
+
+    private Double weight;
 
     @ManyToOne
     @JoinColumn(name = "topic_id")

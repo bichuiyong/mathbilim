@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "attempts")
@@ -35,6 +35,8 @@ public class Attempt {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
 
-    @Column(precision = 5, scale = 2)
-    private BigDecimal score;
+    private Double score;
+
+    @OneToMany(mappedBy = "attempt")
+    private List<AttemptAnswer> attemptAnswers;
 }

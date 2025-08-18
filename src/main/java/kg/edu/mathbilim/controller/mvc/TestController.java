@@ -34,13 +34,21 @@ public class TestController {
         return "tests/test-pass";
     }
 
+    @GetMapping("attempts/{id}/result")
+    public String resultTest(@PathVariable("id") Long attemptId, Model model) {
+        model.addAttribute("testResultDto", testService.getResultByAttemptId(attemptId));
+        System.out.println("fasfasasf");
+        return "tests/test-result";
+    }
+
     @PostMapping("{id}/pass")
     public String passTest(@PathVariable("id") Long id, @ModelAttribute("testPass")TestPassDto testPassDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "redirect:/tests";
         }
-        testService.passTest(testPassDto,id);
-        return "redirect:/tests";
+
+        Long attemptId = testService.passTest(testPassDto,id);
+        return "redirect:/tests/attempts/" + attemptId + "/result";
     }
 
     @GetMapping("create")

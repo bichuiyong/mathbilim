@@ -20,7 +20,7 @@ public class QuestionDto {
     @NotEmpty
     private String correctAnswer;
     @NotNull
-    private BigDecimal weight;
+    private Double weight;
     @NotNull
     private Long topicId;
 }
