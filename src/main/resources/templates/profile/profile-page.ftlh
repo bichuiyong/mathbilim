@@ -457,6 +457,9 @@
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.olympiad"/>
                                 </a>
+                                <a href="/news/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i><@spring.message "content.type.news"/>
+                                </a>
                             </#if>
                         </div>
                     </div>
