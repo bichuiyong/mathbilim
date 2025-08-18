@@ -19,9 +19,9 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
 
     Page<BlogDto> getBlogsForModeration(Pageable pageable, String query);
 
-    DisplayContentDto getDisplayBlogById(Long id);
+    BlogDto getDisplayBlogById(Long id);
 
-    Page<DisplayContentDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
+    Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
 
     List<DisplayContentDto> getRelatedBlogs(Long excludeId, int limit);
 
@@ -38,4 +38,6 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
     Long countBlogForModeration();
 
     Blog findByBlogId(Long blogId);
+
+    List<BlogDto> getBlogsByMainPage();
 }

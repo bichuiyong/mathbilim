@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -222,4 +223,11 @@ public class PostServiceImpl extends
         return repository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
+
+    @Override
+    public List<PostDto> getPostByMainPage() {
+        List<Post> posts = repository.findTop10ByOrderByCreatedAtDesc();
+
+        return posts.stream().map(mapper::toDto).collect(Collectors.toList());
+    }
 }
