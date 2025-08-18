@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,8 +41,11 @@ public class TestController {
     }
 
     @GetMapping("{id}")
-    public String testDetails(@PathVariable("id") Long id, Model model) {
+    public String testDetails(@PathVariable("id") Long id, Model model,Authentication auth) {
         model.addAttribute("test", testService.getTestById(id));
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            model.addAttribute("lastResults", testService.getLastResultsForUser(auth.getName(), id));
+        }
         return "tests/test-details";
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestResultDto {
+    private Long testId;
     private String testName;
     private String finished;
     private Double totalScoreCount;

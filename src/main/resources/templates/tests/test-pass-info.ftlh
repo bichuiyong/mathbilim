@@ -82,8 +82,27 @@
             color: #6ea8ff;
         }
 
-        .btn-primary {
+        .custom-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0 0.3rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #fff;
             background-color: #388dff;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+
+            outline: none;
+        }
+
+        .custom-btn.excel {
+            background-color: #28a745;
+        }
+
+        .custom-btn.excel:hover {
+            background-color: #1e7e34;
         }
     </style>
 
@@ -106,10 +125,10 @@
                     <i class="bi bi-check2-circle fs-2 mb-2"></i>
                     <h5>Правильных ответов</h5>
                     <p class="fs-4 fw-bold">
-                        <span id="correctAnswers">${result.correctAnswersCount}</span> / ${result.questionCount}
+                        <span id="correctAnswers">${result.correctAnswersCount} / ${result.questionCount}</span>
                     </p>
                     <div class="progress">
-                        <div class="progress-bar bg-primary" id="correctProgress" style="width:${result.totalPercentage}%"></div>
+                        <div class="progress-bar bg-primary" id="correctProgress" style="width:0%"></div>
                     </div>
                     <small id="correctPercent">${result.totalPercentage?string["0.##"]}%</small>
                 </div>
@@ -118,7 +137,7 @@
                 <div class="stat-card text-center">
                     <i class="bi bi-star-fill fs-2 mb-2"></i>
                     <h5>Общий балл</h5>
-                    <p class="fs-4 fw-bold" id="totalScore">${result.totalScoreCount?int} / ${result.maxScoreCount?int}</p>
+                    <p class="fs-4 fw-bold" id="totalScore">${result.totalScoreCount} / ${result.maxScoreCount}</p>
                 </div>
             </div>
         </div>
@@ -141,11 +160,22 @@
         </div>
 
         <div class="text-center mt-4">
-            <button class="btn btn-primary btn-repeat">Пройти тест снова</button>
+            <a href="javascript:history.back()" class="custom-btn">Назад</a>
+            <a href="/tests/${result.testId}/pass" class="custom-btn">Пройти тест снова</a>
+            <a href="/tests//export/excel" class="custom-btn excel">Excel</a>
         </div>
     </div>
 
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const correctBar = document.getElementById('correctProgress');
+            const totalPercent = Math.round(${result.totalPercentage?string["0"]});
+
+            setTimeout(() => {
+                correctBar.style.width = totalPercent + '%';
+            }, 100);
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             const categories = document.querySelectorAll('.category-row');
             categories.forEach((row, index) => {

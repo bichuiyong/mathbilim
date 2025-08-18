@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
@@ -20,5 +21,5 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
             "WHERE a.id = :id")
     Optional<Attempt> findByIdWithAnswersAndTopics(@Param("id") Long id);
 
-
+    List<Attempt> findTop5ByUserAndTestIdOrderByFinishedAtDesc(User user, Long testId);
 }

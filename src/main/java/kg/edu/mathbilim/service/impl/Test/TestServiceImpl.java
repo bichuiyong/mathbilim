@@ -238,6 +238,7 @@ public class TestServiceImpl implements TestService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
         return TestResultDto.builder()
+                .testId(attempt.getTest().getId())
                 .testName(attempt.getTest().getName())
                 .finished(attempt.getFinishedAt().format(formatter))
                 .questionCount(attempt.getTest().getQuestions().size())
@@ -249,6 +250,26 @@ public class TestServiceImpl implements TestService {
                 .build();
     }
 
+    @Override
+    public List<Map<String, String>> getLastResultsForUser(String username, Long testId) {
+        User user = userService.findByEmail(username);
+        List<Attempt> attempts = attemptRepository.findTop5ByUserAndTestIdOrderByFinishedAtDesc(user, testId);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+        List<Map<String, String>> result = new ArrayList<>();
+
+        for (Attempt attempt : attempts) {
+            if (attempt.getFinishedAt() == null) {
+                continue;
+            }
+            Map<String, String> map = new HashMap<>();
+            map.put(String.valueOf(attempt.getId()), attempt.getFinishedAt().format(formatter));
+            result.add(map);
+        }
+
+        return result;
+    }
 
 
 }

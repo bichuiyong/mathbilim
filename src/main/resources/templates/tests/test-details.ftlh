@@ -44,6 +44,22 @@
         .custom {
             background-color: #388dff;
         }
+        .folder-list .folder-item {
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        .folder-list .folder-item:hover {
+            background-color: #e2f0ff;
+        }
+
+        .folder-item i.bi-folder-fill {
+            font-size: 1.1rem;
+        }
+
+
     </style>
     <body>
     <div class="container py-5">
@@ -101,6 +117,35 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold mb-4">Последние 5 результатов</h3>
+                    <div class="folder">
+                        <#if lastResults??>
+                            <ul class="folder-list list-unstyled mb-0">
+                                <#list lastResults as resultItem>
+                                    <#assign attemptId = resultItem?keys[0]?string>
+                                    <#assign finishedAt = resultItem[attemptId]>
+
+                                    <li class="folder-item mb-2 d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-folder-fill text-warning me-2"></i>
+                                        <a href="/tests/attempts/${attemptId}/result" class="text-decoration-none">
+                                            ${finishedAt}
+                                        </a>
+                                    </span>
+                                    </li>
+                                </#list>
+                            </ul>
+
+                        <#else>
+                            <p class="mb-0 text-muted">Нет результатов</p>
+                        </#if>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="additional-info">
