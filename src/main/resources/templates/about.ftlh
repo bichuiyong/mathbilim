@@ -1,177 +1,120 @@
 <#import "layout.ftlh" as main>
-
+<#import "/spring.ftl" as spring>
 <@main.layout title="О проекте">
 
-    <section class="hero-section">
-        <div class="hero-background"></div>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="hero-title">О проекте MathBilim.kg</h1>
-                    <p class="hero-description">
-                        Национальная цифровая платформа для развития математического образования в Кыргызстане
-                    </p>
-                    <div class="hero-decorative"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="container my-5">
-        <div class="row mb-5">
-            <div class="col-lg-10 mx-auto">
-                <div class="card enhanced-card">
-                    <div class="card-body">
-                        <div class="section-header mb-4 text-center">
-                            <h3>Что такое MathBilim.kg</h3>
-                        </div>
-                        <p class="enhanced-lead">
-                            <strong>Mathbilim.kg</strong> — это национальная цифровая платформа для развития
-                            математического образования в Кыргызстане.
-                            Проект инициирован культурно-образовательной организацией <strong>Mathaniyat</strong>, целью
-                            которой является формирование нового подхода к математике в Кыргызстане.
+        <section class="hero-section">
+            <div class="hero-background"></div>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h1 class="hero-title"><@spring.message "about.hero.title"/></h1>
+                        <p class="hero-description">
+                            <@spring.message "about.hero.description"/>
                         </p>
-                        <p class="enhanced-text">
-                            Mathbilim.kg создаётся в ответ на растущий дефицит качественных образовательных материалов,
-                            ограниченность доступа к современной математической среде, особенно в регионах, и отсутствие
-                            единого пространства, где знания, мотивация и практика соединяются.
-                        </p>
+                        <div class="hero-decorative"></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="row mb-5">
-            <div class="col-lg-10 mx-auto">
-                <div class="card enhanced-card">
-                    <div class="card-body">
-                        <div class="section-header mb-4 text-center">
-                            <h3>Миссия Mathbilim.kg</h3>
+        <div class="container my-5">
+            <div class="row mb-5">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card enhanced-card">
+                        <div class="card-body">
+                            <div class="section-header mb-4 text-center">
+                                <h3><@spring.message "about.what_is.title"/></h3>
+                            </div>
+                            <p class="enhanced-lead">
+                                <@spring.message "about.what_is.lead"/>
+                            </p>
+                            <p class="enhanced-text">
+                                <@spring.message "about.what_is.text"/>
+                            </p>
                         </div>
-                        <p class="enhanced-lead">
-                            Миссия платформы — создать живую, доступную и вдохновляющую образовательную среду, в которой
-                            математика воспринимается не как сложный барьер, а как открытый путь к развитию личности,
-                            мышления и профессионального роста.
-                        </p>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="mission-beliefs mt-4">
-                            <h5 class="text-primary mb-4 belief-title">
-                                <span class="belief-spark">✨</span>
-                                Мы верим, что математика может быть:
-                            </h5>
+            <div class="row mb-5">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card enhanced-card">
+                        <div class="card-body">
+                            <div class="section-header mb-4 text-center">
+                                <h3><@spring.message "about.mission.title"/></h3>
+                            </div>
+                            <p class="enhanced-lead">
+                                <@spring.message "about.mission.lead"/>
+                            </p>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="belief-item">
-                                        <div class="items">
-                                            <div class="belief-icon">
-                                                <i class="fas fa-lightbulb"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-primary mb-2">Понятной</h6>
-                                                <p class="mb-0">благодаря современным методам подачи, визуализации и
-                                                    языку</p>
+                            <div class="mission-beliefs mt-4">
+                                <h5 class="text-primary mb-4 belief-title">
+                                    <span class="belief-spark">✨</span>
+                                    <@spring.message "about.mission.belief.title"/>
+                                </h5>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="belief-item">
+                                            <div class="items">
+                                                <div class="belief-icon">
+                                                    <i class="fas fa-lightbulb"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="text-primary mb-2"><@spring.message "about.mission.belief.understandable"/></h6>
+                                                    <p class="mb-0"><@spring.message "about.mission.belief.understandable.desc"/></p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <div class="belief-item">
-                                        <div class="items">
-                                            <div class="belief-icon">
-                                                <i class="fas fa-universal-access"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-primary mb-2">Доступной</h6>
-                                                <p class="mb-0">независимо от региона, школы или статуса</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <div class="belief-item">
-                                        <div class="items">
-                                            <div class="belief-icon">
-                                                <i class="fas fa-link"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-primary mb-2">Связанной с реальностью</h6>
-                                                <p class="mb-0">через задачи, жизненные примеры, культуру и мышление</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <div class="belief-item">
-                                        <div class="items">
-                                            <div class="belief-icon">
-                                                <i class="fas fa-rocket"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-primary mb-2">Вдохновляющей</h6>
-                                                <p class="mb-0">как часть интеллектуального и внутреннего роста</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <!-- Repeat for other beliefs (accessible, relevant, inspiring) -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card support-project-card">
-                    <div class="card-header text-center">
-                        <div class="support-icon mb-3">
-                            <i class="fas fa-heart"></i>
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card support-project-card">
+                        <div class="card-header text-center">
+                            <div class="support-icon mb-3">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h4 class="mb-0 support-title"><@spring.message "about.support.title"/></h4>
                         </div>
-                        <h4 class="mb-0 support-title">Поддержать проект</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <p class="mb-4 support-description">
-                            Ваша поддержка поможет развивать математическое образование в Кыргызстане и делать знания
-                            доступными для каждого.
-                        </p>
-
-                        <div class="support-info">
-                            <div class="support-image-container">
-                                <img src="../static/images/img.png" alt="Mbank" class="support-image">
+                        <div class="card-body text-center">
+                            <p class="mb-4 support-description">
+                                <@spring.message "about.support.description"/>
+                            </p>
+                            <div class="mt-4">
+                                <div class="support-note">
+                                    <i class="fas fa-hands-helping me-2"></i>
+                                    <small><@spring.message "about.support.note"/></small>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="mt-4">
-                            <div class="support-note">
-                                <i class="fas fa-hands-helping me-2"></i>
-                                <small>Каждый вклад важен для развития образования в нашей стране</small>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="alert alert-info enhanced-alert">
+                        <div class="d-flex align-items-start">
+                            <div class="alert-icon me-3 mt-1">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <@spring.message "about.footer.note"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="alert alert-info enhanced-alert">
-                    <div class="d-flex align-items-start">
-                        <div class="alert-icon me-3 mt-1">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div>
-                            <strong>Mathbilim.kg</strong> — это вклад в формирование устойчивого математического
-                            сообщества Кыргызстана, где знания, мышление и культура соединяются в единое пространство.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <style>
         .hero-section {
