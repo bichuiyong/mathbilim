@@ -31,7 +31,7 @@ public class TestController {
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "6") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sortBy));
         Page<TestsListDto> tests = testService.getTests(keyword, pageable);
         model.addAttribute("keyword", keyword);
         model.addAttribute("tests", tests);
@@ -55,10 +55,9 @@ public class TestController {
     }
 
     @GetMapping("attempts/{id}/result")
-    public String resultTest(@PathVariable("id") Long attemptId, Model model) {
-        model.addAttribute("testResultDto", testService.getResultByAttemptId(attemptId));
-        System.out.println("fasfasasf");
-        return "tests/test-result";
+    public String resultTest(@PathVariable("id") Long attemptId, Model model, Authentication auth) {
+        model.addAttribute("result", testService.getResultByAttemptId(attemptId,auth.getName()));
+        return "tests/test-pass-info";
     }
 
     @PostMapping("{id}/pass")

@@ -1,9 +1,9 @@
 package kg.edu.mathbilim.service.impl.Test;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotFoundException;
 import kg.edu.mathbilim.dto.test.*;
 import kg.edu.mathbilim.exception.nsee.AttemptNotFoundException;
+import kg.edu.mathbilim.exception.nsee.NotOwnResult;
 import kg.edu.mathbilim.exception.nsee.QuestionNotFoundException;
 import kg.edu.mathbilim.exception.nsee.TestNotFoundException;
 import kg.edu.mathbilim.mapper.TestMapper;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -182,19 +183,29 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public TestResultDto getResultByAttemptId(Long attemptId) {
-        Attempt attempt = attemptRepository.findByIdWithAnswersAndTopics(attemptId).orElseThrow(AttemptNotFoundException::new);
+    public TestResultDto getResultByAttemptId(Long attemptId, String username) {
+        Attempt attempt = attemptRepository.findByIdWithAnswersAndTopics(attemptId)
+                .orElseThrow(AttemptNotFoundException::new);
+
+        User user = userService.findByEmail(username);
+        if (!Objects.equals(user.getId(), attempt.getUser().getId())) {
+            throw new NotOwnResult();
+        }
+
         List<AttemptAnswer> attemptAnswers = attempt.getAttemptAnswers();
         double totalScore = 0.0;
         double maxScore = 0.0;
+        int correctAnswersCount = 0;
 
         for (AttemptAnswer aa : attemptAnswers) {
             maxScore += aa.getQuestion().getWeight();
             if (aa.getIsCorrect()) {
                 totalScore += aa.getQuestion().getWeight();
+                correctAnswersCount++;
             }
         }
-        double totalPercentage = (totalScore / maxScore) * 100;
+
+        double totalPercentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0.0;
 
         Map<Topic, Double> scorePerTopic = new HashMap<>();
         Map<Topic, Double> maxPerTopic = new HashMap<>();
@@ -220,18 +231,24 @@ public class TestServiceImpl implements TestService {
                     topic.getName(),
                     scorePerTopic.get(topic),
                     maxPerTopic.get(topic),
-
                     percent
             ));
         }
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
         return TestResultDto.builder()
+                .testName(attempt.getTest().getName())
+                .finished(attempt.getFinishedAt().format(formatter))
+                .questionCount(attempt.getTest().getQuestions().size())
+                .correctAnswersCount(correctAnswersCount)
                 .totalScoreCount(totalScore)
                 .maxScoreCount(maxScore)
                 .totalPercentage(totalPercentage)
                 .topicResultDtoList(topicResults)
                 .build();
     }
+
 
 
 }

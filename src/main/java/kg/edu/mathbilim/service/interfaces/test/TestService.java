@@ -21,5 +21,5 @@ public interface TestService {
 
     Long passTest(TestPassDto testPassDto, Long id);
 
-    TestResultDto getResultByAttemptId(Long attemptId);
+    TestResultDto getResultByAttemptId(Long attemptId, String username);
 }

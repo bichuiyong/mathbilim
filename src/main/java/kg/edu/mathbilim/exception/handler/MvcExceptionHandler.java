@@ -2,6 +2,7 @@ package kg.edu.mathbilim.exception.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import kg.edu.mathbilim.exception.nsee.NotOwnResult;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +24,11 @@ public class MvcExceptionHandler {
         model.addAttribute("reason", HttpStatus.NOT_FOUND.getReasonPhrase());
         model.addAttribute("details", request);
         return "error/error";
+    }
+
+    @ExceptionHandler(NotOwnResult.class)
+    public String notOwnResult(){
+        return "redirect:/tests";
     }
 
     @ExceptionHandler(MultipartException.class)

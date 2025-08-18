@@ -45,7 +45,6 @@
             background-color: #388dff;
         }
     </style>
-    </head>
     <body>
     <div class="container py-5">
         <div class="test-header text-center mb-5">
@@ -82,7 +81,11 @@
                             <i class="bi bi-clock me-2 text-primary"></i>
                             <div>
                                 <p class="mb-0 fw-bold">Время:</p>
-                                <p class="mb-0">30 минут</p>
+                                <#if test.hasLimit>
+                                    <p class="mb-0">${test.timeLimit} минут</p>
+                                <#else>
+                                    Неограниченно
+                                </#if>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-3">
