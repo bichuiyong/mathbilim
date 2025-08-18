@@ -12,7 +12,7 @@
             padding: 0.5rem 1rem;
         }
         .test-info-card {
-            border-left: 4px solid #0d6efd;
+            border-left: 3px solid #388dff;
             border-radius: 0 8px 8px 0;
         }
         .btn-start-test {
@@ -41,13 +41,15 @@
             padding: 1.5rem;
             margin-top: 2rem;
         }
+        .custom {
+            background-color: #388dff;
+        }
     </style>
     </head>
     <body>
     <div class="container py-5">
         <div class="test-header text-center mb-5">
-            <span class="badge bg-primary subject-badge mb-3">Математика</span>
-            <h1 class="display-5 fw-bold mb-3">Предметный тест по Математике</h1>
+            <h1 class="display-5 fw-bold mb-3">Тест: ${test.name}</h1>
             <p class="lead mb-4">Проверьте свои знания перед основным тестированием</p>
         </div>
 
@@ -55,14 +57,14 @@
             <div class="col-lg-8">
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
-                        <h2 class="h4 fw-bold mb-3">Добро пожаловать на предметный тест по Математике</h2>
-                        <p class="mb-4">Тест состоит из 30 заданий, на выполнение которых отводится 30 минут. Во время выполнения заданий Вы можете изменить выбранный вариант ответа, но сделать это можно только один раз для каждого задания. При исправлении новый (правильный) ответ будет представлен квадратиком.</p>
+                        <h2 class="h4 fw-bold mb-3">Добро пожаловать на тест: ${test.name}</h2>
+                        <p class="mb-4">Тест состоит из ${test.questionCount} заданий,<#if test.hasLimit> на выполнение которых отводится ${test.timeLimit} минут.<#else>время на выполнение не ограничено</#if> Во время выполнения заданий Вы можете изменить выбранный вариант ответа, но сделать это можно только один раз для каждого задания. При исправлении новый (правильный) ответ будет представлен квадратиком.</p>
 
                         <p class="mb-4">После прохождения теста Вы получите результат, в котором будет указано количество данных Вами правильных ответов и общий процент правильно и неправильно выполненных заданий. Желаем удачи!</p>
 
                         <h3 class="h5 fw-bold mt-4 mb-3">Правила прохождения теста:</h3>
                         <ul class="rules-list">
-                            <li>На прохождение теста дается ограниченное время</li>
+                            <#if test.hasLimit><li>На прохождение теста дается ограниченное время</li></#if>
                             <li>Можно вернуться к предыдущим вопросам</li>
                             <li>Изменение ответа возможно только один раз для каждого вопроса</li>
                             <li>После окончания времени тест завершается автоматически</li>
@@ -87,18 +89,11 @@
                             <i class="bi bi-list-task me-2 text-primary"></i>
                             <div>
                                 <p class="mb-0 fw-bold">Количество заданий:</p>
-                                <p class="mb-0">30</p>
+                                <p class="mb-0">${test.questionCount}</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="bi bi-bar-chart me-2 text-primary"></i>
-                            <div>
-                                <p class="mb-0 fw-bold">Сложность:</p>
-                                <p class="mb-0">Средняя</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary btn-start-test w-100 py-2">
-                            Начать тест
+                        <button class="btn btn-primary custom btn-start-test w-100 py-2">
+                            <a style="all:unset" href="/tests/${test.id}/pass">Начать тест</a>
                         </button>
                     </div>
                 </div>

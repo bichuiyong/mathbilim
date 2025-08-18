@@ -363,8 +363,14 @@
 
                         <div class="tc-form-group">
                             <label for="testName" class="tc-label tc-required">Название теста</label>
-                            <input type="text" id="testName" name="name" class="tc-input" required maxlength="100">
-                            <div class="tc-page-error" id="testNameError">Название теста должно быть от 1 до 100 символов</div>
+                            <input type="text" id="testName" name="name" class="tc-input" required maxlength="50">
+                            <div class="tc-page-error" id="testNameError">Название теста должно быть от 1 до 50 символов</div>
+                        </div>
+
+                        <div class="tc-form-group">
+                            <label for="testName" class="tc-label tc-required">Описание</label>
+                            <input type="text" id="testName" name="description" class="tc-input" required maxlength="100">
+                            <div class="tc-page-error" id="testNameError">Описание должно быть от 1 до 100 символов</div>
                         </div>
 
                         <div class="tc-form-group">

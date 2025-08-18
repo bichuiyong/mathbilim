@@ -5,7 +5,8 @@ CREATE TABLE topics (
 
 CREATE TABLE tests (
                        id BIGSERIAL PRIMARY KEY,
-                       name VARCHAR(255) NOT NULL,
+                       name VARCHAR(100) NOT NULL,
+                        description varchar(200),
                        file_id bigint not null references files(id),
                         has_limit BOOLEAN,
                        time_limit INT,

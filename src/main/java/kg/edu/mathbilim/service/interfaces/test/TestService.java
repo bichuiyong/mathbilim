@@ -2,10 +2,17 @@ package kg.edu.mathbilim.service.interfaces.test;
 
 import kg.edu.mathbilim.dto.test.*;
 import kg.edu.mathbilim.model.test.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface TestService {
+
+    Page<TestsListDto> getTests(String keyword, Pageable pageable);
+
+    TestsListDto getTestById(long id);
+
     List<Topic> getTopics();
 
     void createTest(TestCreateDto dto);

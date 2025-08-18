@@ -20,8 +20,11 @@ import java.util.List;
 @ValidTimeLimit(min = 1, max = 500)
 public class TestCreateDto {
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 50)
     private String name;
+
+    @Size(min = 1, max = 100)
+    private String description;
 
     @NotNull
     private MultipartFile file;

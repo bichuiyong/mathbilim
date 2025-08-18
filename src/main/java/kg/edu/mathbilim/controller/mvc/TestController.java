@@ -1,11 +1,17 @@
 package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
-import kg.edu.mathbilim.dto.test.AttemptAnswerDto;
 import kg.edu.mathbilim.dto.test.TestCreateDto;
 import kg.edu.mathbilim.dto.test.TestPassDto;
+import kg.edu.mathbilim.dto.test.TestsListDto;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.test.TestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,19 +23,33 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TestController {
     private final TestService testService;
+    private final UserService userService;
 
     @GetMapping()
-    public String tests() {
+    public String tests(Model model,
+                        @RequestParam(defaultValue = "") String keyword,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "6") int size,
+                        @RequestParam(defaultValue = "createdAt") String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<TestsListDto> tests = testService.getTests(keyword, pageable);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("tests", tests);
+        model.addAttribute("total", tests.getContent().size());
         return "tests/test-list";
     }
 
     @GetMapping("{id}")
-    public String testDetails(@PathVariable("id") Long id) {
+    public String testDetails(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("test", testService.getTestById(id));
         return "tests/test-details";
     }
 
     @GetMapping("{id}/pass")
-    public String passTest(@PathVariable("id") Long id, Model model) {
+    public String passTest(@PathVariable("id") Long id, Model model, Authentication auth) {
+        if (auth == null) {
+            return "redirect:/auth/login";
+        }
         model.addAttribute("test", testService.getTestDtoForPassById(id));
         return "tests/test-pass";
     }

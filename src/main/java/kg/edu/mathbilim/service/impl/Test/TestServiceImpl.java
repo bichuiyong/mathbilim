@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.service.impl.Test;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.ws.rs.NotFoundException;
 import kg.edu.mathbilim.dto.test.*;
 import kg.edu.mathbilim.exception.nsee.AttemptNotFoundException;
 import kg.edu.mathbilim.exception.nsee.QuestionNotFoundException;
@@ -14,11 +16,12 @@ import kg.edu.mathbilim.service.interfaces.PDFService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.test.TestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +38,43 @@ public class TestServiceImpl implements TestService {
     private final AttemptRepository attemptRepository;
     private final UserService userService;
     private final AttemptAnswerRepository attemptAnswerRepository;
+
+    @Override
+    public Page<TestsListDto> getTests(String keyword, Pageable pageable) {
+        Page<Test> page;
+        if (keyword == null || keyword.isEmpty()) {
+            page = testRepository.findAll(pageable);
+        } else {
+            page = testRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        }
+
+        return page.map(test -> {
+            TestsListDto dto = new TestsListDto();
+            dto.setId(test.getId());
+            dto.setName(test.getName());
+            dto.setDescription(test.getDescription());
+            dto.setHasLimit(test.getHasLimit());
+            dto.setTimeLimit(test.getTimeLimit());
+            dto.setQuestionCount(test.getQuestions().size());
+            return dto;
+        });
+    }
+
+    @Override
+    public TestsListDto getTestById(long id) {
+        return testRepository.findById(id)
+                .map(test -> {
+                    TestsListDto dto = new TestsListDto();
+                    dto.setId(test.getId());
+                    dto.setName(test.getName());
+                    dto.setDescription(test.getDescription());
+                    dto.setHasLimit(test.getHasLimit());
+                    dto.setTimeLimit(test.getTimeLimit());
+                    dto.setQuestionCount(test.getQuestions().size());
+                    return dto;
+                })
+                .orElseThrow(() -> new NotFoundException("Test not found"));
+    }
 
     @Override
     public List<Topic> getTopics() {
@@ -76,16 +116,15 @@ public class TestServiceImpl implements TestService {
                 .file(file)
                 .hasLimit(dto.getHasLimit())
                 .timeLimit(dto.getTimeLimit())
+                .description(dto.getDescription())
                 .createdAt(LocalDateTime.now())
                 .build();
         Test createdTest = testRepository.saveAndFlush(test);
         questions.forEach(question -> question.setTest(createdTest));
 
         questionRepository.saveAll(questions);
-
-
-
     }
+
     @Transactional
     @Override
     public TestDto getTestDtoForPassById(Long id) {
