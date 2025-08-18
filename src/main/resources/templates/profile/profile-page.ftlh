@@ -353,7 +353,7 @@
     <#if known>
         <#assign
         authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
-        isAdmin = authorities?seq_contains("ADMIN")
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
         isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
