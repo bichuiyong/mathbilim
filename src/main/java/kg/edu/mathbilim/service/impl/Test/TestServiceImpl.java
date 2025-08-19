@@ -238,6 +238,7 @@ public class TestServiceImpl implements TestService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
         return TestResultDto.builder()
+                .attemptId(attempt.getId())
                 .testId(attempt.getTest().getId())
                 .testName(attempt.getTest().getName())
                 .finished(attempt.getFinishedAt().format(formatter))

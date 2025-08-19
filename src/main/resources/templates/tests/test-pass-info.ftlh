@@ -93,8 +93,15 @@
             border-radius: 4px;
             text-decoration: none;
             text-align: center;
-
             outline: none;
+            border: none;
+            cursor: pointer; /
+        }
+
+        .custom-btn:hover {
+            background-color: #2878e6;
+            color: #fff;
+            text-decoration: none;
         }
 
         .custom-btn.excel {
@@ -160,9 +167,9 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="javascript:history.back()" class="custom-btn">Назад</a>
+            <a href="/tests/${result.testId}" class="custom-btn">Назад</a>
             <a href="/tests/${result.testId}/pass" class="custom-btn">Пройти тест снова</a>
-            <a href="/tests//export/excel" class="custom-btn excel">Excel</a>
+            <a href="/api/excel/download/result?attemptId=${result.attemptId}" class="custom-btn excel">Excel</a>
         </div>
     </div>
 

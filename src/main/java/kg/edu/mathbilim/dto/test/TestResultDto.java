@@ -1,8 +1,6 @@
 package kg.edu.mathbilim.dto.test;
 
 import lombok.*;
-
-import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -11,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestResultDto {
+    private Long attemptId;
     private Long testId;
     private String testName;
     private String finished;
