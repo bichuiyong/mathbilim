@@ -904,7 +904,6 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalContent">
-                        <!-- Контент будет загружен здесь -->
                     </div>
                 </div>
                 <div class="modal-footer">
