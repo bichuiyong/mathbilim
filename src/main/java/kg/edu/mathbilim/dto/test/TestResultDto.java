@@ -11,6 +11,7 @@ import java.util.List;
 public class TestResultDto {
     private Long attemptId;
     private Long testId;
+    private String wastedTime;
     private String testName;
     private String finished;
     private Double totalScoreCount;
@@ -18,5 +19,6 @@ public class TestResultDto {
     private Double totalPercentage;
     private Integer questionCount;
     private Integer correctAnswersCount;
+    private String timeToFinish;
     private List<TopicResultDto> topicResultDtoList;
 }

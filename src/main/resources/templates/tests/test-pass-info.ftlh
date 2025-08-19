@@ -32,6 +32,10 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             background-color: #ffffff;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
         }
 
         .stat-card:hover {
@@ -62,7 +66,6 @@
             transform: translateX(-20px);
             transition: transform 0.5s ease, opacity 0.5s ease;
         }
-
 
         .category-row:last-child {
             border-bottom: none;
@@ -95,7 +98,7 @@
             text-align: center;
             outline: none;
             border: none;
-            cursor: pointer; /
+            cursor: pointer;
         }
 
         .custom-btn:hover {
@@ -111,6 +114,12 @@
         .custom-btn.excel:hover {
             background-color: #1e7e34;
         }
+
+        .equal-height-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
     </style>
 
     <div class="container py-5">
@@ -119,15 +128,15 @@
             <p class="lead">Вы прошли тест ${result.finished!"??.??.????"} и получили следующие результаты:</p>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-md-4">
+        <div class="row mb-4 equal-height-row">
+            <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-list-task fs-2 mb-2"></i>
                     <h5>Общее количество вопросов</h5>
                     <p class="fs-4 fw-bold" id="totalQuestions">${result.questionCount}</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-check2-circle fs-2 mb-2"></i>
                     <h5>Правильных ответов</h5>
@@ -140,11 +149,18 @@
                     <small id="correctPercent">${result.totalPercentage?string["0.##"]}%</small>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-star-fill fs-2 mb-2"></i>
                     <h5>Общий балл</h5>
                     <p class="fs-4 fw-bold" id="totalScore">${result.totalScoreCount} / ${result.maxScoreCount}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <i class="bi bi-clock fs-2 mb-2"></i>
+                    <h5>Время прохождения</h5>
+                    <p class="fs-4 fw-bold" id="completionTime">${result.wastedTime}</p>
                 </div>
             </div>
         </div>

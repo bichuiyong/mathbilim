@@ -83,7 +83,7 @@ public class ExcelService {
         Row headerRowGeneral = generalSheet.createRow(0);
         String[] generalHeaders = {
                 "Название теста", "Дата завершения", "Количество вопросов",
-                "Правильных ответов", "Общий балл", "Максимальный балл", "Процент"
+                "Правильных ответов", "Общий балл", "Максимальный балл", "Процент","Время прохождения","Выделенное время"
         };
 
         for (int i = 0; i < generalHeaders.length; i++) {
@@ -110,6 +110,10 @@ public class ExcelService {
         Cell percentageCell = dataRow.createCell(6);
         percentageCell.setCellValue(dto.getTotalPercentage() != null ? dto.getTotalPercentage() : 0.0);
         percentageCell.setCellStyle(numberStyle);
+        Cell timeSpentCell = dataRow.createCell(7);
+        timeSpentCell.setCellValue(dto.getWastedTime());
+        Cell allocatedTimeCell = dataRow.createCell(8);
+        allocatedTimeCell.setCellValue(dto.getTimeToFinish());
 
         for (int i = 0; i < generalHeaders.length; i++) {
             generalSheet.autoSizeColumn(i);

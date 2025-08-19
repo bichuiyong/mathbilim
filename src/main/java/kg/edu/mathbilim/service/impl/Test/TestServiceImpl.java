@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -236,9 +237,23 @@ public class TestServiceImpl implements TestService {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        String wastedTime = "0 мин 0 сек";
+        if (attempt.getStartedAt() != null && attempt.getFinishedAt() != null) {
+            long seconds = ChronoUnit.SECONDS.between(attempt.getStartedAt(), attempt.getFinishedAt());
+            long minutes = seconds / 60;
+            long remainingSeconds = seconds % 60;
+            wastedTime = String.format("%d мин %d сек", minutes, remainingSeconds);
+        }
+        String timeToFinish = "";
+        if (attempt.getTest().getHasLimit()) {
+            timeToFinish = attempt.getTest().getTimeLimit() + " мин";
+        } else {
+            timeToFinish = "none";
+        }
 
         return TestResultDto.builder()
                 .attemptId(attempt.getId())
+                .wastedTime(wastedTime)
                 .testId(attempt.getTest().getId())
                 .testName(attempt.getTest().getName())
                 .finished(attempt.getFinishedAt().format(formatter))
@@ -246,6 +261,7 @@ public class TestServiceImpl implements TestService {
                 .correctAnswersCount(correctAnswersCount)
                 .totalScoreCount(totalScore)
                 .maxScoreCount(maxScore)
+                .timeToFinish(timeToFinish)
                 .totalPercentage(totalPercentage)
                 .topicResultDtoList(topicResults)
                 .build();
