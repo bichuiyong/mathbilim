@@ -445,6 +445,11 @@
                                     <i class="fas fa-book me-2"></i>Олимпиада
                                 </a>
                             </#if>
+                            <#if isModer || isAdmin>
+                                <a href="/tests/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i>Тест
+                                </a>
+                            </#if>
                         </div>
                     </div>
                 </div>
