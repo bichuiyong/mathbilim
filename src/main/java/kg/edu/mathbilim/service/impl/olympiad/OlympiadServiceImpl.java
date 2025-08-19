@@ -231,7 +231,8 @@ public class OlympiadServiceImpl implements OlympiadService {
                         Math.toIntExact(olympiad.getId()),
                         olympiad.getCreatedAt(),
                         olympiad.getTitle(),
-                        olympiad.getImage().getId()
+                        olympiad.getImage().getId(),
+                        olympiad.getInfo()
                 ));
     }
 
@@ -357,7 +358,8 @@ public class OlympiadServiceImpl implements OlympiadService {
                         Math.toIntExact(olympiad.getId()),
                         olympiad.getCreatedAt(),
                         olympiad.getTitle(),
-                        olympiad.getImage().getId()
+                        olympiad.getImage().getId(),
+                        olympiad.getInfo()
                 ))
                 .collect(Collectors.toList());
     }

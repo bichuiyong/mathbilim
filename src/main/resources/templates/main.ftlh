@@ -1,29 +1,9 @@
 <#import "layout.ftlh" as main>
 <@main.layout title="Главная">
     <div class="container mt-4">
-        <!-- Hero Section -->
-        <div class="hero-section mb-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="hero-title">Развиваем математическое мышление в <span
-                                class="text-primary">Кыргызстане</span></h1>
-                    <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических
-                        навыков. Присоединяйтесь к сообществу математиков!</p>
-                    <div class="hero-buttons">
-                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
-                        <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-image">
-                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
-                             alt="Математика" class="img-fluid border-radius">
-                    </div>
-                </div>
-            </div>
+        <div class="hero-section mb-5" id="hero-container">
         </div>
 
-        <!-- Announcement Banner -->
         <div class="alert alert-warning mb-5">
             <div class="d-flex align-items-center">
                 <div class="announcement-icon me-3">

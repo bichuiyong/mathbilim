@@ -573,3 +573,116 @@ if (!document.getElementById('simple-content-styles')) {
     styleSheet.textContent = simpleStyles;
     document.head.appendChild(styleSheet);
 }
+document.addEventListener("DOMContentLoaded", () => {
+    loadHeroOlympiad();
+});
+
+function loadHeroOlympiad() {
+    const heroContainer = document.getElementById('hero-container');
+    if (!heroContainer) return;
+
+    // Показываем состояние загрузки
+    heroContainer.innerHTML = `
+                <div class="hero-loading">
+                    <div class="loading-spinner"></div>
+                    <h3>Загружаем актуальную олимпиаду...</h3>
+                </div>
+            `;
+
+    // Загружаем данные олимпиады (берем первую из списка)
+    fetch('/api/olymp/main')
+        .then(res => {
+            if (!res.ok) throw new Error('Ошибка загрузки олимпиады');
+            return res.json();
+        })
+        .then(data => {
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                showDefaultHero();
+                return;
+            }
+
+            // Берем первую олимпиаду из списка
+            const olympiad = data[0];
+            renderHeroOlympiad(olympiad);
+        })
+        .catch(err => {
+            console.error('Ошибка загрузки олимпиады:', err);
+            showErrorHero();
+        });
+}
+
+function renderHeroOlympiad(olympiad) {
+    const heroContainer = document.getElementById('hero-container');
+
+    const title = olympiad.title || 'Математическая олимпиада';
+    const description = olympiad.info || 'Присоединяйтесь к олимпиаде и проверьте свои математические навыки. Развивайте логическое мышление и соревнуйтесь с лучшими!';
+
+    const imageUrl = olympiad.fileId
+        ? `/api/files/${olympiad.fileId}/view`
+        : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop';
+
+    const dateObj = olympiad.createdAt ? new Date(olympiad.createdAt) : new Date();
+    const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    heroContainer.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">${title}</h1>
+                        <p class="hero-description">${description}</p>
+                        <div class="mb-3">
+                            <small class="text-muted">📅 Дата: ${formattedDate}</small>
+                        </div>
+                          <div class="hero-buttons">
+                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
+                        <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
+                    </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image">
+                            <img src="${imageUrl}" alt="${title}" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            `;
+}
+
+function showDefaultHero() {
+    const heroContainer = document.getElementById('hero-container');
+
+    heroContainer.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
+                        <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
+                        <div class="hero-buttons">
+                            <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
+                            <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image">
+                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop" 
+                                 alt="Математика" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            `;
+}
+
+function showErrorHero() {
+    const heroContainer = document.getElementById('hero-container');
+
+    heroContainer.innerHTML = `
+                <div class="hero-error">
+                    <h2>⚠️ Ошибка загрузки</h2>
+                    <p>Не удалось загрузить информацию об олимпиаде</p>
+                    <button class="btn btn-primary" onclick="loadHeroOlympiad()">
+                        🔄 Попробовать снова
+                    </button>
+                </div>
+            `;
+}

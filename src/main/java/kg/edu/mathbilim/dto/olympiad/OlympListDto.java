@@ -14,4 +14,5 @@ public class OlympListDto {
     private LocalDateTime createdAt;
     private String title;
     private Long fileId;
+    private String info;
 }
