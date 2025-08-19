@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMG_NAME: ${{ github.repository_owner }}/mathbilim
+  IMG_NAME: bichuiyong/mathbilim
 
 jobs:
   build:
@@ -75,7 +75,6 @@ jobs:
           script: |
             cd ${{ secrets.WORK_DIR }}
             
-            # Создаём .env файл с переменными из secrets
             cat > .env << EOF
             MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
             MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
