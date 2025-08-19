@@ -3,6 +3,8 @@ package kg.edu.mathbilim.dto.test;
 import kg.edu.mathbilim.model.File;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -15,4 +17,6 @@ public class TestDto {
     private File file;
     private Integer timeLimit;
     private Integer questionCount;
+
+    private List<QuestionDto> questionDtoList;
 }

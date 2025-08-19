@@ -131,11 +131,21 @@ public class TestServiceImpl implements TestService {
     @Override
     public TestDto getTestDtoForPassById(Long id) {
         Test test = testRepository.findById(id).orElseThrow(TestNotFoundException::new);
+        List<QuestionDto> questions = test.getQuestions().stream()
+                .map(q -> QuestionDto.builder()
+                        .numberOrder(q.getNumberOrder())
+                        .testPageNumber(q.getTestPageNumber())
+                        .build())
+                .toList();
+
         TestDto testDto = testMapper.toDto(test);
         testDto.setQuestionCount(test.getQuestions().size());
+        testDto.setQuestionDtoList(questions);
+
         Attempt attempt = new Attempt();
         attempt.setTest(test);
         attempt.setUser(userService.getAuthUserEntity());
+
         attemptRepository.save(attempt);
 
         return testDto;
