@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMG_NAME: ${{ github.actor }}/mathbilim
+  IMG_NAME: ${{ github.repository_owner }}/mathbilim
 
 jobs:
   build:
@@ -74,5 +74,43 @@ jobs:
           timeout: 30m
           script: |
             cd ${{ secrets.WORK_DIR }}
+            
+            # Создаём .env файл с переменными из secrets
+            cat > .env << EOF
+            MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
+            MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
+            MINIO_BUCKET_NAME=${{ secrets.MINIO_BUCKET_NAME }}
+            MINIO_REGION=${{ secrets.MINIO_REGION }}
+            MINIO_BASE_URL=${{ secrets.MINIO_BASE_URL }}
+            MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}
+            
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+            
+            DB_URL=${{ secrets.DB_URL }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            
+            RESET_EMAIL=${{ secrets.RESET_EMAIL }}
+            RESET_PASSWORD=${{ secrets.RESET_PASSWORD }}
+            
+            RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
+            
+            TGBOTKEY=${{ secrets.TGBOTKEY }}
+            TELEGRAM_NAME=${{ secrets.TELEGRAM_NAME }}
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
+            
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            
+            FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }}
+            FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }}
+            EOF
+            
             docker compose pull
             docker compose up -d
