@@ -139,15 +139,52 @@
             top: 3px;
             left: 3px;
         }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #0d6efd;
+            border-radius: 50%;
+        }
+
+        input[type="radio"].frozen {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 5px 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:read-only {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
     </style>
 
     <h3 class="text-center mt-5">${test.name}</h3>
-    <p class="text-center">Количество заданий: ${test.questionCount} — Время: ${test.timeLimit} минут</p>
+    <p class="text-center">Количество заданий: ${test.questionCount}
 
-    <div id="timer-container">
-        <div id="timer-label">⏳ Осталось времени:</div>
-        <div id="timer"></div>
-    </div>
+        <#if test.hasLimit> — Время: ${test.timeLimit} минут</p>
+    </#if>
+    <#if test.hasLimit>
+        <div id="timer-container">
+            <div id="timer-label">⏳ Осталось времени:</div>
+            <div id="timer"></div>
+        </div>
+    </#if>
+
 
     <div id="pdf-container">
         <canvas id="pdf-render"></canvas>
@@ -183,18 +220,28 @@
                                 <div class="number">${questionNum}</div>
                                 <input type="hidden" name="attemptAnswerDtoList[${index}].questionNumber"
                                        value="${questionNum}">
-                                <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="A"
-                                            data-page="${question.testPageNumber}"></div>
-                                <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="B"
-                                            data-page="${question.testPageNumber}"></div>
-                                <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="C"
-                                            data-page="${question.testPageNumber}"></div>
-                                <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="D"
-                                            data-page="${question.testPageNumber}"></div>
+
+                                <#if question.textFormat?? && question.textFormat>
+                                    <input type="text"
+                                           name="attemptAnswerDtoList[${index}].chosenAnswer"
+                                           data-page="${question.testPageNumber}"
+                                           style="grid-column: span 4; width: 100%; padding: 4px;">
+                                <#else>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="A"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="B"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="C"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="D"
+                                                data-page="${question.testPageNumber}"></div>
+                                </#if>
+
                                 <#assign index = index + 1>
                             </div>
                         </#if>
                     </#list>
+
                 </div>
             </#list>
         </form>
@@ -266,28 +313,36 @@
         window.addEventListener('resize', () => renderPage(pageNum));
 
         const form = document.getElementById("sendAnswersForm");
-        const timerElement = document.getElementById("timer");
-        let timeLeft = 10;
-
         const chosenAnswers = {};
         const allRadios = form.querySelectorAll('input[type="radio"]');
 
+        <#noparse>
+        const answerClicks = {};
+
         allRadios.forEach(radio => {
-            <#noparse>
             radio.addEventListener('click', e => {
                 const question = radio.name;
 
-                if (!chosenAnswers[question]) {
-                    chosenAnswers[question] = radio.value;
-                } else {
+                if (!answerClicks[question]) answerClicks[question] = 0;
 
-                    const oldRadio = form.querySelector(`input[name="${question}"][value="${chosenAnswers[question]}"]`);
-                    if (oldRadio) oldRadio.classList.add('past');
+                if (answerClicks[question] < 2) {
                     chosenAnswers[question] = radio.value;
+                    answerClicks[question]++;
+
+                    if (answerClicks[question] === 2) {
+                        const radiosInGroup = form.querySelectorAll(`input[name="${question}"]`);
+                        radiosInGroup.forEach(r => {
+                            r.disabled = true;
+                            r.classList.add("frozen");
+                        });
+                    }
+                } else {
+                    e.preventDefault();
                 }
             });
-            </#noparse>
         });
+
+        </#noparse>
 
         function updateRadioAvailability(currentPage) {
             allRadios.forEach(r => {
@@ -301,7 +356,21 @@
                     }
                 }
             });
+
+            const textInputs = form.querySelectorAll('input[type="text"][data-page]');
+            textInputs.forEach(inp => {
+                if (timeOver) {
+                    inp.readOnly = true;
+                } else {
+                    inp.readOnly = parseInt(inp.dataset.page) !== currentPage;
+                }
+            });
         }
+
+
+        <#if test.hasLimit>
+        const timerElement = document.getElementById("timer");
+        let timeLeft = ${test.timeLimit} * 60;
 
         <#noparse>
         const timer = setInterval(() => {
@@ -328,6 +397,8 @@
             timeLeft--;
         }, 1000);
         </#noparse>
+        </#if>
     </script>
+
 
 </@main.layout>

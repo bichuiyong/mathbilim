@@ -133,6 +133,7 @@ public class TestServiceImpl implements TestService {
         Test test = testRepository.findById(id).orElseThrow(TestNotFoundException::new);
         List<QuestionDto> questions = test.getQuestions().stream()
                 .map(q -> QuestionDto.builder()
+                        .textFormat(q.getTextFormat())
                         .numberOrder(q.getNumberOrder())
                         .testPageNumber(q.getTestPageNumber())
                         .build())
@@ -141,6 +142,7 @@ public class TestServiceImpl implements TestService {
         TestDto testDto = testMapper.toDto(test);
         testDto.setQuestionCount(test.getQuestions().size());
         testDto.setQuestionDtoList(questions);
+        testDto.setHasLimit(test.getHasLimit());
 
         Attempt attempt = new Attempt();
         attempt.setTest(test);

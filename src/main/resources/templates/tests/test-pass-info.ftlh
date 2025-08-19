@@ -43,28 +43,24 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
         }
 
-        .progress {
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-            background-color: #d6e4ff;
-        }
-
-        .progress-bar {
-            width: 0%;
-            transition: width 0.8s ease;
-        }
-
         .category-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
             align-items: center;
-            padding: 0.5rem 0;
+            gap: 10px;
+            padding: 5px 0;
             border-bottom: 1px solid #cfdffe;
-            opacity: 0;
-            transform: translateX(-20px);
-            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            background-color: #d6e4ff;
+            width: 100%;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #0d6efd;
+            width: 0%;
         }
 
         .category-row:last-child {
@@ -174,9 +170,9 @@
                      data-total="${topic.maxScoreCount?int}">
                     <span>${topic.topicName}</span>
                     <span>${topic.totalScoreCount?int} / ${topic.maxScoreCount?int}
-                    (<span class="category-percent">${topic.percentage?string["0.##"]}%</span>)</span>
-                    <div class="progress" style="width: 50%;">
-                        <div class="progress-bar bg-info" style="width:${topic.percentage?int}%"></div>
+                        (<span class="category-percent">${topic.percentage?floor}%</span>)</span>
+                    <div class="progress" style="width: 100%;">
+                            <div class="progress-bar bg-info" style="width: ${topic.percentage}%;"></div>
                     </div>
                 </div>
             </#list>

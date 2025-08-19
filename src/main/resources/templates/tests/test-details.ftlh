@@ -111,9 +111,9 @@
                                 <p class="mb-0">${test.questionCount}</p>
                             </div>
                         </div>
-                        <button class="btn btn-primary custom btn-start-test w-100 py-2">
-                            <a style="all:unset" href="/tests/${test.id}/pass">Начать тест</a>
-                        </button>
+                        <a class="btn btn-primary custom btn-start-test w-100 py-2" href="/tests/${test.id}/pass">
+                           Начать тест
+                        </a>
                     </div>
                 </div>
             </div>

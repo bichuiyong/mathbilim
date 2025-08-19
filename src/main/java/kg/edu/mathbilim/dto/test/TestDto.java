@@ -15,6 +15,7 @@ public class TestDto {
     private String name;
     private String description;
     private File file;
+    private Boolean hasLimit;
     private Integer timeLimit;
     private Integer questionCount;
 

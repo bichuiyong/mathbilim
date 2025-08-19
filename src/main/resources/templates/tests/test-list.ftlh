@@ -120,8 +120,8 @@
                                     <small class="text-muted"><#if test.hasLimit>${test.timeLimit} мин<#else>Без времени</#if></small>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
-                                    <button class="btn btn-primary custom-btn flex-grow-1"><a style="all:unset" href="/tests/${test.id}/pass">Начать тест</a></button>
-                                    <button class="btn btn-outline-secondary"><a style="all:unset" href="/tests/${test.id}">Подробнее</a></button>
+                                    <a class="btn btn-primary custom-btn flex-grow-1" href="/tests/${test.id}/pass">Начать тест</a>
+                                    <a class="btn btn-outline-secondary" href="/tests/${test.id}">Подробнее</a>
                                 </div>
 
                             </div>
