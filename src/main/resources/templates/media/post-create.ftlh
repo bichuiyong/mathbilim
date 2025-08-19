@@ -82,7 +82,7 @@
                                         <#list createPostDto.post.postTranslations as trans>
                                             <div class="tab-pane fade <#if trans?is_first>show active</#if>"
                                                  id="lang-${trans.languageCode}">
-                                                <!-- Заголовок -->
+
                                                 <div class="mb-4">
                                                     <@spring.bind "createPostDto.post.postTranslations[${trans?index}].title"/>
                                                     <label class="form-label fw-bold">Заголовок</label>
@@ -99,12 +99,11 @@
                                                     </#if>
                                                 </div>
 
-                                                <!-- Контент -->
                                                 <div class="mb-4">
                                                     <@spring.bind "createPostDto.post.postTranslations[${trans?index}].content"/>
                                                     <label class="form-label fw-bold">Содержание</label>
                                                     <textarea
-                                                            class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
+                                                            class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="post.postTranslations[${trans?index}].content"
                                                             data-lang="${trans.languageCode}"
                                                             id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
@@ -124,7 +123,6 @@
                                 </div>
                             </div>
 
-                            <!-- Тип поста -->
                             <div class="mb-4">
                                 <@spring.bind "createPostDto.post.typeId"/>
                                 <label class="form-label fw-bold">Тип поста</label>
@@ -145,13 +143,11 @@
                                 </#if>
                             </div>
 
-                            <!-- Вложения -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Вложения</label>
                                 <input type="file" class="form-control" name="attachments" multiple>
                             </div>
 
-                            <!-- Кнопки -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <span class="text-muted">
@@ -174,10 +170,7 @@
             </div>
         </div>
     </div>
-    <!-- Подключение TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
