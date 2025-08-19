@@ -561,7 +561,7 @@
             <#noparse>
             new FroalaEditor('textarea.rich-text-editor', {
                 toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
-                height: 600,
+                height: 400,
                 requestHeaders: {
                     [csrfHeader]: csrfToken
                 },
