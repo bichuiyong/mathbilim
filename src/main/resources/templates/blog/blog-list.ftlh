@@ -663,11 +663,7 @@
             </span>
 
                                     <span class="post-date">
-<#if b.blogTranslations?size gt 0>
-    🌐 ${b.blogTranslations[0].languageCode!'не указан'}
-<#else>
-    🌐 не указан
-</#if>            </span>
+            </span>
                                 </div>
                             </#if>
                         </div>

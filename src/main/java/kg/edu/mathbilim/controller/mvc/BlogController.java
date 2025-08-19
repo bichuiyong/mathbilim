@@ -40,7 +40,15 @@ public class BlogController {
                       @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
-        model.addAttribute("blog", blogService.getAllDisplayBlogs(page, size, sortBy, sortDirection));
+        model.addAttribute("blog",
+                blogService.getBlogsByStatusForMainPage(
+                        "APPROVED",
+                        query,
+                        page,
+                        size,
+                        sortBy,
+                        sortDirection,
+                        lang));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -48,7 +56,7 @@ public class BlogController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("currentLang", lang);
 
-        subscriptionModelPopulator.addSubscriptionAttributes(authentication,NotificationEnum.BLOG, model);
+        subscriptionModelPopulator.addSubscriptionAttributes(authentication, NotificationEnum.BLOG, model);
         return "blog/blog-list";
     }
 

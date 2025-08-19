@@ -121,6 +121,19 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                          String query,
                                          Pageable pageable);
 
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            JOIN p.blogTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
+                        t.id.languageCode = :languageCode
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
+                                         String query,
+                                         Pageable pageable, String languageCode);
+
 
     @Query("""
                 SELECT DISTINCT p FROM Blog p

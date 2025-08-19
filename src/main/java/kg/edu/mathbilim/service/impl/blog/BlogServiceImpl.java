@@ -122,6 +122,21 @@ public class BlogServiceImpl extends
     }
 
     @Override
+    public Page<BlogDto> getBlogsByStatusForMainPage(String status, String query, int page, int size, String sortBy, String sortDirection, String language) {
+        return getContentByStatus(
+                status,
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                pageable -> repository.getBlogsByStatus(ContentStatus.fromName(status), pageable),
+                (q, pageable) -> repository.getBlogsByStatusWithQueryAndLang(ContentStatus.fromName(status), q, pageable, language)
+        );
+    }
+
+
+    @Override
     public Page<BlogDto> getBlogsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection) {
         return getContentByStatus(
                 status,
