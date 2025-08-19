@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMG_NAME: bichuiyong/mathbilim
+  IMG_NAME: bichuiyong/mathbilim:latest
 
 jobs:
   build:
@@ -54,8 +54,8 @@ jobs:
 
       - name: Build & Publish docker image
         run: |
-          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMG_NAME }}
-          docker push ${{ env.REGISTRY }}/${{ env.IMG_NAME }}
+          docker build . --tag ghcr.io/bichuiyong/mathbilim:latest
+          docker push ghcr.io/bichuiyong/mathbilim:latest
 
   deploy:
     needs: publish
