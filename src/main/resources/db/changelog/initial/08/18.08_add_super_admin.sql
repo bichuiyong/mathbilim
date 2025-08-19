@@ -1,0 +1,1 @@
+insert into roles (name) values ('SUPER_ADMIN');

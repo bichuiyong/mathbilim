@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('SUPER_ADMIN')")
     public ResponseEntity<Void> updateUser(@RequestBody @Valid UserEditDto userDto, @PathVariable Long id) {
         userService.updateUser(userDto, id);
         return ResponseEntity.ok().build();
@@ -211,11 +211,5 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/users/validate-password")
-//    @ResponseBody
-//    public ResponseEntity<Boolean> validatePassword(@RequestParam String password) {
-//        boolean isValid = userService.checkOldPassword(password);
-//        return ResponseEntity.ok(isValid);
-//    }
 
 }

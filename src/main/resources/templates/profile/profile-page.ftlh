@@ -346,6 +346,13 @@
             outline-offset: 2px;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+        .bg-purple {
+            background-color: #6f42c1 !important;
+        }
+
+        .fa-crown {
+            color: gold;
+        }
 
     </style>
 
@@ -353,7 +360,7 @@
     <#if known>
         <#assign
         authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
-        isAdmin = authorities?seq_contains("ADMIN")
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
         isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
@@ -364,7 +371,8 @@
                     <div class="card-body text-center">
                         <div class="profile-avatar-container mb-3">
                             <#if user.avatar??>
-                                <img src="/api/files/${user.avatar.id}/download" alt="<@spring.message "profile.avatar.alt"/>" class="profile-avatar">
+                                <img src="/api/files/${user.avatar.id}/download"
+                                     alt="<@spring.message "profile.avatar.alt"/>" class="profile-avatar">
                             <#else>
                                 <div class="profile-avatar-placeholder">
                                     <i class="fas fa-user"></i>
@@ -382,9 +390,13 @@
                         </#if>
 
                         <div class="d-flex justify-content-center gap-2 mb-3">
-                            <#if isAdmin>
+                            <#if authorities?seq_contains("SUPER_ADMIN")>
+                                <span class="badge bg-purple text-white">
+                                    <i class="fas fa-crown me-1"></i> <@spring.message "role.super_admin"/>
+                                </span>
+                            <#elseif authorities?seq_contains("ADMIN")>
                                 <span class="badge bg-danger"><@spring.message "role.admin"/></span>
-                            <#elseif isModer>
+                            <#elseif authorities?seq_contains("MODER")>
                                 <span class="badge bg-warning"><@spring.message "role.moderator"/></span>
                             <#else>
                                 <span class="badge bg-info"><@spring.message "role.user"/></span>
@@ -445,6 +457,9 @@
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.olympiad"/>
                                 </a>
+                                <a href="/news/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i><@spring.message "content.type.news"/>
+                                </a>
                             </#if>
                         </div>
                     </div>
@@ -484,7 +499,8 @@
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category"
+                                    <button class="nav-link" id="category-tab" data-bs-toggle="tab"
+                                            data-bs-target="#category"
                                             type="button" role="tab">
                                         <i class="fa-solid fa-clipboard me-2"></i><@spring.message "tab.categories"/>
                                     </button>
@@ -669,7 +685,8 @@
                                 <div class="tab-pane fade" id="category" role="tabpanel">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0"><@spring.message "categories.management.title"/></h5>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTypeModal" onclick="openCreateModal()">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#createTypeModal" onclick="openCreateModal()">
                                             <i class="fa-solid fa-clipboard me-2"></i><@spring.message "button.create"/>
                                         </button>
                                     </div>
@@ -780,8 +797,10 @@
                     <input type="hidden" value="" id="deleteUserInput">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
-                    <button type="button" class="btn btn-danger" id="deleteUserBtn"><@spring.message "button.delete"/></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-danger"
+                            id="deleteUserBtn"><@spring.message "button.delete"/></button>
                 </div>
             </div>
         </div>
@@ -818,7 +837,8 @@
                             <label for="editUserType" class="form-label"><@spring.message "label.account.type"/></label>
                             <div class="account-type-select">
                                 <select class="form-select" id="editUserType" name="type">
-                                    <option selected disabled value=""><@spring.message "option.select.account.type"/></option>
+                                    <option selected disabled
+                                            value=""><@spring.message "option.select.account.type"/></option>
                                     <#list types as type>
                                         <option value="${type.translations[0].typeId}"
                                                 data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
@@ -830,8 +850,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
-                    <button type="button" class="btn btn-primary" id="editUserBtn"><@spring.message "button.save.changes"/></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-primary"
+                            id="editUserBtn"><@spring.message "button.save.changes"/></button>
                 </div>
             </div>
         </div>
@@ -875,7 +897,8 @@
                             <label for="type" class="form-label"><@spring.message "label.account.type"/></label>
                             <div class="account-type-select">
                                 <select class="form-select" id="type" name="type">
-                                    <option selected disabled value=""><@spring.message "option.select.account.type"/></option>
+                                    <option selected disabled
+                                            value=""><@spring.message "option.select.account.type"/></option>
                                     <#list types as type>
                                         <option value="${type.translations[0].typeId}"
                                                 data-name="${type.translations[0].translation}">${type.translations[0].translation}</option>
@@ -887,8 +910,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
-                    <button type="button" class="btn btn-primary" id="createUserBtn"><@spring.message "button.create"/></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><@spring.message "button.cancel"/></button>
+                    <button type="button" class="btn btn-primary"
+                            id="createUserBtn"><@spring.message "button.create"/></button>
                 </div>
             </div>
         </div>
@@ -908,7 +933,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "button.close"/></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><@spring.message "button.close"/></button>
                     <button type="button" class="btn btn-reject" id="modalRejectBtn">
                         <i class="fas fa-times"></i> <@spring.message "button.reject"/>
                     </button>
@@ -922,7 +948,8 @@
 
     <script src="/static/js/admin.js"></script>
     <script src="/static/js/profile-content.js"></script>
-    <div class="modal fade" id="createTypeModal" tabindex="-1" aria-labelledby="createTypeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createTypeModal" tabindex="-1" aria-labelledby="createTypeModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="categoryForm">
@@ -930,7 +957,8 @@
                         <h5 class="modal-title" id="createTypeModalLabel">
                             <@spring.message "modal.createType.title"/>
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<@spring.message 'button.close'/>"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="<@spring.message 'button.close'/>"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
