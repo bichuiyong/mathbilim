@@ -2,10 +2,10 @@ name: Java CI with Maven
 
 on:
   workflow_dispatch
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
@@ -13,58 +13,51 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'corretto'
           cache: maven
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 'artifact'
+          name: artifact
           path: ./target/mathbilim*.jar
           retention-days: 1
 
   publish:
     needs: build
-    name: Publish image
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: 'artifact'
+          name: artifact
 
-      - name: Login
-        run: |
-          echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Login to GHCR
+        run: echo '${{ secrets.PAT }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
 
-      - name: Build & Publish docker image
+      - name: Build & push image
         run: |
-          docker build . --tag ghcr.io/bichuiyong/mathbilim:latest
-          docker push ghcr.io/bichuiyong/mathbilim:latest
+          docker build . --tag ghcr.io/${{ env.IMG_NAME }}
+          docker push ghcr.io/${{ env.IMG_NAME }}
 
   deploy:
     needs: publish
-    name: Deploy Image
-
     runs-on: ubuntu-latest
-
     steps:
-      - name: Connect to server and pull docker image
+      - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -73,43 +66,71 @@ jobs:
           port: 22
           timeout: 30m
           script: |
+            set -e
             cd ${{ secrets.WORK_DIR }}
-            
-            cat > .env << EOF
+
+          
+            cat > .env << 'EOF'
             MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
             MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
             MINIO_BUCKET_NAME=${{ secrets.MINIO_BUCKET_NAME }}
             MINIO_REGION=${{ secrets.MINIO_REGION }}
             MINIO_BASE_URL=${{ secrets.MINIO_BASE_URL }}
             MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}
-            
+
             AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_REGION=${{ secrets.AWS_REGION }}
             AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
-            
+
             DB_URL=${{ secrets.DB_URL }}
             DB_USERNAME=${{ secrets.DB_USERNAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             DB_NAME=${{ secrets.DB_NAME }}
             DB_HOST=${{ secrets.DB_HOST }}
             DB_PORT=${{ secrets.DB_PORT }}
-            
+
             RESET_EMAIL=${{ secrets.RESET_EMAIL }}
             RESET_PASSWORD=${{ secrets.RESET_PASSWORD }}
-            
+
             RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
-            
+
             TGBOTKEY=${{ secrets.TGBOTKEY }}
             TELEGRAM_NAME=${{ secrets.TELEGRAM_NAME }}
             TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
-            
+
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            
+
             FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }}
             FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }}
+
+            SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}
             EOF
-            
+
+     
+            cat > Caddyfile << 'EOF'
+            mathbilim.kg, www.mathbilim.kg {
+                encode gzip
+
+                # health endpoint (опционально)
+                @health path /health
+                handle @health {
+                    respond "ok" 200
+                }
+
+                reverse_proxy app:9999 {
+                    header_up X-Forwarded-Proto {scheme}
+                    header_up X-Forwarded-For {remote}
+                    header_up Host {host}
+                }
+            }
+            EOF
+
+            sudo ufw allow 80 || true
+            sudo ufw allow 443 || true
+
             docker compose pull
             docker compose up -d
+
+            docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
