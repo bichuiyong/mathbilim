@@ -8,9 +8,7 @@ import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring",
-        builder = @Builder(disableBuilder = true),
-        uses = { PostTranslationMapper.class })
+@Mapper(componentModel = "spring")
 public interface PostMapper extends BaseMapper<Post, PostDto> {
     @Mapping(target = "type.id", source = "typeId")
     Post toEntity(PostDto dto);

@@ -668,12 +668,7 @@
                📅 ${p.formattedDate}
             </span>
 
-                                    <span class="post-date">
-<#if p.postTranslations?size gt 0>
-    🌐 ${p.postTranslations[0].languageCode!'не указан'}
-<#else>
-    🌐 не указан
-</#if>                </span>
+                                    <span class="post-date"></span>
                                 </div>
                             </#if>
                         </div>
