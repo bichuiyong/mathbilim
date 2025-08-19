@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.service.impl.reference;
 
-import kg.edu.mathbilim.config.LocaleConfig;
 import kg.edu.mathbilim.dto.reference.CategoryDto;
 import kg.edu.mathbilim.dto.reference.CategoryTranslationDto;
 import kg.edu.mathbilim.mapper.reference.CategoryMapper;
@@ -9,14 +8,11 @@ import kg.edu.mathbilim.model.reference.CategoryTranslation;
 import kg.edu.mathbilim.repository.reference.CategoryRepository;
 import kg.edu.mathbilim.repository.reference.CategoryTranslationRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTypeContentService;
-import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl extends AbstractTypeContentService<
@@ -28,15 +24,11 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
         CategoryTranslationRepository,
         CategoryMapper>   implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     public CategoryServiceImpl(CategoryRepository repository,
                                CategoryTranslationRepository translationRepository,
-                               CategoryMapper mapper, CategoryRepository categoryRepository) {
+                               CategoryMapper mapper) {
         super(repository, translationRepository, mapper);
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = mapper;
     }
 
     @Override
@@ -74,47 +66,33 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     @Transactional
     @Override
     public void deleteCategory(Integer id) {
-        delete(id);
+        super.delete(id);
     }
 
     @Transactional
     @Override
     public CategoryDto addTranslation(Integer categoryId, String languageCode, String translation) {
-        return addTranslation(categoryId, languageCode, translation);
+        return super.addTranslation(categoryId, languageCode, translation);
     }
 
     @Transactional
     @Override
     public CategoryDto removeTranslation(Integer categoryId, String languageCode) {
-        return removeTranslation(categoryId, languageCode);
+        return super.removeTranslation(categoryId, languageCode);
     }
 
     @Override
     public List<CategoryDto> getAllCategoriesByQuery(String name, String lang) {
         return getAllByQuery(name, lang);
-//        List<Category> categories = categoryRepository.findAllByQuery(name, lang);
-//        String preferredLang = LocaleConfig.getCurrentLocale().getLanguage();
-//        for (Category category : categories) {
-//            List<CategoryTranslation> translations = category.getTranslations();
-//            translations.sort((a, b) -> {
-//                if (a.getId().getLanguageCode().equals(preferredLang)) return -1;
-//                if (b.getId().getLanguageCode().equals(preferredLang)) return 1;
-//                return 0;
-//            });
-//        }
-//        return categories.stream()
-//                .map(categoryMapper::toDto)
-//                .toList();
-//        return .stream().map(categoryMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    protected Category createNewEntity() {
+    public Category createNewEntity() {
         return new Category();
     }
 
     @Override
-    protected CategoryTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
+    public CategoryTranslationDto createTranslationDto(Integer typeId, String languageCode, String translation) {
         return CategoryTranslationDto.builder()
                 .typeId(typeId)
                 .languageCode(languageCode)
@@ -123,7 +101,7 @@ public class CategoryServiceImpl extends AbstractTypeContentService<
     }
 
     @Override
-    protected void setTypeIdInTranslation(CategoryTranslationDto translationDto, Integer typeId) {
+    public void setTypeIdInTranslation(CategoryTranslationDto translationDto, Integer typeId) {
         translationDto.setTypeId(typeId);
     }
 }

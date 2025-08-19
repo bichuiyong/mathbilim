@@ -377,6 +377,37 @@
         ];
 
         function RegistrationForm() {
+            const messages = {
+                title: '<@spring.message "registration.title" />',
+                fillRequired: '<@spring.message "registration.fillRequired" />',
+                successTitle: '<@spring.message "registration.successTitle" />',
+                successMessage: '<@spring.message "registration.successMessage" />',
+                redirectMessage: '<@spring.message "registration.redirectMessage" />',
+                email: '<@spring.message "registration.email" />',
+                region: '<@spring.message "registration.region" />',
+                selectRegion: '<@spring.message "registration.selectRegion" />',
+                district: '<@spring.message "registration.district" />',
+                selectDistrict: '<@spring.message "registration.selectDistrict" />',
+                fullName: '<@spring.message "registration.fullName" />',
+                phone: '<@spring.message "registration.phone" />',
+                telegram: '<@spring.message "registration.telegram" />',
+                school: '<@spring.message "registration.school" />',
+                classNumber: '<@spring.message "registration.class" />',
+                locality: '<@spring.message "registration.locality" />',
+                classTeacherFullName: '<@spring.message "registration.classTeacher" />',
+                parentInfo: '<@spring.message "registration.parentInfo" />',
+                parentFullName: '<@spring.message "registration.parentFullName" />',
+                parentPhoneNumber: '<@spring.message "registration.parentPhone" />',
+                parentEmail: '<@spring.message "registration.parentEmail" />',
+                consent: '<@spring.message "registration.consent" />',
+                consentError: '<@spring.message "registration.consentError" />',
+                submit: '<@spring.message "registration.submit" />',
+                submitting: '<@spring.message "registration.submitting" />',
+                onceNotice: '<@spring.message "registration.onceNotice" />',
+                additionalInfo:'<@spring.message "registration.additionalInfo"/>',
+                basicInfo:'<@spring.message "registration.basicInfo"/>'
+            };
+
             const [formData, setFormData] = React.useState({
                 userId: '${user.id}',
                 olympiadId: '',
@@ -420,7 +451,7 @@
                 e.preventDefault();
 
                 if (!formData.consent) {
-                    setError('Необходимо согласиться на обработку персональных данных');
+                    setError(messages.consentError);
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                     return;
                 }
@@ -463,12 +494,12 @@
                 return (
                     <div className="olympiad-form-container">
                         <div className="olympiad-form-header">
-                            <h1>Регистрация завершена</h1>
+                            <h1>{messages.successTitle}</h1>
                         </div>
                         <div className="olympiad-success-message">
                             <div className="olympiad-success-icon">✓</div>
-                            <h2>Спасибо за регистрацию!</h2>
-                            <p>Вы будете перенаправлены через 3 секунды...</p>
+                            <h2>{messages.successMessage}</h2>
+                            <p>{messages.redirectMessage}</p>
                         </div>
                     </div>
                 );
@@ -479,21 +510,21 @@
                     <#if user.role.name != "ADMIN" && user.role.name != "MODER">
                     {showNotification && (
                         <div className="olympiad-notification">
-                            Внимание: Форму можно отправить только один раз!
+                            {messages.onceNotice}
                         </div>
                     )}
                     </#if>
                     <div className="olympiad-form-header">
-                        <h1>Форма регистрации</h1>
-                        <p>Заполните все необходимые поля</p>
+                        <h1>{messages.title}</h1>
+                        <p>{messages.fillRequired}</p>
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className="olympiad-form-body">
                             <div className="olympiad-form-column">
                                 <div className="olympiad-form-section">
-                                    <h2 className="olympiad-section-title">Основная информация</h2>
+                                    <h2 className="olympiad-section-title">{messages.basicInfo}</h2>
                                     <div className="olympiad-form-group">
-                                        <label className="olympiad-required-field">Email</label>
+                                        <label className="olympiad-required-field">{messages.email}</label>
                                         <input
                                             className="olympiad-input"
                                             type="email"
@@ -506,7 +537,7 @@
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-required-field">Область</label>
+                                            <label className="olympiad-required-field">{messages.region}</label>
                                             <select
                                                 className="olympiad-select"
                                                 name="region"
@@ -514,14 +545,14 @@
                                                 onChange={handleChange}
                                                 required
                                             >
-                                                <option value="">Выберите область</option>
+                                                <option value="">{messages.selectRegion}</option>
                                                 {regions.map(region => (
                                                     <option key={region.name} value={region.name}>{region.name}</option>
                                                 ))}
                                             </select>
                                         </div>
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-required-field">Район</label>
+                                            <label className="olympiad-required-field">{messages.district}</label>
                                             <select
                                                 className="olympiad-select"
                                                 name="district"
@@ -529,7 +560,7 @@
                                                 onChange={handleChange}
                                                 required
                                             >
-                                                <option value="">Выберите район</option>
+                                                <option value="">{messages.selectDistrict}</option>
                                                 {Alldistricts.map(d => (
                                                     <option key={d} value={d}>{d}</option>
                                                 ))}
@@ -537,7 +568,7 @@
                                         </div>
                                     </div>
                                     <div className="olympiad-form-group">
-                                        <label className="olympiad-required-field">ФИО</label>
+                                        <label className="olympiad-required-field">{messages.fullName}</label>
                                         <input
                                             className="olympiad-input"
                                             type="text"
@@ -550,7 +581,7 @@
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Номер телефона</label>
+                                            <label className="olympiad-label">{messages.phone}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="tel"
@@ -562,7 +593,7 @@
                                             />
                                         </div>
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Telegram</label>
+                                            <label className="olympiad-label">{messages.telegram}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="text"
@@ -578,10 +609,10 @@
 
                             <div className="olympiad-form-column">
                                 <div className="olympiad-form-section">
-                                    <h2 className="olympiad-section-title">Дополнительная информация</h2>
+                                    <h2 className="olympiad-section-title">{messages.additionalInfo}</h2>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Школа</label>
+                                            <label className="olympiad-label">{messages.school}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="text"
@@ -593,7 +624,7 @@
                                             />
                                         </div>
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Класс</label>
+                                            <label className="olympiad-label">{messages.classNumber}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="text"
@@ -606,7 +637,7 @@
                                         </div>
                                     </div>
                                     <div className="olympiad-form-group">
-                                        <label className="olympiad-label">Населённый пункт</label>
+                                        <label className="olympiad-label">{messages.locality}</label>
                                         <input
                                             className="olympiad-input"
                                             type="text"
@@ -618,7 +649,7 @@
                                         />
                                     </div>
                                     <div className="olympiad-form-group">
-                                        <label className="olympiad-label">ФИО классного руководителя</label>
+                                        <label className="olympiad-label">{messages.classTeacherFullName}</label>
                                         <input
                                             className="olympiad-input"
                                             type="text"
@@ -632,9 +663,9 @@
                                 </div>
 
                                 <div className="olympiad-form-section">
-                                    <h2 className="olympiad-section-title">Информация о родителе</h2>
+                                    <h2 className="olympiad-section-title">{messages.parentInfo}</h2>
                                     <div className="olympiad-form-group">
-                                        <label className="olympiad-label">ФИО родителя</label>
+                                        <label className="olympiad-label">{messages.parentFullName}</label>
                                         <input
                                             className="olympiad-input"
                                             type="text"
@@ -647,7 +678,7 @@
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Номер телефона</label>
+                                            <label className="olympiad-label">{messages.parentPhoneNumber}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="tel"
@@ -659,7 +690,7 @@
                                             />
                                         </div>
                                         <div className="olympiad-form-group">
-                                            <label className="olympiad-label">Email</label>
+                                            <label className="olympiad-label">{messages.parentEmail}</label>
                                             <input
                                                 className="olympiad-input"
                                                 type="email"
@@ -686,7 +717,7 @@
                                         required
                                     />
                                     <label htmlFor="consent">
-                                        Я согласен на обработку персональных данных в соответствии с политикой конфиденциальности
+                                        {messages.consent}
                                     </label>
                                 </div>
                                 {error && <div className="olympiad-error show">{error}</div>}
@@ -696,7 +727,7 @@
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting && <span className="olympiad-loading-spinner"></span>}
-                                    {isSubmitting ? 'Отправка...' : 'Зарегистрироваться'}
+                                    {isSubmitting ? messages.submitting : messages.submit}
                                 </button>
                             </div>
                         </div>
@@ -704,6 +735,9 @@
                 </div>
             );
         }
+
+        const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
+        root.render(<RegistrationForm />);
 
         const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
         root.render(<RegistrationForm />);

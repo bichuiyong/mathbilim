@@ -5,58 +5,59 @@
     <div class="row justify-content-center mt-4">
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-light text-dark">
                     <h4 class="mb-0">
                         <i class="fas fa-building me-2"></i>
-                        Создание новой организации
+                        <@spring.message "organization.create.title">Создание новой организации</@spring.message>
                     </h4>
                 </div>
 
                 <div class="card-body p-4">
-                    <form action="/organizations/create" method="POST" enctype="multipart/form-data" novalidate>
-                        <@main.csrf/>
+                    <form action="/organizations/create" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
 
                         <div class="mb-4">
                             <label for="name" class="form-label fw-semibold">
-                                Название организации <span class="text-danger">*</span>
+                                <@spring.message "organization.create.name">Название организации</@spring.message> <span class="text-danger">*</span>
                             </label>
-                            <@spring.formInput "organization.name", 'class="form-control form-control-lg" placeholder="Введите название организации"'/>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.formInput "organizationDto.name", 'class="form-control form-control-lg" placeholder="' + spring.message("organization.create.name.placeholder","Введите название организации") + '"'/>
+                            <@spring.showErrors "organizationDto.name", "text-danger small"/>
                             <div class="form-text">
-                                Полное официальное название вашей организации
+                                <@spring.message "organization.create.name.help">Полное официальное название вашей организации</@spring.message>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="description" class="form-label fw-semibold">
-                                Описание организации <span class="text-danger">*</span>
+                                <@spring.message "organization.create.description">Описание организации</@spring.message> <span class="text-danger">*</span>
                             </label>
-                            <@spring.formTextarea "organization.description", 'class="form-control" rows="5" placeholder="Расскажите о деятельности, целях и достижениях вашей организации..."'/>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.formTextarea "organizationDto.description", 'class="form-control" rows="5" placeholder="' + spring.message("organization.create.description.placeholder","Расскажите о деятельности, целях и достижениях вашей организации...") + '"'/>
+                            <@spring.showErrors "organizationDto.description", "text-danger small"/>
                             <div class="form-text">
-                                Подробное описание деятельности организации (минимум 50 символов)
+                                <@spring.message "organization.create.description.help">Подробное описание деятельности организации (минимум 50 символов)</@spring.message>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="url" class="form-label fw-semibold">
-                                Веб-сайт организации
+                                <@spring.message "organization.create.website">Веб-сайт организации</@spring.message>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-globe"></i>
-                                </span>
-                                <@spring.formInput "organization.url", 'class="form-control" placeholder="https://example.com" type="url"'/>
+                            <span class="input-group-text">
+                                <i class="fas fa-globe"></i>
+                            </span>
+                                <@spring.formInput "organizationDto.url", 'class="form-control" placeholder="' + spring.message("organization.create.website.placeholder","https://example.com") + '" type="url"'/>
                             </div>
-                            <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
+                            <@spring.showErrors '<br>',"text-danger small"/>
                             <div class="form-text">
-                                Официальный сайт организации (необязательно)
+                                <@spring.message "organization.create.website.help">Официальный сайт организации (необязательно)</@spring.message>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="avatarFile" class="form-label fw-semibold">
-                                Логотип организации
+                                <@spring.message "organization.create.logo">Логотип организации</@spring.message>
                             </label>
                             <div class="upload-area border-2 border-dashed rounded p-4 text-center bg-light">
                                 <div class="mb-3">
@@ -70,19 +71,19 @@
                                        onchange="previewImage(event)">
                                 <label for="avatarFile" class="btn btn-outline-primary mb-2">
                                     <i class="fas fa-upload me-2"></i>
-                                    Выберите файл
+                                    <@spring.message "organization.create.chooseFile">Выберите файл</@spring.message>
                                 </label>
                                 <div class="text-muted small">
-                                    Поддерживаются форматы: JPG, PNG, GIF (макс. 5 МБ)
+                                    <@spring.message "organization.create.logo.help">Поддерживаются форматы: JPG, PNG, GIF (макс. 5 МБ)</@spring.message>
                                 </div>
 
                                 <!-- Предварительный просмотр -->
                                 <div id="imagePreview" class="mt-3 d-none">
-                                    <img id="previewImg" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" alt="Предварительный просмотр">
+                                    <img id="previewImg" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" alt="<@spring.message 'organization.create.previewAlt'>Предварительный просмотр</@spring.message>">
                                     <div class="mt-2">
                                         <button type="button" class="btn btn-sm btn-danger" onclick="removeImage()">
                                             <i class="fas fa-trash me-1"></i>
-                                            Удалить
+                                            <@spring.message "organization.create.delete">Удалить</@spring.message>
                                         </button>
                                     </div>
                                 </div>
@@ -92,19 +93,18 @@
 
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Обратите внимание:</strong>
-                            После создания организация будет отправлена на модерацию.
-                            Вы получите уведомление о результатах проверки.
+                            <strong><@spring.message "organization.create.noticeTitle">Обратите внимание:</@spring.message></strong>
+                            <@spring.message "organization.create.noticeText">После создания организация будет отправлена на модерацию. Вы получите уведомление о результатах проверки.</@spring.message>
                         </div>
 
                         <div class="d-flex gap-3 justify-content-end">
                             <a href="/organizations" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>
-                                Отмена
+                                <@spring.message "organization.create.cancel">Отмена</@spring.message>
                             </a>
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-plus me-2"></i>
-                                Создать организацию
+                                <@spring.message "organization.create.submit">Создать организацию</@spring.message>
                             </button>
                         </div>
                     </form>
@@ -113,7 +113,12 @@
         </div>
     </div>
 
+
     <style>
+        html, body {
+            overflow-x: hidden;
+        }
+
         .upload-area {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -176,23 +181,6 @@
             document.getElementById('avatarFile').value = '';
             document.getElementById('imagePreview').classList.add('d-none');
         }
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const name = document.querySelector('input[name="name"]').value.trim();
-            const description = document.querySelector('textarea[name="description"]').value.trim();
-
-            if (!name) {
-                alert('Пожалуйста, введите название организации');
-                e.preventDefault();
-                return;
-            }
-
-            if (!description || description.length < 50) {
-                alert('Описание должно содержать минимум 50 символов');
-                e.preventDefault();
-                return;
-            }
-        });
     </script>
 
 </@main.layout>

@@ -122,25 +122,25 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFiles);
     }
 
-    @PostMapping("/tinymce/image")
-    public ResponseEntity<Map<String, String>> uploadImageForTinyMCE(
-            @RequestParam("file") MultipartFile file) {
-
-        if (file.getSize() > 5 * 1024 * 1024) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Размер изображения не должен превышать 5MB"));
-        }
-
-        try {
-            FileDto fileDto = fileService.uploadFile(file, "blog/images");
-            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
-            Map<String, String> response = Map.of("location", viewUrl);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Ошибка загрузки изображения"));
-        }
-    }
+//    @PostMapping("/tinymce/image")
+//    public ResponseEntity<Map<String, String>> uploadImageForTinyMCE(
+//            @RequestParam("file") MultipartFile file) {
+//
+//        if (file.getSize() > 5 * 1024 * 1024) {
+//            return ResponseEntity.badRequest()
+//                    .body(Map.of("error", "Размер изображения не должен превышать 5MB"));
+//        }
+//
+//        try {
+//            FileDto fileDto = fileService.uploadFile(file, "blog/images");
+//            String viewUrl = "/api/files/" + fileDto.getId() + "/view";
+//            Map<String, String> response = Map.of("location", viewUrl);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest()
+//                    .body(Map.of("error", "Ошибка загрузки изображения"));
+//        }
+//    }
 
     @PostMapping("/froala/image")
     public ResponseEntity<Map<String, String>> uploadImageForFroala(
@@ -162,7 +162,7 @@ public class FileController {
         }
     }
 
-    @PostMapping("/tinymce/video")
+    @PostMapping("/froala/video")
     public ResponseEntity<Map<String, String>> uploadVideoForTinyMCE(
             @RequestParam("file") MultipartFile file) {
 
@@ -174,7 +174,7 @@ public class FileController {
         try {
             FileDto fileDto = fileService.uploadFile(file, "blog/videos");
             String viewUrl = "/api/files/" + fileDto.getId() + "/view";
-            Map<String, String> response = Map.of("location", viewUrl);
+            Map<String, String> response = Map.of("link", viewUrl);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -182,7 +182,7 @@ public class FileController {
         }
     }
 
-    @PostMapping("/tinymce/document")
+    @PostMapping("/froala/document")
     public ResponseEntity<Map<String, String>> uploadDocumentForTinyMCE(
             @RequestParam("file") MultipartFile file) {
 
@@ -194,7 +194,7 @@ public class FileController {
         try {
             FileDto fileDto = fileService.uploadFile(file, "blog/documents");
             String viewUrl = "/api/files/" + fileDto.getId() + "/view";
-            Map<String, String> response = Map.of("location", viewUrl);
+            Map<String, String> response = Map.of("link", viewUrl);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest()

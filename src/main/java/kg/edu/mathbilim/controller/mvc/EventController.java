@@ -12,7 +12,9 @@ import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.util.UrlUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,5 +96,12 @@ public class EventController {
     @GetMapping("olymps/{id}")
     public String olympDetails(@PathVariable Long id) {
         return "events/olymps/olymp-details";
+    }
+
+    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('MODER')")
+    @PostMapping("delete")
+    public String delete(@RequestParam Long id) {
+        eventService.delete(id);
+        return "redirect:/";
     }
 }
