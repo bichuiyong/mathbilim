@@ -1,36 +1,23 @@
 package kg.edu.mathbilim.dto.test;
 
-import kg.edu.mathbilim.dto.FileDto;
-import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.TestStatus;
+import kg.edu.mathbilim.model.File;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestDto {
-    Long id;
+    private Long id;
+    private String name;
+    private String description;
+    private File file;
+    private Boolean hasLimit;
+    private Integer timeLimit;
+    private Integer questionCount;
 
-    FileDto file;
-
-    Map<String, Object> metadata;
-
-    LocalDateTime startedAt;
-
-    LocalDateTime finishedAt;
-
-    Integer result;
-
-    TestStatus status;
-
-    UserDto user;
-
-    Integer timeLimit;
+    private List<QuestionDto> questionDtoList;
 }

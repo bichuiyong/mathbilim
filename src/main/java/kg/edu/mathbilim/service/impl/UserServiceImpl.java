@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
         User user = getEntityById(userDto.getId());
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
-        if(userDto.getTypeId() != null) {
+        if (userDto.getTypeId() != null) {
             user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
         }
 //        user.setRole(roleService.getRoleById(userDto.getRole().getId()));
@@ -218,6 +218,7 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
     @Override
     public User getEntityByEmail(String email) {
         return userRepository.findUserByEmail(email)
@@ -247,7 +248,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserEditDto userDto, Long userId) {
-        checkBeforeUpdate(userId);
+        String changingRole = userDto.getRole().getName();
+        checkBeforeUpdate(changingRole,userId);
         User user = getEntityById(userId);
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
@@ -433,11 +435,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(String password, String newPassword) throws IllegalStateException {
         UserDto authUser = getAuthUser();
-        if(passwordEncoder.matches(password, authUser.getPassword())) {
+        if (passwordEncoder.matches(password, authUser.getPassword())) {
             authUser.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(userMapper.toEntity(authUser));
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("you previous password is incorrect");
         }
     }
@@ -449,11 +450,59 @@ public class UserServiceImpl implements UserService {
         return authUser.getPassword().equals(encodedPassword);
     }
 
-    private void checkBeforeUpdate(Long userId) {
-        UserDto userDto1 = getAuthUser();
-        if(Objects.equals(userId, userDto1.getId())) {
-            throw new IllegalStateException("User with id " + userId + " already exists");
+    private void checkBeforeUpdate(String changingRole,Long userId) {
+        UserDto authUser = getAuthUser();
+        User updatingUser = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String authRole = authUser.getRole().getName();
+        String targetRole = updatingUser.getRole().getName();
+
+        if (Objects.equals(userId, authUser.getId())) {
+            throw new IllegalStateException("User cannot update themselves.");
         }
+
+        if (authRole.equals("SUPER_ADMIN")) {
+            if(changingRole.equals("SUPER_ADMIN")) {
+                throw new IllegalStateException("SUPER_ADMIN couldn't make another superadmin");
+            }
+            return;
+        }
+
+        if (authRole.equals("ADMIN")) {
+            if (targetRole.equals("SUPER_ADMIN") || targetRole.equals("ADMIN")) {
+                throw new IllegalStateException("ADMIN cannot update SUPER_ADMIN or another ADMIN.");
+            }
+            return;
+        }
+
+        throw new IllegalStateException(authRole + " is not allowed to update users.");
     }
+    private void checkBeforeUpdate(Long userId) {
+        UserDto authUser = getAuthUser();
+        User updatingUser = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String authRole = authUser.getRole().getName();
+        String targetRole = updatingUser.getRole().getName();
+
+        if (Objects.equals(userId, authUser.getId())) {
+            throw new IllegalStateException("User cannot update themselves.");
+        }
+
+        if (authRole.equals("SUPER_ADMIN")) {
+            return;
+        }
+
+        if (authRole.equals("ADMIN")) {
+            if (targetRole.equals("SUPER_ADMIN") || targetRole.equals("ADMIN")) {
+                throw new IllegalStateException("ADMIN cannot update SUPER_ADMIN or another ADMIN.");
+            }
+            return;
+        }
+
+        throw new IllegalStateException(authRole + " is not allowed to update users.");
+    }
+
 
 }

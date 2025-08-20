@@ -18,7 +18,7 @@
                                 </div>
                             </#if>
 
-                            <!-- Главное изображение -->
+
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
                                 <div class="image-upload-container">
@@ -45,7 +45,7 @@
                                 </small>
                             </div>
 
-                            <!-- Языковые табы -->
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
@@ -58,8 +58,8 @@
                                                         data-lang="${trans.languageCode}">
                                                     ${languages[trans.languageCode]}
                                                     <span class="translation-indicator ms-2" id="indicator-${trans.languageCode}">
-                                                        <i class="fas fa-circle text-danger" title="Не заполнено"></i>
-                                                    </span>
+                                                    <i class="fas fa-circle text-danger" title="Не заполнено"></i>
+                                                </span>
                                                 </button>
                                             </li>
                                         </#list>
@@ -78,7 +78,6 @@
                                             <div class="tab-pane fade <#if trans?is_first>show active</#if>"
                                                  id="lang-${trans.languageCode}">
 
-                                                <!-- Заголовок -->
                                                 <div class="mb-4">
                                                     <@spring.bind "blogDto.blogTranslations[${trans?index}].title"/>
                                                     <label class="form-label fw-bold">Заголовок</label>
@@ -95,11 +94,10 @@
                                                     </#if>
                                                 </div>
 
-                                                <!-- Контент -->
                                                 <div class="mb-4">
                                                     <@spring.bind "blogDto.blogTranslations[${trans?index}].content"/>
                                                     <label class="form-label fw-bold">Содержание</label>
-                                                    <textarea class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
+                                                    <textarea class="form-control rich-text-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                               name="blogTranslations[${trans?index}].content"
                                                               data-lang="${trans.languageCode}"
                                                               id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
@@ -117,13 +115,12 @@
                                 </div>
                             </div>
 
-                            <!-- Кнопки управления -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Заполните хотя бы один перевод для публикации
-                                    </span>
+                                <span class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Заполните хотя бы один перевод для публикации
+                                </span>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <a href="/blog" class="btn btn-secondary">
@@ -141,71 +138,68 @@
         </div>
     </div>
 
-    <!-- Подключение TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <!-- Подключение Cropper.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/css/froala_editor.pkgd.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/js/froala_editor.pkgd.min.js"></script>
 
-    <script src="/static/js/components/content-create/ImageCropManager.js"></script>
-    <script src="/static/js/components/content-create/TinyMCEManager.js"></script>
-    <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
-    <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
-    <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-    <script src="/static/js/blog/BlogCreateManager.js"></script>
+        <script src="/static/js/components/content-create/ImageCropManager.js"></script>
+        <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
+        <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
+        <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
+        <script src="/static/js/blog/BlogCreateManager.js"></script>
+
+        <script>
+            const csrfHeader = 'X-XSRF-TOKEN';
+            const csrfToken = '${_csrf.token}';
+
+            <#noparse>
+            new FroalaEditor('textarea.rich-text-editor', {
+                toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
+                height: 400,
+                requestHeaders: { [csrfHeader]: csrfToken },
+                language: 'ru',
+                placeholderText: 'Введите текст...',
+                contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
+                imageUploadURL: '/api/files/froala/image',
+                imageUploadParam: 'file',
+                imageUploadMethod: 'POST',
+                imageMaxSize: 5 * 1024 * 1024,
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                events: {
+                    'image.uploaded': function (response) {
+                        console.log('Изображение загружено:', response);
+                    },
+                    'image.error': function (error, response) {
+                        console.error('Ошибка загрузки изображения:', error.message);
+                        alert('Ошибка при загрузке изображения: ' + error.message);
+                    }
+                }
+            });
+
+            function onloadCallback() {
+                console.log('reCAPTCHA ready');
+            }
+        </script>
+    </#noparse>
 
     <style>
-        /* Стили для кропа */
         .image-upload-container {
             border: 2px dashed #e2e8f0;
             border-radius: 8px;
             padding: 1.5rem;
             transition: border-color 0.3s ease;
         }
+        .image-upload-container:hover { border-color: #2563eb; }
+        .crop-container { max-width: 100%; max-height: 400px; overflow: hidden; }
+        .cropped-image-container { width: 100%; max-width: 600px; aspect-ratio: 3/1; overflow: hidden; border-radius: 8px; }
+        .cropped-image-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        .image-upload-container:hover {
-            border-color: #2563eb;
-        }
-
-        .crop-container {
-            max-width: 100%;
-            max-height: 400px;
-            overflow: hidden;
-        }
-
-        .cropped-image-container {
-            width: 100%;
-            max-width: 600px;
-            aspect-ratio: 3/1;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .cropped-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Стили для индикаторов заполненности */
-        .translation-indicator .fa-circle.text-success {
-            color: #10b981 !important;
-        }
-
-        .translation-indicator .fa-circle.text-warning {
-            color: #f59e0b !important;
-        }
-
-        .translation-indicator .fa-circle.text-danger {
-            color: #ef4444 !important;
-        }
-
-        /* Стили для TinyMCE */
-        .tox-tinymce {
-            border-radius: 8px !important;
-        }
+        .translation-indicator .fa-circle.text-success { color: #10b981 !important; }
+        .translation-indicator .fa-circle.text-warning { color: #f59e0b !important; }
+        .translation-indicator .fa-circle.text-danger { color: #ef4444 !important; }
     </style>
 
 </@main.layout>
