@@ -178,6 +178,7 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
         })
         .then(data => {
             container.innerHTML = '';
+            container.className = 'events-scroll-wrapper';
 
             // Проверяем, есть ли данные
             if (!data || !Array.isArray(data) || data.length === 0) {
@@ -185,7 +186,7 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
                 return;
             }
 
-            data.forEach(olympiad => {
+            data.forEach((olympiad, index) => {
                 console.log('Данные олимпиады:', olympiad);
                 console.log('createdAt:', olympiad.createdAt, 'тип:', typeof olympiad.createdAt);
 
@@ -195,27 +196,42 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
                     : 'https://via.placeholder.com/400x300';
 
                 const dateObj = new Date(olympiad.createdAt);
-                console.log('dateObj:', dateObj);
-
                 const day = dateObj.getDate();
                 const month = dateObj.toLocaleString('ru-RU', { month: 'short' }).toUpperCase();
 
                 const cardWrapper = document.createElement('div');
-                cardWrapper.className = 'event-card-wrapper';
+                cardWrapper.className = 'event-card-wrapper hover-card';
+                cardWrapper.style.animationDelay = `${index * 0.1}s`;
+                cardWrapper.setAttribute('data-olympiad-id', olympiad.id);
+
                 cardWrapper.innerHTML = `
-                    <div class="card event-card">
+                    <div class="card event-card clickable-card">
                         <div class="event-image">
                             <img src="${imageUrl}" alt="${title}">
                             <div class="event-date-overlay">
                                 <span class="event-day">${day}</span>
                                 <span class="event-month">${month}</span>
                             </div>
+                            <div class="hover-overlay">
+                                <button class="details-button">
+                                    <span>Подробнее</span>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="event-content">
-                            <h5>${title}</h5>
+                            <h5 class="event-title">${title}</h5>
                         </div>
                     </div>
                 `;
+
+                // Добавляем обработчик клика
+                cardWrapper.addEventListener('click', () => {
+                    viewOlympiadDetails(olympiad.id);
+                });
+
                 container.appendChild(cardWrapper);
             });
         })
@@ -223,6 +239,20 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
             console.error(err);
             showErrorState(container, 'олимпиад');
         });
+}
+
+function viewOlympiadDetails(olympiadId) {
+    const card = document.querySelector(`[data-olympiad-id="${olympiadId}"]`);
+    if (card) {
+        card.style.transform = 'scale(0.95)';
+        card.style.transition = 'transform 0.1s ease';
+
+        setTimeout(() => {
+            window.location.href = `/olympiad/details?id=${olympiadId}`;
+        }, 100);
+    } else {
+        window.location.href = `/olympiad/details?id=${olympiadId}`;
+    }
 }
 
 // Функция для показа пустого состояния
@@ -266,7 +296,350 @@ function showErrorState(container, contentType) {
 
 // Добавляем простые CSS стили
 const simpleStyles = `
-/* Простые стили для контента */
+.events-scroll-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.events-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Анимация появления */
+.hover-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease-out forwards;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стили карточки */
+.event-card-wrapper {
+    flex-shrink: 0;
+    width: 300px;
+}
+
+.clickable-card {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.clickable-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Стили изображения */
+.event-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.clickable-card:hover .event-image img {
+    transform: scale(1.1);
+}
+
+/* Затемнение при наведении */
+.hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.clickable-card:hover .hover-overlay {
+    opacity: 1;
+}
+
+/* Кнопка "Подробнее" */
+.details-button {
+    background: white;
+    color: #3b82f6;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: translateY(10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.clickable-card:hover .details-button {
+    transform: translateY(0);
+}
+
+.details-button:hover {
+    background: #f8fafc;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.details-button svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+
+.details-button:hover svg {
+    transform: translateX(3px);
+}
+
+/* Бейдж даты */
+.event-date-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.clickable-card:hover .event-date-overlay {
+    background: white;
+    transform: scale(1.05);
+}
+
+.event-day {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #3b82f6;
+    line-height: 1;
+}
+
+.event-month {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+/* Контент карточки */
+.event-content {
+    padding: 20px;
+    background: white;
+}
+
+.event-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.clickable-card:hover .event-title {
+    color: #3b82f6;
+}
+
+/* Состояния загрузки */
+.modern-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.modern-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f4f6;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Пустое состояние */
+.modern-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    border: 2px dashed rgba(59, 130, 246, 0.2);
+}
+
+.modern-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.modern-empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 8px 0;
+}
+
+.modern-empty-description {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Состояние ошибки */
+.modern-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    border: 2px solid rgba(239, 68, 68, 0.1);
+}
+
+.modern-error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.modern-error-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #dc2626;
+    margin: 0 0 8px 0;
+}
+
+.modern-error-description {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 24px 0;
+}
+
+.modern-retry-button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modern-retry-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.modern-retry-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .events-scroll-wrapper {
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+    
+    .event-card-wrapper {
+        width: 280px;
+    }
+    
+    .event-image {
+        height: 180px;
+    }
+    
+    .clickable-card:hover {
+        transform: translateY(-4px);
+    }
+    
+    .event-content {
+        padding: 16px;
+    }
+    
+    .event-title {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-card-wrapper {
+        width: 260px;
+    }
+    
+    .event-image {
+        height: 160px;
+    }
+    
+    .details-button {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+.clickable-card:active {
+    animation: pulse 0.6s;
+}
+
 .simple-content-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -619,7 +992,7 @@ function renderHeroOlympiad(olympiad) {
 
     const imageUrl = olympiad.fileId
         ? `/api/files/${olympiad.fileId}/view`
-        : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop';
+        : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop';
 
     const dateObj = olympiad.createdAt ? new Date(olympiad.createdAt) : new Date();
     const formattedDate = dateObj.toLocaleDateString('ru-RU', {
@@ -630,7 +1003,7 @@ function renderHeroOlympiad(olympiad) {
 
     heroContainer.innerHTML = `
                 <div class="row align-items-center">
-                    <div class="col-lg-6">
+                    <div class="col-lg-7">
                         <h1 class="hero-title">${title}</h1>
                         <p class="hero-description">${description}</p>
                         <div class="mb-3">
@@ -638,12 +1011,12 @@ function renderHeroOlympiad(olympiad) {
                         </div>
                           <div class="hero-buttons">
                         <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
-                        <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
+                        <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
                     </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="hero-image">
-                            <img src="${imageUrl}" alt="${title}" class="img-fluid">
+                            <img src="${imageUrl}" alt="${title}" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;">
                         </div>
                     </div>
                 </div>
@@ -655,18 +1028,18 @@ function showDefaultHero() {
 
     heroContainer.innerHTML = `
                 <div class="row align-items-center">
-                    <div class="col-lg-6">
+                    <div class="col-lg-7">
                         <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
                         <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
                         <div class="hero-buttons">
                             <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
-                            <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
+                            <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="hero-image">
-                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop" 
-                                 alt="Математика" class="img-fluid">
+                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop" 
+                                 alt="Математика" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;">
                         </div>
                     </div>
                 </div>
@@ -686,3 +1059,121 @@ function showErrorHero() {
                 </div>
             `;
 }
+
+
+function renderOlympiadAlert(olympiad) {
+    const alertContainer = document.querySelector('.alert.alert-warning');
+
+    const title = olympiad.title || 'Математическая олимпиада';
+    const description = olympiad.info || 'Регистрация открыта. Покажи свои знания на республиканском уровне!';
+
+    const olympiadUrl = `/olympiad/${olympiad.id}`;
+
+    let dateInfo = '';
+    if (olympiad.createdAt) {
+        const dateObj = new Date(olympiad.createdAt);
+        const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        dateInfo = ` Опубликовано: ${formattedDate}.`;
+    }
+
+    alertContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+            <div class="announcement-icon me-3">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h4 class="mb-1">${title}</h4>
+                <p class="mb-0">${description}${dateInfo}</p>
+            </div>
+            <div class="announcement-action">
+                <a href="${olympiadUrl}" class="btn btn-primary">Подать заявку</a>
+            </div>
+        </div>
+    `;
+}
+
+function showDefaultOlympiadAlert() {
+    const alertContainer = document.querySelector('.alert.alert-warning');
+
+    alertContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+            <div class="announcement-icon me-3">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h4 class="mb-1">🏆 Математические олимпиады</h4>
+                <p class="mb-0">Следите за объявлениями о предстоящих олимпиадах и соревнованиях!</p>
+            </div>
+            <div class="announcement-action">
+                <a href="/olympiads" class="btn btn-primary">Все олимпиады</a>
+            </div>
+        </div>
+    `;
+}
+
+function showOlympiadAlertError() {
+    const alertContainer = document.querySelector('.alert');
+
+    alertContainer.className = 'alert alert-danger mb-5';
+
+    alertContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+            <div class="announcement-icon me-3">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h4 class="mb-1">⚠️ Ошибка загрузки</h4>
+                <p class="mb-0">Не удалось загрузить информацию об актуальных олимпиадах</p>
+            </div>
+            <div class="announcement-action">
+                <button class="btn btn-outline-danger" onclick="loadOlympiadAlert()">
+                    🔄 Попробовать снова
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function loadOlympiadAlert() {
+    const alertContainer = document.querySelector('.alert');
+
+    if (!alertContainer) return;
+
+    alertContainer.className = 'alert alert-warning mb-5';
+
+    alertContainer.innerHTML = `
+        <div class="d-flex align-items-center justify-content-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+            <span>Загружаем актуальную олимпиаду...</span>
+        </div>
+    `;
+
+    fetch('/api/olymp/main')
+        .then(res => {
+            if (!res.ok) throw new Error('Ошибка загрузки олимпиады');
+            return res.json();
+        })
+        .then(data => {
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                showDefaultOlympiadAlert();
+                return;
+            }
+
+            const olympiad = data[0];
+            renderOlympiadAlert(olympiad);
+        })
+        .catch(err => {
+            console.error('Ошибка загрузки олимпиады:', err);
+            showOlympiadAlertError();
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadOlympiadAlert();
+});
