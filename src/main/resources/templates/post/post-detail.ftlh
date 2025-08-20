@@ -920,30 +920,32 @@
                     <button class="show-more-btn" id="toggleButton">Читать полностью</button>
                 </#if>
             </div>
-
-            <div class="publication-meta">
-                <div class="meta-item">
-                    <span class="icon">👁️</span>
-                    <span>${post.viewCount!0} просмотров</span>
+            <#if post.status == "APPROVED">
+                <div class="publication-meta">
+                    <div class="meta-item">
+                        <span class="icon">👁️</span>
+                        <span>${post.viewCount!0} просмотров</span>
+                    </div>
+                    <#if post.shareCount?? && post.shareCount gt 0>
+                        <div class="meta-item">
+                            <span class="icon">📤</span>
+                            <span>${post.shareCount} репостов</span>
+                        </div>
+                    </#if>
+                    <#if allImages?size gt 1>
+                        <div class="meta-item">
+                            <span class="icon">📷</span>
+                            <span>${allImages?size} фотографий</span>
+                        </div>
+                    </#if>
+                    <button id="viewCommentsBtn" data-post-id="${post.id}"
+                            <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
+                        <span class="icon">💬</span>
+                        Комментарии
+                    </button>
                 </div>
-                <#if post.shareCount?? && post.shareCount gt 0>
-                    <div class="meta-item">
-                        <span class="icon">📤</span>
-                        <span>${post.shareCount} репостов</span>
-                    </div>
-                </#if>
-                <#if allImages?size gt 1>
-                    <div class="meta-item">
-                        <span class="icon">📷</span>
-                        <span>${allImages?size} фотографий</span>
-                    </div>
-                </#if>
-                <button id="viewCommentsBtn" data-post-id="${post.id}"
-                        <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button>
-            </div>
+            </#if>
+
         </article>
     </div>
 

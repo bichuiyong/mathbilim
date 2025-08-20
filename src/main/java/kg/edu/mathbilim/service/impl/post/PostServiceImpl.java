@@ -226,7 +226,7 @@ public class PostServiceImpl extends
 
     @Override
     public List<PostDto> getPostByMainPage() {
-        List<Post> posts = repository.findTop10ByOrderByCreatedAtDesc();
+        List<Post> posts = repository.findTop10ByStatusOrderByCreatedAtDesc(ContentStatus.APPROVED);
 
         return posts.stream().map(mapper::toDto).collect(Collectors.toList());
     }

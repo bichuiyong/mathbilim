@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.repository.post;
 
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRepository<Post> {
 
     Page<Post> getPostByCreator_Id(Long userId, Pageable pageable);
+
+    List<Post> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
 
     @Modifying
     @Query("UPDATE Post b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")

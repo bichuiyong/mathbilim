@@ -814,48 +814,50 @@
                     <button class="show-more-btn" id="toggleContentBtn">Читать полностью</button>
                 </#if>
             </div>
-
-            <div class="blog-meta">
-                <div class="meta-item">
-                    <span class="icon">👁️</span>
-                    <span>${blog.viewCount!0} просмотров</span>
-                </div>
-                <#if blog.shareCount?? && blog.shareCount gt 0>
+            <#if blog.status == "APPROVED">
+                <div class="blog-meta">
                     <div class="meta-item">
-                        <span class="icon">📤</span>
-                        <span>${blog.shareCount} репостов</span>
+                        <span class="icon">👁️</span>
+                        <span>${blog.viewCount!0} просмотров</span>
                     </div>
-                </#if>
-                <div class="meta-item">
+                    <#if blog.shareCount?? && blog.shareCount gt 0>
+                        <div class="meta-item">
+                            <span class="icon">📤</span>
+                            <span>${blog.shareCount} репостов</span>
+                        </div>
+                    </#if>
+                    <div class="meta-item">
                     <span>
                         <button class="comments-btn" id="openCommentsBtn"
-                                  data-post-id="${blog.id}"
-                                  <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
+                                data-post-id="${blog.id}"
+                                <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
                     <span class="icon">💬</span>
                     Комментарии
                 </button></span>
-                </div>
+                    </div>
 
-                <div class="share-buttons">
-                    <span class="share-label">Поделиться:</span>
-                    <button class="social-btn facebook" onclick="shareToFacebook()" title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </button>
-                    <button class="social-btn twitter" onclick="shareToTwitter()" title="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </button>
-                    <button class="social-btn telegram" onclick="shareToTelegram()" title="Telegram">
-                        <i class="fab fa-telegram-plane"></i>
-                    </button>
-                    <button class="social-btn whatsapp" onclick="shareToWhatsApp()" title="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </button>
-                    <button class="social-btn copy-link" onclick="copyLink()" id="copyLinkBtn" title="Копировать ссылку">
-                        <i class="fas fa-link"></i>
-                        <span class="copy-feedback">Скопировано!</span>
-                    </button>
+                    <div class="share-buttons">
+                        <span class="share-label">Поделиться:</span>
+                        <button class="social-btn facebook" onclick="shareToFacebook()" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="social-btn twitter" onclick="shareToTwitter()" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="social-btn telegram" onclick="shareToTelegram()" title="Telegram">
+                            <i class="fab fa-telegram-plane"></i>
+                        </button>
+                        <button class="social-btn whatsapp" onclick="shareToWhatsApp()" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button class="social-btn copy-link" onclick="copyLink()" id="copyLinkBtn" title="Копировать ссылку">
+                            <i class="fas fa-link"></i>
+                            <span class="copy-feedback">Скопировано!</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </#if>
+
         </article>
     </div>
 
