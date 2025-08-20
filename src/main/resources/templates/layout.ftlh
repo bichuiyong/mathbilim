@@ -1,5 +1,5 @@
 <#macro layout title="">
-<#import "/spring.ftl" as spring>
+    <#import "/spring.ftl" as spring>
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -47,7 +47,7 @@
     <body>
     <nav class="navbar navbar-expand-lg navbar-light navbar-container">
         <div class="container-fluid">
-            <!-- Мобильная версия header -->
+
             <div class="d-flex justify-content-between align-items-center w-100 d-lg-none">
                 <a href="/" class="logo">mathbilim</a>
                 <div class="d-flex align-items-center">
@@ -65,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- Десктопная версия -->
             <div class="d-none d-lg-block w-100">
                 <div class="navbar-top">
                     <div class="row align-items-center">
@@ -137,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- Мобильное меню (collapse) -->
             <div class="collapse navbar-collapse d-lg-none" id="navbarContent">
                 <div class="navbar-mobile-content">
                     <div class="mobile-menu-section">
@@ -210,12 +208,10 @@
         </div>
     </nav>
 
-    <!-- Основной контент -->
     <main>
         <#nested>
     </main>
 
-    <!-- Футер -->
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -300,6 +296,30 @@
                     }
                 });
             }
+
+            function updateLanguageLinks() {
+                const currentUrl = new URL(window.location);
+                const currentParams = currentUrl.searchParams;
+
+                const langLinks = document.querySelectorAll('.lang-btn, .lang-btn-mobile');
+
+                langLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+
+                    const langMatch = href.match(/lang=([^&]+)/);
+                    if (langMatch) {
+                        const langCode = langMatch[1];
+
+                        const newParams = new URLSearchParams(currentParams);
+                        newParams.set('lang', langCode);
+
+                        link.setAttribute('href', '?' + newParams.toString());
+                    }
+                });
+            }
+
+            updateLanguageLinks();
+            window.addEventListener('popstate', updateLanguageLinks);
         });
     </script>
 
