@@ -77,9 +77,9 @@ public class BlogController {
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }
+        blogService.create(blogDto, mpMainImage);
 
-        BlogDto createdBlog = blogService.create(blogDto, mpMainImage);
-        return "redirect:/blog/" + createdBlog.getId();
+        return "redirect:/blog";
     }
 
     @GetMapping("/{id}")
