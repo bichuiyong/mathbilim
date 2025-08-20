@@ -28,6 +28,15 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
                                                     @Param("languageCode") String languageCode);
 
+    List<Blog> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
+
+    @Query("""
+                SELECT b FROM Blog b
+                JOIN b.blogTranslations bt
+                WHERE b.id = :blogId
+            """)
+    Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId);
+
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
                     b.id,

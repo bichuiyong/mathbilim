@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.config;
 
-import com.sun.research.ws.wadl.HTTPMethods;
+import jakarta.servlet.http.HttpServletResponse;
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -40,8 +39,11 @@ public class SecurityConfig {
         return http
                 .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptions -> exceptions
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedHandler((req, res, e) -> {
+                            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        })
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
@@ -87,7 +89,6 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/posts/create/**",
-                                "/organizations/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
                                 "/profile/**",
@@ -106,7 +107,8 @@ public class SecurityConfig {
                                     "/olympiad/stage/register-list",
                                     "/olympiad/stage/*/register-list",
                                     "/api/excel/download/excel/*",
-                                    "/tests/create"
+                                    "/tests/create",
+                                    "organizations/create"
                             ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
 
                         .requestMatchers(
@@ -117,7 +119,8 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/error"
+                                "/error",
+                                "/error/*"
                         ).permitAll()
                         .requestMatchers("/api/auth/check").permitAll()
 

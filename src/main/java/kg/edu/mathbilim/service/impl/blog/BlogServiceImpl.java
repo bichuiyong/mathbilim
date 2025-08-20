@@ -103,8 +103,8 @@ public class BlogServiceImpl extends
     }
 
     public BlogDto getDisplayBlogById(Long id) {
-        Blog blog = repository.findDisplayBlogById(id, getCurrentLanguage())
-                .orElseThrow(this::getNotFoundException);
+        Blog blog = repository.findDisplayBlogById(id)
+                .orElseThrow(BlogNotFoundException::new);
         incrementViewCount(id);
 
         return mapper.toDto(blog);
@@ -224,7 +224,7 @@ public class BlogServiceImpl extends
 
     @Override
     public List<BlogDto> getBlogsByMainPage() {
-        List<Blog> blogs = repository.findTop10ByOrderByCreatedAtDesc();
+        List<Blog> blogs = repository.findTop10ByStatusOrderByCreatedAtDesc(ContentStatus.APPROVED);
         return blogs.stream().map(mapper::toDto).toList();
     }
 }

@@ -450,9 +450,11 @@
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
                             </a>
+                            <#if isModer || isAdmin>
                             <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
                             </a>
+                            </#if>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.olympiad"/>

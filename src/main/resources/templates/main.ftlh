@@ -7,19 +7,15 @@
         <div class="alert alert-warning mb-5">
         </div>
 
-        <!-- Новости - Main Content -->
         <div class="row g-4 mb-5">
-            <!-- Featured News Carousel -->
             <div class="col-lg-8">
                 <div class="section-header mb-3">
                     <h3>Последние новости</h3>
                 </div>
                 <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
                     <div class="carousel-indicators" id="news-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
                     </div>
                     <div class="carousel-inner" id="news-carousel-inner">
-                        <!-- Слайды будут загружены динамически -->
                         <div class="carousel-item active d-flex justify-content-center align-items-center"
                              style="height: 400px;">
                             <div class="spinner-border text-primary" role="status">
@@ -223,7 +219,7 @@
                             </div>
                             <h4>Олимпиады</h4>
                             <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
-                            <a href="/olympiads" class="btn btn-primary mt-3">Участвовать</a>
+                            <a href="/olympiad" class="btn btn-primary mt-3">Участвовать</a>
                         </div>
                     </div>
                 </div>
