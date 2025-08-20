@@ -155,6 +155,45 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Функция для получения правильного title как в истории
+    function getContentTitle(item, type) {
+        console.log(`🎯 Получение title для типа "${type}":`, item);
+
+        let title = '';
+
+        switch (type) {
+            case 'event':
+                if (item.eventTranslations && item.eventTranslations[0]?.title) {
+                    title = item.eventTranslations[0].title;
+                } else {
+                    title = item.title || 'Без заголовка';
+                }
+                break;
+            case 'blog':
+                if (item.blogTranslations && item.blogTranslations[0]?.title) {
+                    title = item.blogTranslations[0].title;
+                } else {
+                    title = item.title || 'Без заголовка';
+                }
+                break;
+            case 'post':
+                if (item.postTranslations && item.postTranslations[0]?.title) {
+                    title = item.postTranslations[0].title;
+                } else {
+                    title = item.title || 'Без заголовка';
+                }
+                break;
+            case 'book':
+                title = item.name || item.title || 'Без заголовка';
+                break;
+            default:
+                title = item.title || 'Без заголовка';
+        }
+
+        console.log(`📝 Итоговый title для ${type}:`, title);
+        return title;
+    }
+
     function loadAllContentTypes(page) {
         // Для режима "все типы" делаем единый запрос с объединенным контентом
         const url = `/api/users/content/all?creatorId=${userId}&page=${page}&size=${pageSize}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
@@ -163,6 +202,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const urls = types.map(type =>
             `/api/users/content?type=${type}&creatorId=${userId}&page=0&size=1000${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`
         );
+
+        console.log('📡 Отправка запросов для всех типов контента:', urls);
 
         Promise.all(urls.map(url =>
             fetch(url)
@@ -175,21 +216,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
         ))
             .then(results => {
+                console.log('📦 Получены результаты для всех типов:', results);
+
                 let allItems = [];
 
                 // Собираем все элементы из всех типов
                 results.forEach((result, index) => {
+                    const type = types[index];
+                    console.log(`📋 Обработка результатов для типа "${type}":`, result);
+
                     if (result.content && Array.isArray(result.content) && result.content.length > 0) {
-                        const type = types[index];
-                        result.content.forEach(item => {
+                        console.log(`✅ Найдено ${result.content.length} элементов типа "${type}"`);
+
+                        result.content.forEach((item, itemIndex) => {
+                            console.log(`🔍 Элемент ${itemIndex + 1} типа "${type}":`, item);
+                            console.log(`📄 Структура объекта:`, Object.keys(item));
+
+                            // Проверяем наличие переводов
+                            const translationKey = `${type}Translations`;
+                            console.log(`🌍 Проверка переводов "${translationKey}":`, item[translationKey]);
+
                             allItems.push({
                                 ...item,
                                 contentType: type,
                                 createdAt: new Date(item.createdAt || Date.now())
                             });
                         });
+                    } else {
+                        console.log(`❌ Нет контента для типа "${type}"`);
                     }
                 });
+
+                console.log('🗂️ Все собранные элементы:', allItems);
 
                 // Сортируем по дате создания (новые первыми)
                 allItems.sort((a, b) => b.createdAt - a.createdAt);
@@ -201,12 +259,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 const endIndex = startIndex + pageSize;
                 const pageItems = allItems.slice(startIndex, endIndex);
 
+                console.log(`📊 Пагинация: всего элементов ${totalItems}, страниц ${totalPages}, показываем элементы ${startIndex}-${endIndex}`);
+
                 if (pageItems.length > 0) {
                     let html = '<div class="row g-3">';
 
-                    pageItems.forEach(item => {
+                    pageItems.forEach((item, index) => {
                         const imageId = item.mainImageId || 'default-image-id';
                         const type = item.contentType;
+
+                        console.log(`🎨 Рендер элемента ${index + 1}:`, {
+                            type: type,
+                            item: item,
+                            imageId: imageId
+                        });
+
+                        // Используем правильную функцию получения title
+                        const title = getContentTitle(item, type);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
@@ -218,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                             </div>
                                         </div>
                                         <div class="card-body p-2">
-                                            <h6 class="card-title text-truncate mb-1">${item.title || 'Без названия'}</h6>
+                                            <h6 class="card-title text-truncate mb-1">${title}</h6>
                                             <small class="text-muted">${formatDate(item.createdAt)}</small>
                                         </div>
                                     </a>
@@ -241,6 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     renderPagination(totalPages, page);
                 } else {
+                    console.log('❌ Нет элементов для отображения');
                     showNoContentMessage();
                 }
             })
@@ -260,6 +331,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const apiType = typeMap[currentFilter] || 'post';
         const url = `/api/users/content?type=${apiType}&creatorId=${userId}&page=${page}&size=${pageSize}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
 
+        console.log(`📡 Запрос для конкретного типа "${apiType}":`, url);
+
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -269,12 +342,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(result => {
+                console.log(`📦 Результат для типа "${apiType}":`, result);
+
                 if (result.content && Array.isArray(result.content) && result.content.length > 0) {
-                    console.log(`Загружено ${result.content.length} элементов типа ${apiType}.`);
+                    console.log(`✅ Загружено ${result.content.length} элементов типа ${apiType}.`);
+
                     let html = '<div class="row g-3">';
 
-                    result.content.forEach(item => {
+                    result.content.forEach((item, index) => {
+                        console.log(`🔍 Элемент ${index + 1} типа "${apiType}":`, item);
+                        console.log(`📄 Структура объекта:`, Object.keys(item));
+
                         const imageId = item.mainImageId || 'default-image-id';
+
+                        // Используем правильную функцию получения title
+                        const title = getContentTitle(item, apiType);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
@@ -283,7 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                             <img src="/api/files/${imageId}/view" alt="${apiType} Image" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy">
                                         </div>
                                         <div class="card-body p-2">
-                                            <h6 class="card-title text-truncate mb-1">${item.title || 'Без названия'}</h6>
+                                            <h6 class="card-title text-truncate mb-1">${title}</h6>
                                             <small class="text-muted">${formatDate(item.createdAt)}</small>
                                         </div>
                                     </a>
@@ -306,6 +389,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     renderPagination(result.totalPages || 1, page);
                 } else {
+                    console.log('❌ Нет контента для отображения');
                     showNoContentMessage("Нет контента по выбранному фильтру и запросу.");
                 }
             })
@@ -357,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-        const searchInput = document.getElementById("contentSearch");
+    const searchInput = document.getElementById("contentSearch");
     const searchBtn = document.getElementById("moderationSearchBtn");
     const filterSelect = document.getElementById("contentFilter");
 
@@ -470,6 +554,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let html = '<div class="content-grid">';
         content.forEach(item => {
             const createdDate = new Date(item.createdAt || item.publishedAt || Date.now()).toLocaleDateString('ru-RU');
+
+            console.log(`📋 История - элемент типа "${item.type}":`, item);
 
             html += `
                 <div class="content-card">
@@ -766,24 +852,54 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getContentTitle(item, type) {
+        console.log(`🎯 История - получение title для типа "${type}":`, item);
+        console.log(`📄 История - структура объекта:`, Object.keys(item));
+
+        let title = '';
+
         switch (type) {
             case 'event':
-                return item.eventTranslations && item.eventTranslations[0]?.title
-                    ? item.eventTranslations[0].title
-                    : 'Без заголовка';
+                if (item.eventTranslations && item.eventTranslations[0]?.title) {
+                    title = item.eventTranslations[0].title;
+                    console.log(`✅ История - найден title в eventTranslations:`, title);
+                } else {
+                    title = item.title || 'Без заголовка';
+                    console.log(`⚠️ История - eventTranslations не найдены, используем fallback:`, title);
+                    console.log(`🔍 История - eventTranslations:`, item.eventTranslations);
+                }
+                break;
             case 'blog':
-                return item.blogTranslations && item.blogTranslations[0]?.title
-                    ? item.blogTranslations[0].title
-                    : item.title || 'Без заголовка';
+                if (item.blogTranslations && item.blogTranslations[0]?.title) {
+                    title = item.blogTranslations[0].title;
+                    console.log(`✅ История - найден title в blogTranslations:`, title);
+                } else {
+                    title = item.title || 'Без заголовка';
+                    console.log(`⚠️ История - blogTranslations не найдены, используем fallback:`, title);
+                    console.log(`🔍 История - blogTranslations:`, item.blogTranslations);
+                }
+                break;
             case 'post':
-                return item.postTranslations && item.postTranslations[0]?.title
-                    ? item.postTranslations[0].title
-                    : item.title || 'Без заголовка';
+                if (item.postTranslations && item.postTranslations[0]?.title) {
+                    title = item.postTranslations[0].title;
+                    console.log(`✅ История - найден title в postTranslations:`, title);
+                } else {
+                    title = item.title || 'Без заголовка';
+                    console.log(`⚠️ История - postTranslations не найдены, используем fallback:`, title);
+                    console.log(`🔍 История - postTranslations:`, item.postTranslations);
+                }
+                break;
             case 'book':
-                return item.name || 'Без заголовка';
+                title = item.name || item.title || 'Без заголовка';
+                console.log(`📚 История - title для книги:`, title);
+                console.log(`🔍 История - name:`, item.name, 'title:', item.title);
+                break;
             default:
-                return item.title || 'Без заголовка';
+                title = item.title || 'Без заголовка';
+                console.log(`🔧 История - default title:`, title);
         }
+
+        console.log(`📝 История - итоговый title для ${type}:`, title);
+        return title;
     }
 
     function loadContent() {
@@ -797,33 +913,51 @@ document.addEventListener("DOMContentLoaded", function () {
         currentStatus = statusFilter.value;
         currentQuery = searchInput.value.trim();
 
+        console.log(`🔄 История - загрузка контента: тип="${currentType}", статус="${currentStatus}", запрос="${currentQuery}"`);
+
         if (currentType === "all") {
             const types = ['post', 'blog', 'event', 'book'];
-            const fetches = types.map(type =>
-                fetch(`/api/users/history?id=${userId}&type=${type}&page=${currentPage}&size=${pageSize}` +
+            const fetches = types.map(type => {
+                const url = `/api/users/history?id=${userId}&type=${type}&page=${currentPage}&size=${pageSize}` +
                     (currentStatus !== "all" ? `&status=${currentStatus}` : '') +
-                    (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '')
-                )
+                    (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '');
+
+                console.log(`📡 История - запрос для типа "${type}":`, url);
+
+                return fetch(url)
                     .then(res => {
                         if (!res.ok) throw new Error(`Ошибка загрузки: ${res.status}`);
                         return res.json();
-                    })
-            );
+                    });
+            });
 
             Promise.all(fetches)
                 .then(results => {
+                    console.log(`📦 История - результаты для всех типов:`, results);
+
                     let combinedContent = [];
                     let totalElements = 0;
 
                     results.forEach((pageData, idx) => {
+                        const type = types[idx];
+                        console.log(`📋 История - результат для типа "${type}":`, pageData);
+
                         if (pageData.content && Array.isArray(pageData.content)) {
+                            console.log(`✅ История - найдено ${pageData.content.length} элементов типа "${type}"`);
+
+                            pageData.content.forEach((item, itemIndex) => {
+                                console.log(`🔍 История - элемент ${itemIndex + 1} типа "${type}":`, item);
+                            });
+
                             combinedContent = combinedContent.concat(pageData.content.map(item => ({
                                 ...item,
-                                type: types[idx]
+                                type: type
                             })));
                         }
                         totalElements += pageData.totalElements || 0;
                     });
+
+                    console.log(`🗂️ История - объединенный контент (${combinedContent.length} элементов):`, combinedContent);
 
                     // Сохраняем результат даже если он пустой
                     allContent = combinedContent;
@@ -840,7 +974,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     displayContent(allContent.slice(0, pageSize));
                 })
                 .catch(err => {
-                    console.error("Ошибка при загрузке контента:", err);
+                    console.error("История - ошибка при загрузке контента:", err);
                     contentList.innerHTML = `
                         <div class="text-center py-5">
                             <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
@@ -850,15 +984,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
         } else {
-            fetch(`/api/users/history?id=${userId}&type=${currentType}&page=${currentPage}&size=${pageSize}` +
+            const url = `/api/users/history?id=${userId}&type=${currentType}&page=${currentPage}&size=${pageSize}` +
                 (currentStatus !== "all" ? `&status=${currentStatus}` : '') +
-                (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '')
-            )
+                (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '');
+
+            console.log(`📡 История - запрос для конкретного типа "${currentType}":`, url);
+
+            fetch(url)
                 .then(res => {
                     if (!res.ok) throw new Error(`Ошибка загрузки: ${res.status}`);
                     return res.json();
                 })
                 .then(data => {
+                    console.log(`📦 История - результат для типа "${currentType}":`, data);
+
                     if (!data.content || !Array.isArray(data.content) || data.content.length === 0) {
                         allContent = [];
                         totalPages = 1; // Минимум одна страница
@@ -866,12 +1005,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
+                    console.log(`✅ История - найдено ${data.content.length} элементов`);
+                    data.content.forEach((item, index) => {
+                        console.log(`🔍 История - элемент ${index + 1}:`, item);
+                    });
+
                     allContent = data.content.map(item => ({ ...item, type: currentType }));
                     totalPages = Math.max(data.totalPages || 1, 1); // Минимум одна страница
                     displayContent(allContent);
                 })
                 .catch(err => {
-                    console.error("Ошибка при загрузке контента:", err);
+                    console.error("История - ошибка при загрузке контента:", err);
                     contentList.innerHTML = `
                         <div class="text-center py-5">
                             <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>

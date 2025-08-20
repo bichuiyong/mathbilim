@@ -381,7 +381,7 @@
                         </div>
 
                         <h4 class="mb-1">${user.name!} ${user.surname!}</h4>
-                        <p class="text-muted mb-2">${user.email}</p>
+<#--                        <p class="text-muted mb-2">${user.email}</p>-->
 
                         <#if user.type??>
                             <span class="badge bg-light-blue text-primary mb-3">
@@ -406,15 +406,15 @@
                         <div class="profile-stats">
                             <div class="row text-center">
                                 <div class="col-4">
-                                    <div class="stat-value" id="totalContent">0</div>
+                                    <div class="stat-value" id="totalContent">${total}</div>
                                     <div class="stat-label"><@spring.message "profile.content.total"/></div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="stat-value" id="approvedContent">0</div>
+                                    <div class="stat-value" id="approvedContent">${accepted}</div>
                                     <div class="stat-label"><@spring.message "profile.content.approved"/></div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="stat-value" id="pendingContent">0</div>
+                                    <div class="stat-value" id="pendingContent">${pending}</div>
                                     <div class="stat-label"><@spring.message "profile.content.pending"/></div>
                                 </div>
                             </div>
@@ -459,6 +459,11 @@
                                 </a>
                                 <a href="/news/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.news"/>
+                                </a>
+                            </#if>
+                            <#if isModer || isAdmin>
+                                <a href="/tests/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i>Тест
                                 </a>
                             </#if>
                         </div>
@@ -929,7 +934,6 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalContent">
-                        <!-- Контент будет загружен здесь -->
                     </div>
                 </div>
                 <div class="modal-footer">

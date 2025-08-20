@@ -1,293 +1,193 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
-    <div class="container-fluid mt-4" style="margin-bottom: 50px">
+<style>
+    .card {
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease;
+    height: 100%;
+    }
+
+    .card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 4.5em;
+    }
+
+    .badge {
+    font-weight: 500;
+    }
+
+    .pagination {
+    gap: 0.5rem;
+    }
+
+    .page-item {
+    border-radius: 8px;
+    }
+
+    .page-link {
+    min-width: 2.5rem;
+    text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #388dff;
+    }
+
+    .custom-btn {
+        font-weight: 500;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #388dff;
+    }
+
+    .btn-outline-secondary {
+        white-space: nowrap;
+        height: 40px;
+    }
+
+</style>
+
+    <#if SPRING_SECURITY_CONTEXT??>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#assign authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)>
+        <#assign
+        isAdmin = authorities?seq_contains("ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        isUser = authorities?seq_contains("USER")
+        >
+    </#if>
+
+    <div class="container mt-4" style="margin-bottom: 50px">
         <div class="row">
-
-            <aside class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block">
-                <div class="filter-section p-3">
-                    <h3 class="h5 fw-bold mb-3">Предметы тестов</h3>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link">Все тесты</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Алгебра</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Геометрия</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Теория чисел</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Анализ</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Комбинаторика</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Олимпиады</a></li>
-                    </ul>
-                </div>
-            </aside>
-
-            <main class="col-md-9 col-lg-10 px-md-4">
+            <main class="col-md-12 px-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-                    <h1 class="h2 mb-3 mb-md-0">Тесты и проверочные работы</h1>
-
-                    <div class="d-md-none">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCategories" aria-expanded="false" aria-controls="sidebarCategories">
-                            ☰ Категории тестов
-                        </button>
-                    </div>
+                    <h1 class="h2 mb-3 mb-md-0"><@spring.message "test.list.tests"/></h1>
                 </div>
-
-                <aside class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block" id="sidebarCategories" style="margin-bottom: 20px">
-                    <h3 class="h5 fw-bold mb-3">Предметы тестов</h3>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link">Все тесты</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Алгебра</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Геометрия</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Теория чисел</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Анализ</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Комбинаторика</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Олимпиады</a></li>
-                    </ul>
-                    <hr>
-                </aside>
 
                 <div class="d-flex mb-4 flex-column flex-sm-row gap-2">
                     <div class="flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Поиск тестов по названию, предмету...">
+                        <form action="" id="search" method="get">
+                            <input type="text" name="keyword" id="search" <#if keyword??>value="${keyword}" </#if> class="form-control" placeholder="<@spring.message"test.list.findBy"/>">
+                        </form>
                     </div>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-primary flex-shrink-0">Найти</button>
-                        <button class="btn btn-success flex-shrink-0">Создать тест</button>
+                        <button form="search" type="submit" class="btn btn-primary flex-shrink-0"><@spring.message "test.list.find"/></button>
+                        <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                        <button class="btn btn-success flex-shrink-0"><a style="all:unset" href="/tests/create"><@spring.message "test.list.create"/></a></button>
+                        </#if>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted">Сортировка:</span>
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option>По дате (новые)</option>
-                            <option>По дате (старые)</option>
-                        </select>
+<#--                        <span class="text-muted">Сортировка:</span>-->
+<#--                        <select class="form-select form-select-sm" style="width: auto;">-->
+<#--                            <option>По дате (новые)</option>-->
+<#--                            <option>По дате (старые)</option>-->
+<#--                        </select>-->
                     </div>
-                    <div class="text-muted">Найдено 24 теста</div>
+                    <div class="text-muted"><@spring.message "test.list.finded"/> ${total}</div>
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
 
-                    <#--                    <#list> -->
+
+                    <#list tests.content as test>
                     <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="card-title mb-0">Алгебра 7 класс</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">${test.name}</h5>
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-secondary me-2">Алгебра</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 12 вопросов</span>
+                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> ${test.questionCount} <@spring.message "test.list.ques"/></span>
                                 </div>
-                                <p class="card-text flex-grow-1">Контрольная работа по основным темам алгебры 7 класса: уравнения, неравенства, системы уравнений.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center test-time">
-                                        <small class="text-muted">15 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-primary">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
+                                <p class="card-text">${test.description}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted"><#if test.hasLimit>${test.timeLimit} <@spring.message "test.list.minute"/><#else><@spring.message "test.list.noTime"/></#if></small>
                                 </div>
+                                <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
+                                    <a class="btn btn-primary custom-btn flex-grow-1" href="/tests/${test.id}/pass"><@spring.message "test.list.ready"/></a>
+                                    <a class="btn btn-outline-secondary" href="/tests/${test.id}"><@spring.message "test.list.details"/></a>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                    <#--                    </#list>-->
-
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="card-title mb-0">Геометрические задачи</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-success me-2">Геометрия</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 15 вопросов</span>
-                                </div>
-                                <p class="card-text flex-grow-1">Тест на проверку знаний по планиметрии: треугольники, окружности, площади фигур, теоремы.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">20 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-success">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="card-title mb-0">Олимпиадные задачи</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-warning text-dark me-2">Олимпиады</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 5 задач</span>
-                                </div>
-                                <p class="card-text flex-grow-1">Сборник олимпиадных задач муниципального этапа с решениями и пояснениями.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">45 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-warning">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="card-title mb-0">Теория чисел</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-info me-2">Теория чисел</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 8 вопросов</span>
-                                </div>
-                                <p class="card-text flex-grow-1">Тест по основам теории чисел: делимость, НОД, НОК, простые числа, сравнения.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">15 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-info">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-danger text-white">
-                                <h5 class="card-title mb-0">Комбинаторика</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-danger me-2">Комбинаторика</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 10 вопросов</span>
-                                </div>
-                                <p class="card-text flex-grow-1">Основы комбинаторики: перестановки, сочетания, размещения, принцип Дирихле.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">25 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-danger">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-secondary text-white">
-                                <h5 class="card-title mb-0">Математический анализ</h5>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-secondary me-2">Анализ</span>
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> 20 вопросов</span>
-                                </div>
-                                <p class="card-text flex-grow-1">Тест по основам математического анализа: пределы, производные, интегралы, ряды.</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">30 мин</small>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-2">
-                                        <button class="btn btn-outline-secondary">Начать тест</button>
-                                        <button class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </#list>
                 </div>
 
+                <#if total == 0>
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 60vh; text-align: center;">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6.59097L11.8456 6.42726C9.86801 4.33053 6.59738 4.57698 4.91934 6.94915C3.42999 9.05459 3.78668 12.0335 5.725 13.6776L12 19L18.275 13.6776C20.2133 12.0335 20.57 9.05459 19.0807 6.94915C17.4026 4.57697 14.132 4.33053 12.1544 6.42726L12 6.59097ZM12 6.59097L10.5 8.5L13 11L11 13.5" stroke="#464455" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                        <h4 class="mt-3"><@spring.message "test.list.noTest"/></h4>
+                        <p class="text-muted"><@spring.message "test.list.changeSearch"/></p>
+                    </div>
+                </#if>
 
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <#if total != 0>
+                <div class="pagination justify-content-center">
+
+                    <#if (tests.number > 0)>
+                        <a href="?page=${tests.number - 1}<#if keyword??>&keyword=${keyword}</#if>" class="page-link">&laquo;</a>
+                    </#if>
+
+                    <#if (tests.number - 1 >= 0)>
+                        <a href="?page=${tests.number - 1}<#if keyword??>&keyword=${keyword}</#if>" class="page-link">${tests.number}</a>
+                    </#if>
+
+                    <a href="?page=${tests.number}<#if keyword??>&keyword=${keyword}</#if>" class="page-link active">${tests.number + 1}</a>
+
+                    <#if tests.number + 1 < tests.totalPages>
+                        <a href="?page=${tests.number + 1}<#if keyword??>&keyword=${keyword}</#if>" class="page-link">${tests.number + 2}</a>
+                    </#if>
+
+                    <#if tests.number + 2 < tests.totalPages>
+                        <a href="?page=${tests.number + 2}<#if keyword??>&keyword=${keyword}</#if>" class="page-link">${tests.number + 3}</a>
+                    </#if>
+
+                    <#if tests.number + 1 < tests.totalPages>
+                        <a href="?page=${tests.number + 1}<#if keyword??>&keyword=${keyword}</#if>" class="page-link">&raquo;</a>
+                    </#if>
+
+                </div>
+            </#if>
+
             </main>
         </div>
     </div>
 
     <style>
-        .sidebar {
-            transition: all 0.3s ease;
-        }
-
-        .sidebar.collapse:not(.show) {
-            display: none;
-        }
-
-        .sidebar.collapsing {
-            height: 0;
-            overflow: hidden;
-            transition: height 0.35s ease;
-        }
-
         .card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border-radius: 10px;
-            overflow: hidden;
+            border-radius: 8px;
+            transition: box-shadow 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .card-header {
-            font-weight: 600;
-        }
-
-        .rating {
-            font-size: 0.9rem;
+        .card-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
 
         .badge {
             font-weight: 500;
-        }
-
-        @media (max-width: 767.98px) {
-            .card {
-                margin-bottom: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            #sidebarCategories {
-                display: none !important;
-            }
         }
 
         .pagination {
@@ -295,16 +195,12 @@
         }
 
         .page-item {
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .page-link {
             min-width: 2.5rem;
             text-align: center;
-        }
-
-        .test-time {
-            margin-top: 20px;
         }
     </style>
 

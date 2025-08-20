@@ -38,4 +38,6 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
     Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
     Post findByPostId(Long id);
+
+    List<PostDto> getPostByMainPage();
 }

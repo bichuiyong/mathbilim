@@ -1,155 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+<@main.layout>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        #controls {
-            margin-bottom: 10px;
+        h3 {
+            text-align: center;
+            margin-bottom: 5px;
         }
 
         #pdf-container {
             border: 1px solid #ccc;
-            margin-top: 10px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        #pdf-canvas {
+        canvas {
             display: block;
-            margin: 0 auto;
-            border: 1px solid #ddd;
+            margin: auto;
         }
 
-        #page-info {
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .answers-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+        }
+
+        .col-header {
+            display: grid;
+            grid-template-columns: 30px repeat(4, 30px);
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #444;
             text-align: center;
-            margin: 10px 0;
         }
 
-        #search-box {
-            margin-top: 10px;
+        .answer-row {
+            display: grid;
+            grid-template-columns: 30px repeat(4, 30px);
+            align-items: center;
+            margin-bottom: 5px;
+            text-align: center;
+            position: relative;
         }
+
+        .number {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        #timer-label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        #timer {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0d6efd;
+            background: #fff;
+            border: 2px solid #0d6efd;
+            padding: 10px 25px;
+            border-radius: 10px;
+        }
+
+        .frozen {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .past {
+            position: relative;
+        }
+
+        .past::after {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #0d6efd;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #0d6efd;
+            border-radius: 50%;
+        }
+
+        input[type="radio"].frozen {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 5px 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:read-only {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
     </style>
-</head>
 
-<body>
+    <h3 class="text-center mt-5">${test.name}</h3>
+    <p class="text-center"><@spring.message"test.pass.count"/> ${test.questionCount}
 
-<div id="controls">
-    <button id="prev-page">Предыдущая</button>
-    <button id="next-page">Следующая</button>
-    <span id="page-info">Страница: <span id="page-num">1</span> / <span id="page-count">0</span></span>
-    <input type="number" id="page-jump" min="1" value="1" style="width: 50px;">
-    <button id="go-to-page">Перейти</button>
-    <select id="zoom-select">
-        <option value="0.5">50%</option>
-        <option value="0.75">75%</option>
-        <option value="1" selected>100%</option>
-        <option value="1.5">150%</option>
-        <option value="2">200%</option>
-    </select>
-</div>
+        <#if test.hasLimit> — <@spring.message"test.pass.time"/> ${test.timeLimit} <@spring.message"test.pass.min"/></p>
+    </#if>
+    <#if test.hasLimit>
+        <div id="timer-container">
+            <div id="timer-label">⏳ <@spring.message"test.pass.left"/></div>
+            <div id="timer"></div>
+        </div>
+    </#if>
 
 
+    <div id="pdf-container">
+        <canvas id="pdf-render"></canvas>
+    </div>
 
-<div id="pdf-container">
-    <canvas id="pdf-canvas"></canvas>
-</div>
+    <div class="nav-buttons">
+        <button id="prev-page">← <@spring.message"test.pass.back"/></button>
+        <span><@spring.message"test.pass.page"/> <span id="page-num"></span> / <span id="page-count"></span></span>
+        <button id="next-page"><@spring.message"test.pass.next"/> →</button>
+    </div>
 
-<script>
+    <h3 class="text-center">${test.name} - <@spring.message"test.pass.results"/></h3>
+    <div>
+        <#assign totalQuestions = test.questionCount>
+        <#assign perColumn = 5>
+        <#assign columns = ((totalQuestions - 1) / perColumn + 1)>
+        <#assign index = 0>
+        <form action="/tests/${test.id}/pass" method="post" class="answers-wrapper" id="sendAnswersForm">
+            <@main.csrf/>
+            <#list 0..(columns-1) as col>
+                <div class="column">
+                    <div class="col-header">
+                        <div></div>
+                        <div>A</div>
+                        <div>B</div>
+                        <div>C</div>
+                        <div>D</div>
+                    </div>
+                    <#list test.questionDtoList as question>
+                        <#assign questionNum = question.numberOrder>
+                        <#if questionNum <= totalQuestions>
+                            <div class="answer-row" data-question="${questionNum}">
+                                <div class="number">${questionNum}</div>
+                                <input type="hidden" name="attemptAnswerDtoList[${index}].questionNumber"
+                                       value="${questionNum}">
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+                                <#if question.textFormat?? && question.textFormat>
+                                    <input type="text"
+                                           name="attemptAnswerDtoList[${index}].chosenAnswer"
+                                           data-page="${question.testPageNumber}"
+                                           style="grid-column: span 4; width: 100%; padding: 4px;">
+                                <#else>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="A"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="B"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="C"
+                                                data-page="${question.testPageNumber}"></div>
+                                    <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="D"
+                                                data-page="${question.testPageNumber}"></div>
+                                </#if>
 
-    let pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 1.0,
-        canvas = document.getElementById('pdf-canvas'),
-        ctx = canvas.getContext('2d'),
-        searchText = '',
-        searchMatches = [],
-        currentMatch = 0;
+                                <#assign index = index + 1>
+                            </div>
+                        </#if>
+                    </#list>
 
-    const url = '/proxy/pdfUrl';
+                </div>
+            </#list>
+        </form>
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-primary" form="sendAnswersForm"><@spring.message"test.pass.finish"/></button>
+        </div>
+    </div>
 
-    function renderPage(num) {
-        pageRendering = true;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <script>
+        const url = '${test.file.s3Link?js_string}';
+        let pdfDoc = null, pageNum = 1, pageIsRendering = false, pageNumIsPending = null;
+        const qualityBoost = 2;
+        const canvas = document.getElementById('pdf-render'), ctx = canvas.getContext('2d');
+        let timeOver = false;
 
-        pdfDoc.getPage(num).then(function (page) {
-            const viewport = page.getViewport({
-                scale: scale
+        const renderPage = num => {
+            pageIsRendering = true;
+            pdfDoc.getPage(num).then(page => {
+                const windowHeight = window.innerHeight - 20;
+                const viewportTemp = page.getViewport({scale: 1});
+                const scale = windowHeight / viewportTemp.height;
+                const viewport = page.getViewport({scale});
+                canvas.width = viewport.width * qualityBoost;
+                canvas.height = viewport.height * qualityBoost;
+                canvas.style.width = viewport.width + 'px';
+                canvas.style.height = viewport.height + 'px';
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport,
+                    transform: [qualityBoost, 0, 0, qualityBoost, 0, 0]
+                };
+                page.render(renderContext).promise.then(() => {
+                    pageIsRendering = false;
+                    if (pageNumIsPending !== null) {
+                        renderPage(pageNumIsPending);
+                        pageNumIsPending = null;
+                    }
+                });
+                document.getElementById('page-num').textContent = num;
+                updateRadioAvailability(num);
             });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+        };
 
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
+        const queueRenderPage = num => {
+            if (pageIsRendering) {
+                pageNumIsPending = num
+            } else {
+                renderPage(num);
+            }
+        };
+        const showPrevPage = () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        };
+        const showNextPage = () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        };
+        pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+            pdfDoc = pdfDoc_;
+            document.getElementById('page-count').textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+        });
+        document.getElementById('prev-page').addEventListener('click', showPrevPage);
+        document.getElementById('next-page').addEventListener('click', showNextPage);
+        window.addEventListener('resize', () => renderPage(pageNum));
 
-            const renderTask = page.render(renderContext);
+        const form = document.getElementById("sendAnswersForm");
+        const chosenAnswers = {};
+        const allRadios = form.querySelectorAll('input[type="radio"]');
 
-            renderTask.promise.then(function () {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
+        <#noparse>
+        const answerClicks = {};
+
+        allRadios.forEach(radio => {
+            radio.addEventListener('click', e => {
+                const question = radio.name;
+
+                if (!answerClicks[question]) answerClicks[question] = 0;
+
+                if (answerClicks[question] < 2) {
+                    chosenAnswers[question] = radio.value;
+                    answerClicks[question]++;
+
+                    if (answerClicks[question] === 2) {
+                        const radiosInGroup = form.querySelectorAll(`input[name="${question}"]`);
+                        radiosInGroup.forEach(r => {
+                            r.disabled = true;
+                            r.classList.add("frozen");
+                        });
+                    }
+                } else {
+                    e.preventDefault();
                 }
             });
         });
 
-        document.getElementById('page-num').textContent = num;
-    }
+        </#noparse>
 
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
+        function updateRadioAvailability(currentPage) {
+            allRadios.forEach(r => {
+                if (timeOver) {
+                    r.classList.add('frozen');
+                } else {
+                    if (parseInt(r.dataset.page) === currentPage) {
+                        r.classList.remove('frozen');
+                    } else {
+                        r.classList.add('frozen');
+                    }
+                }
+            });
+
+            const textInputs = form.querySelectorAll('input[type="text"][data-page]');
+            textInputs.forEach(inp => {
+                if (timeOver) {
+                    inp.readOnly = true;
+                } else {
+                    inp.readOnly = parseInt(inp.dataset.page) !== currentPage;
+                }
+            });
         }
-    }
-
-    document.getElementById('prev-page').addEventListener('click', function () {
-        if (pageNum <= 1) return;
-        pageNum--;
-        queueRenderPage(pageNum);
-    });
-
-    document.getElementById('next-page').addEventListener('click', function () {
-        if (pageNum >= pdfDoc.numPages) return;
-        pageNum++;
-        queueRenderPage(pageNum);
-    });
-
-    document.getElementById('go-to-page').addEventListener('click', function () {
-        const page = parseInt(document.getElementById('page-jump').value);
-        if (page >= 1 && page <= pdfDoc.numPages) {
-            pageNum = page;
-            queueRenderPage(pageNum);
-        }
-    });
-
-    document.getElementById('zoom-select').addEventListener('change', function () {
-        scale = parseFloat(this.value);
-        queueRenderPage(pageNum);
-    });
 
 
-    pdfjsLib.getDocument(url).promise.then(function (pdf) {
-        pdfDoc = pdf;
-        document.getElementById('page-count').textContent = pdf.numPages;
-        document.getElementById('page-jump').max = pdf.numPages;
+        <#if test.hasLimit>
+        const timerElement = document.getElementById("timer");
+        let timeLeft = ${test.timeLimit} * 60;
 
-        renderPage(pageNum);
-    });
-</script>
-</body>
+        <#noparse>
+        const timer = setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-</html>
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                timeOver = true;
+                [...form.elements].forEach(el => {
+                    if (el.type !== "submit" && el.name !== "_csrf") {
+                        el.classList.add('frozen');
+                        if (el.tagName === "INPUT" && (el.type === "radio" || el.type === "checkbox")) {
+                            el.addEventListener("click", e => e.preventDefault());
+                        }
+                        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                            el.readOnly = true;
+                        }
+                    }
+                });
+                timerElement.textContent = "⏰ Время вышло!";
+            }
+            timeLeft--;
+        }, 1000);
+        </#noparse>
+        </#if>
+    </script>
+
+
+</@main.layout>

@@ -1,144 +1,108 @@
 <#import "layout.ftlh" as main>
 <@main.layout title="Главная">
     <div class="container mt-4">
-        <!-- Hero Section -->
-        <div class="hero-section mb-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
-                    <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
-                    <div class="hero-buttons">
-                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
-                        <a href="/olympiads" class="btn btn-outline-primary">Олимпиады</a>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-image">
-                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
-                             alt="Математика" class="img-fluid border-radius">
-                    </div>
-                </div>
-            </div>
+        <div class="hero-section mb-5" id="hero-container">
         </div>
 
-        <!-- Announcement Banner -->
         <div class="alert alert-warning mb-5">
-            <div class="d-flex align-items-center">
-                <div class="announcement-icon me-3">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <h4 class="mb-1">🏆 Национальная математическая олимпиада 2025</h4>
-                    <p class="mb-0">Регистрация открыта до 15 июля 2025. Покажи свои знания на республиканском уровне!</p>
-                </div>
-                <div class="announcement-action">
-                    <a href="/olympiads/national-2025" class="btn btn-primary">Подать заявку</a>
-                </div>
-            </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Новости - Main Content -->
         <div class="row g-4 mb-5">
-            <!-- Featured Content Carousel -->
+            <!-- Featured News Carousel -->
             <div class="col-lg-8">
-                <div id="featuredCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="0"
-                                class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="1"
-                                aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="2"
-                                aria-label="Slide 3"></button>
+                <div class="section-header mb-3">
+                    <h3>Последние новости</h3>
+                </div>
+                <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                    <div class="carousel-indicators" id="news-carousel-indicators">
+                        <!-- Индикаторы будут загружены динамически -->
                     </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Алгебра">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Основы алгебры</h5>
-                                    <p>Полный курс алгебры для школьников и абитуриентов</p>
-                                    <a href="/books/algebra-basics" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Геометрия">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Геометрия в задачах</h5>
-                                    <p>Решение олимпиадных задач по геометрии</p>
-                                    <a href="/books/geometry-problems" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Анализ">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Математический анализ</h5>
-                                    <p>Введение в анализ для студентов</p>
-                                    <a href="/books/calculus-intro" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
+                    <div class="carousel-inner" id="news-carousel-inner">
+                        <!-- Слайды будут загружены динамически -->
+                        <div class="carousel-item active d-flex justify-content-center align-items-center"
+                             style="height: 400px;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка новостей...</span>
                             </div>
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
+                            data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
+                            data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Latest News Sidebar with Scroll -->
+            <!-- Latest News Sidebar -->
             <div class="col-lg-4">
                 <div class="news-section">
                     <div class="section-header">
-                        <h3>Последние новости</h3>
+                        <h3>Все новости</h3>
                     </div>
-                    <div class="news-container">
-                        <div class="news-item">
-                            <div class="news-date">12 июня 2025 • 11:30 <span class="news-stats">👁 234</span></div>
-                            <div class="news-content">Кыргызские школьники завоевали золото на Балканской математической олимпиаде</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">10 июня 2025 • 14:15 <span class="news-stats">👁 189</span></div>
-                            <div class="news-content">Открыта регистрация на летнюю математическую школу в Иссык-Куле</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">8 июня 2025 • 09:30 <span class="news-stats">👁 156</span></div>
-                            <div class="news-content">Новый сборник задач по комбинаторике доступен для скачивания</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">5 июня 2025 • 16:45 <span class="news-stats">👁 142</span></div>
-                            <div class="news-content">Интервью с победителем Международной математической олимпиады</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">3 июня 2025 • 12:20 <span class="news-stats">👁 98</span></div>
-                            <div class="news-content">Результаты республиканской олимпиады по математике для 9-11 классов</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">1 июня 2025 • 15:10 <span class="news-stats">👁 167</span></div>
-                            <div class="news-content">Стартовала подготовка к международной олимпиаде по информатике</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">30 мая 2025 • 11:55 <span class="news-stats">👁 123</span></div>
-                            <div class="news-content">Математический кружок для младших школьников открывает новые группы</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">28 мая 2025 • 17:30 <span class="news-stats">👁 201</span></div>
-                            <div class="news-content">Кыргызстанские студенты показали отличные результаты на международном конкурсе по алгебре</div>
+                    <div class="news-container" id="news-container">
+                        <div class="d-flex justify-content-center p-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="text-center">
-                        <a href="/news" class="btn btn-outline-primary">Все новости</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Публикации -->
+        <div class="row g-4 mb-5">
+            <!-- Latest Publications Sidebar -->
+            <div class="col-lg-4">
+                <div class="news-section">
+                    <div class="section-header">
+                        <h3>Все публикации</h3>
                     </div>
+                    <div class="news-container" id="post-container">
+                        <div class="d-flex justify-content-center p-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Publications Carousel -->
+            <div class="col-lg-8">
+                <div class="section-header mb-3">
+                    <h3>Последние публикации</h3>
+                </div>
+                <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                    <div class="carousel-indicators" id="publications-carousel-indicators">
+                        <!-- Индикаторы будут загружены динамически -->
+                    </div>
+                    <div class="carousel-inner" id="publications-carousel-inner">
+                        <!-- Слайды публикаций будут загружены динамически -->
+                        <div class="carousel-item active d-flex justify-content-center align-items-center"
+                             style="height: 400px;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка публикаций...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -233,112 +197,6 @@
             </div>
         </div>
 
-        <div class="row g-4 mb-5">
-
-            <!-- Latest News Sidebar with Scroll -->
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3>Последние публикации</h3>
-                    </div>
-                    <div class="news-container">
-                        <div class="news-item">
-                            <div class="news-date">12 июня 2025 • 11:30 <span class="news-stats">👁 234</span></div>
-                            <div class="news-content">Кыргызские школьники завоевали золото на Балканской математической олимпиаде</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">10 июня 2025 • 14:15 <span class="news-stats">👁 189</span></div>
-                            <div class="news-content">Открыта регистрация на летнюю математическую школу в Иссык-Куле</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">8 июня 2025 • 09:30 <span class="news-stats">👁 156</span></div>
-                            <div class="news-content">Новый сборник задач по комбинаторике доступен для скачивания</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">5 июня 2025 • 16:45 <span class="news-stats">👁 142</span></div>
-                            <div class="news-content">Интервью с победителем Международной математической олимпиады</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">3 июня 2025 • 12:20 <span class="news-stats">👁 98</span></div>
-                            <div class="news-content">Результаты республиканской олимпиады по математике для 9-11 классов</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">1 июня 2025 • 15:10 <span class="news-stats">👁 167</span></div>
-                            <div class="news-content">Стартовала подготовка к международной олимпиаде по информатике</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">30 мая 2025 • 11:55 <span class="news-stats">👁 123</span></div>
-                            <div class="news-content">Математический кружок для младших школьников открывает новые группы</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-date">28 мая 2025 • 17:30 <span class="news-stats">👁 201</span></div>
-                            <div class="news-content">Кыргызстанские студенты показали отличные результаты на международном конкурсе по алгебре</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <a href="/news" class="btn btn-outline-primary">Все публикации</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Featured Content Carousel -->
-            <div class="col-lg-8">
-                <div id="featuredCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="0"
-                                class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="1"
-                                aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="2"
-                                aria-label="Slide 3"></button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Алгебра">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Основы алгебры</h5>
-                                    <p>Полный курс алгебры для школьников и абитуриентов</p>
-                                    <a href="/books/algebra-basics" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Геометрия">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Геометрия в задачах</h5>
-                                    <p>Решение олимпиадных задач по геометрии</p>
-                                    <a href="/books/geometry-problems" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Анализ">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Математический анализ</h5>
-                                    <p>Введение в анализ для студентов</p>
-                                    <a href="/books/calculus-intro" class="btn btn-primary btn-sm">Изучить</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
         <!-- Quick Access Section -->
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
@@ -401,97 +259,7 @@
             <div class="section-header mb-4">
                 <h3>Блог</h3>
             </div>
-            <div class="blog-masonry-grid">
-                <!-- Large item -->
-                <a href="/blog/mathematical-thinking" class="blog-item blog-item-large">
-                    <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&h=600&fit=crop"
-                         alt="Математическое мышление">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Образование</span>
-                        <h4 class="blog-title">Развитие математического мышления у школьников</h4>
-                        <p class="blog-excerpt">Методики и подходы к формированию аналитического мышления через решение нестандартных задач</p>
-                        <span class="blog-date">10 июня 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/olympiad-preparation" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=400&fit=crop"
-                         alt="Подготовка к олимпиадам">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Олимпиады</span>
-                        <h4 class="blog-title">Как готовиться к математическим олимпиадам</h4>
-                        <p class="blog-excerpt">Пошаговый план подготовки от региональных до международных соревнований</p>
-                        <span class="blog-date">8 июня 2025</span>
-                    </div>
-                </a>
-
-                <!-- Small items -->
-                <a href="/blog/math-in-life" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=400&h=300&fit=crop"
-                         alt="Математика в жизни">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Применение</span>
-                        <h4 class="blog-title">Математика в повседневной жизни</h4>
-                        <p class="blog-excerpt">Примеры использования математических знаний</p>
-                        <span class="blog-date">3 июня 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/future-of-education" class="blog-item blog-item-tall">
-                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=600&fit=crop"
-                         alt="Будущее образования">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Инновации</span>
-                        <h4 class="blog-title">Будущее математического образования</h4>
-                        <p class="blog-excerpt">Как технологии меняют подход к изучению математики в XXI веке</p>
-                        <span class="blog-date">28 мая 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/geometry-beauty" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
-                         alt="Красота геометрии">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Геометрия</span>
-                        <h4 class="blog-title">Красота геометрических построений</h4>
-                        <p class="blog-excerpt">Исследование эстетики математических форм и их применение в искусстве</p>
-                        <span class="blog-date">5 июня 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/famous-mathematicians" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop"
-                         alt="Великие математики">
-                    <div class="blog-overlay">
-                        <span class="blog-category">История</span>
-                        <h4 class="blog-title">Великие математики Кыргызстана</h4>
-                        <p class="blog-excerpt">Вклад кыргызских ученых в мировую науку</p>
-                        <span class="blog-date">1 июня 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/problem-solving" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop"
-                         alt="Решение задач">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Методика</span>
-                        <h4 class="blog-title">Искусство решения задач</h4>
-                        <p class="blog-excerpt">Стратегии подхода к сложным задачам</p>
-                        <span class="blog-date">30 мая 2025</span>
-                    </div>
-                </a>
-
-                <a href="/blog/problem-solving" class="blog-item blog-item-small">
-                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop"
-                         alt="Решение задач">
-                    <div class="blog-overlay">
-                        <span class="blog-category">Методика</span>
-                        <h4 class="blog-title">Искусство решения задач</h4>
-                        <p class="blog-excerpt">Стратегии подхода к сложным задачам</p>
-                        <span class="blog-date">30 мая 2025</span>
-                    </div>
-                </a>
-            </div>
+            <div class="blog-masonry-grid"></div>
 
             <div class="text-center mt-4">
                 <a href="/blog" class="btn btn-outline-primary">Все статьи блога</a>
@@ -500,7 +268,228 @@
 
     </div>
 
-    </div>
+    <script>
+        function createCarouselItem(item, index, carouselId, itemUrlPrefix, defaultImage) {
+            const imageUrl = item.mainImageId ? `/api/files/`+item.mainImageId+`/view` : defaultImage;
 
+            let title, description;
+            if (item.newsTranslations && item.newsTranslations.length > 0) {
+                title = truncateText(item.newsTranslations[0].title || 'Заголовок', 10);
+                description = truncateText(item.newsTranslations[0].content, 20);
+            } else if (item.postTranslations && item.postTranslations.length > 0) {
+                title = truncateText(item.postTranslations[0].title || 'Заголовок', 10);
+                description = truncateText(item.postTranslations[0].content, 20);
+            } else {
+                title = truncateText(item.title || 'Заголовок', 10);
+                description = truncateText(
+                    item.description || (item.content ? item.content : 'Подробнее...'),
+                    20
+                );
+            }
+
+
+            const indicator = document.createElement('button');
+            indicator.type = 'button';
+            indicator.setAttribute('data-bs-target', `#`+carouselId+``);
+            indicator.setAttribute('data-bs-slide-to', index.toString());
+            indicator.setAttribute('aria-label', `Slide `+index + 1+``);
+            if (index === 0) {
+                indicator.classList.add('active');
+                indicator.setAttribute('aria-current', 'true');
+            }
+
+            // Создание слайда
+            const carouselItem = document.createElement('div');
+            carouselItem.className = index === 0 ? 'carousel-item active' : 'carousel-item';
+            carouselItem.innerHTML =
+                '<img src="' + imageUrl + '" ' +
+                'class="d-block w-100 carousel-image" ' +
+                'alt="' + title + '" ' +
+                'style="height: 400px; object-fit: cover;">' +
+                '<div class="carousel-caption">' +
+                '<div class="caption-content">' +
+                '<h5>' + title + '</h5>' +
+                '<p>' + description + '</p>' +
+                '<a href="' + itemUrlPrefix + '/' + item.id + '" class="btn btn-primary btn-sm">Подробнее</a>' +
+                '</div>' +
+                '</div>';
+
+
+            return { indicator, carouselItem };
+        }
+
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+
+        async function loadNewsCarousel() {
+            try {
+                const response = await fetch('/api/news/main');
+                const news = await response.json();
+
+                const carouselInner = document.getElementById('news-carousel-inner');
+                const carouselIndicators = document.getElementById('news-carousel-indicators');
+
+                if (news && news.length > 0) {
+                    carouselInner.innerHTML = '';
+                    carouselIndicators.innerHTML = '';
+
+                    news.forEach((item, index) => {
+                        const { indicator, carouselItem } = createCarouselItem(
+                            item,
+                            index,
+                            'newsCarousel',
+                            '/news',
+                            'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop'
+                        );
+
+                        carouselIndicators.appendChild(indicator);
+                        carouselInner.appendChild(carouselItem);
+                    });
+                } else {
+                    carouselInner.innerHTML = `
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop"
+                                 class="d-block w-100 carousel-image" alt="Математика">
+                            <div class="carousel-caption">
+                                <div class="caption-content">
+                                    <h5>Добро пожаловать!</h5>
+                                    <p>Здесь будут отображаться последние новости</p>
+                                    <a href="/news" class="btn btn-primary btn-sm">Все новости</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки новостей для карусели:', error);
+            }
+        }
+
+        // Загрузка публикаций для карусели
+        async function loadPublicationsCarousel() {
+            try {
+                const response = await fetch('/api/posts/main');
+                const publications = await response.json();
+
+                const carouselInner = document.getElementById('publications-carousel-inner');
+                const carouselIndicators = document.getElementById('publications-carousel-indicators');
+
+                if (publications && publications.length > 0) {
+                    carouselInner.innerHTML = '';
+                    carouselIndicators.innerHTML = '';
+
+                    publications.forEach((item, index) => {
+                        const { indicator, carouselItem } = createCarouselItem(
+                            item,
+                            index,
+                            'publicationsCarousel',
+                            '/posts',
+                            'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop'
+                        );
+
+                        carouselIndicators.appendChild(indicator);
+                        carouselInner.appendChild(carouselItem);
+                    });
+                } else {
+                    carouselInner.innerHTML = `
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
+                                 class="d-block w-100 carousel-image" alt="Публикации">
+                            <div class="carousel-caption">
+                                <div class="caption-content">
+                                    <h5>Публикации</h5>
+                                    <p>Здесь будут отображаться последние публикации</p>
+                                    <a href="/posts" class="btn btn-primary btn-sm">Все публикации</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки публикаций для карусели:', error);
+            }
+        }
+
+        // Универсальная функция для загрузки элементов в боковую панель
+        async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`Ошибка HTTP: `+response.status+``);
+
+                const items = await response.json();
+                const container = document.getElementById(containerId);
+
+                if (Array.isArray(items) && items.length > 0) {
+                    container.innerHTML = items.map(item => {
+                        const imgSrc = item.mainImageId
+                            ? `/api/files/`+item.mainImageId+`/view`
+                            : fallbackImage;
+
+                        const dateStr = item.createdAt
+                            ? new Date(item.createdAt).toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })
+                            : '';
+
+                        return '' +
+                            '<div class="news-item mb-3">' +
+                            '<div class="row g-2">' +
+                            '<div class="col-4">' +
+                            '<img src="' + imgSrc + '" ' +
+                            'alt="' + item.title + '" ' +
+                            'class="img-fluid rounded" ' +
+                            'style="height: 60px; object-fit: cover; width: 100%;">' +
+                            '</div>' +
+                            '<div class="col-8">' +
+                            '<h6 class="mb-1">' +
+                            '<a href="' + itemUrlPrefix + '/' + item.id + '" class="text-decoration-none">' +
+                            item.title +
+                            '</a>' +
+                            '</h6>' +
+                            '<small class="text-muted">' + dateStr + '</small>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="text-muted">Нет данных для отображения</p>';
+                }
+            } catch (error) {
+                console.error(`Ошибка загрузки данных с `+apiUrl+`:`, error);
+                document.getElementById(containerId).innerHTML = '<p class="text-muted">Ошибка загрузки данных</p>';
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function () {
+            // Загрузка каруселей
+            loadNewsCarousel();
+            loadPublicationsCarousel();
+
+            // Загрузка боковых панелей
+            loadLatestItems(
+                '/api/news/main',
+                'news-container',
+                '/news',
+                'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=150&h=100&fit=crop'
+            );
+
+            loadLatestItems(
+                '/api/posts/main',
+                'publications-container',
+                '/posts',
+                'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=150&h=100&fit=crop'
+            );
+        });
+
+    </script>
+
+    <script src="/static/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </@main.layout>

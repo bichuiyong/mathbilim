@@ -1,4 +1,5 @@
 <#macro layout title="">
+<#import "/spring.ftl" as spring>
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -25,6 +26,15 @@
         <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
         <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+        <style>
+            .navbar {
+                transition: transform 0.2s ease-in-out;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+        </style>
     </head>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
@@ -65,10 +75,10 @@
 
                         <div class="col-lg-6">
                             <div class="d-flex justify-content-center">
-                                <a href="/news" class="nav-link">Новости</a>
-                                <a href="/events" class="nav-link">Мероприятия</a>
-                                <a href="/blog" class="nav-link">Блог</a>
-                                <a href="/posts" class="nav-link">Публикации</a>
+                                <a href="/news" class="nav-link"><@spring.message "navbar.news"/></a>
+                                <a href="/events" class="nav-link"><@spring.message "navbar.events"/></a>
+                                <a href="/blog" class="nav-link"><@spring.message "navbar.blog"/></a>
+                                <a href="/posts" class="nav-link"><@spring.message "navbar.publications"/></a>
                             </div>
                         </div>
 
@@ -110,9 +120,9 @@
 
                         <div class="col-lg-6">
                             <div class="d-flex justify-content-center">
-                                <a href="/tests" class="nav-link">Тесты</a>
-                                <a href="/olympiad" class="nav-link">Олимпиады</a>
-                                <a href="/books" class="nav-link">Книги</a>
+                                <a href="/tests" class="nav-link"><@spring.message "navbar.tests"/></a>
+                                <a href="/olympiad" class="nav-link"><@spring.message "navbar.olympiads"/></a>
+                                <a href="/books" class="nav-link"><@spring.message "navbar.books"/></a>
                             </div>
                         </div>
 
@@ -134,31 +144,31 @@
                         <h6 class="mobile-menu-title">Основные разделы</h6>
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="/tests">Тесты</a>
+                                <a class="nav-link" href="/tests"><@spring.message "navbar.tests"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-lik" href="/olympiad">Олимпиады</a>
+                                <a class="nav-link" href="/olympiad"><@spring.message "navbar.olympiads"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/books">Книги</a>
+                                <a class="nav-link" href="/books"><@spring.message "navbar.books"/></a>
                             </li>
                         </ul>
                     </div>
 
                     <div class="mobile-menu-section">
-                        <h6 class="mobile-menu-title">Информация</h6>
+                        <h6 class="mobile-menu-title"><@spring.message "footer.information"/></h6>
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="/news">Новости</a>
+                                <a class="nav-link" href="/news"><@spring.message "navbar.news"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/events">Мероприятия</a>
+                                <a class="nav-link" href="/events"><@spring.message "navbar.events"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/blog">Блог</a>
+                                <a class="nav-link" href="/blog"><@spring.message "navbar.blog"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/publications">Публикации</a>
+                                <a class="nav-link" href="/publications"><@spring.message "navbar.publications"/></a>
                             </li>
                         </ul>
                     </div>
@@ -167,27 +177,30 @@
                         <div class="d-flex gap-2">
                             <#if user??>
                                 <a href="/users/${user.authId}" class="btn btn-outline-primary w-50">
-                                    <i class="fas fa-user  me-2"></i>Профиль
+                                    <i class="fas fa-user  me-2"></i><@spring.message "navbar.profile"/>
                                 </a>
                                 <#if _csrf??>
                                     <form action="/logout" method="post">
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                                value="${(_csrf.token)!'--no-token--'}"/>
                                         <button type="submit" class="btn btn-outline-primary w-50">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                            <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
+
                                         </button>
                                     </form>
                                 <#else>
                                     <a href="/logout" class="btn btn-outline-primary w-50">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                        <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
+
                                     </a>
                                 </#if>
                             <#else>
                                 <a href="/auth/login" class="btn btn-outline-primary w-50">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Войти
+                                    <i class="fas fa-sign-in-alt me-2"></i><@spring.message "navbar.login"/>
                                 </a>
                                 <a href="/auth/register" class="btn btn-primary w-50">
-                                    <i class="fas fa-user-plus me-2"></i>Регистрация
+                                    <i class="fas fa-user-plus me-2"></i><@spring.message "navbar.register"/>
+
                                 </a>
                             </#if>
                         </div>
@@ -207,37 +220,36 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <h5>О проекте MathBilim.kg</h5>
-                    <p class="mb-3">Платформа для развития математического образования в Кыргызстане. Объединяем ресурсы
-                        для подготовки к олимпиадам, тестам и общего математического развития.</p>
-                    <p class="mb-0"><strong>Математическое Образовательное Сообщество «Mathaniyat»</strong></p>
+                    <h5><@spring.message "footer.about"/></h5>
+                    <p class="mb-3"><@spring.message "footer.description"/></p>
+                    <p class="mb-0"><strong><@spring.message "footer.community"/></strong></p>
                 </div>
 
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h5>Разделы</h5>
+                    <h5><@spring.message "footer.sections"/></h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/tests" class="footer-link">Тесты</a></li>
-                        <li class="mb-2"><a href="/olympiads" class="footer-link">Олимпиады</a></li>
-                        <li class="mb-2"><a href="/books" class="footer-link">Книги</a></li>
-                        <li class="mb-2"><a href="/publications" class="footer-link">Публикации</a></li>
-                        <li class="mb-2"><a href="/blog" class="footer-link">Блог</a></li>
-                        <li class="mb-2"><a href="/events" class="footer-link">Мероприятия</a></li>
-                        <li class="mb-2"><a href="/news" class="footer-link">Новости</a></li>
+                        <li class="mb-2"><a href="/tests" class="footer-link"><@spring.message "navbar.tests"/></a></li>
+                        <li class="mb-2"><a href="/olympiads" class="footer-link"><@spring.message "navbar.olympiads"/></a></li>
+                        <li class="mb-2"><a href="/books" class="footer-link"><@spring.message "navbar.books"/></a></li>
+                        <li class="mb-2"><a href="/publications" class="footer-link"><@spring.message "navbar.publications"/></a></li>
+                        <li class="mb-2"><a href="/blog" class="footer-link"><@spring.message "navbar.blog"/></a></li>
+                        <li class="mb-2"><a href="/events" class="footer-link"><@spring.message "navbar.events"/></a></li>
+                        <li class="mb-2"><a href="/news" class="footer-link"><@spring.message "navbar.news"/></a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Информация</h5>
+                    <h5><@spring.message "footer.information"/></h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/about" class="footer-link">О нас</a></li>
-                        <li class="mb-2"><a href="/privacy" class="footer-link">Политика конфиденциальности</a></li>
-                        <li class="mb-2"><a href="/terms" class="footer-link">Условия использования</a></li>
-                        <li class="mb-2"><a href="/help" class="footer-link">Помощь</a></li>
+                        <li class="mb-2"><a href="/about" class="footer-link"><@spring.message "footer.about"/></a></li>
+                        <li class="mb-2"><a href="/privacy" class="footer-link"><@spring.message "footer.privacy"/></a></li>
+                        <li class="mb-2"><a href="/terms" class="footer-link"><@spring.message "footer.terms"/></a></li>
+                        <li class="mb-2"><a href="/help" class="footer-link"><@spring.message "footer.help"/></a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Контакты</h5>
+                    <h5><@spring.message "footer.contacts"/></h5>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
                         <a href="mailto:info@mathbilim.kg" class="footer-link">info@mathbilim.kg</a>
@@ -269,11 +281,27 @@
             </div>
 
             <div class="footer-bottom">
-                <p class="mb-0">&copy; 2025 MathBilim.kg. Все права защищены. Математическое Образовательное Сообщество
-                    «Mathaniyat»</p>
+                <p class="mb-0"><@spring.message "footer.copyright"/></p>
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const navbar = document.querySelector(".navbar");
+            if (!navbar) return;
+
+            if (window.location.pathname.includes("/tests/") && window.location.pathname.includes("/pass")) {
+                window.addEventListener("scroll", () => {
+                    if (window.scrollY === 0) {
+                        navbar.style.transform = "translateY(0)";
+                    } else {
+                        navbar.style.transform = "translateY(-100%)";
+                    }
+                });
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

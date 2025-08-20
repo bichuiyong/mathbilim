@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
         .test-header {
@@ -12,7 +13,7 @@
             padding: 0.5rem 1rem;
         }
         .test-info-card {
-            border-left: 4px solid #0d6efd;
+            border-left: 3px solid #388dff;
             border-radius: 0 8px 8px 0;
         }
         .btn-start-test {
@@ -41,32 +42,49 @@
             padding: 1.5rem;
             margin-top: 2rem;
         }
+        .custom {
+            background-color: #388dff;
+        }
+        .folder-list .folder-item {
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        .folder-list .folder-item:hover {
+            background-color: #e2f0ff;
+        }
+
+        .folder-item i.bi-folder-fill {
+            font-size: 1.1rem;
+        }
+
+
     </style>
-    </head>
     <body>
     <div class="container py-5">
         <div class="test-header text-center mb-5">
-            <span class="badge bg-primary subject-badge mb-3">Математика</span>
-            <h1 class="display-5 fw-bold mb-3">Предметный тест по Математике</h1>
-            <p class="lead mb-4">Проверьте свои знания перед основным тестированием</p>
+            <h1 class="display-5 fw-bold mb-3"><@spring.message "test.details.test"/> ${test.name}</h1>
+            <p class="lead mb-4"><@spring.message "test.details.checkBrain"/></p>
         </div>
 
         <div class="row">
             <div class="col-lg-8">
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
-                        <h2 class="h4 fw-bold mb-3">Добро пожаловать на предметный тест по Математике</h2>
-                        <p class="mb-4">Тест состоит из 30 заданий, на выполнение которых отводится 30 минут. Во время выполнения заданий Вы можете изменить выбранный вариант ответа, но сделать это можно только один раз для каждого задания. При исправлении новый (правильный) ответ будет представлен квадратиком.</p>
+                        <h2 class="h4 fw-bold mb-3"><@spring.message "test.details.welcome"/> ${test.name}</h2>
+                        <p class="mb-4"><@spring.message "test.details.consistOf"/> ${test.questionCount} <@spring.message "test.details.tasks"/><#if test.hasLimit> <@spring.message "test.details.execution"/> ${test.timeLimit} <@spring.message "test.details.minute"/>.<#else><@spring.message "test.details.unlimitedTime"/></#if> <@spring.message "test.details.message1"/></p>
 
-                        <p class="mb-4">После прохождения теста Вы получите результат, в котором будет указано количество данных Вами правильных ответов и общий процент правильно и неправильно выполненных заданий. Желаем удачи!</p>
+                        <p class="mb-4"><@spring.message "test.details.message2"/></p>
 
-                        <h3 class="h5 fw-bold mt-4 mb-3">Правила прохождения теста:</h3>
+                        <h3 class="h5 fw-bold mt-4 mb-3"><@spring.message "test.details.rules"/></h3>
                         <ul class="rules-list">
-                            <li>На прохождение теста дается ограниченное время</li>
-                            <li>Можно вернуться к предыдущим вопросам</li>
-                            <li>Изменение ответа возможно только один раз для каждого вопроса</li>
-                            <li>После окончания времени тест завершается автоматически</li>
-                            <li>Результаты доступны сразу после завершения теста</li>
+                            <#if test.hasLimit><li><@spring.message "test.details.rule1"/></li></#if>
+                            <li><@spring.message "test.details.rule2"/></li>
+                            <li><@spring.message "test.details.rule3"/></li>
+                            <li><@spring.message "test.details.rule4"/></li>
+                            <li><@spring.message "test.details.rule5"/></li>
                         </ul>
                     </div>
                 </div>
@@ -75,40 +93,66 @@
             <div class="col-lg-4">
                 <div class="card mb-4 test-info-card shadow-sm">
                     <div class="card-body">
-                        <h3 class="h5 fw-bold mb-4">Информация о тесте</h3>
+                        <h3 class="h5 fw-bold mb-4"><@spring.message "test.details.info"/></h3>
                         <div class="d-flex align-items-center mb-3">
                             <i class="bi bi-clock me-2 text-primary"></i>
                             <div>
-                                <p class="mb-0 fw-bold">Время:</p>
-                                <p class="mb-0">30 минут</p>
+                                <p class="mb-0 fw-bold"><@spring.message "test.details.time"/></p>
+                                <#if test.hasLimit>
+                                    <p class="mb-0">${test.timeLimit} <@spring.message "test.details.minute"/></p>
+                                <#else>
+                                    <@spring.message "test.details.unlimited"/>
+                                </#if>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <i class="bi bi-list-task me-2 text-primary"></i>
                             <div>
-                                <p class="mb-0 fw-bold">Количество заданий:</p>
-                                <p class="mb-0">30</p>
+                                <p class="mb-0 fw-bold"><@spring.message "test.details.tasksCount"/></p>
+                                <p class="mb-0">${test.questionCount}</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="bi bi-bar-chart me-2 text-primary"></i>
-                            <div>
-                                <p class="mb-0 fw-bold">Сложность:</p>
-                                <p class="mb-0">Средняя</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary btn-start-test w-100 py-2">
-                            Начать тест
-                        </button>
+                        <a class="btn btn-primary custom btn-start-test w-100 py-2" href="/tests/${test.id}/pass">
+                            <@spring.message "test.details.ready"/>
+                        </a>
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold mb-4"><@spring.message "test.details.top5"/></h3>
+                    <div class="folder">
+                        <#if lastResults??>
+                            <ul class="folder-list list-unstyled mb-0">
+                                <#list lastResults as resultItem>
+                                    <#assign attemptId = resultItem?keys[0]?string>
+                                    <#assign finishedAt = resultItem[attemptId]>
+
+                                    <li class="folder-item mb-2 d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-folder-fill text-warning me-2"></i>
+                                        <a href="/tests/attempts/${attemptId}/result" class="text-decoration-none">
+                                            ${finishedAt}
+                                        </a>
+                                    </span>
+                                    </li>
+                                </#list>
+                            </ul>
+
+                        <#else>
+                            <p class="mb-0 text-muted"><@spring.message "test.details.noresults"/></p>
+                        </#if>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="additional-info">
-            <h3 class="h5 fw-bold mb-3">Для более подробных результатов</h3>
-            <p>Показывающих уровень подготовленности тестируемого в конкретных разделах теста ОРТ Вам следует пройти Пробное бланочное тестирование ЦООМО.</p>
-            <p class="mb-0">Тесты, используемые в этом случае, отличаются по содержанию от тестов бесплатного онлайн-тестирования.</p>
+            <h3 class="h5 fw-bold mb-3"><@spring.message "test.details.more"/></h3>
+            <p><@spring.message "test.details.info1"/></p>
+            <p class="mb-0"><@spring.message "test.details.info2"/></p>
         </div>
     </div>
 

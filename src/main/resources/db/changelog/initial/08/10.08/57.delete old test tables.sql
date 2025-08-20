@@ -1,0 +1,3 @@
+DROP TABLE test_choices CASCADE;
+DROP TABLE test_statuses CASCADE;
+DROP TABLE tests CASCADE;

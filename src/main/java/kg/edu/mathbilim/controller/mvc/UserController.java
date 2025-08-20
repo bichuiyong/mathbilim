@@ -9,6 +9,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,12 +27,16 @@ public class UserController {
     private final RoleService roleService;
 
 
+    @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
     @GetMapping("{id}")
     public String profile(@PathVariable Long id, Model model) {
         UserDto userDto = userService.getDtoById(id);
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("types", translationService.getUserTypesByLanguage());
         model.addAttribute("user", userDto);
+        model.addAttribute("accepted", userService.approvedContentCount(id));
+        model.addAttribute("pending", userService.pendingContentCount(id));
+        model.addAttribute("total", userService.totalContentCount(id));
         return "profile/profile-page";
     }
 
