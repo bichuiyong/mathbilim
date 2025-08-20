@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
 <style>
     .card {
@@ -76,19 +77,19 @@
         <div class="row">
             <main class="col-md-12 px-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-                    <h1 class="h2 mb-3 mb-md-0">Тесты и проверочные работы</h1>
+                    <h1 class="h2 mb-3 mb-md-0"><@spring.message "test.list.tests"/></h1>
                 </div>
 
                 <div class="d-flex mb-4 flex-column flex-sm-row gap-2">
                     <div class="flex-grow-1">
                         <form action="" id="search" method="get">
-                            <input type="text" name="keyword" id="search" <#if keyword??>value="${keyword}" </#if> class="form-control" placeholder="Поиск тестов по названию...">
+                            <input type="text" name="keyword" id="search" <#if keyword??>value="${keyword}" </#if> class="form-control" placeholder="<@spring.message"test.list.findBy"/>">
                         </form>
                     </div>
                     <div class="d-flex gap-2">
-                        <button form="search" type="submit" class="btn btn-primary flex-shrink-0">Найти</button>
+                        <button form="search" type="submit" class="btn btn-primary flex-shrink-0"><@spring.message "test.list.find"/></button>
                         <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                        <button class="btn btn-success flex-shrink-0"><a style="all:unset" href="/tests/create">Создать тест</a></button>
+                        <button class="btn btn-success flex-shrink-0"><a style="all:unset" href="/tests/create"><@spring.message "test.list.create"/></a></button>
                         </#if>
                     </div>
                 </div>
@@ -101,7 +102,7 @@
 <#--                            <option>По дате (старые)</option>-->
 <#--                        </select>-->
                     </div>
-                    <div class="text-muted">Найдено: ${total}</div>
+                    <div class="text-muted"><@spring.message "test.list.finded"/> ${total}</div>
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
@@ -113,15 +114,15 @@
                             <div class="card-body">
                                 <h5 class="card-title">${test.name}</h5>
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> ${test.questionCount} вопросов</span>
+                                    <span class="badge bg-light text-dark"><i class="bi bi-question-circle"></i> ${test.questionCount} <@spring.message "test.list.ques"/></span>
                                 </div>
                                 <p class="card-text">${test.description}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted"><#if test.hasLimit>${test.timeLimit} мин<#else>Без времени</#if></small>
+                                    <small class="text-muted"><#if test.hasLimit>${test.timeLimit} <@spring.message "test.list.minute"/><#else><@spring.message "test.list.noTime"/></#if></small>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center gap-2 mt-2">
-                                    <a class="btn btn-primary custom-btn flex-grow-1" href="/tests/${test.id}/pass">Начать тест</a>
-                                    <a class="btn btn-outline-secondary" href="/tests/${test.id}">Подробнее</a>
+                                    <a class="btn btn-primary custom-btn flex-grow-1" href="/tests/${test.id}/pass"><@spring.message "test.list.ready"/></a>
+                                    <a class="btn btn-outline-secondary" href="/tests/${test.id}"><@spring.message "test.list.details"/></a>
                                 </div>
 
                             </div>
@@ -133,8 +134,8 @@
                 <#if total == 0>
                     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 60vh; text-align: center;">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6.59097L11.8456 6.42726C9.86801 4.33053 6.59738 4.57698 4.91934 6.94915C3.42999 9.05459 3.78668 12.0335 5.725 13.6776L12 19L18.275 13.6776C20.2133 12.0335 20.57 9.05459 19.0807 6.94915C17.4026 4.57697 14.132 4.33053 12.1544 6.42726L12 6.59097ZM12 6.59097L10.5 8.5L13 11L11 13.5" stroke="#464455" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                        <h4 class="mt-3">Тесты не найдены</h4>
-                        <p class="text-muted">Попробуйте изменить параметры поиска.</p>
+                        <h4 class="mt-3"><@spring.message "test.list.noTest"/></h4>
+                        <p class="text-muted"><@spring.message "test.list.changeSearch"/></p>
                     </div>
                 </#if>
 
