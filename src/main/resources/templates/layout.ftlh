@@ -26,6 +26,15 @@
         <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
         <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+        <style>
+            .navbar {
+                transition: transform 0.2s ease-in-out;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+        </style>
     </head>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
@@ -276,6 +285,23 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const navbar = document.querySelector(".navbar");
+            if (!navbar) return;
+
+            if (window.location.pathname.includes("/tests/") && window.location.pathname.includes("/pass")) {
+                window.addEventListener("scroll", () => {
+                    if (window.scrollY === 0) {
+                        navbar.style.transform = "translateY(0)";
+                    } else {
+                        navbar.style.transform = "translateY(-100%)";
+                    }
+                });
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
