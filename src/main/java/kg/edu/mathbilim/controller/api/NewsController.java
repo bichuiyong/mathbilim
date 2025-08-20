@@ -24,9 +24,15 @@ public class NewsController {
         return ResponseEntity.ofNullable(newsService.getPage(query,page, size, sortBy, sortDirection));
     }
 
+
     @PostMapping("{id}/share")
     public ResponseEntity<Void> shareNews(@PathVariable Long id) {
         newsService.incrementShareCount(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestNews() {
+        return ResponseEntity.ofNullable(newsService.getNewsByMainPage());
     }
 }

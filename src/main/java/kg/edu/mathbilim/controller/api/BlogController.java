@@ -38,4 +38,9 @@ public class BlogController {
         blogService.incrementShareCount(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestBlog() {
+        return ResponseEntity.ofNullable(blogService.getBlogsByMainPage());
+    }
 }

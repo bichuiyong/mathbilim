@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRepository<News> {
@@ -41,5 +42,6 @@ public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRe
 
     @Query("SELECT n FROM News n")
     Page<News> findAllNews(Pageable pageable);
+
 
 }

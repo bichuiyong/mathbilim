@@ -381,7 +381,7 @@
                         </div>
 
                         <h4 class="mb-1">${user.name!} ${user.surname!}</h4>
-                        <p class="text-muted mb-2">${user.email}</p>
+<#--                        <p class="text-muted mb-2">${user.email}</p>-->
 
                         <#if user.type??>
                             <span class="badge bg-light-blue text-primary mb-3">
@@ -459,6 +459,11 @@
                                 </a>
                                 <a href="/news/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.news"/>
+                                </a>
+                            </#if>
+                            <#if isModer || isAdmin>
+                                <a href="/tests/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i>Тест
                                 </a>
                             </#if>
                         </div>
@@ -929,7 +934,6 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalContent">
-                        <!-- Контент будет загружен здесь -->
                     </div>
                 </div>
                 <div class="modal-footer">

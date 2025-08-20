@@ -11,6 +11,7 @@ import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller("mvcBlog")
 @RequestMapping("/blog")
 @RequiredArgsConstructor
@@ -32,13 +34,21 @@ public class BlogController {
     @GetMapping
     public String all(@RequestParam(required = false) String query,
                       @RequestParam(value = "page", defaultValue = "1") int page,
-                      @RequestParam(value = "size", defaultValue = "10") int size,
+                      @RequestParam(value = "size", defaultValue = "5") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                      @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                      @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
-        model.addAttribute("blog", blogService.getAllDisplayBlogs(page, size, sortBy, sortDirection));
+        model.addAttribute("blog",
+                blogService.getBlogsByStatusForMainPage(
+                        "APPROVED",
+                        query,
+                        page,
+                        size,
+                        sortBy,
+                        sortDirection,
+                        lang));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -46,7 +56,7 @@ public class BlogController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("currentLang", lang);
 
-        subscriptionModelPopulator.addSubscriptionAttributes(authentication,NotificationEnum.BLOG, model);
+        subscriptionModelPopulator.addSubscriptionAttributes(authentication, NotificationEnum.BLOG, model);
         return "blog/blog-list";
     }
 
@@ -77,10 +87,12 @@ public class BlogController {
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
-        DisplayContentDto blog = blogService.getDisplayBlogById(id);
+        blogService.incrementViewCount(id);
+        BlogDto blog = blogService.getDisplayBlogById(id);
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
+        log.info("Creator name {}", blog.getCreator().getName());
         model.addAttribute("shareUrl", shareUrl);
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 

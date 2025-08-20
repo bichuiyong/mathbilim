@@ -17,4 +17,7 @@ public interface EventTypeRepository extends AbstractTypeRepository<EventType> {
             "AND (:name IS NULL OR LOWER(et.translation) LIKE CONCAT(LOWER(:name), '%'))\n" +
             "ORDER BY e.id, et.type_id", nativeQuery = true)
     List<EventType> findAllByQuery(@Param("name") String name, @Param("lang") String lang);
+
+
+
 }
