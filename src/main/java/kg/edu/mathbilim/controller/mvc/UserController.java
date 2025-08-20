@@ -34,6 +34,9 @@ public class UserController {
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("types", translationService.getUserTypesByLanguage());
         model.addAttribute("user", userDto);
+        model.addAttribute("accepted", userService.approvedContentCount(id));
+        model.addAttribute("pending", userService.pendingContentCount(id));
+        model.addAttribute("total", userService.totalContentCount(id));
         return "profile/profile-page";
     }
 

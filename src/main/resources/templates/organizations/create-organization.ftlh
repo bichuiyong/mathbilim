@@ -21,8 +21,10 @@
                             <label for="name" class="form-label fw-semibold">
                                 <@spring.message "organization.create.name">Название организации</@spring.message> <span class="text-danger">*</span>
                             </label>
-                            <@spring.formInput "organizationDto.name", 'class="form-control form-control-lg" placeholder="' + spring.message("organization.create.name.placeholder","Введите название организации") + '"'/>
-                            <@spring.showErrors "organizationDto.name", "text-danger small"/>
+                            <div class="form-group">
+                                <@spring.formInput "organizationDto.name" "class=form-control" springMacroRequestContext.getMessage("organization.create.name")/>
+                                <@spring.showErrors "organizationDto.name", "text-danger small"/>
+                            </div>
                             <div class="form-text">
                                 <@spring.message "organization.create.name.help">Полное официальное название вашей организации</@spring.message>
                             </div>
@@ -32,7 +34,7 @@
                             <label for="description" class="form-label fw-semibold">
                                 <@spring.message "organization.create.description">Описание организации</@spring.message> <span class="text-danger">*</span>
                             </label>
-                            <@spring.formTextarea "organizationDto.description", 'class="form-control" rows="5" placeholder="' + spring.message("organization.create.description.placeholder","Расскажите о деятельности, целях и достижениях вашей организации...") + '"'/>
+                            <@spring.formTextarea "organizationDto.description", 'class="form-control" rows="5" placeholder="' + springMacroRequestContext.getMessage("organization.create.description.placeholder","Расскажите о деятельности, целях и достижениях вашей организации...") + '"'/>
                             <@spring.showErrors "organizationDto.description", "text-danger small"/>
                             <div class="form-text">
                                 <@spring.message "organization.create.description.help">Подробное описание деятельности организации (минимум 50 символов)</@spring.message>
@@ -47,7 +49,7 @@
                             <span class="input-group-text">
                                 <i class="fas fa-globe"></i>
                             </span>
-                                <@spring.formInput "organizationDto.url", 'class="form-control" placeholder="' + spring.message("organization.create.website.placeholder","https://example.com") + '" type="url"'/>
+                                <@spring.formInput "organizationDto.url", 'class="form-control" placeholder="' +springMacroRequestContext.getMessage("organization.create.website.placeholder","https://example.com") + '" type="url"'/>
                             </div>
                             <@spring.showErrors '<br>',"text-danger small"/>
                             <div class="form-text">

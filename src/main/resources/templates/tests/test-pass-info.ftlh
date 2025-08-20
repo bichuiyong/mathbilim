@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -120,22 +122,22 @@
 
     <div class="container py-5">
         <div class="result-header">
-            <h1>Результаты теста: ${result.testName!"Тест"}</h1>
-            <p class="lead">Вы прошли тест ${result.finished!"??.??.????"} и получили следующие результаты:</p>
+            <h1><@spring.message "test.result.result"/> ${result.testName!"Тест"}</h1>
+            <p class="lead"><@spring.message "test.result.finishTest"/> ${result.finished!"??.??.????"} <@spring.message "test.result.nextResult"/></p>
         </div>
 
         <div class="row mb-4 equal-height-row">
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-list-task fs-2 mb-2"></i>
-                    <h5>Общее количество вопросов</h5>
+                    <h5><@spring.message "test.result.allAcceptQues"/></h5>
                     <p class="fs-4 fw-bold" id="totalQuestions">${result.questionCount}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-check2-circle fs-2 mb-2"></i>
-                    <h5>Правильных ответов</h5>
+                    <h5><@spring.message "test.result.acceptQues"/></h5>
                     <p class="fs-4 fw-bold">
                         <span id="correctAnswers">${result.correctAnswersCount} / ${result.questionCount}</span>
                     </p>
@@ -148,21 +150,21 @@
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-star-fill fs-2 mb-2"></i>
-                    <h5>Общий балл</h5>
+                    <h5><@spring.message "test.result.total"/></h5>
                     <p class="fs-4 fw-bold" id="totalScore">${result.totalScoreCount} / ${result.maxScoreCount}</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <i class="bi bi-clock fs-2 mb-2"></i>
-                    <h5>Время прохождения</h5>
+                    <h5><@spring.message "test.result.time"/></h5>
                     <p class="fs-4 fw-bold" id="completionTime">${result.wastedTime}</p>
                 </div>
             </div>
         </div>
 
         <div class="stat-card">
-            <h5 class="mb-3">Результаты по категориям вопросов</h5>
+            <h5 class="mb-3"><@spring.message "test.result.byCategory"/></h5>
 
             <#list result.topicResultDtoList as topic>
                 <div class="category-row"
@@ -179,8 +181,8 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="/tests/${result.testId}" class="custom-btn">Назад</a>
-            <a href="/tests/${result.testId}/pass" class="custom-btn">Пройти тест снова</a>
+            <a href="/tests/${result.testId}" class="custom-btn"><@spring.message "test.result.Back"/></a>
+            <a href="/tests/${result.testId}/pass" class="custom-btn"><@spring.message "test.result.again"/></a>
             <a href="/api/excel/download/result?attemptId=${result.attemptId}" class="custom-btn excel">Excel</a>
         </div>
     </div>

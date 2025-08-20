@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
         h3 {
@@ -174,13 +175,13 @@
     </style>
 
     <h3 class="text-center mt-5">${test.name}</h3>
-    <p class="text-center">Количество заданий: ${test.questionCount}
+    <p class="text-center"><@spring.message"test.pass.count"/> ${test.questionCount}
 
-        <#if test.hasLimit> — Время: ${test.timeLimit} минут</p>
+        <#if test.hasLimit> — <@spring.message"test.pass.time"/> ${test.timeLimit} <@spring.message"test.pass.min"/></p>
     </#if>
     <#if test.hasLimit>
         <div id="timer-container">
-            <div id="timer-label">⏳ Осталось времени:</div>
+            <div id="timer-label">⏳ <@spring.message"test.pass.left"/></div>
             <div id="timer"></div>
         </div>
     </#if>
@@ -191,12 +192,12 @@
     </div>
 
     <div class="nav-buttons">
-        <button id="prev-page">← Назад</button>
-        <span>Страница: <span id="page-num"></span> / <span id="page-count"></span></span>
-        <button id="next-page">Вперед →</button>
+        <button id="prev-page">← <@spring.message"test.pass.back"/></button>
+        <span><@spring.message"test.pass.page"/> <span id="page-num"></span> / <span id="page-count"></span></span>
+        <button id="next-page"><@spring.message"test.pass.next"/> →</button>
     </div>
 
-    <h3 class="text-center">${test.name} - бланк ответов</h3>
+    <h3 class="text-center">${test.name} - <@spring.message"test.pass.results"/></h3>
     <div>
         <#assign totalQuestions = test.questionCount>
         <#assign perColumn = 5>
@@ -246,7 +247,7 @@
             </#list>
         </form>
         <div class="text-center mt-5">
-            <button type="submit" class="btn btn-primary" form="sendAnswersForm">Завершить</button>
+            <button type="submit" class="btn btn-primary" form="sendAnswersForm"><@spring.message"test.pass.finish"/></button>
         </div>
     </div>
 
