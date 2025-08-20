@@ -70,9 +70,11 @@ public class PostController {
                         @RequestParam(value = "size", defaultValue = "10") int size,
                         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                         @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                        @CookieValue(value = "lang", defaultValue = "ru", required = false) String lang,
+                        @RequestParam(value = "language", defaultValue = "ru", required = false) String lang,
                         Authentication auth,
                         Model model) {
+
+        log.info("language{}", lang);
         model.addAttribute("posts",
                 postService.getPostsByStatus(
                         "APPROVED",

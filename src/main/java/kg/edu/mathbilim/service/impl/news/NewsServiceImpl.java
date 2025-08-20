@@ -28,8 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -166,5 +166,12 @@ public class NewsServiceImpl extends
     @Override
     public News findByNewsId(Long newsId) {
         return repository.findById(newsId).orElseThrow();
+    }
+
+
+    @Override
+    public List<NewsDto> getNewsByMainPage() {
+        List<News> news = repository.findTop10ByOrderByCreatedAtDesc();
+        return news.stream().map(mapper::toDto).collect(Collectors.toList());
     }
 }

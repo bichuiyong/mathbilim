@@ -20,25 +20,12 @@ import java.util.Optional;
 public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRepository<Blog> {
 
     @Query("""
-                SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
-                    b.id,
-                    b.creator.id,
-                    b.createdAt, 
-                    b.updatedAt, 
-                    b.viewCount, 
-                    b.shareCount,
-                    b.mainImage.id,
-                    b.approvedBy.id,
-                    b.status,
-                    bt.title, 
-                    bt.content
-                )
-                FROM Blog b 
+                SELECT b FROM Blog b 
                 JOIN b.blogTranslations bt 
                 WHERE b.id = :blogId 
                 AND bt.id.languageCode = :languageCode
             """)
-    Optional<DisplayContentDto> findDisplayBlogById(@Param("blogId") Long blogId,
+    Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
                                                     @Param("languageCode") String languageCode);
 
     @Query("""
@@ -65,6 +52,20 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             """)
     Page<DisplayContentDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,
                                                           Pageable pageable);
+
+
+    @Query("""
+                SELECT b
+                FROM Blog b 
+                JOIN b.blogTranslations bt 
+                WHERE bt.id.languageCode = :languageCode
+                  AND bt.title IS NOT NULL 
+                  AND bt.title != ''
+                  AND b.status = kg.edu.mathbilim.enums.ContentStatus.APPROVED
+                ORDER BY b.createdAt DESC
+            """)
+    Page<Blog> findAllDisplayBlogsByLanguageBlog(@Param("languageCode") String languageCode,
+                                             Pageable pageable);
 
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
@@ -119,6 +120,19 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     Page<Blog> getBlogsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
                                          Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            JOIN p.blogTranslations t
+            WHERE p.status = :contentStatus
+                        AND
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
+                        t.id.languageCode = :languageCode
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
+                                         String query,
+                                         Pageable pageable, String languageCode);
 
 
     @Query("""

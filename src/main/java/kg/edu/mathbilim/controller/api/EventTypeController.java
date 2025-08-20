@@ -35,4 +35,6 @@ public class EventTypeController {
     public ResponseEntity<?> getAllEventTypesByQuery(@RequestParam(required = false) String name, @RequestParam(required = false) String language) {
         return ResponseEntity.ok(eventTypeService.getAllEventTypesByQuery(name, language));
     }
+
+
 }

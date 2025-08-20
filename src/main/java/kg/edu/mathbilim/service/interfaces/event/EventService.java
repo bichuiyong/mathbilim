@@ -26,4 +26,6 @@ public interface EventService extends BaseTranslatableService<EventDto, EventTra
     Long countEventForModeration();
 
     Page<EventDto> getEventsForModeration(Pageable pageable, String query);
+
+    Page<EventDto> getAllEvent(String type, String sort, Pageable pageable);
 }

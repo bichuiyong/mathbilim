@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.controller.mvc;
 
-import kg.edu.mathbilim.telegram.bot.TelegramBot;
 import kg.edu.mathbilim.telegram.service.TelegramNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

@@ -7,13 +7,19 @@ import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+@Mapper(
+        componentModel = "spring",
+        builder = @Builder(disableBuilder = true),
+        uses = { NewsTranslationMapper.class }
+)
 public interface NewsMapper extends BaseMapper<News, NewsDto> {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "creator", source = "creator")
+    @Mapping(target = "newsTranslations", source = "newsTranslations")
     NewsDto toDto(News news);
 
-
+    @Mapping(target = "newsTranslations", source = "newsTranslations")
     News toEntity(NewsDto newsDto);
 }
+

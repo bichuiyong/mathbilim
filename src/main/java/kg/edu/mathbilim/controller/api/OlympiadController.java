@@ -53,4 +53,9 @@ public class OlympiadController {
 
         return ResponseEntity.ofNullable(olympiadStageService.getOlympiadRegistrations(stageId,pageable,keyword));
     }
+
+    @GetMapping("main")
+    public ResponseEntity<?> getLatestEvents() {
+        return ResponseEntity.ofNullable(olympiadService.getOlympiadForMainPage());
+    }
 }

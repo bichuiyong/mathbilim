@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 @NoRepositoryBean
 public interface BaseContentRepository<T extends AdminContent> extends JpaRepository<T, Long> {
     default Page<T> findByQuery(String query, Pageable pageable) {
@@ -20,4 +22,7 @@ public interface BaseContentRepository<T extends AdminContent> extends JpaReposi
     void incrementShareCount(Long id);
 
     Page<T> findByCreator_Id(Long creatorId, Pageable pageable);
+
+    List<T> findTop10ByOrderByCreatedAtDesc();
+
 }
