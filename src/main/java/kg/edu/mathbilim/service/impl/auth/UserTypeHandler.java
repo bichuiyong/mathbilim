@@ -51,7 +51,8 @@ public class UserTypeHandler extends OncePerRequestFilter {
             if (username != null) {
                 User user = userRepository.findByEmail(username).orElse(null);
             if (user.getRole().getName().equalsIgnoreCase("admin")
-                        || user.getRole().getName().equalsIgnoreCase("moder")) {
+                        || user.getRole().getName().equalsIgnoreCase("moder")
+            || user.getRole().getName().equalsIgnoreCase("super_admin")) {
                 filterChain.doFilter(request, response);
                     return;
                 }
