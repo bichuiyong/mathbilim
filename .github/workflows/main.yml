@@ -1,11 +1,9 @@
 name: Java CI with Maven
 
 on:
-  workflow_dispatch
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -69,7 +67,6 @@ jobs:
             set -e
             cd ${{ secrets.WORK_DIR }}
 
-          
             cat > .env << 'EOF'
             MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
             MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
@@ -108,7 +105,6 @@ jobs:
             SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}
             EOF
 
-     
             cat > Caddyfile << 'EOF'
             mathbilim.kg, www.mathbilim.kg {
                 encode gzip
@@ -120,8 +116,8 @@ jobs:
 
                 reverse_proxy app:9999 {
                     header_up X-Forwarded-Proto {scheme}
-                    header_up X-Forwarded-For {remote}
-                    header_up Host {host}
+                    header_up X-Forwarded-Host {host}
+                    header_up X-Forwarded-For {remote_host}
                 }
             }
             EOF
@@ -130,6 +126,7 @@ jobs:
             sudo ufw allow 443 || true
 
             docker compose pull
-            docker compose up -d
+
+            docker compose up -d --force-recreate --remove-orphans
 
             docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
