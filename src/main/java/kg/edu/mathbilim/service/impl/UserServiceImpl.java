@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.mapper.user.UserMapper;
@@ -502,6 +503,22 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new IllegalStateException(authRole + " is not allowed to update users.");
+    }
+
+
+    @Override
+    public int approvedContentCount(Long userId) {
+        return userRepository.countContentByStatus(userId, ContentStatus.APPROVED.getId());
+    }
+
+    @Override
+    public int pendingContentCount(Long userId) {
+        return userRepository.countContentByStatus(userId, ContentStatus.PENDING_REVIEW.getId());
+    }
+
+    @Override
+    public int totalContentCount(Long userId) {
+        return userRepository.totalContent(userId);
     }
 
 

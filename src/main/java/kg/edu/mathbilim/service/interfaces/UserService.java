@@ -98,4 +98,10 @@ public interface UserService {
     void changePassword(String password, String newPassword) throws IllegalArgumentException;
 
     boolean checkOldPassword(String oldPassword);
+
+    int approvedContentCount(Long userId);
+
+    int pendingContentCount(Long userId);
+
+    int totalContentCount(Long id);
 }

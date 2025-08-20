@@ -406,15 +406,15 @@
                         <div class="profile-stats">
                             <div class="row text-center">
                                 <div class="col-4">
-                                    <div class="stat-value" id="totalContent">0</div>
+                                    <div class="stat-value" id="totalContent">${total}</div>
                                     <div class="stat-label"><@spring.message "profile.content.total"/></div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="stat-value" id="approvedContent">0</div>
+                                    <div class="stat-value" id="approvedContent">${accepted}</div>
                                     <div class="stat-label"><@spring.message "profile.content.approved"/></div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="stat-value" id="pendingContent">0</div>
+                                    <div class="stat-value" id="pendingContent">${pending}</div>
                                     <div class="stat-label"><@spring.message "profile.content.pending"/></div>
                                 </div>
                             </div>
