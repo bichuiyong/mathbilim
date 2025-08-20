@@ -45,7 +45,6 @@
                                 </small>
                             </div>
 
-                            <!-- Основные поля мероприятия -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <@spring.bind "createEventDto.event.startDate"/>
@@ -264,7 +263,7 @@
                                                 <div class="mb-4">
                                                     <@spring.bind "createEventDto.event.eventTranslations[${trans?index}].content"/>
                                                     <label class="form-label fw-bold">Описание мероприятия</label>
-                                                    <textarea class="form-control rich-text-editor translation-field <#if spring.status.error>is-invalid</#if>"
+                                                    <textarea class="form-control tinymce-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                               name="event.eventTranslations[${trans?index}].content"
                                                               data-lang="${trans.languageCode}"
                                                               id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
@@ -315,15 +314,14 @@
         </div>
     </div>
 
+    <!-- Подключение TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/css/froala_editor.pkgd.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/js/froala_editor.pkgd.min.js"></script>
-
-
+    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
+    <!-- Подключение Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -336,37 +334,8 @@
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
     <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
 
+    <!-- Специализированный скрипт для мероприятий -->
     <script src="/static/js/event/EventCreateManager.js"></script>
-
-    <script>
-        const csrfHeader = 'X-XSRF-TOKEN';
-        const csrfToken = '${_csrf.token}';
-        new FroalaEditor('textarea.rich-text-editor', {
-            toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
-            height: 400,
-            requestHeaders: {
-                [csrfHeader]: csrfToken
-            },
-            language: 'ru',
-            placeholderText: 'Введите текст...',
-            contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
-            imageUploadURL: '/api/files/froala/image',
-            imageUploadParam: 'file',
-            imageUploadMethod: 'POST',
-            imageMaxSize: 5 * 1024 * 1024,
-            imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-            events: {
-                'image.uploaded': function (response) {
-                    console.log('Изображение загружено:', response);
-                },
-                'image.error': function (error, response) {
-                    console.error('Ошибка загрузки изображения:', error.message);
-                    alert('Ошибка при загрузке изображения: ' + error.message);
-                }
-            }
-        });
-    </script>
-
 
     <style>
         /* Стили для кропа */
