@@ -225,9 +225,9 @@
                     <h5><@spring.message "footer.sections"/></h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="/tests" class="footer-link"><@spring.message "navbar.tests"/></a></li>
-                        <li class="mb-2"><a href="/olympiads" class="footer-link"><@spring.message "navbar.olympiads"/></a></li>
+                        <li class="mb-2"><a href="/olympiad" class="footer-link"><@spring.message "navbar.olympiads"/></a></li>
                         <li class="mb-2"><a href="/books" class="footer-link"><@spring.message "navbar.books"/></a></li>
-                        <li class="mb-2"><a href="/publications" class="footer-link"><@spring.message "navbar.publications"/></a></li>
+                        <li class="mb-2"><a href="/posts" class="footer-link"><@spring.message "navbar.publications"/></a></li>
                         <li class="mb-2"><a href="/blog" class="footer-link"><@spring.message "navbar.blog"/></a></li>
                         <li class="mb-2"><a href="/events" class="footer-link"><@spring.message "navbar.events"/></a></li>
                         <li class="mb-2"><a href="/news" class="footer-link"><@spring.message "navbar.news"/></a></li>

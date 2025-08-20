@@ -36,7 +36,6 @@
                 </div>
             </div>
 
-            <!-- Latest News Sidebar -->
             <div class="col-lg-4">
                 <div class="news-section">
                     <div class="section-header">
@@ -53,9 +52,7 @@
             </div>
         </div>
 
-        <!-- Публикации -->
         <div class="row g-4 mb-5">
-            <!-- Latest Publications Sidebar -->
             <div class="col-lg-4">
                 <div class="news-section">
                     <div class="section-header">
@@ -71,17 +68,14 @@
                 </div>
             </div>
 
-            <!-- Featured Publications Carousel -->
             <div class="col-lg-8">
                 <div class="section-header mb-3">
                     <h3>Последние публикации</h3>
                 </div>
                 <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
                     <div class="carousel-indicators" id="publications-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
                     </div>
                     <div class="carousel-inner" id="publications-carousel-inner">
-                        <!-- Слайды публикаций будут загружены динамически -->
                         <div class="carousel-item active d-flex justify-content-center align-items-center"
                              style="height: 400px;">
                             <div class="spinner-border text-primary" role="status">
@@ -103,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Upcoming Events -->
         <div class="events-section mb-5">
             <div class="section-header mb-4">
                 <h3>Предстоящие соревнования</h3>
@@ -193,7 +186,6 @@
             </div>
         </div>
 
-        <!-- Quick Access Section -->
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
                 <h3>Быстрый доступ</h3>
@@ -250,7 +242,6 @@
             </div>
         </div>
 
-        <!-- Blog Section -->
         <div class="blog-section mb-5">
             <div class="section-header mb-4">
                 <h3>Блог</h3>
@@ -294,7 +285,6 @@
                 indicator.setAttribute('aria-current', 'true');
             }
 
-            // Создание слайда
             const carouselItem = document.createElement('div');
             carouselItem.className = index === 0 ? 'carousel-item active' : 'carousel-item';
             carouselItem.innerHTML =
@@ -364,7 +354,6 @@
             }
         }
 
-        // Загрузка публикаций для карусели
         async function loadPublicationsCarousel() {
             try {
                 const response = await fetch('/api/posts/main');
@@ -409,7 +398,6 @@
             }
         }
 
-        // Универсальная функция для загрузки элементов в боковую панель
         async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
             try {
                 const response = await fetch(apiUrl);
@@ -462,13 +450,10 @@
             }
         }
 
-        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function () {
-            // Загрузка каруселей
             loadNewsCarousel();
             loadPublicationsCarousel();
 
-            // Загрузка боковых панелей
             loadLatestItems(
                 '/api/news/main',
                 'news-container',
