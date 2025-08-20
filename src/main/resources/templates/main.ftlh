@@ -5,19 +5,6 @@
         </div>
 
         <div class="alert alert-warning mb-5">
-            <div class="d-flex align-items-center">
-                <div class="announcement-icon me-3">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <h4 class="mb-1">🏆 Национальная математическая олимпиада 2025</h4>
-                    <p class="mb-0">Регистрация открыта до 15 июля 2025. Покажи свои знания на республиканском
-                        уровне!</p>
-                </div>
-                <div class="announcement-action">
-                    <a href="/olympiads/national-2025" class="btn btn-primary">Подать заявку</a>
-                </div>
-            </div>
         </div>
 
         <!-- Новости - Main Content -->

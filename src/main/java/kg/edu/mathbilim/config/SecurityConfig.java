@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +25,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final CustomOAuth2UserService oauthUserService;
     private final OAuth2LoginSuccessHandler oauthSuccessHandler;
@@ -81,7 +83,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/admin/**",
                                 "/news/create/**")
-                        .hasAuthority("ADMIN")
+                        .hasAnyAuthority("ADMIN", "SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",
@@ -103,9 +105,8 @@ public class SecurityConfig {
                                     "/olympiad/add-list",
                                     "/olympiad/stage/register-list",
                                     "/olympiad/stage/*/register-list",
-                                    "/api/excel/download/excel/*",
-                                    "/tests/create"
-                            ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
+                                    "/api/excel/download/excel/*"
+                            ).hasAnyAuthority("ADMIN","MODER", "SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/auth/**",
