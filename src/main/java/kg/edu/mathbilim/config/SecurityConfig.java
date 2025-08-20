@@ -81,7 +81,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/admin/**",
                                 "/news/create/**")
-                        .hasAuthority("ADMIN")
+                        .hasAnyAuthority("ADMIN", "SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/posts/create/**",
@@ -104,7 +104,7 @@ public class SecurityConfig {
                                     "/olympiad/stage/register-list",
                                     "/olympiad/stage/*/register-list",
                                     "/api/excel/download/excel/*"
-                            ).hasAnyAuthority("ADMIN","MODER")
+                            ).hasAnyAuthority("ADMIN","MODER", "SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/auth/**",
