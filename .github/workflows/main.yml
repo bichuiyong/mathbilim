@@ -113,7 +113,6 @@ jobs:
             mathbilim.kg, www.mathbilim.kg {
                 encode gzip
 
-                # health endpoint (опционально)
                 @health path /health
                 handle @health {
                     respond "ok" 200
