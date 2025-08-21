@@ -88,24 +88,20 @@
                                               <#assign currentLocale = springMacroRequestContext.getLocale()>
                                                 <#assign currentLang = currentLocale.language>  <#-- Get language code as string -->
 
-                                                DEBUG: currentLang = '${currentLang}'
 
                                                 <#assign categoryName = "">
 
-                                                <#if bookItem.category.translations??>
+                                                <#if bookItem.category?? && bookItem.category.translations??>
                                                     <#list bookItem.category.translations as t>
-                                                        Translation ${t_index}:
-                                                        - languageCode: '${t.languageCode!''}'
-<#--                                                        - code: '${t.code!''}'-->
-<#--                                                        - lang: '${t.lang!''}'-->
-<#--                                                        - language: '${t.language!''}'-->
-<#--                                                        - locale: '${t.locale!''}'-->
-<#--                                                        - translation: '${t.translation!''}'-->
-                                                        ---
+                                                        <#if t.languageCode?? && t.languageCode == currentLang && t.translation?? && t.translation != "">
+                                                            <#assign categoryName = t.translation>
+                                                            <#assign foundTranslation = true>
+                                                            <#break>
+                                                        </#if>
                                                     </#list>
                                                 </#if>
 
-                                            Final: ${categoryName?has_content?then(categoryName, "No category")}
+                                             ${categoryName?has_content?then(categoryName, "No category")}
                                         </span>
 
                                         </div>
