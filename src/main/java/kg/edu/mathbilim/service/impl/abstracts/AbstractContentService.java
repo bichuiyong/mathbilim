@@ -122,7 +122,7 @@ public abstract class AbstractContentService<
 
         if (dto instanceof ContentDto contentDto) {
             if (creator.getRole().getName().equalsIgnoreCase("admin") ||
-                    creator.getRole().getName().equalsIgnoreCase("moder")) {
+                    creator.getRole().getName().equalsIgnoreCase("moder") || creator.getRole().getName().equalsIgnoreCase("super_admin")) {
                 contentDto.setStatus(ContentStatus.APPROVED);
             } else {
                 contentDto.setStatus(ContentStatus.PENDING_REVIEW);
