@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.interfaces.test;
 
 import kg.edu.mathbilim.dto.test.*;
+import kg.edu.mathbilim.exception.nsee.TopicNotFoundException;
 import kg.edu.mathbilim.model.test.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public interface TestService {
 
     List<Topic> getTopics();
 
-    void createTest(TestCreateDto dto);
+    void createTest(TestCreateDto dto) throws TopicNotFoundException;
 
     TestDto getTestDtoForPassById(Long id);
 
