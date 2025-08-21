@@ -71,6 +71,9 @@
                         <div class="form-text text-danger">
                             📎 Supported files: PDF only<br>
                         </div>
+                        <#if attachmentError??>
+                            <span class="text-danger small">${attachmentError}</span>
+                        </#if>
                     </div>
 
                     <div class="mb-3">
