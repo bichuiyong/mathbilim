@@ -44,6 +44,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
             """)
     Page<Post> getPostsByStatus(ContentStatus contentStatus, Pageable pageable);
 
+    List<Post> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
+
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
