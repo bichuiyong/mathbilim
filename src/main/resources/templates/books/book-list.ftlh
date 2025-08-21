@@ -86,7 +86,7 @@
                                             <h5 class="mb-1 mb-md-0">${bookItem.name}</h5>
                                             <span class="badge bg-secondary align-self-start align-self-md-center">
                                               <#assign currentLocale = springMacroRequestContext.getLocale()>
-                                                <#assign currentLang = currentLocale.language>  <#-- Get language code as string -->
+                                                <#assign currentLang = currentLocale.language>
 
 
                                                 <#assign categoryName = "">
