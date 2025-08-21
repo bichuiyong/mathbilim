@@ -10,6 +10,7 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,7 +54,11 @@ public class BookController {
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(Model model, Authentication auth) {
+        if (auth == null) {
+            return "redirect:/auth/login";
+        }
+
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book",new BookDto());
 
