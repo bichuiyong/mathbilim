@@ -14,6 +14,8 @@ import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,5 +114,39 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationMapper.toEntity(dto);
         organizationRepository.save(organization);
         return organizationMapper.toDto(organization);
+    }
+
+    @Override
+    public Page<OrganizationDto> getOrganizations(String query, Pageable pageable) {
+        Page<Organization> page;
+        if (query != null && !query.isEmpty()) {
+            page = organizationRepository.findByNameStartingWith(query, pageable);
+        } else {
+            page = organizationRepository.findAll(pageable);
+        }
+        return page.map(organizationMapper::toDto);
+    }
+
+    @Transactional
+    @Override
+    public OrganizationDto update(Long id, OrganizationDto dto) {
+        Organization organization = getEntityById(id);
+        organization.setName(dto.getName());
+        organization.setDescription(dto.getDescription());
+        organization.setUrl(dto.getUrl());
+        organizationRepository.save(organization);
+        return organizationMapper.toDto(organization);
+    }
+
+
+    @Transactional
+    @Override
+    public boolean delete(Long id) {
+        Organization organization = getEntityById(id);
+        if (!organization.getEvents().isEmpty() || !organization.getOlympiadOrganizations().isEmpty()) {
+            return false;
+        }
+        organizationRepository.delete(organization);
+        return true;
     }
 }

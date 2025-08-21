@@ -10,9 +10,11 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,7 +54,11 @@ public class BookController {
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(Model model, Authentication auth) {
+        if (auth == null) {
+            return "redirect:/auth/login";
+        }
+
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("book",new BookDto());
 
@@ -61,17 +67,21 @@ public class BookController {
 
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
-                          @RequestParam MultipartFile attachments,
+//                          @RequestParam MultipartFile attachments,
                           BindingResult bindingResult,
-                          @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
+//                          @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                           Model model
                          ) {
         if (bindingResult.hasErrors()) {
+            FieldError attachmentError = bindingResult.getFieldError("attachments");
+            if (attachmentError != null) {
+                model.addAttribute("attachmentError", attachmentError.getDefaultMessage());
+            }
             model.addAttribute("categories", translationService.getCategoriesByLanguage());
             return "books/create-book";
         }
 
-        bookService.createBook(attachments,mpMainImage,book);
+        bookService.createBook(book.getAttachments(), book.getMpMainImage(), book);
         return "redirect:/books";
     }
 
