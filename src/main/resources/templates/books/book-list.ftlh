@@ -1,20 +1,22 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
             <!-- Sidebar with collapse ID for toggle -->
             <aside id="sidebarCategories" class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block">
                 <div class="filter-section p-3">
-                    <h3 class="h5 fw-bold mb-3">Предметы</h3>
+                    <h3 class="h5 fw-bold mb-3"><@spring.message "books.sidebar.title"/></h3>
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a href="/books" class="nav-link <#if categoryId??>text-primary<#else>fw-bold</#if>">
-                                Все предметы
+                                <@spring.message "books.sidebar.all"/>
                             </a>
                         </li>
                         <#list categories as category>
                             <li class="nav-item">
-                                <a href="/books?categoryId=${category.id}" class="nav-link <#if categoryId?? && categoryId == category.id>fw-bold</#if>">
+                                <a href="/books?categoryId=${category.id}"
+                                   class="nav-link <#if categoryId?? && categoryId == category.id>fw-bold</#if>">
                                     ${category.translations[0].translation}
                                 </a>
                             </li>
@@ -25,10 +27,12 @@
 
             <main class="col-md-9 col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-                    <h1 class="h2 mb-3 mb-md-0">Книги и методические материалы</h1>
+                    <h1 class="h2 mb-3 mb-md-0"><@spring.message "books.page.title"/></h1>
                     <div class="d-md-none">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCategories" aria-expanded="false" aria-controls="sidebarCategories">
-                            ☰ Категории
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#sidebarCategories" aria-expanded="false"
+                                aria-controls="sidebarCategories">
+                            ☰ <@spring.message "books.sidebar.toggle"/>
                         </button>
                     </div>
                 </div>
@@ -41,25 +45,27 @@
                         <input type="text"
                                name="query"
                                value="${query!}"
-                               class="form-control" placeholder="Поиск по названию или описанию..."
+                               class="form-control" placeholder="<@spring.message 'books.search.placeholder'/>"
                                style="height: 38px; font-size: 0.875rem;"/>
-                        <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="min-width: 130px; height: 38px;">
-                            🔍 Найти
+                        <button type="submit"
+                                class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                                style="min-width: 130px; height: 38px;">
+                            🔍 <@spring.message "books.search.button"/>
                         </button>
                     </form>
 
                     <a href="/books/create"
                        class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
                        style="min-width: 130px; height: 38px;">
-                        ➕ Добавить книгу
+                        ➕ <@spring.message "books.create"/>
                     </a>
                 </div>
-
 
                 <div class="list-group mb-4">
                     <#if book.content?size == 0>
                         <div class="alert alert-info">
-                            Книги не найдены. <a href="/books" class="alert-link">Сбросить все фильтры</a>.
+                            <@spring.message "books.notfound"/> <a href="/books"
+                                                                   class="alert-link"><@spring.message "books.reset"/></a>.
                         </div>
                     <#else>
                         <#list book.content as bookItem>
@@ -67,10 +73,11 @@
                                 <div class="d-flex flex-column flex-md-row w-100 gap-3">
                                     <div class="flex-shrink-0 book-cover-placeholder">
                                         <#if bookItem.mainImage??>
-                                            <img src="/api/files/${bookItem.mainImage.id}/view" class="book-cover" alt="${bookItem.name}">
+                                            <img src="/api/files/${bookItem.mainImage.id}/view" class="book-cover"
+                                                 alt="${bookItem.name}">
                                         <#else>
                                             <div class="book-cover bg-light d-flex align-items-center justify-content-center">
-                                                Обложка
+                                                <@spring.message "books.cover"/>
                                             </div>
                                         </#if>
                                     </div>
@@ -78,8 +85,29 @@
                                         <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
                                             <h5 class="mb-1 mb-md-0">${bookItem.name}</h5>
                                             <span class="badge bg-secondary align-self-start align-self-md-center">
-                                                ${bookItem.category.translations[0].translation}
-                                            </span>
+                                              <#assign currentLocale = springMacroRequestContext.getLocale()>
+                                                <#assign currentLang = currentLocale.language>  <#-- Get language code as string -->
+
+                                                DEBUG: currentLang = '${currentLang}'
+
+                                                <#assign categoryName = "">
+
+                                                <#if bookItem.category.translations??>
+                                                    <#list bookItem.category.translations as t>
+                                                        Translation ${t_index}:
+                                                        - languageCode: '${t.languageCode!''}'
+<#--                                                        - code: '${t.code!''}'-->
+<#--                                                        - lang: '${t.lang!''}'-->
+<#--                                                        - language: '${t.language!''}'-->
+<#--                                                        - locale: '${t.locale!''}'-->
+<#--                                                        - translation: '${t.translation!''}'-->
+                                                        ---
+                                                    </#list>
+                                                </#if>
+
+                                            Final: ${categoryName?has_content?then(categoryName, "No category")}
+                                        </span>
+
                                         </div>
                                         <p class="mb-2 text-muted">${bookItem.description}</p>
                                         <div class="mt-auto d-flex gap-2">
@@ -87,21 +115,21 @@
                                                 <a href="/books/${bookItem.file.id}/pdf-reader"
                                                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
                                                    style="min-width: 120px; height: 36px;">
-                                                    <i class="bi bi-book me-1"></i> Читать
+                                                    <i class="bi bi-book me-1"></i> <@spring.message "books.read"/>
                                                 </a>
                                             <#else>
                                                 <a href="/api/files/${bookItem.file.id}/view"
                                                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
                                                    style="min-width: 120px; height: 36px;"
                                                    target="_blank">
-                                                    <i class="bi bi-file-earmark-text me-1"></i> Открыть
+                                                    <i class="bi bi-file-earmark-text me-1"></i> <@spring.message "books.open"/>
                                                 </a>
                                             </#if>
 
                                             <a href="/api/files/${bookItem.file.id}/download"
                                                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
                                                style="min-width: 120px; height: 36px;">
-                                                <i class="bi bi-download me-1"></i> Скачать
+                                                <i class="bi bi-download me-1"></i> <@spring.message "books.download"/>
                                             </a>
                                         </div>
 
@@ -121,14 +149,17 @@
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <#if book.isFirst()>disabled</#if>">
-                                <a class="page-link" href="?page=${currentPage - 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}" aria-label="Previous">
+                                <a class="page-link"
+                                   href="?page=${currentPage - 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}"
+                                   aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
 
                             <#if startPage gt 1>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=1&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">1</a>
+                                    <a class="page-link"
+                                       href="?page=1&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">1</a>
                                 </li>
                                 <#if startPage gt 2>
                                     <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -137,7 +168,8 @@
 
                             <#list startPage..endPage as i>
                                 <li class="page-item <#if currentPage == i>active</#if>">
-                                    <a class="page-link" href="?page=${i}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">${i}</a>
+                                    <a class="page-link"
+                                       href="?page=${i}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">${i}</a>
                                 </li>
                             </#list>
 
@@ -146,12 +178,15 @@
                                     <li class="page-item disabled"><span class="page-link">...</span></li>
                                 </#if>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=${book.totalPages}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">${book.totalPages}</a>
+                                    <a class="page-link"
+                                       href="?page=${book.totalPages}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}">${book.totalPages}</a>
                                 </li>
                             </#if>
 
                             <li class="page-item <#if book.isLast()>disabled</#if>">
-                                <a class="page-link" href="?page=${currentPage + 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}" aria-label="Next">
+                                <a class="page-link"
+                                   href="?page=${currentPage + 1}&size=${book.size}<#if query??>&query=${query}</#if><#if categoryId??>&categoryId=${categoryId}</#if>&sortBy=${sortBy}&sortDirection=${sortDirection}"
+                                   aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -172,6 +207,7 @@
             object-fit: cover;
             border-radius: 4px;
         }
+
         .btn-sm {
             padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
