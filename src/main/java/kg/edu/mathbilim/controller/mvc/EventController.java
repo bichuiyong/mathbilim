@@ -99,8 +99,8 @@ public class EventController {
     }
 
     @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         eventService.delete(id);
         return "redirect:/";
     }

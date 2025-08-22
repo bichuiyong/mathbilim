@@ -108,8 +108,8 @@ public class PostController {
     }
 
     @PreAuthorize("@postSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         postService.delete(id);
         return "redirect:/";
     }

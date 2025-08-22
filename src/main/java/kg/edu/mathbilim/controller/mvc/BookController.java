@@ -87,8 +87,8 @@ public class BookController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @bookSecurity.isOwner(#id,  principal.username)")
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/profile";
     }
