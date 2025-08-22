@@ -1,9 +1,7 @@
-// Глобальные переменные и функции
 let currentPage = 0;
 let currentQuery = '';
 const pageSize = 10;
 
-// Функции для показа уведомлений (глобальные)
 function showSuccessMessage(message) {
     showToast(message, 'success');
 }
@@ -23,7 +21,6 @@ function showToast(message, type) {
 
     document.body.appendChild(toast);
 
-    // Автоматически скрываем через 5 секунд
     setTimeout(() => {
         if (toast.parentNode) {
             toast.parentNode.removeChild(toast);
@@ -31,7 +28,6 @@ function showToast(message, type) {
     }, 5000);
 }
 
-// Функция для экранирования HTML (глобальная)
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -39,7 +35,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Функция валидации URL (глобальная)
 function isValidUrl(string) {
     try {
         new URL(string);
@@ -49,7 +44,6 @@ function isValidUrl(string) {
     }
 }
 
-// Основной код инициализации
 document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('organizationsContentList');
     if (!list) {
@@ -63,18 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('organizationsSearch');
     const organizationsTab = document.getElementById('organizations-tab');
 
-    // Загружаем организации при клике на вкладку
     if (organizationsTab) {
         organizationsTab.addEventListener('click', () => {
             setTimeout(() => loadPage(0), 100);
         });
     }
 
-    // Функция загрузки страницы (доступна глобально через window)
     window.loadPage = function(page) {
         currentPage = page;
 
-        // ИЗМЕНЕНО: используем API эндпоинт
         let url = `/api/organizations/page?page=${page}&size=${pageSize}`;
         if (currentQuery) {
             url += `&name=${encodeURIComponent(currentQuery)}`;
@@ -88,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Показать загрузку
         list.innerHTML = `
         <div class="text-center py-5">
             <div class="spinner-border text-primary mb-3" role="status">
@@ -156,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'card mb-3 shadow-sm border-0';
             card.style.transition = 'all 0.3s ease';
 
-            // Получаем имя создателя (только имя)
             const creatorName = getCreatorName(org.creator);
 
             card.innerHTML = `
@@ -217,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Добавляем hover эффект
             card.addEventListener('mouseenter', () => {
                 card.style.transform = 'translateY(-2px)';
                 card.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
@@ -231,18 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
             list.appendChild(card);
         });
 
-        // Добавляем обработчики событий для кнопок ПОСЛЕ создания карточек
         addButtonEventListeners();
     }
 
-    // Функция для получения только имени создателя
     function getCreatorName(creator) {
         return creator?.name || 'Неизвестно';
     }
 
-    // Функция для добавления обработчиков событий к кнопкам
     function addButtonEventListeners() {
-        // Кнопки редактирования
         const editButtons = list.querySelectorAll('.edit-org-btn');
         editButtons.forEach(button => {
             button.addEventListener('click', function(e) {
@@ -255,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Кнопки удаления
         const deleteButtons = list.querySelectorAll('.delete-org-btn');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function(e) {
@@ -280,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (paginationNav) paginationNav.style.display = 'block';
 
-        // Кнопка "Предыдущая"
         if (page > 0) {
             const prevLi = document.createElement('li');
             prevLi.className = 'page-item';
@@ -296,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
             paginationUl.appendChild(prevLi);
         }
 
-        // Номера страниц
         const startPage = Math.max(0, page - 2);
         const endPage = Math.min(totalPages - 1, page + 2);
 
@@ -315,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
             paginationUl.appendChild(li);
         }
 
-        // Кнопка "Следующая"
         if (page < totalPages - 1) {
             const nextLi = document.createElement('li');
             nextLi.className = 'page-item';
@@ -332,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Поиск
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
             currentQuery = searchInput?.value?.trim() || '';
@@ -340,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Поиск по Enter
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -351,9 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Глобальные функции для редактирования и удаления (вне DOMContentLoaded)
 
-// Функция редактирования организации
 function editOrganization(id, name) {
     console.log('Edit organization called:', id, name);
 
@@ -362,7 +338,6 @@ function editOrganization(id, name) {
         return;
     }
 
-    // ИЗМЕНЕНО: используем API эндпоинт
     fetch(`/api/organizations/${id}`, {
         method: 'GET',
         headers: {
@@ -385,7 +360,6 @@ function editOrganization(id, name) {
 }
 
 function showEditModal(orgData) {
-    // Создаем модальное окно для редактирования
     const modalHtml = `
         <div class="modal fade" id="editOrgModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
@@ -454,24 +428,20 @@ function showEditModal(orgData) {
         </div>
     `;
 
-    // Удаляем существующее модальное окно, если есть
     const existingModal = document.getElementById('editOrgModal');
     if (existingModal) {
         existingModal.remove();
     }
 
-    // Добавляем новое модальное окно
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
     const modal = new bootstrap.Modal(document.getElementById('editOrgModal'));
     modal.show();
 
-    // Обработчик кнопки сохранения
     document.getElementById('saveOrgBtn').addEventListener('click', function() {
         saveOrganization(orgData.id, this, modal);
     });
 
-    // Удаляем модальное окно после закрытия
     document.getElementById('editOrgModal').addEventListener('hidden.bs.modal', function() {
         this.remove();
     });
@@ -500,7 +470,6 @@ function saveOrganization(orgId, saveBtn, modal) {
     const originalText = saveBtn.innerHTML;
     saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Сохранение...';
 
-    // ИЗМЕНЕНО: используем API эндпоинт
     fetch(`/api/organizations/${orgId}`, {
         method: 'PUT',
         headers: {
@@ -530,11 +499,9 @@ function saveOrganization(orgId, saveBtn, modal) {
         });
 }
 
-// Функция удаления организации
 function deleteOrganization(id, name) {
     console.log('Delete organization called:', id, name);
 
-    // Проверяем, что у нас есть Bootstrap
     if (typeof bootstrap === 'undefined') {
         if (confirm(`Вы действительно хотите удалить организацию "${name}"?`)) {
             performDelete(id);
@@ -542,7 +509,6 @@ function deleteOrganization(id, name) {
         return;
     }
 
-    // Создаем модальное окно подтверждения
     const modalHtml = `
         <div class="modal fade" id="deleteOrgModal" tabindex="-1">
             <div class="modal-dialog">
@@ -576,19 +542,16 @@ function deleteOrganization(id, name) {
         </div>
     `;
 
-    // Удаляем существующее модальное окно, если есть
     const existingModal = document.getElementById('deleteOrgModal');
     if (existingModal) {
         existingModal.remove();
     }
 
-    // Добавляем новое модальное окно
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
     const modal = new bootstrap.Modal(document.getElementById('deleteOrgModal'));
     modal.show();
 
-    // Обработчик кнопки подтверждения
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
         this.disabled = true;
         const originalText = this.innerHTML;
@@ -597,17 +560,14 @@ function deleteOrganization(id, name) {
         performDelete(id, modal, this, originalText);
     });
 
-    // Удаляем модальное окно после закрытия
     document.getElementById('deleteOrgModal').addEventListener('hidden.bs.modal', function() {
         this.remove();
     });
 }
 
-// Функция выполнения удаления
 function performDelete(id, modal = null, button = null, originalButtonText = '') {
     console.log('Attempting to delete organization with ID:', id);
 
-    // ИЗМЕНЕНО: используем API эндпоинт
     fetch(`/api/organizations/${id}`, {
         method: 'DELETE',
         headers: {
