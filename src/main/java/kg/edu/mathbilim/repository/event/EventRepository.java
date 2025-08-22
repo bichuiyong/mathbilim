@@ -13,23 +13,20 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface EventRepository extends BaseContentRepository<Event> {
-//    @Query("SELECT e FROM Event e WHERE " +
-//            "LOWER(e.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-//            "LOWER(e.content) LIKE LOWER(CONCAT('%', :query, '%'))")
-//    Page<Event> findByQuery(@Param("query") String query, Pageable pageable);
 
     @Modifying
-    @Query("UPDATE Event b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
+    @Query("UPDATE Event b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId  AND b.deleted = false")
     void incrementViewCount(@Param("blogId") Long blogId);
 
     @Modifying
-    @Query("UPDATE Event b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
+    @Query("UPDATE Event b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId  AND b.deleted = false")
     void incrementShareCount(@Param("blogId") Long blogId);
 
     @Query("""
@@ -57,6 +54,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
     JOIN e.eventTranslations et 
     WHERE e.id = :eventId 
     AND et.id.languageCode = :languageCode
+    AND e.deleted = false
 """)
     Optional<DisplayEventDto> findDisplayEventById(@Param("eventId") Long eventId,
                                                    @Param("languageCode") String languageCode);
@@ -72,8 +70,9 @@ public interface EventRepository extends BaseContentRepository<Event> {
     @Query("""
             SELECT DISTINCT p FROM Event p
             JOIN p.eventTranslations t
-            WHERE p.status = :status
+            WHERE p.status = :status   AND p.deleted = false
             ORDER BY p.createdAt DESC
+            
             """)
     Page<Event> findEventsByStatus(ContentStatus status, Pageable pageable);
 
@@ -81,7 +80,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
             SELECT DISTINCT p FROM Event p
             JOIN p.eventTranslations t
             WHERE p.status = :contentStatus
-                        AND
+                     AND p.deleted = false AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
             ORDER BY p.createdAt DESC
             """)
@@ -96,6 +95,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
                 WHERE p.status = :contentStatus
                   AND p.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                   AND p.deleted = false
                 ORDER BY p.createdAt DESC
             """)
     Page<Event> getEventsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
@@ -109,6 +109,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
                 JOIN e.eventTranslations t
                 WHERE e.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                   AND e.deleted = false
                 ORDER BY e.createdAt DESC
             """)
     Page<Event> getEventsWithQuery(@Param("query") String query,
@@ -121,6 +122,7 @@ public interface EventRepository extends BaseContentRepository<Event> {
     @Query("""
             SELECT DISTINCT e FROM Event e
                WHERE e.status = :contentStatus
+                AND e.deleted = false
             """)
     Page<Event> getEventsByStatus(ContentStatus contentStatus, Pageable pageable);
 
@@ -129,12 +131,19 @@ public interface EventRepository extends BaseContentRepository<Event> {
                 SELECT DISTINCT e FROM Event e
                 WHERE e.status = :contentStatus
                   AND e.creator.id = :userId
+                   AND e.deleted = false
                 ORDER BY e.createdAt DESC
             """)
     Page<Event> getEventsByStatusAndCreator(@Param("contentStatus") ContentStatus contentStatus,
                                             @Param("userId") Long userId,
                                             Pageable pageable);
 
-    @Query("SELECT e FROM Event e WHERE e.isOffline = :offline")
+    @Query("SELECT e FROM Event e WHERE e.isOffline = :offline  AND e.deleted = false")
     Page<Event> getAllEventsByType(@Param("offline") Boolean offline, Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Event e SET e.deleted = true WHERE e.id = :eventId")
+    void deleteContentById(@Param("eventId") Long eventId);
+
 }

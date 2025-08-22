@@ -10,6 +10,7 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,6 +86,7 @@ public class BookController {
         return "redirect:/books";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @bookSecurity.isOwner(#id,  principal.username)")
     @PostMapping("delete")
     public String delete(@RequestParam Long id) {
         bookService.delete(id);

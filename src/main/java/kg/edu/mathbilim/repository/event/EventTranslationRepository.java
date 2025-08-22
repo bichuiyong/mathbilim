@@ -20,6 +20,6 @@ public interface EventTranslationRepository extends BaseTranslationRepository<Ev
     List<EventTranslation> findByIdLanguageCode(@Param("languageCode") String languageCode);
 
     @Modifying
-    @Query("DELETE FROM EventTranslation et WHERE et.id.eventId = :eventId")
+    @Query("UPDATE EventTranslation pt SET pt.deleted = true WHERE pt.id.eventId = :eventId")
     void deleteByEventId(@Param("eventId") Long eventId);
 }

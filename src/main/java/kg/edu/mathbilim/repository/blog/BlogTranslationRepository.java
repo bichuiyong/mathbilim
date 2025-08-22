@@ -13,6 +13,6 @@ import org.springframework.data.repository.query.Param;
 public interface BlogTranslationRepository extends BaseTranslationRepository<BlogTranslation, BlogTranslationId> {
 
     @Modifying
-    @Query("DELETE FROM BlogTranslation bt WHERE bt.id.blogId = :blogId")
+    @Query("UPDATE BlogTranslation pt SET pt.deleted = true WHERE pt.id.blogId = :blogId")
     void deleteByBlogId(@Param("blogId") Long blogId);
 }

@@ -12,6 +12,7 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,5 +99,12 @@ public class BlogController {
 
 
         return "blog/blog";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @blogSecurity.isOwner(#id,  principal.username)")
+    @GetMapping("delete/{id}")
+    public String deleteBlog(@PathVariable Long id){
+        blogService.delete(id);
+        return "redirect:/blog";
     }
 }

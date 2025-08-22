@@ -73,12 +73,6 @@ public class BlogServiceImpl extends
     }
 
 
-//    @Transactional
-//    @Override
-//    public void incrementBlogShareCount(Long id) {
-//        incrementShareCount(id);
-//        log.debug("Share count incremented for blog {}", id);
-//    }
 
 
     @Override

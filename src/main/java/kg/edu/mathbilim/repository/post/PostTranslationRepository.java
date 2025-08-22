@@ -20,7 +20,7 @@ public interface PostTranslationRepository extends BaseTranslationRepository<Pos
     List<PostTranslation> findByIdLanguageCode(@Param("languageCode") String languageCode);
 
     @Modifying
-    @Query("DELETE FROM PostTranslation pt WHERE pt.id.postId = :postId")
+    @Query("UPDATE PostTranslation pt SET pt.deleted = true WHERE pt.id.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
 
     @Query("""

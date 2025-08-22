@@ -111,8 +111,8 @@ public class NewsController {
         return redirect;
     }
 
-    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN')")
-    @PostMapping("delete")
+    @PreAuthorize("@newsSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or  hasAuthority('SUPER_ADMIN') ")
+    @GetMapping("delete")
     public String deleteNews(@RequestParam("id") long id) {
         newsService.delete(id);
         return redirect;

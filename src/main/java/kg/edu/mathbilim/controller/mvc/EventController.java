@@ -98,7 +98,7 @@ public class EventController {
         return "events/olymps/olymp-details";
     }
 
-    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('MODER')")
+    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
     @PostMapping("delete")
     public String delete(@RequestParam Long id) {
         eventService.delete(id);

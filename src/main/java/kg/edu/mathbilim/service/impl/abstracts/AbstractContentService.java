@@ -64,8 +64,12 @@ public abstract class AbstractContentService<
     }
 
     protected E getEntityById(Long id) {
-        return repository.findById(id)
+       E g =  repository.findById(id)
                 .orElseThrow(this::getNotFoundException);
+       if(g.isDeleted()==true){
+           throw new UserNotFoundException("User with id " + id + " not found");
+       }
+       return g;
     }
 
     public boolean existsById(Long id) {
@@ -91,7 +95,7 @@ public abstract class AbstractContentService<
             translationService.deleteAllTranslationsByEntityId(id);
         }
 
-        repository.deleteById(id);
+        repository.deleteContentById(id);
         log.info("Deleted {}: {}", getEntityName(), id);
     }
 

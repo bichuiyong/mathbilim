@@ -25,4 +25,6 @@ public interface BaseContentRepository<T extends AdminContent> extends JpaReposi
 
     List<T> findTop10ByOrderByCreatedAtDesc();
 
+    void deleteContentById(Long id);
+
 }

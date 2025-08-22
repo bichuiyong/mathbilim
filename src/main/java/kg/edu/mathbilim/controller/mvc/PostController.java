@@ -12,6 +12,7 @@ import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -104,5 +105,12 @@ public class PostController {
         model.addAttribute("post", postService.getPostById(postId));
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
+    }
+
+    @PreAuthorize("@postSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete")
+    public String delete(@RequestParam Long id) {
+        postService.delete(id);
+        return "redirect:/";
     }
 }
