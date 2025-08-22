@@ -938,442 +938,401 @@
                         <span>${allImages?size} фотографий</span>
                     </div>
                 </#if>
-                <button class="comments-btn" id="openCommentsBtn"
-                        data-post-id="${newsDto.id}"
-                        <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button>
             </div>
 
-            <!-- Модальное окно комментариев -->
-            <div class="comments-modal-overlay" id="commentsModalOverlay">
-                <div class="comments-modal">
-                    <div class="comments-modal-header">
-                        <h3 class="comments-modal-title">Комментарии</h3>
-                        <button class="comments-modal-close" id="closeCommentsModal" aria-label="Закрыть комментарии">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="comments-modal-body">
-                        <ul class="comments-list" id="commentsList"></ul>
-                        <div class="comments-empty" id="commentsEmpty" style="display: none;">
-                            <div class="comments-empty-icon">💬</div>
-                            <div class="comments-empty-text">Пока нет комментариев</div>
-                            <div class="comments-empty-subtext">Станьте первым, кто оставит комментарий</div>
-                        </div>
-                    </div>
-                    <div class="comments-modal-footer">
-                        <#if currentUser??>
-                            <div class="comment-input-wrapper">
-                                <textarea id="commentInput" placeholder="Оставьте комментарий..."></textarea>
-                                <button class="comment-submit-btn" id="submitCommentBtn">Отправить</button>
-                            </div>
-                        <#else>
-                            <div style="text-align: center; padding: 16px;">
-                                <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
-                                    Войти для комментирования
-                                </a>
-                            </div>
-                        </#if>
-                    </div>
-                </div>
-            </div>
         </article>
     </div>
 
-    <script>
-        // Используем тот же подход, что и в постах
-        document.addEventListener('DOMContentLoaded', function () {
-            // Инициализация карусели (точно такая же как в постах)
-            const carouselElement = document.getElementById('newsCarousel');
-            const currentSlideSpan = document.getElementById('currentSlide');
+<#--    <script>-->
+<#--        // Используем тот же подход, что и в постах-->
+<#--        document.addEventListener('DOMContentLoaded', function () {-->
+<#--            // Инициализация карусели (точно такая же как в постах)-->
+<#--            const carouselElement = document.getElementById('newsCarousel');-->
+<#--            const currentSlideSpan = document.getElementById('currentSlide');-->
 
-            if (carouselElement && currentSlideSpan) {
-                const carousel = new bootstrap.Carousel(carouselElement, {
-                    interval: false,
-                    wrap: false,
-                    touch: true
-                });
+<#--            if (carouselElement && currentSlideSpan) {-->
+<#--                const carousel = new bootstrap.Carousel(carouselElement, {-->
+<#--                    interval: false,-->
+<#--                    wrap: false,-->
+<#--                    touch: true-->
+<#--                });-->
 
-                carouselElement.addEventListener('slid.bs.carousel', function (event) {
-                    const activeIndex = event.to;
-                    if (currentSlideSpan) {
-                        currentSlideSpan.textContent = activeIndex + 1;
-                    }
-                });
+<#--                carouselElement.addEventListener('slid.bs.carousel', function (event) {-->
+<#--                    const activeIndex = event.to;-->
+<#--                    if (currentSlideSpan) {-->
+<#--                        currentSlideSpan.textContent = activeIndex + 1;-->
+<#--                    }-->
+<#--                });-->
 
-                // Навигация клавиатурой (как в постах)
-                document.addEventListener('keydown', function (e) {
-                    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
-                        return; // Не обрабатываем, если фокус в поле ввода
-                    }
+<#--                // Навигация клавиатурой (как в постах)-->
+<#--                document.addEventListener('keydown', function (e) {-->
+<#--                    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {-->
+<#--                        return; // Не обрабатываем, если фокус в поле ввода-->
+<#--                    }-->
 
-                    if (e.key === 'ArrowLeft') {
-                        carousel.prev();
-                        e.preventDefault();
-                    } else if (e.key === 'ArrowRight') {
-                        carousel.next();
-                        e.preventDefault();
-                    }
-                });
-            }
+<#--                    if (e.key === 'ArrowLeft') {-->
+<#--                        carousel.prev();-->
+<#--                        e.preventDefault();-->
+<#--                    } else if (e.key === 'ArrowRight') {-->
+<#--                        carousel.next();-->
+<#--                        e.preventDefault();-->
+<#--                    }-->
+<#--                });-->
+<#--            }-->
 
-            // Инициализация контента (сворачивание/разворачивание)
-            const contentElement = document.getElementById('newsContent');
-            const toggleButton = document.getElementById('toggleContentBtn');
+<#--            // Инициализация контента (сворачивание/разворачивание)-->
+<#--            const contentElement = document.getElementById('newsContent');-->
+<#--            const toggleButton = document.getElementById('toggleContentBtn');-->
 
-            if (contentElement && toggleButton) {
-                if (contentElement.scrollHeight <= 200) {
-                    toggleButton.style.display = 'none';
-                    contentElement.classList.remove('collapsed');
-                }
-                toggleButton.addEventListener('click', function () {
-                    const isCollapsed = contentElement.classList.contains('collapsed');
-                    contentElement.classList.toggle('collapsed');
-                    toggleButton.textContent = isCollapsed ? 'Свернуть' : 'Читать полностью';
-                });
-            }
+<#--            if (contentElement && toggleButton) {-->
+<#--                if (contentElement.scrollHeight <= 200) {-->
+<#--                    toggleButton.style.display = 'none';-->
+<#--                    contentElement.classList.remove('collapsed');-->
+<#--                }-->
+<#--                toggleButton.addEventListener('click', function () {-->
+<#--                    const isCollapsed = contentElement.classList.contains('collapsed');-->
+<#--                    contentElement.classList.toggle('collapsed');-->
+<#--                    toggleButton.textContent = isCollapsed ? 'Свернуть' : 'Читать полностью';-->
+<#--                });-->
+<#--            }-->
 
-            // Инициализация комментариев (адаптированный код из постов)
-            const openCommentsBtn = document.getElementById('openCommentsBtn');
-            const commentsModalOverlay = document.getElementById('commentsModalOverlay');
-            const closeCommentsModal = document.getElementById('closeCommentsModal');
-            const commentsList = document.getElementById('commentsList');
-            const commentsEmpty = document.getElementById('commentsEmpty');
-            const commentInput = document.getElementById('commentInput');
-            const submitCommentBtn = document.getElementById('submitCommentBtn');
+<#--            // Инициализация комментариев (адаптированный код из постов)-->
+<#--            const openCommentsBtn = document.getElementById('openCommentsBtn');-->
+<#--            const commentsModalOverlay = document.getElementById('commentsModalOverlay');-->
+<#--            const closeCommentsModal = document.getElementById('closeCommentsModal');-->
+<#--            const commentsList = document.getElementById('commentsList');-->
+<#--            const commentsEmpty = document.getElementById('commentsEmpty');-->
+<#--            const commentInput = document.getElementById('commentInput');-->
+<#--            const submitCommentBtn = document.getElementById('submitCommentBtn');-->
 
-            const newsId = document.getElementById('openCommentsBtn').dataset.postId;
-            const currentUserId = getCurrentUserId();
+<#--            const newsId = document.getElementById('openCommentsBtn').dataset.postId;-->
+<#--            const currentUserId = getCurrentUserId();-->
 
-            if (openCommentsBtn) {
-                openCommentsBtn.addEventListener('click', function () {
-                    loadComments();
-                    showModal();
-                });
-            }
+<#--            if (openCommentsBtn) {-->
+<#--                openCommentsBtn.addEventListener('click', function () {-->
+<#--                    loadComments();-->
+<#--                    showModal();-->
+<#--                });-->
+<#--            }-->
 
-            // Закрытие модального окна
-            if (closeCommentsModal) {
-                closeCommentsModal.addEventListener('click', hideModal);
-            }
+<#--            // Закрытие модального окна-->
+<#--            if (closeCommentsModal) {-->
+<#--                closeCommentsModal.addEventListener('click', hideModal);-->
+<#--            }-->
 
-            if (commentsModalOverlay) {
-                commentsModalOverlay.addEventListener('click', function (e) {
-                    if (e.target === commentsModalOverlay) {
-                        hideModal();
-                    }
-                });
-            }
+<#--            if (commentsModalOverlay) {-->
+<#--                commentsModalOverlay.addEventListener('click', function (e) {-->
+<#--                    if (e.target === commentsModalOverlay) {-->
+<#--                        hideModal();-->
+<#--                    }-->
+<#--                });-->
+<#--            }-->
 
-            // ESC для закрытия модального окна
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && commentsModalOverlay && commentsModalOverlay.classList.contains('show')) {
-                    hideModal();
-                }
-            });
+<#--            // ESC для закрытия модального окна-->
+<#--            document.addEventListener('keydown', function (e) {-->
+<#--                if (e.key === 'Escape' && commentsModalOverlay && commentsModalOverlay.classList.contains('show')) {-->
+<#--                    hideModal();-->
+<#--                }-->
+<#--            });-->
 
-            function showModal() {
-                if (commentsModalOverlay) {
-                    commentsModalOverlay.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                    if (commentInput) {
-                        setTimeout(() => commentInput.focus(), 100);
-                    }
-                }
-            }
+<#--            function showModal() {-->
+<#--                if (commentsModalOverlay) {-->
+<#--                    commentsModalOverlay.classList.add('show');-->
+<#--                    document.body.style.overflow = 'hidden';-->
+<#--                    if (commentInput) {-->
+<#--                        setTimeout(() => commentInput.focus(), 100);-->
+<#--                    }-->
+<#--                }-->
+<#--            }-->
 
-            function hideModal() {
-                if (commentsModalOverlay) {
-                    commentsModalOverlay.classList.remove('show');
-                    document.body.style.overflow = '';
-                    if (commentInput) {
-                        commentInput.value = '';
-                        updateSubmitButton();
-                        autoResize(commentInput);
-                    }
-                }
-            }
+<#--            function hideModal() {-->
+<#--                if (commentsModalOverlay) {-->
+<#--                    commentsModalOverlay.classList.remove('show');-->
+<#--                    document.body.style.overflow = '';-->
+<#--                    if (commentInput) {-->
+<#--                        commentInput.value = '';-->
+<#--                        updateSubmitButton();-->
+<#--                        autoResize(commentInput);-->
+<#--                    }-->
+<#--                }-->
+<#--            }-->
 
-            function getCurrentUserId() {
-                // Получаем ID текущего пользователя
-                const meta = document.querySelector('meta[name="current-user-id"]');
-                if (meta) {
-                    return meta.getAttribute('content');
-                }
+<#--            function getCurrentUserId() {-->
+<#--                // Получаем ID текущего пользователя-->
+<#--                const meta = document.querySelector('meta[name="current-user-id"]');-->
+<#--                if (meta) {-->
+<#--                    return meta.getAttribute('content');-->
+<#--                }-->
 
-                const element = document.querySelector('[data-current-user-id]');
-                if (element) {
-                    return element.dataset.currentUserId;
-                }
+<#--                const element = document.querySelector('[data-current-user-id]');-->
+<#--                if (element) {-->
+<#--                    return element.dataset.currentUserId;-->
+<#--                }-->
 
-                if (typeof window.currentUserId !== 'undefined') {
-                    return window.currentUserId;
-                }
+<#--                if (typeof window.currentUserId !== 'undefined') {-->
+<#--                    return window.currentUserId;-->
+<#--                }-->
 
-                return null;
-            }
+<#--                return null;-->
+<#--            }-->
 
-            function loadComments() {
-                fetch('/api/comments/news/' + newsId)
-                    .then(res => res.json())
-                    .then(data => {
-                        renderComments(data);
-                    })
-                    .catch(error => {
-                        console.error('Error loading comments:', error);
-                        if (commentsEmpty) {
-                            commentsEmpty.style.display = 'block';
-                        }
-                    });
-            }
+<#--            function loadComments() {-->
+<#--                fetch('/api/comments/news/' + newsId)-->
+<#--                    .then(res => res.json())-->
+<#--                    .then(data => {-->
+<#--                        renderComments(data);-->
+<#--                    })-->
+<#--                    .catch(error => {-->
+<#--                        console.error('Error loading comments:', error);-->
+<#--                        if (commentsEmpty) {-->
+<#--                            commentsEmpty.style.display = 'block';-->
+<#--                        }-->
+<#--                    });-->
+<#--            }-->
 
-            function renderComments(commentsData) {
-                if (!commentsList) return;
+<#--            function renderComments(commentsData) {-->
+<#--                if (!commentsList) return;-->
 
-                commentsList.innerHTML = '';
-                if (commentsData.length === 0) {
-                    if (commentsEmpty) {
-                        commentsEmpty.style.display = 'block';
-                    }
-                    return;
-                }
+<#--                commentsList.innerHTML = '';-->
+<#--                if (commentsData.length === 0) {-->
+<#--                    if (commentsEmpty) {-->
+<#--                        commentsEmpty.style.display = 'block';-->
+<#--                    }-->
+<#--                    return;-->
+<#--                }-->
 
-                if (commentsEmpty) {
-                    commentsEmpty.style.display = 'none';
-                }
+<#--                if (commentsEmpty) {-->
+<#--                    commentsEmpty.style.display = 'none';-->
+<#--                }-->
 
-                commentsData.forEach(comment => {
-                    const commentItem = document.createElement('li');
-                    commentItem.classList.add('comment-item');
-                    const authorInitial = comment.author && comment.author.name
-                        ? comment.author.name.charAt(0).toUpperCase()
-                        : 'U';
-                    const timeAgo = formatTimeAgo(comment.createdAt);
+<#--                commentsData.forEach(comment => {-->
+<#--                    const commentItem = document.createElement('li');-->
+<#--                    commentItem.classList.add('comment-item');-->
+<#--                    const authorInitial = comment.author && comment.author.name-->
+<#--                        ? comment.author.name.charAt(0).toUpperCase()-->
+<#--                        : 'U';-->
+<#--                    const timeAgo = formatTimeAgo(comment.createdAt);-->
 
-                    const isCurrentUserAuthor = currentUserId && comment.author &&
-                        (comment.author.id == currentUserId || comment.author.id === currentUserId);
+<#--                    const isCurrentUserAuthor = currentUserId && comment.author &&-->
+<#--                        (comment.author.id == currentUserId || comment.author.id === currentUserId);-->
 
-                    const menuHtml = isCurrentUserAuthor ? `
-                        <div class="comment-menu">
-                            <button class="comment-menu-btn" onclick="toggleCommentMenu(` + comment.id + `)">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                    <circle cx="8" cy="2" r="1.5"/>
-                                    <circle cx="8" cy="8" r="1.5"/>
-                                    <circle cx="8" cy="14" r="1.5"/>
-                                </svg>
-                            </button>
-                            <div class="comment-menu-dropdown" id="menu-` + comment.id + `" style="display: none;">
-                                <button class="comment-menu-item" onclick="deleteComment(` + comment.id + `)">
-                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11zm1.958 1-.846 10.58a1 1 0 0 1-.997.92H5.883a1 1 0 0 1-.997-.92L3.042 3.5h9.916z"/>
-                                    </svg>
-                                    Удалить
-                                </button>
-                            </div>
-                        </div>
-                    ` : '';
+<#--                    const menuHtml = isCurrentUserAuthor ? `-->
+<#--                        <div class="comment-menu">-->
+<#--                            <button class="comment-menu-btn" onclick="toggleCommentMenu(` + comment.id + `)">-->
+<#--                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">-->
+<#--                                    <circle cx="8" cy="2" r="1.5"/>-->
+<#--                                    <circle cx="8" cy="8" r="1.5"/>-->
+<#--                                    <circle cx="8" cy="14" r="1.5"/>-->
+<#--                                </svg>-->
+<#--                            </button>-->
+<#--                            <div class="comment-menu-dropdown" id="menu-` + comment.id + `" style="display: none;">-->
+<#--                                <button class="comment-menu-item" onclick="deleteComment(` + comment.id + `)">-->
+<#--                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">-->
+<#--                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11zm1.958 1-.846 10.58a1 1 0 0 1-.997.92H5.883a1 1 0 0 1-.997-.92L3.042 3.5h9.916z"/>-->
+<#--                                    </svg>-->
+<#--                                    Удалить-->
+<#--                                </button>-->
+<#--                            </div>-->
+<#--                        </div>-->
+<#--                    ` : '';-->
 
-                    commentItem.innerHTML = `
-                        <div class="comment-avatar">` + authorInitial + `</div>
-                        <div class="comment-content">
-                            <div class="comment-author">` + comment.author.name + `</div>
-                            <div class="comment-text">` + escapeHtml(comment.content) + `</div>
-                            <div class="comment-meta">
-                                <span class="comment-time">` + timeAgo + `</span>
-                            </div>
-                        </div>
-                        ` + menuHtml + `
-                    `;
-                    commentsList.appendChild(commentItem);
-                });
-            }
+<#--                    commentItem.innerHTML = `-->
+<#--                        <div class="comment-avatar">` + authorInitial + `</div>-->
+<#--                        <div class="comment-content">-->
+<#--                            <div class="comment-author">` + comment.author.name + `</div>-->
+<#--                            <div class="comment-text">` + escapeHtml(comment.content) + `</div>-->
+<#--                            <div class="comment-meta">-->
+<#--                                <span class="comment-time">` + timeAgo + `</span>-->
+<#--                            </div>-->
+<#--                        </div>-->
+<#--                        ` + menuHtml + `-->
+<#--                    `;-->
+<#--                    commentsList.appendChild(commentItem);-->
+<#--                });-->
+<#--            }-->
 
-            function formatTimeAgo(dateString) {
-                try {
-                    let cleanDateString = dateString.replace(/(\.\d{3})\d*/, '$1');
-                    const parts = cleanDateString.split('T');
-                    const datePart = parts[0];
-                    const timePart = parts[1] || '00:00:00';
-                    const [year, month, day] = datePart.split('-').map(Number);
-                    const [hour, minute] = timePart.split(':').map(Number);
-                    const date = new Date(year, month - 1, day, hour, minute);
-                    const today = new Date();
-                    const yesterday = new Date(today);
-                    yesterday.setDate(yesterday.getDate() - 1);
+<#--            function formatTimeAgo(dateString) {-->
+<#--                try {-->
+<#--                    let cleanDateString = dateString.replace(/(\.\d{3})\d*/, '$1');-->
+<#--                    const parts = cleanDateString.split('T');-->
+<#--                    const datePart = parts[0];-->
+<#--                    const timePart = parts[1] || '00:00:00';-->
+<#--                    const [year, month, day] = datePart.split('-').map(Number);-->
+<#--                    const [hour, minute] = timePart.split(':').map(Number);-->
+<#--                    const date = new Date(year, month - 1, day, hour, minute);-->
+<#--                    const today = new Date();-->
+<#--                    const yesterday = new Date(today);-->
+<#--                    yesterday.setDate(yesterday.getDate() - 1);-->
 
-                    if (date.toDateString() === today.toDateString()) {
-                        return formatTime(hour, minute);
-                    }
-                    if (date.toDateString() === yesterday.toDateString()) {
-                        return 'вчера в ' + formatTime(hour, minute);
-                    }
-                    const diffDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
-                    if (diffDays > 7) {
-                        return formatDate(day, month);
-                    }
-                    const weekDays = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-                    return weekDays[date.getDay()] + ' в ' + formatTime(hour, minute);
+<#--                    if (date.toDateString() === today.toDateString()) {-->
+<#--                        return formatTime(hour, minute);-->
+<#--                    }-->
+<#--                    if (date.toDateString() === yesterday.toDateString()) {-->
+<#--                        return 'вчера в ' + formatTime(hour, minute);-->
+<#--                    }-->
+<#--                    const diffDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));-->
+<#--                    if (diffDays > 7) {-->
+<#--                        return formatDate(day, month);-->
+<#--                    }-->
+<#--                    const weekDays = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];-->
+<#--                    return weekDays[date.getDay()] + ' в ' + formatTime(hour, minute);-->
 
-                } catch (error) {
-                    return 'недавно';
-                }
-            }
+<#--                } catch (error) {-->
+<#--                    return 'недавно';-->
+<#--                }-->
+<#--            }-->
 
-            function formatTime(hour, minute) {
-                return hour.toString().padStart(2, '0') + ':' + minute.toString().padStart(2, '0');
-            }
+<#--            function formatTime(hour, minute) {-->
+<#--                return hour.toString().padStart(2, '0') + ':' + minute.toString().padStart(2, '0');-->
+<#--            }-->
 
-            function formatDate(day, month) {
-                const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-                return day + ' ' + months[month - 1];
-            }
+<#--            function formatDate(day, month) {-->
+<#--                const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];-->
+<#--                return day + ' ' + months[month - 1];-->
+<#--            }-->
 
-            function escapeHtml(text) {
-                const map = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                };
-                return text.replace(/[&<>"']/g, m => map[m]);
-            }
+<#--            function escapeHtml(text) {-->
+<#--                const map = {-->
+<#--                    '&': '&amp;',-->
+<#--                    '<': '&lt;',-->
+<#--                    '>': '&gt;',-->
+<#--                    '"': '&quot;',-->
+<#--                    "'": '&#039;'-->
+<#--                };-->
+<#--                return text.replace(/[&<>"']/g, m => map[m]);-->
+<#--            }-->
 
-            // Обработка ввода комментария
-            if (commentInput && submitCommentBtn) {
-                commentInput.addEventListener('input', function () {
-                    updateSubmitButton();
-                    autoResize(this);
-                });
+<#--            // Обработка ввода комментария-->
+<#--            if (commentInput && submitCommentBtn) {-->
+<#--                commentInput.addEventListener('input', function () {-->
+<#--                    updateSubmitButton();-->
+<#--                    autoResize(this);-->
+<#--                });-->
 
-                commentInput.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        if (this.value.trim()) {
-                            addComment();
-                        }
-                    }
-                });
+<#--                commentInput.addEventListener('keydown', function (e) {-->
+<#--                    if (e.key === 'Enter' && !e.shiftKey) {-->
+<#--                        e.preventDefault();-->
+<#--                        if (this.value.trim()) {-->
+<#--                            addComment();-->
+<#--                        }-->
+<#--                    }-->
+<#--                });-->
 
-                submitCommentBtn.addEventListener('click', function () {
-                    if (commentInput.value.trim()) {
-                        addComment();
-                    }
-                });
-            }
+<#--                submitCommentBtn.addEventListener('click', function () {-->
+<#--                    if (commentInput.value.trim()) {-->
+<#--                        addComment();-->
+<#--                    }-->
+<#--                });-->
+<#--            }-->
 
-            function updateSubmitButton() {
-                if (!submitCommentBtn || !commentInput) return;
-                const hasContent = commentInput.value.trim().length > 0;
-                submitCommentBtn.classList.toggle('active', hasContent);
-            }
+<#--            function updateSubmitButton() {-->
+<#--                if (!submitCommentBtn || !commentInput) return;-->
+<#--                const hasContent = commentInput.value.trim().length > 0;-->
+<#--                submitCommentBtn.classList.toggle('active', hasContent);-->
+<#--            }-->
 
-            function autoResize(textarea) {
-                textarea.style.height = 'auto';
-                textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
-            }
+<#--            function autoResize(textarea) {-->
+<#--                textarea.style.height = 'auto';-->
+<#--                textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';-->
+<#--            }-->
 
-            function getCsrfToken() {
-                const meta = document.querySelector('meta[name="_csrf"]');
-                return meta ? meta.getAttribute('content') : '';
-            }
+<#--            function getCsrfToken() {-->
+<#--                const meta = document.querySelector('meta[name="_csrf"]');-->
+<#--                return meta ? meta.getAttribute('content') : '';-->
+<#--            }-->
 
-            function getCsrfHeader() {
-                const meta = document.querySelector('meta[name="_csrf_header"]');
-                return meta ? meta.getAttribute('content') : 'X-CSRF-TOKEN';
-            }
+<#--            function getCsrfHeader() {-->
+<#--                const meta = document.querySelector('meta[name="_csrf_header"]');-->
+<#--                return meta ? meta.getAttribute('content') : 'X-CSRF-TOKEN';-->
+<#--            }-->
 
-            function addComment() {
-                const content = commentInput.value.trim();
-                if (!content) return;
+<#--            function addComment() {-->
+<#--                const content = commentInput.value.trim();-->
+<#--                if (!content) return;-->
 
-                submitCommentBtn.disabled = true;
-                submitCommentBtn.textContent = 'Отправка...';
+<#--                submitCommentBtn.disabled = true;-->
+<#--                submitCommentBtn.textContent = 'Отправка...';-->
 
-                fetch('/api/comments/news/new/' + newsId, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [getCsrfHeader()]: getCsrfToken()
-                    },
-                    body: JSON.stringify({
-                        postId: newsId,
-                        content: content
-                    })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            commentInput.value = '';
-                            updateSubmitButton();
-                            autoResize(commentInput);
-                            loadComments();
-                        } else {
-                            response.text().then(text => {
-                                alert('Ошибка: ' + response.status + ' ' + text);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error adding comment:', error);
-                        alert('Ошибка при добавлении комментария');
-                    })
-                    .finally(() => {
-                        submitCommentBtn.disabled = false;
-                        submitCommentBtn.textContent = 'Отправить';
-                    });
-            }
+<#--                fetch('/api/comments/news/new/' + newsId, {-->
+<#--                    method: 'POST',-->
+<#--                    headers: {-->
+<#--                        'Content-Type': 'application/json',-->
+<#--                        [getCsrfHeader()]: getCsrfToken()-->
+<#--                    },-->
+<#--                    body: JSON.stringify({-->
+<#--                        postId: newsId,-->
+<#--                        content: content-->
+<#--                    })-->
+<#--                })-->
+<#--                    .then(response => {-->
+<#--                        if (response.ok) {-->
+<#--                            commentInput.value = '';-->
+<#--                            updateSubmitButton();-->
+<#--                            autoResize(commentInput);-->
+<#--                            loadComments();-->
+<#--                        } else {-->
+<#--                            response.text().then(text => {-->
+<#--                                alert('Ошибка: ' + response.status + ' ' + text);-->
+<#--                            });-->
+<#--                        }-->
+<#--                    })-->
+<#--                    .catch(error => {-->
+<#--                        console.error('Error adding comment:', error);-->
+<#--                        alert('Ошибка при добавлении комментария');-->
+<#--                    })-->
+<#--                    .finally(() => {-->
+<#--                        submitCommentBtn.disabled = false;-->
+<#--                        submitCommentBtn.textContent = 'Отправить';-->
+<#--                    });-->
+<#--            }-->
 
-            // Глобальные функции для меню комментариев
-            window.toggleCommentMenu = function (commentId) {
-                const menu = document.getElementById('menu-' + commentId);
-                const allMenus = document.querySelectorAll('.comment-menu-dropdown');
+<#--            // Глобальные функции для меню комментариев-->
+<#--            window.toggleCommentMenu = function (commentId) {-->
+<#--                const menu = document.getElementById('menu-' + commentId);-->
+<#--                const allMenus = document.querySelectorAll('.comment-menu-dropdown');-->
 
-                allMenus.forEach(m => {
-                    if (m.id !== 'menu-' + commentId) {
-                        m.style.display = 'none';
-                    }
-                });
+<#--                allMenus.forEach(m => {-->
+<#--                    if (m.id !== 'menu-' + commentId) {-->
+<#--                        m.style.display = 'none';-->
+<#--                    }-->
+<#--                });-->
 
-                if (menu) {
-                    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-                }
-            };
+<#--                if (menu) {-->
+<#--                    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';-->
+<#--                }-->
+<#--            };-->
 
-            window.deleteComment = function (commentId) {
-                if (confirm('Вы уверены, что хотите удалить этот комментарий?')) {
-                    fetch('/api/comments/delete/' + commentId, {
-                        method: 'POST',
-                        headers: {
-                            [getCsrfHeader()]: getCsrfToken()
-                        }
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                loadComments();
-                            } else {
-                                alert('Ошибка при удалении комментария');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error deleting comment:', error);
-                            alert('Ошибка при удалении комментария');
-                        });
-                }
-            };
+<#--            window.deleteComment = function (commentId) {-->
+<#--                if (confirm('Вы уверены, что хотите удалить этот комментарий?')) {-->
+<#--                    fetch('/api/comments/delete/' + commentId, {-->
+<#--                        method: 'POST',-->
+<#--                        headers: {-->
+<#--                            [getCsrfHeader()]: getCsrfToken()-->
+<#--                        }-->
+<#--                    })-->
+<#--                        .then(response => {-->
+<#--                            if (response.ok) {-->
+<#--                                loadComments();-->
+<#--                            } else {-->
+<#--                                alert('Ошибка при удалении комментария');-->
+<#--                            }-->
+<#--                        })-->
+<#--                        .catch(error => {-->
+<#--                            console.error('Error deleting comment:', error);-->
+<#--                            alert('Ошибка при удалении комментария');-->
+<#--                        });-->
+<#--                }-->
+<#--            };-->
 
-            document.addEventListener('click', function (event) {
-                if (!event.target.closest('.comment-menu')) {
-                    const allMenus = document.querySelectorAll('.comment-menu-dropdown');
-                    allMenus.forEach(menu => {
-                        menu.style.display = 'none';
-                    });
-                }
-            });
-        });
-    </script>
+<#--            document.addEventListener('click', function (event) {-->
+<#--                if (!event.target.closest('.comment-menu')) {-->
+<#--                    const allMenus = document.querySelectorAll('.comment-menu-dropdown');-->
+<#--                    allMenus.forEach(menu => {-->
+<#--                        menu.style.display = 'none';-->
+<#--                    });-->
+<#--                }-->
+<#--            });-->
+<#--        });-->
+<#--    </script>-->
 
 </@main.layout>

@@ -10,13 +10,10 @@ public interface CommentService {
 
     CommentDto addCommentBlog(CommentCreateDto comment, Long postId);
 
-    CommentDto addCommentNews(CommentCreateDto comment, Long postId);
-
     void deleteComment(Long commentId);
 
     List<CommentDto> getCommentsForPost(Long postId);
 
     List<CommentDto> getCommentsForBlog(Long blogId);
 
-    List<CommentDto> getCommentsForNews(Long newsId);
 }
