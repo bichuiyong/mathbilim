@@ -1,30 +1,27 @@
-let usersTab = document.getElementById('users-tab');
-let userContentList = document.getElementById('usersContentList');
-usersTab.addEventListener('shown.bs.tab', function (e) {
-    doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
-});
-
-
-
 const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
     document.querySelector('input[name="csrf"]')?.value ||
     document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
 
+let usersTab = document.getElementById('users-tab');
+let userContentList = document.getElementById('usersContentList');
+usersTab.addEventListener('shown.bs.tab', function (e) {
+    doFetch('/api/users', 1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
+});
+
 const searchButton = document.getElementById('usersSearchBtn');
 searchButton.onclick = function () {
     let searchInputValue = document.getElementById('usersSearch').value;
-    let url = "/api/users"
+    let url = "/api/users";
     if (searchInputValue) {
-        url = "/api/users?query=" + searchInputValue
+        url = `/api/users?query=${encodeURIComponent(searchInputValue)}`;
     }
-    doFetch(url, -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
+    doFetch(url, 1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
+};
 
-}
-function renderPagination(currentPage, totalPages, url) {
-    // document.getElementById('usersPagination').style.display = 'block';
-    const paginationContainer = document.querySelector('.pagination');
-    // console.log(paginationContainer);
-    paginationContainer.innerHTML = '';
+function renderPagination(currentPage, totalPages, url, onSuccess, changeModals, emptyContentHandler) {
+    const paginationContainer = document.querySelector('#usersPagination .pagination');
+    paginationContainer.innerHTML = ''; // Очистка предыдущей пагинации
+    document.getElementById('usersPagination').style.display = totalPages > 1 ? 'block' : 'none'; // Показываем пагинацию, если страниц больше одной
 
     const createPageItem = (page, text = null, active = false, disabled = false) => {
         const li = document.createElement('li');
@@ -33,22 +30,36 @@ function renderPagination(currentPage, totalPages, url) {
         const a = document.createElement('a');
         a.className = 'page-link';
         a.href = '#';
-        a.textContent = text || page;
+        a.innerHTML = text || page; // Используем innerHTML для поддержки HTML-символов (стрелок)
         a.dataset.page = page;
 
         li.appendChild(a);
         return li;
     };
+
     paginationContainer.appendChild(
-        createPageItem(currentPage - 1, 'Предыдущая', false, currentPage === 1)
+        createPageItem(currentPage - 1, '<i class="fas fa-chevron-left"></i>', false, currentPage === 1)
     );
-    for (let i = 1; i <= totalPages; i++) {
+
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+
+    if (endPage - startPage < 4) {
+        if (startPage === 1) {
+            endPage = Math.min(totalPages, startPage + 4);
+        } else if (endPage === totalPages) {
+            startPage = Math.max(1, endPage - 4);
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
         paginationContainer.appendChild(
-            createPageItem(i, (i).toString(), i === currentPage)
+            createPageItem(i, i.toString(), i === currentPage)
         );
     }
+
     paginationContainer.appendChild(
-        createPageItem(currentPage + 1, 'Следующая', false, currentPage === totalPages)
+        createPageItem(currentPage + 1, '<i class="fas fa-chevron-right"></i>', false, currentPage === totalPages)
     );
 
     paginationContainer.querySelectorAll('a.page-link').forEach(link => {
@@ -56,17 +67,18 @@ function renderPagination(currentPage, totalPages, url) {
             e.preventDefault();
             const page = parseInt(e.target.dataset.page);
             if (!isNaN(page)) {
-                doFetch(url, page)
+                doFetch(url, page, onSuccess, changeModals, emptyContentHandler);
             }
         });
     });
 }
+
 function doFetch(
     url,
     page = 1,
     onSuccess = addUserToTable,
     changeModals = changeEditModal,
-    emptyContentHandler = showEmptyMessage
+    emptyContentHandler = () => showEmptyMessage('usersContentList')
 ) {
     if (page < 1) {
         page = 1;
@@ -81,32 +93,31 @@ function doFetch(
             return response.json();
         })
         .then(data => {
-            const contentArray = Array.isArray(data.content)
-                ? data.content
-                : Array.isArray(data)
-                    ? data
-                    : [];
-            console.log(contentArray);
+            const contentArray = Array.isArray(data.content) ? data.content : Array.isArray(data) ? data : [];
 
             if (contentArray.length === 0) {
                 emptyContentHandler();
+                document.getElementById('usersPagination').style.display = 'none'; // Скрываем пагинацию при отсутствии данных
                 return;
-            } else {
-                onSuccess(data);
-                changeModals();
-                initDropdownBehavior();
             }
+
+            onSuccess(data);
+
+            const currentPage = data.number + 1; // Spring Data возвращает номер страницы, начиная с 0
+            const totalPages = data.totalPages;
+            renderPagination(currentPage, totalPages, url, onSuccess, changeModals, emptyContentHandler);
+
+            changeModals();
+            initDropdownBehavior();
         })
         .catch(error => {
             console.error("Ошибка загрузки данных:", error);
+            emptyContentHandler();
         });
 }
 
-
-
 function showEmptyMessage(containerId = 'usersContentList', message = '😕 Ничего не найдено') {
     const container = document.getElementById(containerId);
-    console.log(container);
     container.innerHTML = `
         <div class="alert alert-warning text-center mt-4" role="alert">
             <h5 class="mb-0">${message}</h5>
@@ -115,13 +126,12 @@ function showEmptyMessage(containerId = 'usersContentList', message = '😕 Ни
     `;
 }
 
-
-//
 function addUserToTable(content) {
     const users = content.content;
 
     if (!Array.isArray(users) || users.length === 0) {
         showEmptyMessage('usersContentList');
+        document.getElementById('usersPagination').style.display = 'none';
         return;
     }
 
@@ -220,6 +230,7 @@ function initDropdownBehavior() {
         });
     });
 }
+
 let createUserBtn = document.getElementById('createUserBtn');
 createUserBtn.onclick = function () {
     const form = document.getElementById('createNewUser');
@@ -230,10 +241,9 @@ createUserBtn.onclick = function () {
         'createUserModal',
         getModelFromFormCreateUpdateUser(form, 'createUserModal'),
         onUserSaveError,
-        () => doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
+        () => doFetch('/api/users', 1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
     );
-
-}
+};
 
 async function handleUserAction(method, successMessage, errorMessage, url, modalId, successUrlFetch) {
     try {
@@ -241,6 +251,7 @@ async function handleUserAction(method, successMessage, errorMessage, url, modal
             method: method,
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
             }
         });
 
@@ -250,22 +261,19 @@ async function handleUserAction(method, successMessage, errorMessage, url, modal
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
             }
-            
+
             clearErrorMessage(modalId);
 
             if (typeof successUrlFetch === 'string') {
                 doFetch(successUrlFetch);
             } else if (typeof successUrlFetch === 'object') {
                 const { url, onSuccess, changeModals } = successUrlFetch;
-                doFetch(url, -1, onSuccess, changeModals);
+                doFetch(url, 1, onSuccess, changeModals);
             }
-
         } else {
             const errorData = await response.json();
             const errorMsg = errorData.message || errorMessage || 'Что-то пошло не так.';
-
             showErrorMessage(modalId, errorMsg);
-
             throw new Error(errorMsg);
         }
     } catch (error) {
@@ -312,8 +320,6 @@ function clearErrorMessage(modalId) {
     }
 }
 
-
-//
 function changeEditModal() {
     document.getElementById('resultTableUsers').addEventListener('click', async function(event) {
         const button = event.target;
@@ -326,13 +332,11 @@ function changeEditModal() {
             document.getElementById('editUserType').value = button.dataset.userType;
         } else if (button.classList.contains('delete-button')) {
             let deleteUserModal = document.getElementById('deleteUserModalBody');
-            let deleteUserInput = document.getElementById('deleteUserInput')
+            let deleteUserInput = document.getElementById('deleteUserInput');
             let deleteUserBtn = document.getElementById('deleteUserBtn');
-            deleteUserBtn.dataset.userId = userId
+            deleteUserBtn.dataset.userId = userId;
             deleteUserInput.value = userId;
-            // console.log(deleteUserInput);
             deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
-
         } else if (button.classList.contains('block-button')) {
             await handleUserAction(
                 'PATCH',
@@ -346,7 +350,6 @@ function changeEditModal() {
                     changeModals: changeEditModal
                 }
             );
-
         }
     });
 }
@@ -354,7 +357,7 @@ function changeEditModal() {
 let editUserBtn = document.getElementById('editUserBtn');
 editUserBtn.onclick = function () {
     let editUserForm = document.getElementById('editUserForm');
-    let userId = document.getElementById('editUserId').value
+    let userId = document.getElementById('editUserId').value;
     sendForm(
         editUserForm,
         `/api/users/${userId}`,
@@ -362,24 +365,23 @@ editUserBtn.onclick = function () {
         'editUserModal',
         getModelFromFormCreateUpdateUser(editUserForm, 'editUserModal'),
         onUserSaveError,
-        () => doFetch('/api/users', -1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
+        () => doFetch('/api/users', 1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'))
     );
+};
 
-}
-//
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
-    let userId = deleteUserBtn.dataset.userId
-    let typeId = deleteUserBtn.dataset.typeId
+    let userId = deleteUserBtn.dataset.userId;
+    let typeId = deleteUserBtn.dataset.typeId;
     let url, successUrl, onSuccess, changeModals;
     if (userId) {
-        url = `/api/users/${userId}`
-        successUrl = '/api/users'
+        url = `/api/users/${userId}`;
+        successUrl = '/api/users';
         onSuccess = addUserToTable;
         changeModals = changeEditModal;
     }
     if (typeId) {
-        let contentType = deleteUserBtn.dataset.contentType
+        let contentType = deleteUserBtn.dataset.contentType;
         url = `/api/${contentType}/${typeId}`;
         successUrl = `/api/${contentType}`;
         onSuccess = addContentInList;
@@ -397,12 +399,10 @@ deleteUserBtn.onclick = async function () {
             changeModals
         }
     );
-}
+};
 
 function getModelFromFormCreateUpdateUser(form, modalId) {
-    let selectElement;
-    // console.log(form);
-    selectElement = form.querySelector('select[name="type"]');
+    let selectElement = form.querySelector('select[name="type"]');
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -410,13 +410,13 @@ function getModelFromFormCreateUpdateUser(form, modalId) {
     if (modalId === 'createUserModal') {
         let type;
         if (selectedOption.value && selectedOption.dataset.name) {
-            type = {id: selectedOption.value, name: selectedOption.dataset.name}
+            type = {id: selectedOption.value, name: selectedOption.dataset.name};
         } else {
             type = null;
         }
         data.type = type;
     } else {
-        data.typeId = selectedOption.value
+        data.typeId = selectedOption.value;
     }
     return data;
 }
@@ -432,7 +432,7 @@ function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetch
     })
         .then(async response => {
             if (!response.ok) {
-                onError(response, form)
+                onError(response, form);
             } else {
                 if (modalId) {
                     const modalEl = document.getElementById(modalId);
@@ -453,7 +453,6 @@ function sendForm(form, fetchUrl, method, modalId, data, onError, onSuccessFetch
             }
         });
 }
-
 
 function onUserSaveError(response, form) {
     response.json().then(errorBody => {
@@ -479,4 +478,3 @@ function onUserSaveError(response, form) {
         }
     });
 }
-
