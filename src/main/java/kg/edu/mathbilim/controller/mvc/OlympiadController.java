@@ -15,6 +15,7 @@ import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import kg.edu.mathbilim.service.interfaces.olympiad.ResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -206,5 +207,12 @@ public class OlympiadController {
         model.addAttribute("size",size);
 
         return "olympiad/stageRegiteredList";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String deleteOlympiad(@PathVariable long id) {
+        olympiadService.deleteOlympiad(id);
+        return "redirect:/olympiad";
     }
 }

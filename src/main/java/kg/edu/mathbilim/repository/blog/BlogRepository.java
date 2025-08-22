@@ -30,7 +30,12 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
                                                     @Param("languageCode") String languageCode);
 
-    List<Blog> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
+    @Query(value = "SELECT * FROM public.blogs b " +
+            "WHERE b.status_id = :status AND b.deleted = false " +
+            "ORDER BY b.created_at DESC " +
+            "LIMIT 10",
+            nativeQuery = true)
+    List<Blog> findTop10ByStatusAndDeletedFalseOrderByCreatedAtDesc(Integer status);
 
     @Query("""
                 SELECT b FROM Blog b
@@ -144,7 +149,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
                         t.id.languageCode = :languageCode
-                         and p.deleted=false
+                         and p.deleted = false
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
@@ -158,7 +163,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 WHERE p.status = :contentStatus
                   AND p.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   and p.deleted=false
+                   and p.deleted = false
                 ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,

@@ -42,9 +42,9 @@ public class TestServiceImpl implements TestService {
     public Page<TestsListDto> getTests(String keyword, Pageable pageable) {
         Page<Test> page;
         if (keyword == null || keyword.isEmpty()) {
-            page = testRepository.findAll(pageable);
+            page = testRepository.findAllByDeletedFalse(pageable);
         } else {
-            page = testRepository.findByNameContainingIgnoreCase(keyword, pageable);
+            page = testRepository.findByNameContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
         }
 
         return page.map(test -> {
@@ -61,7 +61,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestsListDto getTestById(long id) {
-        return testRepository.findById(id)
+        return testRepository.findByIdAndDeletedFalse(id)
                 .map(test -> {
                     TestsListDto dto = new TestsListDto();
                     dto.setId(test.getId());
@@ -127,7 +127,7 @@ public class TestServiceImpl implements TestService {
     @Transactional
     @Override
     public TestDto getTestDtoForPassById(Long id) {
-        Test test = testRepository.findById(id).orElseThrow(TestNotFoundException::new);
+        Test test = testRepository.findByIdAndDeletedFalse(id).orElseThrow(TestNotFoundException::new);
         List<QuestionDto> questions = test.getQuestions().stream()
                 .map(q -> QuestionDto.builder()
                         .textFormat(q.getTextFormat())
@@ -154,7 +154,7 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public Long passTest(TestPassDto testPassDto, Long id) {
         List<AttemptAnswerDto> attemptAnswerDtoList = testPassDto.getAttemptAnswerDtoList();
-        Test currentTest = testRepository.findById(id).orElseThrow(TestNotFoundException::new);
+        Test currentTest = testRepository.findByIdAndDeletedFalse(id).orElseThrow(TestNotFoundException::new);
         User currentUser = userService.getAuthUserEntity();
         Attempt attempt = attemptRepository.findFirstByUserAndTestOrderByIdDesc(currentUser, currentTest)
                 .orElseThrow(AttemptNotFoundException::new);
@@ -295,6 +295,11 @@ public class TestServiceImpl implements TestService {
         }
 
         return result;
+    }
+
+    @Override
+    public void deleteTestById(Long id) {
+        testRepository.deleteByIdAndDeletedFalse(id);
     }
 
 

@@ -102,7 +102,7 @@ public class BlogController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @blogSecurity.isOwner(#id,  principal.username)")
-    @GetMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public String deleteBlog(@PathVariable Long id){
         blogService.delete(id);
         return "redirect:/blog";

@@ -32,13 +32,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final UserService userService;
 
     private Organization getEntityById(Long id) {
-        return organizationRepository.findById(id)
+        return organizationRepository.findByIdAndByDeletedFalse(id)
                 .orElseThrow(OrganizationNotFound::new);
     }
 
     @Override
     public List<OrganizationIdNameDto> getAllOrganizationIdNames() {
-        return organizationRepository.findAll().stream().map(organization -> OrganizationIdNameDto
+        return organizationRepository.findAllByDeletedFalse().stream().map(organization -> OrganizationIdNameDto
                 .builder()
                 .id(organization.getId())
                 .name(organization.getName())
@@ -53,18 +53,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization getByIdModel(Long id) {
-        return organizationRepository.getById(id);
+        return organizationRepository.findByIdAndByDeletedFalse(id)
+                .orElseThrow(OrganizationNotFound::new);
     }
 
     @Override
     public List<OrganizationDto> getOrganizations(String query) {
         if (query != null && !query.isEmpty()) {
-            return organizationRepository.findByNameStartingWith(query)
+            return organizationRepository.findByNameStartingWithAndDeletedFalse(query)
                     .stream()
                     .map(organizationMapper::toDto)
                     .toList();
         }
-        return organizationRepository.findAll()
+        return organizationRepository.findAllByDeletedFalse()
                 .stream()
                 .map(organizationMapper::toDto)
                 .toList();
@@ -120,9 +121,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     public Page<OrganizationDto> getOrganizations(String query, Pageable pageable) {
         Page<Organization> page;
         if (query != null && !query.isEmpty()) {
-            page = organizationRepository.findByNameStartingWith(query, pageable);
+            page = organizationRepository.findByNameStartingWithAndDeletedFalse(query, pageable);
         } else {
-            page = organizationRepository.findAll(pageable);
+            page = organizationRepository.findAllByDeletedFalse(pageable);
         }
         return page.map(organizationMapper::toDto);
     }
@@ -146,7 +147,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!organization.getEvents().isEmpty() || !organization.getOlympiadOrganizations().isEmpty()) {
             return false;
         }
-        organizationRepository.delete(organization);
+        organizationRepository.deleteByIdAndSetDeleted(id);
         return true;
     }
 }

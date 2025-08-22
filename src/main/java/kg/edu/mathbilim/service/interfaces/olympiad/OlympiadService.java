@@ -28,4 +28,6 @@ public interface OlympiadService {
 
     List<OlympListDto> getOlympiadForMainPage();
 
+    void deleteOlympiad(long olympId);
+
 }
