@@ -63,11 +63,6 @@ public class Comment {
             inverseJoinColumns = @JoinColumn(name = "blog_id"))
     List<Blog> blogs = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "news_comments",
-            joinColumns = @JoinColumn(name = "comment_id"),
-            inverseJoinColumns = @JoinColumn(name = "news_id"))
-    List<News> news = new ArrayList<>();
 
 
     @ManyToMany

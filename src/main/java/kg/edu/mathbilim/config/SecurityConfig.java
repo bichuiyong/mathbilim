@@ -38,20 +38,17 @@ public class SecurityConfig {
                 .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler((req, res, e) -> {
-                            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-                        })
+                        .accessDeniedHandler((req, res, e) -> res.sendError(HttpServletResponse.SC_FORBIDDEN))
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/auth/telegram/callback")
-                        .ignoringRequestMatchers("/api/users", "/api/users/**", "/api/categories", "/api/categories/**", "/api/eventTypes", "/api/eventTypes/**", "/api/postTypes", "/api/postTypes/**", "/api/userTypes", "/api/userTypes/**") // временно
+                        .ignoringRequestMatchers("/api/users", "/api/users/**", "/api/categories", "/api/categories/**", "/api/eventTypes", "/api/eventTypes/**", "/api/postTypes", "/api/postTypes/**", "/api/userTypes", "/api/userTypes/**", "/api/organizations", "/api/organizations/**")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
                 .httpBasic(Customizer.withDefaults())
-
 
                 .oauth2Login(oauth -> oauth
                         .loginPage("/auth/login")
@@ -85,6 +82,17 @@ public class SecurityConfig {
                         .hasAnyAuthority("ADMIN", "SUPER_ADMIN")
 
                         .requestMatchers(
+                                "/organizations/page",
+                                "/organizations/*/edit",
+                                "/organizations/*"
+                        ).hasAnyAuthority("ADMIN", "MODER", "SUPER_ADMIN")
+
+                        .requestMatchers(
+                                "/api/organizations/page",
+                                "/api/organizations/*"
+                        ).hasAnyAuthority("ADMIN", "MODER", "SUPER_ADMIN")
+
+                        .requestMatchers(
                                 "/posts/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
@@ -94,19 +102,19 @@ public class SecurityConfig {
                                 "/users/*"
                         ).authenticated()
 
-                        .requestMatchers( "/notifications/**").authenticated()
+                        .requestMatchers("/notifications/**").authenticated()
 
-                            .requestMatchers(
-                                    "/olympiad/create",
-                                    "/olympiad/edit",
-                                    "/olympiad/add-result",
-                                    "/olympiad/add-list",
-                                    "/olympiad/stage/register-list",
-                                    "/olympiad/stage/*/register-list",
-                                    "/api/excel/download/excel/*",
-                                    "/tests/create",
-                                    "organizations/create"
-                            ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
+                        .requestMatchers(
+                                "/olympiad/create",
+                                "/olympiad/edit",
+                                "/olympiad/add-result",
+                                "/olympiad/add-list",
+                                "/olympiad/stage/register-list",
+                                "/olympiad/stage/*/register-list",
+                                "/api/excel/download/excel/*",
+                                "/tests/create",
+                                "/organizations/create"
+                        ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/auth/**",
@@ -126,6 +134,4 @@ public class SecurityConfig {
 
                 .build();
     }
-
 }
-
