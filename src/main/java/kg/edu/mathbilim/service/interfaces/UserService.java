@@ -33,6 +33,8 @@ public interface UserService {
 
     UserDto getUserByEmail(String email);
 
+    void createUserFromAdmin(UserDto userDto, HttpServletRequest request);
+
     void createUser(UserDto userDto, HttpServletRequest request);
 
     void edit(UserEditDto userDto);

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +27,11 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 AND bt.id.languageCode = :languageCode
             """)
     Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
-                                                    @Param("languageCode") String languageCode);
+                                       @Param("languageCode") String languageCode);
 
     List<Blog> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
 
+    @Transactional
     @Query("""
                 SELECT b FROM Blog b
                 JOIN b.blogTranslations bt
@@ -74,7 +76,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 ORDER BY b.createdAt DESC
             """)
     Page<Blog> findAllDisplayBlogsByLanguageBlog(@Param("languageCode") String languageCode,
-                                             Pageable pageable);
+                                                 Pageable pageable);
 
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
@@ -103,6 +105,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                              Pageable pageable);
 
     @Modifying
+    @Transactional
     @Query("UPDATE Blog b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
     void incrementViewCount(@Param("blogId") Long blogId);
 
@@ -140,8 +143,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
-                                         String query,
-                                         Pageable pageable, String languageCode);
+                                                String query,
+                                                Pageable pageable, String languageCode);
 
 
     @Query("""

@@ -64,8 +64,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
-        userService.createUser(userDto, request);
+    public ResponseEntity<Void> createUserForAdmin(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
+        userService.createUserFromAdmin(userDto, request);
         return ResponseEntity.ok().build();
     }
 

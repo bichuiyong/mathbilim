@@ -47,14 +47,5 @@ public class CommentController {
         return ResponseEntity.ok(savedComment);
     }
 
-    @GetMapping("/news/{newsId}")
-    public List<CommentDto> getCommentsByNews(@PathVariable Long newsId) {
-        return commentService.getCommentsForNews(newsId);
-    }
 
-    @PostMapping("/news/new/{newsId}")
-    public ResponseEntity<CommentDto> addCommentNews(@RequestBody CommentCreateDto commentDto, @PathVariable Long newsId) {
-        CommentDto savedComment = commentService.addCommentNews(commentDto, newsId);
-        return ResponseEntity.ok(savedComment);
-    }
 }

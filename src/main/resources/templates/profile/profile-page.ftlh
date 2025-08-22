@@ -354,6 +354,205 @@
             color: gold;
         }
 
+
+        #organizationsContentList .card {
+            border: 1px solid #e3e6f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        #organizationsContentList .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-color: #4e73df;
+        }
+
+        .organization-avatar img {
+            border: 2px solid #e3e6f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .organization-avatar .bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .btn-group .btn {
+            min-width: 44px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-width: 1px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-group .btn:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .btn-group .btn:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: 0;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #e74a3b;
+            border-color: #e74a3b;
+            transform: translateY(-1px);
+        }
+
+        .organization-info h5 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .organization-info .card-text {
+            line-height: 1.4;
+        }
+
+        /* Стили для пагинации */
+        #organizationsPagination .pagination {
+            gap: 4px;
+        }
+
+        #organizationsPagination .page-link {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            color: #6c757d;
+            padding: 8px 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsPagination .page-link:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        #organizationsPagination .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        #organizationsSearch {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsSearch:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        #organizationsSearchBtn {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            background-color: #f8f9fc;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsSearchBtn:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .modal-header .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        @media (max-width: 768px) {
+            #organizationsContentList .card-body .row {
+                text-align: center;
+            }
+
+            #organizationsContentList .card-body .col-auto:last-child {
+                margin-top: 1rem;
+            }
+
+            .btn-group {
+                width: 100%;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+            }
+        }
+
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .text-center i[style*="font-size: 4rem"] {
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #organizationsContentList .card {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
         /* Красивые стили для пагинации */
         #usersPagination {
             margin: 20px 0;

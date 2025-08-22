@@ -758,6 +758,14 @@
             }
         }
     </style>
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
 
     <div class="content-wrapper">
         <a href="/blog" class="back-btn">
@@ -1104,8 +1112,13 @@
                     : 'U';
                 const timeAgo = formatTimeAgo(comment.createdAt);
 
+                const moderOrAdmin = <#if (isAdmin?? && isAdmin) || (isModer?? && isModer)>true<#else>false</#if>
+                // const removeComment = moderOrAdmin ? moderOrAdmin : false;
+
                 const isCurrentUserAuthor = currentUserId && comment.author &&
-                    (comment.author.id == currentUserId || comment.author.id === currentUserId);
+                    (comment.author.id == currentUserId || comment.author.id === currentUserId) || moderOrAdmin;
+
+
 
                 const menuHtml = isCurrentUserAuthor ? `
                         <div class="comment-menu">
