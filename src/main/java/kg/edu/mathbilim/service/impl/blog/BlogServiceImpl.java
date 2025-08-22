@@ -102,6 +102,7 @@ public class BlogServiceImpl extends
         return PaginationUtil.getPage(() -> blogs, mapper::toDto);
     }
 
+    @Transactional
     public BlogDto getDisplayBlogById(Long id) {
         Blog blog = repository.findDisplayBlogById(id)
                 .orElseThrow(BlogNotFoundException::new);
