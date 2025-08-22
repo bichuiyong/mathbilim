@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring/>
 <@main.layout>
     <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -312,7 +313,6 @@
             top: 20px;
             right: 20px;
             background: rgba(229, 62, 62, 0.85);
-            /* Semi-transparent red using --olympiad-error */
             color: white;
             padding: 16px 24px;
             border-radius: 10px;
@@ -323,9 +323,7 @@
             font-weight: 500;
             max-width: 320px;
             backdrop-filter: blur(4px);
-            /* Adds a subtle blur effect for elegance */
             border: 1px solid rgba(255, 255, 255, 0.2);
-            /* Subtle white border for contrast */
         }
 
         @keyframes slideIn {
@@ -739,7 +737,5 @@
         const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
         root.render(<RegistrationForm />);
 
-        const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
-        root.render(<RegistrationForm />);
     </script>
 </@main.layout>
