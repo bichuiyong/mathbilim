@@ -354,6 +354,117 @@
             color: gold;
         }
 
+        /* Красивые стили для пагинации */
+        #usersPagination {
+            margin: 20px 0;
+        }
+
+        #usersPagination .pagination {
+            gap: 8px;
+            margin: 0;
+            justify-content: center;
+        }
+
+        #usersPagination .page-item {
+            margin: 0;
+        }
+
+        #usersPagination .page-link {
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 10px;
+            width: 44px;
+            height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #usersPagination .page-link:hover {
+            background-color: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        #usersPagination .page-item.active .page-link {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        #usersPagination .page-item.active .page-link:hover {
+            background-color: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        #usersPagination .page-item.disabled .page-link {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #usersPagination .page-item.disabled .page-link:hover {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #usersPagination .page-link i {
+            font-size: 14px;
+        }
+
+        @media (max-width: 576px) {
+            #usersPagination .pagination {
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #usersPagination .page-link {
+                width: 38px;
+                height: 38px;
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #usersPagination .pagination {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #usersPagination .page-link:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
     </style>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
