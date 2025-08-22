@@ -194,6 +194,21 @@ document.addEventListener("DOMContentLoaded", function () {
         return title;
     }
 
+    function getContentUrl(type, id) {
+        switch (type) {
+            case 'event':
+                return `/events/${id}`;
+            case 'blog':
+                return `/blog/${id}`;
+            case 'post':
+                return `/posts/${id}`;
+            case 'book':
+                return `/books/details?id=${id}`;
+            default:
+                return `/${type}/${id}`; // Фоллбэк для неизвестных типов
+        }
+    }
+
     function loadAllContentTypes(page) {
         // Для режима "все типы" делаем единый запрос с объединенным контентом
         const url = `/api/users/content/all?creatorId=${userId}&page=${page}&size=${pageSize}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
@@ -277,10 +292,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Используем правильную функцию получения title
                         const title = getContentTitle(item, type);
 
+                        // Формируем URL с помощью новой функции
+                        const contentUrl = getContentUrl(type, item.id);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
-                                     <a href="/${type === 'post' ? 'posts' : type + 's' || type === 'blog' ? 'blog' : type + 's'}/${item.id}" class="text-decoration-none">
+                                    <a href="${contentUrl}" class="text-decoration-none">
                                         <div class="position-relative overflow-hidden rounded-top">
                                             <img src="/api/files/${imageId}/view" alt="${type} Image" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy">
                                             <div class="position-absolute top-0 end-0 m-2">
@@ -358,10 +376,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Используем правильную функцию получения title
                         const title = getContentTitle(item, apiType);
 
+                        // Формируем URL с помощью новой функции
+                        const contentUrl = getContentUrl(apiType, item.id);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
-                                    <a href="/${apiType === 'post' ? 'posts' : apiType + 's'}/${item.id}" class="text-decoration-none">
+                                    <a href="${contentUrl}" class="text-decoration-none">
                                         <div class="position-relative overflow-hidden rounded-top">
                                             <img src="/api/files/${imageId}/view" alt="${apiType} Image" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy">
                                         </div>
