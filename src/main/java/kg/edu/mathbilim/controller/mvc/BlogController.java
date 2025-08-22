@@ -88,12 +88,12 @@ public class BlogController {
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
-        blogService.incrementViewCount(id);
+//        blogService.incrementViewCount(id);
         BlogDto blog = blogService.getDisplayBlogById(id);
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
-        log.info("Creator name {}", blog.getCreator().getName());
+//        log.info("Creator name {}", blog.getCreator().getName());
         model.addAttribute("shareUrl", shareUrl);
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 

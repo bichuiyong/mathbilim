@@ -28,7 +28,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 and b.deleted=false
             """)
     Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
-                                                    @Param("languageCode") String languageCode);
+                                       @Param("languageCode") String languageCode);
 
     @Query(value = "SELECT * FROM public.blogs b " +
             "WHERE b.status_id = :status AND b.deleted = false " +
@@ -37,6 +37,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             nativeQuery = true)
     List<Blog> findTop10ByStatusAndDeletedFalseOrderByCreatedAtDesc(Integer status);
 
+    @Transactional
     @Query("""
                 SELECT b FROM Blog b
                 JOIN b.blogTranslations bt
@@ -83,7 +84,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 ORDER BY b.createdAt DESC
             """)
     Page<Blog> findAllDisplayBlogsByLanguageBlog(@Param("languageCode") String languageCode,
-                                             Pageable pageable);
+                                                 Pageable pageable);
 
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
@@ -113,6 +114,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                              Pageable pageable);
 
     @Modifying
+    @Transactional
     @Query("UPDATE Blog b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId  and b.deleted=false")
     void incrementViewCount(@Param("blogId") Long blogId);
 
@@ -153,8 +155,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
-                                         String query,
-                                         Pageable pageable, String languageCode);
+                                                String query,
+                                                Pageable pageable, String languageCode);
 
 
     @Query("""

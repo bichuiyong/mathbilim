@@ -30,22 +30,6 @@ public class OrganizationController {
         return "organizations/create-organization";
     }
 
-    @GetMapping("page")
-    public ResponseEntity<Page<OrganizationDto>> getOrganizationsPage(@RequestParam(required = false) String name,
-                                                                      Pageable pageable) {
-        return ResponseEntity.ok(organizationService.getOrganizations(name, pageable));
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<OrganizationDto> updateOrganization(@PathVariable Long id, @RequestBody OrganizationDto organizationDto) {
-        return ResponseEntity.ok(organizationService.update(id, organizationDto));
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteOrganization(@PathVariable Long id) {
-        return organizationService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.CONFLICT).build();
-    }
-
 
     @PostMapping("create")
     public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,
