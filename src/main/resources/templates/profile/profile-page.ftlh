@@ -498,6 +498,14 @@
                                     </button>
                                 </li>
                             </#if>
+                            <#if isModer || isAdmin>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="organizations-tab" data-bs-toggle="tab"
+                                            data-bs-target="#organizations" type="button" role="tab">
+                                        <i class="fas fa-building me-2"></i><@spring.message "tab.organizations"/>
+                                    </button>
+                                </li>
+                            </#if>
                             <#if isAdmin>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users"
@@ -646,6 +654,36 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
+                            </#if>
+
+                            <#if isModer || isAdmin>
+                                <div class="tab-pane fade" id="organizations" role="tabpanel">
+                                    <div class="organizations-filters mb-4">
+                                        <div class="row g-2">
+                                            <div class="col-md-12">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" class="form-control" id="organizationsSearch"
+                                                           placeholder="<@spring.message "placeholder.search"/>">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="organizationsSearchBtn">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                </div>
+                                </div>
+
+                                <div id="organizationsContentList" class="content-list">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                        <p><@spring.message "message.loading"/></p>
+                                    </div>
+                                </div>
+
+                                <nav id="organizationsPagination" class="mt-3" style="display: none;">
+                                    <ul class="pagination justify-content-center"></ul>
+                                </nav>
+                            </div>
                             </#if>
 
                             <!-- Вкладка "Пользователи" (для администраторов) -->
@@ -1018,7 +1056,7 @@
         </div>
     </div>
 
-
+    <script src="/static/js/profile/controlOrganizations.js"></script>
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>
 </@main.layout>

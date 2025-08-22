@@ -5,6 +5,10 @@ import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +28,23 @@ public class OrganizationController {
                 .build());
         return "organizations/create-organization";
     }
+
+    @GetMapping("page")
+    public ResponseEntity<Page<OrganizationDto>> getOrganizationsPage(@RequestParam(required = false) String name,
+                                                                      Pageable pageable) {
+        return ResponseEntity.ok(organizationService.getOrganizations(name, pageable));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<OrganizationDto> updateOrganization(@PathVariable Long id, @RequestBody OrganizationDto organizationDto) {
+        return ResponseEntity.ok(organizationService.update(id, organizationDto));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteOrganization(@PathVariable Long id) {
+        return organizationService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
 
     @PostMapping("create")
     public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,

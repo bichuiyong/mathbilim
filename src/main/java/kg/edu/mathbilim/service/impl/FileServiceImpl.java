@@ -99,7 +99,7 @@ public class FileServiceImpl implements FileService {
                 uploadedFile.setNews(new LinkedList<>(Collections.singleton(news)));
                 fileRepository.saveAndFlush(uploadedFile);
                 uploadedFiles.add(uploadedFile);
-                log.info("File uploaded for post {}: {}", news.getId(), file.getOriginalFilename());
+                log.info("File uploaded for news {}", news.getId());
             }
         }
 

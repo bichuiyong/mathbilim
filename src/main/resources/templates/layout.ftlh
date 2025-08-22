@@ -166,7 +166,7 @@
                                 <a class="nav-link" href="/blog"><@spring.message "navbar.blog"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/publications"><@spring.message "navbar.publications"/></a>
+                                <a class="nav-link" href="/posts"><@spring.message "navbar.publications"/></a>
                             </li>
                         </ul>
                     </div>
@@ -175,21 +175,19 @@
                         <div class="d-flex gap-2">
                             <#if user??>
                                 <a href="/users/${user.authId}" class="btn btn-outline-primary w-50">
-                                    <i class="fas fa-user  me-2"></i><@spring.message "navbar.profile"/>
+                                    <i class="fas fa-user me-2"></i><@spring.message "navbar.profile"/>
                                 </a>
                                 <#if _csrf??>
-                                    <form action="/logout" method="post">
+                                    <form action="/logout" method="post" class="w-50">
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                                value="${(_csrf.token)!'--no-token--'}"/>
-                                        <button type="submit" class="btn btn-outline-primary w-50">
+                                        <button type="submit" class="btn btn-outline-primary w-100">
                                             <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
-
                                         </button>
                                     </form>
                                 <#else>
                                     <a href="/logout" class="btn btn-outline-primary w-50">
                                         <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
-
                                     </a>
                                 </#if>
                             <#else>
@@ -198,7 +196,6 @@
                                 </a>
                                 <a href="/auth/register" class="btn btn-primary w-50">
                                     <i class="fas fa-user-plus me-2"></i><@spring.message "navbar.register"/>
-
                                 </a>
                             </#if>
                         </div>

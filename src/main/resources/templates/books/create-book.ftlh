@@ -91,6 +91,9 @@
                         <div class="form-text text-danger">
                             📎 <@spring.message "books.attachments.supported"/>
                         </div>
+                        <#if attachmentError??>
+                            <span class="text-danger small">${attachmentError}</span>
+                        </#if>
                     </div>
 
                     <div class="mb-3">

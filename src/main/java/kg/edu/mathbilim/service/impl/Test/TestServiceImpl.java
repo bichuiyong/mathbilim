@@ -2,10 +2,7 @@ package kg.edu.mathbilim.service.impl.Test;
 
 import jakarta.ws.rs.NotFoundException;
 import kg.edu.mathbilim.dto.test.*;
-import kg.edu.mathbilim.exception.nsee.AttemptNotFoundException;
-import kg.edu.mathbilim.exception.nsee.NotOwnResult;
-import kg.edu.mathbilim.exception.nsee.QuestionNotFoundException;
-import kg.edu.mathbilim.exception.nsee.TestNotFoundException;
+import kg.edu.mathbilim.exception.nsee.*;
 import kg.edu.mathbilim.mapper.TestMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.test.*;
@@ -85,7 +82,7 @@ public class TestServiceImpl implements TestService {
 
     @Transactional
     @Override
-    public void createTest(TestCreateDto dto) {
+    public void createTest(TestCreateDto dto) throws TopicNotFoundException {
         List<MultipartFile> multipartFiles = pdfService.splitPdf(dto.getFile());
         List<Integer> pages = new ArrayList<>();
         List<MultipartFile> sorted  = new ArrayList<>();
@@ -98,7 +95,7 @@ public class TestServiceImpl implements TestService {
                     .textFormat(dtoQuestion.isTextFormat())
                     .correctAnswer(dtoQuestion.getCorrectAnswer())
                     .weight(dtoQuestion.getWeight())
-                    .topic(topicRepository.findById(dtoQuestion.getTopicId()).orElse(null))
+                    .topic(topicRepository.findById(dtoQuestion.getTopicId()).orElseThrow(TopicNotFoundException::new))
                     .build();
             pages.add(dtoQuestion.getTestPageNumber());
             questions.add(ques);

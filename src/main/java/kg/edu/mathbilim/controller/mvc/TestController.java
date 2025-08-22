@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.test.TestCreateDto;
 import kg.edu.mathbilim.dto.test.TestPassDto;
 import kg.edu.mathbilim.dto.test.TestsListDto;
+import kg.edu.mathbilim.exception.nsee.TopicNotFoundException;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.test.TestService;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +85,7 @@ public class TestController {
     @PostMapping("create")
     public String createTestPost(@Valid @ModelAttribute TestCreateDto testCreateDto,
                                  BindingResult bindingResult,
-                                 Model model) {
+                                 Model model) throws TopicNotFoundException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("testCreateDto", testCreateDto);
             return "tests/test-create";
