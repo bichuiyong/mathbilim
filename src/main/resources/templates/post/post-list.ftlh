@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
 
     <style>
@@ -573,20 +574,20 @@
     <div class="content-wrapper">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">📚 Публикации</h1>
-            <p class="page-subtitle">Математические материалы и олимпиадные задачи</p>
+            <h1 class="page-title">📚 <@spring.message "publications.title"/></h1>
+            <p class="page-subtitle"><@spring.message "publications.subtitle"/></p>
         </div>
 
         <!-- Search Container -->
         <div class="search-container">
             <div class="search-header">
-                <h2 class="search-title">Поиск и фильтры</h2>
+                <h2 class="search-title"><@spring.message "search.filters.title"/></h2>
             </div>
             <form method="get" action="/posts">
                 <div class="search-row">
                     <div class="search-input-group">
                         <input type="text" name="query" value="${query!}"
-                               placeholder="🔍 Найти публикации по названию или содержанию..."/>
+                               placeholder="<@spring.message "search.placeholder"/>"/>
                     </div>
                 </div>
 
@@ -594,19 +595,26 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 По дате создания
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>
+                                    <@spring.message "sort.by.date"/>
                                 </option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 По просмотрам
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>
+                                    <@spring.message "sort.by.views"/>
                                 </option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 По репостам
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>
+                                    <@spring.message "sort.by.shares"/>
                                 </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>
+                                    <@spring.message "sort.direction.desc"/>
+                                </option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>
+                                    <@spring.message "sort.direction.asc"/>
+                                </option>
                             </select>
                         </div>
 
@@ -619,7 +627,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">✨ Применить</button>
+                    <button type="submit" class="search-button"><@spring.message "button.apply"/></button>
                 </div>
             </form>
         </div>
@@ -664,15 +672,13 @@
                                 </#if>
 
                                 <div class="post-meta">
-            <span class="post-date">
-               📅 ${p.formattedDate}
-            </span>
-
+                                <span class="post-date">
+                                    📅 ${p.formattedDate}
+                                </span>
                                     <span class="post-date"></span>
                                 </div>
                             </#if>
                         </div>
-
                     </article>
                 </#list>
             </div>
@@ -680,16 +686,15 @@
             <div class="posts-grid">
                 <#if posts?? && posts.content?size == 0>
                     <div class="no-posts">
-                        Публикации не найдены
-                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">Попробуйте изменить параметры
-                            поиска
-                            или выбрать другой язык
+                        <@spring.message "publications.notfound"/>
+                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">
+                            <@spring.message "publications.tryotherparams"/>
                         </div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Загружаем публикации...</span>
+                        <span><@spring.message "publications.loading"/></span>
                     </div>
                 </#if>
             </div>
@@ -701,9 +706,13 @@
                 <@main.csrf/>
                 <input type="hidden" name="type" value="POST">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="subscription-button btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="subscription-button btn-outline-danger">
+                        <@spring.message "subscription.unsubscribe"/>
+                    </button>
                 <#else>
-                    <button class="subscription-button btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="subscription-button btn-outline-primary">
+                        <@spring.message "subscription.subscribe"/>
+                    </button>
                 </#if>
             </form>
         </div>
@@ -713,18 +722,18 @@
                 <#if posts.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn prev">
-                        ← Назад
+                        <@spring.message "pagination.previous"/>
                     </a>
                 </#if>
 
                 <div class="pagination-info">
-                    Страница ${page + 1}
+                    <@spring.messageArgs "pagination.page", [page + 1]/>
                 </div>
 
                 <#if posts.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn next">
-                        Вперёд →
+                        <@spring.message "pagination.next"/>
                     </a>
                 </#if>
             </div>
