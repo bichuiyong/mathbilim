@@ -8,6 +8,7 @@ import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+
 @Controller("mvcBook")
 @RequiredArgsConstructor
 @RequestMapping("books")
@@ -25,6 +28,7 @@ public class BookController {
     private final BookService bookService;
     private final FileService fileService;
     private final TranslationService translationService;
+    private final UserService userService;
 
     @GetMapping
     public String books(@RequestParam(required = false) String query,
@@ -48,9 +52,10 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public String book(@PathVariable("id") Long id, Model model) {
+    public String book(@PathVariable("id") Long id, Model model, Principal principal) {
+        model.addAttribute("currentUser", userService.getUserByEmail(principal.getName()));
         model.addAttribute("book", bookService.getById(id));
-        return "books/book";
+        return "books/book-detail";
     }
 
     @GetMapping("/create")
