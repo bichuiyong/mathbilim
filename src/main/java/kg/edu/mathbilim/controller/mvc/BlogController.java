@@ -13,6 +13,8 @@ import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,7 @@ public class BlogController {
     private final UserNotificationService userNotificationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String all(@RequestParam(required = false) String query,
@@ -73,11 +76,15 @@ public class BlogController {
                              BindingResult bindingResult,
                              @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              Model model) {
-
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || mpMainImage == null || mpMainImage.isEmpty()) {
+            if (mpMainImage == null || mpMainImage.isEmpty()) {
+                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
+                model.addAttribute("image",errorMessage);
+            }
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }
+
         blogService.create(blogDto, mpMainImage);
 
         return "redirect:/blog";

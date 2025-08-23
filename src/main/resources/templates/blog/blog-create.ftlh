@@ -22,6 +22,10 @@
                                 <label class="form-label fw-bold">
                                     <@spring.message "blog.mainImage.label"/> <span class="text-danger">*</span>
                                 </label>
+                                <small class="text-danger">
+                                    ${image!""}
+                                </small>
+                                <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">

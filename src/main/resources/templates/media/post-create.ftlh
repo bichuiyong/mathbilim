@@ -6,6 +6,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
+                    <#assign currentLocale = springMacroRequestContext.locale.language>
+                    <small class="text-danger">
+                        ${imageError!""}
+                    </small>
                     <div class="card-header">
                         <h2 class="mb-0"><@spring.message "posts.create.title"/></h2>
                     </div>
@@ -135,19 +139,25 @@
 
                             <div class="mb-4">
                                 <@spring.bind "createPostDto.post.typeId"/>
-                                <label class="form-label fw-bold">
-                                    <@spring.message "posts.type"/>
-                                </label>
-                                <select class="form-select <#if spring.status.error>is-invalid</#if>"
-                                        name="post.typeId">
+                                <label class="form-label fw-bold"> <@spring.message "posts.type"/></label>
+                                <select class="form-select <#if spring.status.error>is-invalid</#if>" name="post.typeId">
                                     <option value="">-- <@spring.message "posts.type.select"/> --</option>
                                     <#list postTypes as type>
+                                        <#assign translations = type.translations![]>
+                                        <#assign translation = translations?filter(t -> t.languageCode == currentLocale)?first!>
                                         <option value="${type.id}"
-                                                <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
-                                            ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                                <#if spring.status.value?? && (spring.status.value?string == type.id?string)>selected</#if>>
+                                            <#if translation??>
+                                                ${translation.translation}
+                                            <#elseif translations?size > 0>
+                                                ${translations[0].translation}
+                                            <#else>
+                                                [Без перевода]
+                                            </#if>
                                         </option>
                                     </#list>
                                 </select>
+
                                 <#if spring.status.error>
                                     <div class="invalid-feedback">
                                         <#list spring.status.errorMessages as error>${error}</#list>

@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
+import java.util.Locale;
 
 
 @Slf4j
@@ -34,6 +37,7 @@ public class PostController {
     private final CommentService commentService;
     private final UserService userService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
+    private final MessageSource messageSource;
 
 
     @Value("${recaptcha.secret}")
@@ -41,7 +45,8 @@ public class PostController {
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
-        model.addAttribute("postTypes", postTypeService.getPostTypesByLanguage("ru"));
+        Locale lan =  LocaleContextHolder.getLocale();
+        model.addAttribute("postTypes", postTypeService.getPostTypesByLanguage(lan.getLanguage()));
     }
 
     @GetMapping("create")
@@ -55,9 +60,14 @@ public class PostController {
 
     @PostMapping("create")
     public String createPost(@ModelAttribute("createPostDto") @Valid CreatePostDto post,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult, Model model) {
 
-        if (bindingResult.hasErrors()) {
+
+        if (bindingResult.hasErrors() || post.getImage() == null || post.getImage().isEmpty()) {
+            if (post.getImage() == null || post.getImage().isEmpty()) {
+                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
+                model.addAttribute("imageError",errorMessage);
+            }
             return "media/post-create";
         }
         postService.createPost(post);
