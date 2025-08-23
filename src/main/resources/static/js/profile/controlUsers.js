@@ -74,10 +74,6 @@ function t(key) {
 }
 
 
-const csrfToken = document.querySelector('input[name="_csrf"]')?.value ||
-    document.querySelector('input[name="csrf"]')?.value ||
-    document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-
 const searchButton = document.getElementById('usersSearchBtn');
 searchButton.onclick = function () {
     let searchInputValue = document.getElementById('usersSearch').value;
