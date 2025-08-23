@@ -13,7 +13,7 @@ public interface EventService extends BaseTranslatableService<EventDto, EventTra
 
     void reject(Long id, String email);
 
-    DisplayEventDto getDisplayEventById(Long id);
+    DisplayEventDto getDisplayEventById(Long id, String email);
 
     Page<EventDto> getEventsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
