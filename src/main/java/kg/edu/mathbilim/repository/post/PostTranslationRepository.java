@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.repository.post;
 
+import org.springframework.transaction.annotation.Transactional;
 import kg.edu.mathbilim.model.post.PostTranslation;
 import kg.edu.mathbilim.model.post.PostTranslationId;
 import kg.edu.mathbilim.repository.abstracts.BaseTranslationRepository;
@@ -20,6 +21,7 @@ public interface PostTranslationRepository extends BaseTranslationRepository<Pos
     List<PostTranslation> findByIdLanguageCode(@Param("languageCode") String languageCode);
 
     @Modifying
+    @Transactional
     @Query("UPDATE PostTranslation pt SET pt.deleted = true WHERE pt.id.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
 

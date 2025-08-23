@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.http.HttpRequest;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -54,10 +55,11 @@ public class OlympiadController {
     }
 
     @GetMapping("details")
-    public String olympiadPageDetails(@RequestParam long id, Model model, @ModelAttribute("message") String message) {
+    public String olympiadPageDetails(@RequestParam long id, Model model, @ModelAttribute("message") String message,  Principal principal) {
         model.addAttribute("today", java.sql.Date.valueOf(LocalDate.now()));
         model.addAttribute("message", message);
         model.addAttribute("olympiad", olympiadService.getById(id));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "olympiad/olymp-details";
     }
 

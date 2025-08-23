@@ -774,6 +774,15 @@
         </svg>
         <@spring.message "blog.back-to-list"/>
     </a>
+      <#if currentUser?? && (isAdmin || (blog.creator?? && blog.creator.id == currentUser.id))>
+          <form action="/blog/delete/${blog.id}" method="post" style="margin: 16px 24px;">
+              <@main.csrf/>
+              <input type="hidden" name="_method" value="delete"/>
+              <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                  🗑 <@spring.message "test.details.delete"/>
+              </button>
+          </form>
+      </#if>
 
     <article class="blog-card">
         <header class="blog-header">

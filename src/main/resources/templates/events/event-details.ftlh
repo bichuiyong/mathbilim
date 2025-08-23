@@ -3,6 +3,15 @@
 
 <@main.layout title="${event.title!springMacroRequestContext.getMessage('event.defaultTitle')} - MathBilim.kg">
 
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
+
     <#if event.description??>
         <meta name="description" content="${event.description}">
     </#if>
@@ -736,6 +745,15 @@
                     <i class="fas fa-share-alt"></i>
                     <@spring.message "event.share"/>
                 </button>
+                <#if currentUser?? && (isAdmin || (event.creator?? && event.creator.id == currentUser.id))>
+                    <form action="/events/delete/${event.id}" method="post" style="margin: 16px 24px;">
+                        <@main.csrf/>
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            🗑 <@spring.message "test.details.delete"/>
+                        </button>
+                    </form>
+                </#if>
             </div>
         </div>
     </section>
@@ -931,6 +949,7 @@
             </a>
         </div>
     </div>
+
 
     <!-- Share Modal -->
     <div id="shareModal" class="share-modal">

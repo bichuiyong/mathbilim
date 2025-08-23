@@ -835,13 +835,31 @@
         }
     </style>
 
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
+
     <div class="content-wrapper">
         <a href="/news" class="back-btn">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
             </svg>
-            Назад к новостям
+            <@spring.message "news.back.button"/>
         </a>
+        <#if currentUser?? && (isAdmin || (newsDto.creator?? && newsDto.creator.id == currentUser.id))>
+            <form action="/news/delete/${newsDto.id}" method="post" style="">
+                <@main.csrf/>
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                    <@spring.message "news.delete.button"/>
+                </button>
+            </form>
+        </#if>
 
         <article class="news-card">
             <header class="news-header">
@@ -917,29 +935,28 @@
             <div class="news-content">
                 <#if translation.content?? && translation.content?has_content>
                     <div class="news-text collapsed" id="newsContent">${translation.content?no_esc}</div>
-                    <button class="show-more-btn" id="toggleContentBtn">Читать полностью</button>
+                    <button class="show-more-btn" id="toggleContentBtn"><@spring.message "news.read.more"/></button>
                 </#if>
             </div>
 
             <div class="news-meta">
                 <div class="meta-item">
                     <span class="icon">👁️</span>
-                    <span>${newsDto.viewCount!0} просмотров</span>
+                    <span><@spring.message "news.views" /> ${newsDto.viewCount}</span>
                 </div>
                 <#if newsDto.shareCount?? && newsDto.shareCount gt 0>
                     <div class="meta-item">
                         <span class="icon">📤</span>
-                        <span>${newsDto.shareCount} репостов</span>
+                        <span><@spring.message"news.shares"/>${newsDto.shareCount}</span>
                     </div>
                 </#if>
                 <#if allImages?size gt 1>
                     <div class="meta-item">
                         <span class="icon">📷</span>
-                        <span>${allImages?size} фотографий</span>
+                        <span>${allImages?size} <@spring.message "news.photos"/></span>
                     </div>
                 </#if>
             </div>
-
         </article>
     </div>
 

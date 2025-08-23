@@ -850,6 +850,16 @@
             </svg>
             Назад к публикациям
         </a>
+        <#if currentUser?? && (isAdmin || (post.creator?? && post.creator.id == currentUser.id))>
+            <form action="/posts/delete/${post.id}" method="post" style="">
+                <@main.csrf/>
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                    🗑 <@spring.message "test.details.delete"/>
+                </button>
+            </form>
+        </#if>
+
 
         <article class="publication-item">
             <header class="publication-header">

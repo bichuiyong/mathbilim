@@ -1,6 +1,14 @@
 <#import "../layout.ftlh" as main>
 <#import "/spring.ftl" as spring>
 <@main.layout>
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
             <!-- Sidebar with collapse ID for toggle -->
@@ -127,6 +135,15 @@
                                                style="min-width: 120px; height: 36px;">
                                                 <i class="bi bi-download me-1"></i> <@spring.message "books.download"/>
                                             </a>
+                                            <#if currentUser?? && (isAdmin || (bookItem.creator?? && bookItem.creator.id == currentUser.id))>
+                                                <form action="/books/delete/${bookItem.id}" method="post" style="">
+                                                    <@main.csrf/>
+                                                    <input type="hidden" name="_method" value="delete"/>
+                                                    <button type="submit" class=" btn btn-sm" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                                                        🗑 <@spring.message "test.details.delete"/>
+                                                    </button>
+                                                </form>
+                                            </#if>
                                         </div>
 
                                     </div>

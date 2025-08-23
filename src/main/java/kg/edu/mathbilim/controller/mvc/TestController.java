@@ -20,6 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 @Controller("mvcTest")
 @RequestMapping("tests")
@@ -43,8 +45,9 @@ public class TestController {
     }
 
     @GetMapping("{id}")
-    public String testDetails(@PathVariable("id") Long id, Model model,Authentication auth) {
+    public String testDetails(@PathVariable("id") Long id, Model model,Authentication auth, Principal principal) {
         model.addAttribute("test", testService.getTestById(id));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             model.addAttribute("lastResults", testService.getLastResultsForUser(auth.getName(), id));
         }
@@ -99,6 +102,6 @@ public class TestController {
     @PostMapping("delete/{id}")
     public String deleteTest(@PathVariable long id) {
         testService.deleteTestById(id);
-        return "redirect:/olympiad";
+        return "redirect:/tests";
     }
 }

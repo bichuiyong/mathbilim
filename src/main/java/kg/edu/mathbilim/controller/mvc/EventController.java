@@ -8,6 +8,7 @@ import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
@@ -21,6 +22,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller("mvcEvent")
 @RequestMapping("events")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class EventController {
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
+    private final UserService userService;
 
 
     @ModelAttribute
@@ -48,7 +52,7 @@ public class EventController {
     @GetMapping("/{id}")
     public String viewEvent(@PathVariable Long id,
                             HttpServletRequest request,
-                            Model model) {
+                            Model model,  Principal principal) {
 
 
         DisplayEventDto event = eventService.getDisplayEventById(id);
@@ -64,6 +68,7 @@ public class EventController {
 
         model.addAttribute("event", event);
         model.addAttribute("shareUrl", shareUrl);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 
         return "events/event-details";
     }
