@@ -25,7 +25,6 @@
                                 <small class="text-danger">
                                     ${image!""}
                                 </small>
-                                <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
