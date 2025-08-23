@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller("mvcBook")
 @RequiredArgsConstructor
@@ -53,8 +54,11 @@ public class BookController {
 
     @GetMapping("{id}")
     public String book(@PathVariable("id") Long id, Model model, Principal principal) {
-        model.addAttribute("currentUser", userService.getUserByEmail(principal.getName()));
-        model.addAttribute("book", bookService.getById(id));
+        String email = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .orElse(null);
+
+        model.addAttribute("currentUser", email != null ? userService.getUserByEmail(email) : null);        model.addAttribute("book", bookService.getById(id));
         return "books/book-detail";
     }
 

@@ -455,9 +455,7 @@
                 </div>
             </div>
 
-            <!-- Правая колонка: Информация о книге -->
             <div class="book-details">
-                <!-- Меню с тремя точками -->
                 <#if currentUser?? && (currentUser.name == book.creator.name || currentUser.role == "ADMIN")>
                     <div class="book-actions-dropdown">
                         <div class="dropdown">
