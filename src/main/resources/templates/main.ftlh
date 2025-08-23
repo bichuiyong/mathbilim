@@ -1,5 +1,25 @@
 <#import "layout.ftlh" as main>
 <@main.layout title="Главная">
+
+
+    <style>
+        .custom-alert {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 300px;
+            z-index: 1050;
+            opacity: 1 !important;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+        }
+
+    </style>
+
+
+
+
     <div class="container mt-4">
         <div class="hero-section mb-5" id="hero-container">
         </div>
@@ -51,7 +71,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row g-4 mb-5">
             <div class="col-lg-4">
                 <div class="news-section">
@@ -67,6 +86,22 @@
                     </div>
                 </div>
             </div>
+
+
+            <#if errorMessage??>
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4 custom-alert" role="alert">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-ban fa-lg text-danger"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="alert-heading mb-1 fw-bold">Доступ ограничен</h6>
+                            <p class="mb-0">${errorMessage}</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                    </div>
+                </div>
+            </#if>
 
             <div class="col-lg-8">
                 <div class="section-header mb-3">
