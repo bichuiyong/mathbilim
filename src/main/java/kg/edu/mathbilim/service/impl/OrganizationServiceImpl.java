@@ -105,7 +105,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public OrganizationDto create(OrganizationDto dto, MultipartFile avatarFile) {
         dto.setCreator(userService.getAuthUser());
-        dto.setStatus(ContentStatus.PENDING_REVIEW);
+        dto.setStatus(ContentStatus.APPROVED);
 
         if (avatarFile != null) {
             FileDto avatar = fileService.uploadAvatar(avatarFile);
