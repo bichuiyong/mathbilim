@@ -54,9 +54,13 @@ public class PostController {
 
     @PostMapping("create")
     public String createPost(@ModelAttribute("createPostDto") @Valid CreatePostDto post,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult, Model model) {
 
-        if (bindingResult.hasErrors()) {
+
+        if (bindingResult.hasErrors() || post.getImage() == null || post.getImage().isEmpty()) {
+            if (post.getImage() == null || post.getImage().isEmpty()) {
+                model.addAttribute("imageError", "Image is required");
+            }
             return "media/post-create";
         }
         postService.createPost(post);

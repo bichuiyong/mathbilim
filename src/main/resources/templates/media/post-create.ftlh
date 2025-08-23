@@ -6,6 +6,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
+                    <#assign currentLocale = springMacroRequestContext.locale.language>
+                    <small class="text-danger">
+                        ${imageError!""}
+                    </small>
                     <div class="card-header">
                         <h2 class="mb-0">Создание поста</h2>
                     </div>
@@ -130,9 +134,10 @@
                                         name="post.typeId">
                                     <option value="">-- Выберите тип --</option>
                                     <#list postTypes as type>
+                                        <#assign translation = (type.translations?filter(t -> t.languageCode == currentLocale)?first)!>
                                         <option value="${type.id}"
                                                 <#if spring.status.value?? && spring.status.value.id?? && spring.status.value.id == type.id>selected</#if>>
-                                            ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                            ${translation?has_content?then(translation.translation, type.translations?first.translation)}
                                         </option>
                                     </#list>
                                 </select>
