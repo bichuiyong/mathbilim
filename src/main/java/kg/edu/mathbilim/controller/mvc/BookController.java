@@ -36,7 +36,13 @@ public class BookController {
                         Model model) {
 
         int safePage = Math.max(1, page);
-        model.addAttribute("book", bookService.getAllBooks("APPROVED",query,safePage, size, sortBy, sortDirection, categoryId));
+        model.addAttribute("book", bookService.getAllBooks("APPROVED",
+                query,
+                safePage,
+                size,
+                sortBy,
+                sortDirection,
+                categoryId));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
