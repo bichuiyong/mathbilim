@@ -18,6 +18,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+
 @Controller("mvcBook")
 @RequiredArgsConstructor
 @RequestMapping("books")
@@ -48,8 +50,9 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public String book(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("book", bookService.getById(id));
+    public String book(@PathVariable("id") Long id, Model model, Principal principal) {
+        String email = (principal != null) ? principal.getName() : null;
+        model.addAttribute("book", bookService.getBookById(id, email));
         return "books/book";
     }
 
