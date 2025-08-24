@@ -310,6 +310,22 @@ document.addEventListener("DOMContentLoaded", function () {
             paginationUl.appendChild(nextLi);
         }
 
+        function getContentUrl(type, id) {
+            console.log(`🔗 Формирование URL для типа "${type}" с ID ${id}`);
+
+            const urlMap = {
+                post: `/posts/${id}`,
+                blog: `/blogs/${id}`,
+                event: `/events/${id}`,
+                book: `/books/${id}`
+            };
+
+            const url = urlMap[type] || `/${type}s/${id}`;
+            console.log(`✅ Сформирован URL: ${url}`);
+
+            return url;
+        }
+
         function loadContentPage(page) {
             currentPage = page;
 
