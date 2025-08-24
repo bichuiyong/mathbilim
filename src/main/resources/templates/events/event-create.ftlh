@@ -72,7 +72,6 @@
                                                required
                                                readonly>
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
-                                        <@spring.showErrors '<br>',"text-danger small"/>
                                     </div>
                                     <#if spring.status.error>
                                         <div class="invalid-feedback">
@@ -84,7 +83,7 @@
                                     <@spring.bind "createEventDto.event.endDate"/>
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-stop-circle me-2 text-warning"></i>
-                                        <@spring.message "events.endDate"/>
+                                        Дата и время окончания
                                     </label>
                                     <div class="datetime-input-wrapper">
                                         <input type="text"
@@ -142,6 +141,7 @@
                                         <#else>
                                             <option disabled><@spring.message "events.organizations.notFound"/></option>
                                         </#if>
+
                                     </select>
                                     <small class="form-text text-muted">
                                         <@spring.message "events.organizations.multiple"/>
@@ -176,7 +176,7 @@
                                                    id="onlineEvent"
                                                    name="event.isOffline"
                                                    value="false"
-                                                   <#if spring.status.value?? && spring.status.value=="false">checked</#if>>
+                                                   <#if spring.status.value?? && spring.status.value == "false">checked</#if>>
                                             <label class="form-check-label" for="onlineEvent">
                                                 <i class="fas fa-globe me-2"></i>
                                                 <@spring.message "events.format.online"/>
@@ -336,53 +336,29 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/css/froala_editor.pkgd.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/js/froala_editor.pkgd.min.js"></script>
+    <!-- Подключение Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Подключение Froala Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
+
+    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
+    <!-- Подключение Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
 
+    <!-- Подключение компонентов -->
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
     <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
     <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
-
     <script src="/static/js/event/EventCreateManager.js"></script>
-
-    <script>
-        const csrfHeader = 'X-XSRF-TOKEN';
-        const csrfToken = '${_csrf.token}';
-        new FroalaEditor('textarea.rich-text-editor', {
-            toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
-            height: 400,
-            requestHeaders: {
-                [csrfHeader]: csrfToken
-            },
-            language: 'ru',
-            placeholderText: 'Введите текст...',
-            contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
-            imageUploadURL: '/api/files/froala/image',
-            imageUploadParam: 'file',
-            imageUploadMethod: 'POST',
-            imageMaxSize: 5 * 1024 * 1024,
-            imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-            events: {
-                'image.uploaded': function (response) {
-                    console.log('Изображение загружено:', response);
-                },
-                'image.error': function (error, response) {
-                    console.error('Ошибка загрузки изображения:', error.message);
-                    alert('Ошибка при загрузке изображения: ' + error.message);
-                }
-            }
-        });
-    </script>
-
 
     <style>
         /* Стили для кропа */
@@ -609,8 +585,8 @@
             background: rgba(37, 99, 235, 0.1);
         }
 
-        /* Стили для TinyMCE */
-        .tox-tinymce {
+        /* Стили для Froala */
+        .fr-box.fr-basic {
             border-radius: 8px !important;
         }
     </style>

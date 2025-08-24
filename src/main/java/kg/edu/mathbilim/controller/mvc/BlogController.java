@@ -41,7 +41,7 @@ public class BlogController {
                       @RequestParam(value = "size", defaultValue = "5") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                      @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
+                      @RequestParam(value = "language", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
         model.addAttribute("blog",
@@ -96,7 +96,9 @@ public class BlogController {
                            Model model, Principal principal) {
 
 //        blogService.incrementViewCount(id);
-        BlogDto blog = blogService.getDisplayBlogById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        BlogDto blog = blogService.getDisplayBlogById(id, email);
+
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);

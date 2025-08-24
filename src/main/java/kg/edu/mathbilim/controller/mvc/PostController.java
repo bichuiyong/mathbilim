@@ -30,7 +30,7 @@ import java.util.Locale;
 @Controller("mvcPost")
 @RequestMapping("posts")
 @RequiredArgsConstructor
-public class PostController {
+public class    PostController {
     private final PostService postService;
     private final PostTypeService postTypeService;
     private final RestTemplate restTemplate;
@@ -112,7 +112,8 @@ public class PostController {
 
     @GetMapping("{postId}")
     public String detailPost(@PathVariable Long postId, Model model, Principal principal) {
-        model.addAttribute("post", postService.getPostById(postId));
+        String email = (principal != null) ? principal.getName() : null;
+        model.addAttribute("post", postService.getPostById(postId, email));
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
     }

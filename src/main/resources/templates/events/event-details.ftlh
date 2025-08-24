@@ -89,13 +89,21 @@
         }
 
         .event-title-hero {
-            font-size: 3.5rem;
+            word-wrap: break-word;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            text-overflow: ellipsis;
+
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
             font-weight: 800;
             color: white;
             line-height: 1.2;
             margin-bottom: 1.5rem;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
+
 
         .event-description-hero {
             font-size: 1.25rem;
@@ -693,7 +701,7 @@
             }
         }
     </style>
-    <!-- Hero Section -->
+
     <section class="hero-section">
         <div class="hero-content">
             <div class="event-badges">
@@ -729,10 +737,6 @@
             </div>
 
             <h1 class="event-title-hero">${event.title}</h1>
-
-            <#if event.description??>
-                <p class="event-description-hero">${event.description}</p>
-            </#if>
 
             <div class="event-cta-buttons">
                 <#if !event.isOffline && event.url??>
@@ -818,9 +822,11 @@
                             <@spring.message "event.creator"/>
                         </div>
                         <div class="detail-value">
-                        <span class="event-author-compact" data-author-id="${event.creator.id}">
-                            <span class="author-name">${event.creator.name}</span>
-                        </span>
+            <span class="event-author-compact" data-author-id="${event.creator.id}">
+                <a href="/users/${event.creator.id}/public" class="author-name">
+                    ${event.creator.name}
+                </a>
+            </span>
                         </div>
                     </div>
                 </#if>
@@ -949,7 +955,6 @@
             </a>
         </div>
     </div>
-
 
     <!-- Share Modal -->
     <div id="shareModal" class="share-modal">

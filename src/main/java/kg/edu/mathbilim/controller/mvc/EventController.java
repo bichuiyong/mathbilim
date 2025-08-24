@@ -54,8 +54,8 @@ public class EventController {
                             HttpServletRequest request,
                             Model model,  Principal principal) {
 
-
-        DisplayEventDto event = eventService.getDisplayEventById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        DisplayEventDto event = eventService.getDisplayEventById(id, email);
 
         model.addAttribute("eventType", eventTypeService.getEventTypeById(event.getTypeId()));
 

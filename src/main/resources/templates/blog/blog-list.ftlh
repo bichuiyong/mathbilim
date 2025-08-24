@@ -655,10 +655,12 @@
 
                         <div class="blog-content">
                             <#assign translation = (b.blogTranslations?first)!>
+
                             <#if translation??>
                                 <#if translation.title?? && translation.title?has_content>
                                     <h3 class="post-title">${translation.title}</h3>
                                 </#if>
+
                                 <#if translation.description?? && translation.description?has_content>
                                     <p class="post-description">${translation.description}</p>
                                 </#if>
@@ -724,11 +726,10 @@
         </#if>
     </div>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Language selector change handler
-            const langSelect = document.querySelector('select[name="lang"]');
+            const langSelect = document.querySelector('select[name="language"]');
             if (langSelect) {
                 langSelect.addEventListener('change', function () {
                     const form = this.closest('form');
@@ -1042,7 +1043,7 @@
                     }).catch(error => {
                         console.log('Auto-refresh failed:', error);
                     });
-                }, 300000); // Refresh every 5 minutes
+                }, 300000);
             };
 
             const stopAutoRefresh = () => {
@@ -1051,7 +1052,6 @@
                 }
             };
 
-            // Start auto-refresh when page is visible
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
                     stopAutoRefresh();
@@ -1060,10 +1060,8 @@
                 }
             });
 
-            // Initialize auto-refresh
             startAutoRefresh();
 
-            // Search form enhancements
             const searchInput = document.querySelector('input[name="query"]');
             if (searchInput) {
                 let searchTimeout;
