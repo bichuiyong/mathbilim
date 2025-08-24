@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,28 +61,22 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}/view")
-    public ResponseEntity<StreamingResponseBody> viewFile(@PathVariable Long fileId) {
+    public ResponseEntity<InputStreamResource> viewFile(@PathVariable Long fileId) throws IOException {
         FileDto fileDto = fileService.getById(fileId);
 
-        StreamingResponseBody stream = outputStream -> {
-            try (InputStream inputStream = fileService.downloadFileStream(fileId)) {
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                    outputStream.flush();
-                }
-            }
-        };
+        InputStream fileStream = fileService.downloadFileStream(fileId);
+
+        InputStreamResource resource = new InputStreamResource(fileStream);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(fileDto.getType().getMimeType()))
                 .contentLength(fileDto.getSize())
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileDto.getFilename() + "\"")
-                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
+                .cacheControl(CacheControl.noStore())
                 .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                .body(stream);
+                .body(resource);
     }
+
 
     @PutMapping("/{fileId}")
     public ResponseEntity<FileDto> updateFile(
