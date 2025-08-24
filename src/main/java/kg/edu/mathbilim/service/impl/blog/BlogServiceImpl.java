@@ -207,13 +207,9 @@ public class BlogServiceImpl extends
             return allBlogWithQuery.map(mapper::toDto);
         }
 
-        Page<BlogDto> allBlogs = getContentByCreatorId(creatorId, pageable);
+        Page<Blog> allBlogs = repository.getBlogByCreator(ContentStatus.APPROVED, creatorId, pageable);
 
-        List<BlogDto> approvedBlogs = allBlogs.stream()
-                .filter(blog -> blog.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedBlogs, pageable, approvedBlogs.size());
+        return allBlogs.map(mapper::toDto);
     }
 
     @Override

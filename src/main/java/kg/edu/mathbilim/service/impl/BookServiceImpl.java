@@ -173,14 +173,10 @@ public class BookServiceImpl extends
             return allBooksWithQuery.map(mapper::toDto);
         }
 
-        Page<BookDto> allBooks = getContentByCreatorId(creatorId, pageable);
+        Page<Book> allBooks = repository.getBooksByCreator(ContentStatus.APPROVED, pageable, creatorId);
 
-        List<BookDto> approvedBooks = allBooks
-                .stream()
-                .filter(book -> book.getStatus() == ContentStatus.APPROVED)
-                .toList();
 
-        return new PageImpl<>(approvedBooks, pageable, approvedBooks.size());
+        return allBooks.map(mapper::toDto);
     }
 
     @Override
