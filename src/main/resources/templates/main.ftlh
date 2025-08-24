@@ -1,5 +1,25 @@
 <#import "layout.ftlh" as main>
 <@main.layout title="Главная">
+
+
+    <style>
+        .custom-alert {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 300px;
+            z-index: 1050;
+            opacity: 1 !important;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+        }
+
+    </style>
+
+
+
+
     <div class="container mt-4">
         <div class="hero-section mb-5">
             <div class="row align-items-center">

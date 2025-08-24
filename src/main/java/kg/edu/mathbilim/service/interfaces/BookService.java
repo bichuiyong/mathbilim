@@ -20,6 +20,8 @@ public interface BookService extends BaseContentService<BookDto> {
 
     void reject(Long id, String email);
 
+    BookDto getBookById(Long id, String email);
+
     Page<BookDto> getContentByCreatorIdBook(Long creatorId, Pageable pageable, String quary);
 
     Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable, String query, String status);

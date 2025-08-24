@@ -88,7 +88,9 @@ public class BlogController {
                            Model model, Principal principal) {
 
 //        blogService.incrementViewCount(id);
-        BlogDto blog = blogService.getDisplayBlogById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        BlogDto blog = blogService.getDisplayBlogById(id, email);
+
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);

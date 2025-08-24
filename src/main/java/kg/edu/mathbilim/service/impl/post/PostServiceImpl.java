@@ -4,6 +4,8 @@ import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
+import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
@@ -140,6 +142,55 @@ public class PostServiceImpl extends
 
     @Override
     @Transactional
+    public PostDto getPostById(Long id, String email){
+        Post post = repository.findById(id)
+                .orElseThrow(BlogNotFoundException::new);
+
+        if (email == null || email.trim().isEmpty()) {
+            if (post.getStatus() != ContentStatus.APPROVED) {
+                throw new ContentNotAvailableException("Для просмотра этой публикации необходимо войти в систему");
+            }
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        User user = userService.findByEmail(email);
+
+        boolean isOwner = post.getCreator().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
+        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
+
+        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
+
+        if (isOwner) {
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        if (hasAdminPrivileges) {
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        if (post.getStatus() == ContentStatus.PENDING_REVIEW) {
+            throw new ContentNotAvailableException("Пост находится на модерации и недоступен для просмотра");
+        }
+
+        if (post.getStatus() == ContentStatus.REJECTED) {
+            throw new ContentNotAvailableException("Пост был отклонен модерацией и недоступен для просмотра");
+        }
+
+        if (post.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Пост недоступен для просмотра");
+        }
+
+        incrementViewCount(id);
+        return mapper.toDto(post);
+    }
+
+    @Transactional
+    @Override
     public PostDto getPostById(Long id) {
         Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
         incrementViewCount(id);

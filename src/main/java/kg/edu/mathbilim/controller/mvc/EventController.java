@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller("mvcEvent")
 @RequestMapping("events")
 @RequiredArgsConstructor
@@ -48,10 +50,10 @@ public class EventController {
     @GetMapping("/{id}")
     public String viewEvent(@PathVariable Long id,
                             HttpServletRequest request,
-                            Model model) {
+                            Model model, Principal principal) {
 
-
-        DisplayEventDto event = eventService.getDisplayEventById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        DisplayEventDto event = eventService.getDisplayEventById(id, email);
 
         model.addAttribute("eventType", eventTypeService.getEventTypeById(event.getTypeId()));
 
