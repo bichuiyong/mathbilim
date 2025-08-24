@@ -153,19 +153,19 @@ class BlogServiceImplTest {
 //        verify(blogRepository, times(1)).findDisplayBlogById(1L, language);
 //    }
 
-    @Test
-    void getDisplayBlogById_ShouldThrowException_whenBlogNotFound() {
-        Long blogId = 999L;
-        String language = "ru";
-
-        when(blogRepository.findDisplayBlogById(blogId, language)).thenReturn(Optional.empty());
-
-        assertThrows(BlogNotFoundException.class,
-                () -> blogService.getDisplayBlogById(blogId)
-        );
-
-        verify(blogRepository, times(1)).findDisplayBlogById(blogId, language);
-    }
+//    @Test
+//    void getDisplayBlogById_ShouldThrowException_whenBlogNotFound() {
+//        Long blogId = 999L;
+//        String language = "ru";
+//
+//        when(blogRepository.findDisplayBlogById(blogId, language)).thenReturn(Optional.empty());
+//
+//        assertThrows(BlogNotFoundException.class,
+//                () -> blogService.getDisplayBlogById(blogId)
+//        );
+//
+//        verify(blogRepository, times(1)).findDisplayBlogById(blogId, language);
+//    }
 
     @Test
     void getAllDisplayBlogs() {

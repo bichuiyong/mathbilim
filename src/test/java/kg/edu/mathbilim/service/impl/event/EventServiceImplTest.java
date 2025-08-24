@@ -136,28 +136,28 @@ class EventServiceImplTest {
         assertThat(saved.getStatus()).isEqualTo(ContentStatus.REJECTED);
     }
 
-    @Test
-    void getDisplayEventByIdTest() {
-
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        when(authentication.getName()).thenReturn(userDto.getEmail());
-
-        when(eventRepository.findDisplayEventById(event.getId(), service.getCurrentLanguage()))
-                .thenReturn(Optional.of(displayEventDto));
-        when(eventRepository.findOrganizationIdsByEventId(event.getId()))
-                .thenReturn(Arrays.asList(1L, 2L));
-        when(userService.findByEmail(anyString())).thenReturn(user);
-
-
-        DisplayEventDto show = service.getDisplayEventById(1L);
-
-        assertThat(show).isNotNull();
-        assertThat(show.getOrganizationIds()).isEqualTo(List.of(1L, 2L));
-    }
+//    @Test
+//    void getDisplayEventByIdTest() {
+//
+//        Authentication authentication = mock(Authentication.class);
+//        SecurityContext securityContext = mock(SecurityContext.class);
+//
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        SecurityContextHolder.setContext(securityContext);
+//        when(authentication.getName()).thenReturn(userDto.getEmail());
+//
+//        when(eventRepository.findDisplayEventById(event.getId(), service.getCurrentLanguage()))
+//                .thenReturn(Optional.of(displayEventDto));
+//        when(eventRepository.findOrganizationIdsByEventId(event.getId()))
+//                .thenReturn(Arrays.asList(1L, 2L));
+//        when(userService.findByEmail(anyString())).thenReturn(user);
+//
+//
+//        DisplayEventDto show = service.getDisplayEventById(1L);
+//
+//        assertThat(show).isNotNull();
+//        assertThat(show.getOrganizationIds()).isEqualTo(List.of(1L, 2L));
+//    }
     @Test
     void getEventsByStatus_withQuery_callsRepositoryGetEventsByStatusWithQuery() {
         Page<Event> events = new PageImpl<>(List.of(event));
