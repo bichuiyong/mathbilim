@@ -53,11 +53,8 @@ public interface EventRepository extends BaseContentRepository<Event> {
     FROM Event e 
     JOIN e.eventTranslations et 
     WHERE e.id = :eventId 
-    AND et.id.languageCode = :languageCode
-    AND e.deleted = false
 """)
-    Optional<DisplayEventDto> findDisplayEventById(@Param("eventId") Long eventId,
-                                                   @Param("languageCode") String languageCode);
+    Optional<DisplayEventDto> findDisplayEventById(@Param("eventId") Long eventId);
 
 
     @Query("""

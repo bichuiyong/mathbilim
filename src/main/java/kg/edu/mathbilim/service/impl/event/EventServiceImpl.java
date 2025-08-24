@@ -104,7 +104,7 @@ public class EventServiceImpl extends
     @Override
     @Transactional
     public DisplayEventDto getDisplayEventById(Long id, String email) {
-        DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
+        DisplayEventDto event = repository.findDisplayEventById(id)
                 .orElseThrow(this::getNotFoundException);
 
         if (email == null || email.trim().isEmpty()) {
