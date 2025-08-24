@@ -235,9 +235,9 @@
                     <h5><@spring.message "footer.information"/></h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="/about" class="footer-link"><@spring.message "footer.about"/></a></li>
-                        <li class="mb-2"><a href="/privacy" class="footer-link"><@spring.message "footer.privacy"/></a></li>
-                        <li class="mb-2"><a href="/terms" class="footer-link"><@spring.message "footer.terms"/></a></li>
-                        <li class="mb-2"><a href="/help" class="footer-link"><@spring.message "footer.help"/></a></li>
+<#--                            <li class="mb-2"><a href="/privacy" class="footer-link"><@spring.message "footer.privacy"/></a></li>-->
+    <#--                        <li class="mb-2"><a href="/terms" class="footer-link"><@spring.message "footer.terms"/></a></li>-->
+    <#--                        <li class="mb-2"><a href="/help" class="footer-link"><@spring.message "footer.help"/></a></li>-->
                     </ul>
                 </div>
 
@@ -245,28 +245,31 @@
                     <h5><@spring.message "footer.contacts"/></h5>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
-                        <a href="mailto:info@mathbilim.kg" class="footer-link">info@mathbilim.kg</a>
+                        <a href="mailto:mathbilim@gmail.com" class="footer-link">mathbilim@gmail.com</a>
                     </p>
                     <p class="mb-2">
                         <i class="fas fa-phone me-2"></i>
-                        <a href="tel:+996555123456" class="footer-link">+996 555 123 456</a>
+                        <a href="tel:+996703296698" class="footer-link">+996703296698</a>
                     </p>
                     <p class="mb-3">
                         <i class="fas fa-map-marker-alt me-2"></i>
-                        <span class="footer-link">Бишкек, Кыргызстан</span>
+                        <a class="footer-link" href="https://www.google.com/maps/search/?api=1&query=Бишкек, Кыргызстан" target="_blank">
+                            Бишкек, Кыргызстан
+                        </a>
                     </p>
 
+
                     <div class="social-links">
-                        <a href="#" class="social-link" title="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="social-link" title="Instagram">
+<#--                        <a href="" class="social-link" title="Facebook">-->
+<#--                            <i class="fab fa-facebook-f"></i>-->
+<#--                        </a>-->
+                        <a href="https://www.instagram.com/mathbilim?igsh=djR6MmplYXZjYzZw" class="social-link" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="social-link" title="Telegram">
+                        <a href="https://t.me/mathaniyat" class="social-link" title="Telegram">
                             <i class="fab fa-telegram-plane"></i>
                         </a>
-                        <a href="#" class="social-link" title="YouTube">
+                        <a href="https://www.youtube.com/channel/UC_fY4eu74e2KJFyZJsm2NfA" class="social-link" title="YouTube">
                             <i class="fab fa-youtube"></i>
                         </a>
                     </div>
