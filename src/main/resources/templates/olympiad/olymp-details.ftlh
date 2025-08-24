@@ -2,6 +2,72 @@
 <#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: none;
+            padding-left: 8px;
+            padding-top: 0px;
+        }
+
+        .edit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            color: #2563eb;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+            border: 1px solid #e1e8ff;
+            cursor: pointer;
+        }
+
+        .edit-btn:hover {
+            background: #f0f4ff;
+            border-color: #b3ccff;
+            color: #1d4ed8;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+        }
+
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            color: #dc2626;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #fef2f2;
+            border-color: #f87171;
+            color: #b91c1c;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.12);
+        }
+
+        .delete-btn:active, .edit-btn:active {
+            transform: translateY(0);
+        }
+
         .container {
             max-width: 1400px;
         }
@@ -67,11 +133,30 @@
             .edit {
                 position: relative;
             }
+
+            .action-buttons {
+                justify-content: flex-start;
+            }
         }
+
+
 
         @media (max-width: 576px) {
             .edit {
                 position: relative;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 6px;
+            }
+
+            .edit-btn, .delete-btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 12px;
+                padding: 6px 12px;
             }
 
             .table-responsive {
@@ -546,25 +631,6 @@
                     <@spring.message "olympiad.tab.organizations">Организации</@spring.message>
                 </button>
             </li>
-
-            <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                <li class="nav-item edit" role="presentation">
-                    <button class="nav-link" id="edit-tab" type="button" role="tab">
-                        <a style="color: #ff6464; text-decoration: none;" href="/olympiad/edit?id=${olympiad.id}">
-                            <@spring.message "olympiad.button.edit">Редактировать</@spring.message>
-                        </a>
-                    </button>
-                </li>
-                <#if currentUser?? && (isAdmin || (olympiad.creator?? && olympiad.creator.id == currentUser.id))>
-                    <form action="/olympiad/delete/${olympiad.id}" method="post" style="">
-                        <@main.csrf/>
-                        <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="contact-card btn btn-sm d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                            🗑 <@spring.message "test.details.delete"/>
-                        </button>
-                    </form>
-                </#if>
-            </#if>
         </ul>
 
         <div class="tab-content" id="olympiadTabContent" style="margin-bottom: 100px">
@@ -703,6 +769,29 @@
                             </tbody>
                         </table>
                     </div>
+                    <#if (user??) && ((isModer!false) || (isAdmin!false))>
+                        <div class="action-buttons mt-0">
+                            <a href="/olympiad/edit?id=${olympiad.id}" class="edit-btn">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                </svg>
+                                <@spring.message "olympiad.button.edit">Редактировать</@spring.message>
+                            </a>
+                            <#if currentUser?? && (isAdmin || (olympiad.creator?? && olympiad.creator.id == currentUser.id))>
+                                <form action="/olympiad/delete/${olympiad.id}" method="post" style="margin: 0;">
+                                    <@main.csrf/>
+                                    <input type="hidden" name="_method" value="delete"/>
+                                    <button type="submit" class="delete-btn" onclick="return confirm('Вы уверены, что хотите удалить эту олимпиаду?')">
+                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11z"/>
+                                        </svg>
+                                        <@spring.message "test.details.delete"/>
+                                    </button>
+                                </form>
+                            </#if>
+                        </div>
+                    </#if>
                 <#else>
                     <p><@spring.message "olympiad.stage.none">Этапы ещё не добавлены.</@spring.message></p>
                 </#if>
@@ -793,6 +882,7 @@
             </div>
 
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

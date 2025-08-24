@@ -127,8 +127,10 @@
                                                 <form action="/books/delete/${bookItem.id}" method="post" style="">
                                                     <@main.csrf/>
                                                     <input type="hidden" name="_method" value="delete"/>
-                                                    <button type="submit" class=" btn btn-sm" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                                                        🗑 <@spring.message "test.details.delete"/>
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger delete-btn"
+                                                            onclick="return confirm('Вы уверены, что хотите удалить эту книгу?')">
+                                                        <@spring.message "test.details.delete"/>
                                                     </button>
                                                 </form>
                                             </#if>
@@ -234,6 +236,30 @@
         .page-title {
             animation: slideInLeft 0.6s ease-out;
             color: #2c3e50;
+        }
+
+        .delete-btn {
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            /* базовые цвета как у outline-danger */
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
         .sidebar-wrapper {

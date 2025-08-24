@@ -49,6 +49,33 @@
             color: white;
         }
 
+        .back-btn.danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            color: #dc2626;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            margin-bottom: 32px;
+        }
+
+        .back-btn.danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+            background: #fef2f2;
+            border-color: #f87171;
+            text-decoration: none;
+            color: #b91c1c;
+        }
+
         /* Основная карточка блога */
         .blog-card {
             background: #ffffff;
@@ -767,22 +794,13 @@
         >
     </#if>
 
-  <div class="content-wrapper">
+  <div class="content-wrapper pb-0">
     <a href="/blog" class="back-btn">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
         </svg>
         <@spring.message "blog.back-to-list"/>
     </a>
-      <#if currentUser?? && (isAdmin || (blog.creator?? && blog.creator.id == currentUser.id))>
-          <form action="/blog/delete/${blog.id}" method="post" style="margin: 16px 24px;">
-              <@main.csrf/>
-              <input type="hidden" name="_method" value="delete"/>
-              <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                  🗑 <@spring.message "test.details.delete"/>
-              </button>
-          </form>
-      </#if>
 
     <article class="blog-card">
         <header class="blog-header">
@@ -917,6 +935,14 @@
         </div>
     </div>
 </div>
+    <div class="content-wrapper py-0">
+        <#if currentUser?? && (isAdmin || (blog.creator?? && blog.creator.id == currentUser.id))>
+            <button type="button" class="back-btn danger" onclick="confirmBlogDelete()">
+                <i class="fas fa-trash-alt"></i>
+                <@spring.message "test.details.delete"/>
+            </button>
+        </#if>
+    </div>
 
     <script>
         // Данные для шаринга
@@ -1199,6 +1225,37 @@
                 return 'недавно';
             }
         }
+
+        // Функция подтверждения удаления блога
+        window.confirmBlogDelete = function() {
+            if (confirm('Вы уверены, что хотите удалить эту статью?')) {
+                // Создаем форму динамически
+                var form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/blog/delete/${blog.id}';
+
+                // Добавляем CSRF токен
+                var csrfToken = getCsrfToken();
+                if (csrfToken) {
+                    var csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = getCsrfHeader().replace('X-CSRF-TOKEN', '_csrf');
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
+                }
+
+                // Добавляем метод DELETE
+                var methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'delete';
+                form.appendChild(methodInput);
+
+                // Добавляем форму в DOM и отправляем
+                document.body.appendChild(form);
+                form.submit();
+            }
+        };
 
         function formatTime(hour, minute) {
             return hour.toString().padStart(2, '0') + ':' + minute.toString().padStart(2, '0');

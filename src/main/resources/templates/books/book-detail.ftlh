@@ -461,8 +461,7 @@
                         <div class="dropdown">
                             <button class="dropdown-toggle" type="button">⋮</button>
                             <div class="dropdown-menu">
-                                <a href="/books/update/${book.id}" class="dropdown-item">✏️ Редактировать</a>
-                                <a href="/books/delete/${book.id}" class="dropdown-item" onclick="return confirm('Вы уверены, что хотите удалить эту книгу? Это действие нельзя отменить.')">🗑️ Удалить</a>
+                                <a href="/books/update/${book.id}" class="dropdown-item">Редактировать</a>
                             </div>
                         </div>
                     </div>
