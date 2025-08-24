@@ -15,6 +15,7 @@ import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Locale;
 
 @Controller("mvcEvent")
 @RequestMapping("events")
@@ -37,7 +39,8 @@ public class EventController {
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
-        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
+        Locale lan =  LocaleContextHolder.getLocale();
+        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage(lan.getLanguage()));
         model.addAttribute("organizations", organizationService.getOrganizations(null));
         model.addAttribute("languages", Language.getLanguagesMap());
         model.addAttribute("languageEnum", Language.values());

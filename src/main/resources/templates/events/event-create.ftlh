@@ -2,6 +2,7 @@
 <#import "../layout.ftlh" as main>
 <@main.layout title="Создать мероприятие">
     <div class="container mt-5">
+        <#assign currentLocale = springMacroRequestContext.locale.language>
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
@@ -83,7 +84,7 @@
                                     <@spring.bind "createEventDto.event.endDate"/>
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-stop-circle me-2 text-warning"></i>
-                                        Дата и время окончания
+                                        <@spring.message "events.endDate"/>
                                     </label>
                                     <div class="datetime-input-wrapper">
                                         <input type="text"
@@ -116,9 +117,17 @@
                                     <select class="form-select <#if spring.status.error>is-invalid</#if>" name="event.typeId" required>
                                         <option value="">-- <@spring.message "events.type.select"/> --</option>
                                         <#list eventsTypes as type>
+                                            <#assign translations = type.translations![]>
+                                            <#assign translation = translations?filter(t -> t.languageCode == currentLocale)?first!>
                                             <option value="${type.id}"
-                                                    <#if spring.status.value?? && spring.status.value == type.id?string>selected</#if>>
-                                                ${type.translations?filter(t -> t.languageCode == 'ru')?first.translation}
+                                                    <#if spring.status.value?? && (spring.status.value?string == type.id?string)>selected</#if>>
+                                                <#if translation??>
+                                                    ${translation.translation}
+                                                <#elseif translations?size > 0>
+                                                    ${translations[0].translation}
+                                                <#else>
+                                                    [Без перевода]
+                                                </#if>
                                             </option>
                                         </#list>
                                     </select>
@@ -141,7 +150,6 @@
                                         <#else>
                                             <option disabled><@spring.message "events.organizations.notFound"/></option>
                                         </#if>
-
                                     </select>
                                     <small class="form-text text-muted">
                                         <@spring.message "events.organizations.multiple"/>

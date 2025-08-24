@@ -22,7 +22,8 @@
 
 
     <div class="container mt-4">
-        <div class="hero-section mb-5">
+        <span id="current-locale" style="display:none;">${.locale}</span>
+        <div class="hero-section mb-5" id="hero-container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
@@ -289,7 +290,6 @@
                 <a href="/blog" class="btn btn-outline-primary"><@spring.message "home.all.blog.articles"/></a>
             </div>
         </div>
-
     </div>
 
     <script>
