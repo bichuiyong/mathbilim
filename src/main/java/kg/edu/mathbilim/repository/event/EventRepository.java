@@ -81,7 +81,8 @@ public interface EventRepository extends BaseContentRepository<Event> {
             JOIN p.eventTranslations t
             WHERE p.status = :contentStatus
                      AND p.deleted = false AND
-            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and 
+                        p.deleted = false
             ORDER BY p.createdAt DESC
             """)
     Page<Event> getEventsByStatusWithQuery(ContentStatus contentStatus,
@@ -90,12 +91,22 @@ public interface EventRepository extends BaseContentRepository<Event> {
 
 
     @Query("""
+            SELECT DISTINCT p FROM Event p
+            WHERE p.status = :contentStatus
+                     and p.creator.id = :creatorId
+                     AND p.deleted = false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Event> getEventsByCreatorId(ContentStatus contentStatus,
+                                           Long creatorId,
+                                           Pageable pageable);
+
+    @Query("""
                 SELECT DISTINCT p FROM Event p
                 JOIN p.eventTranslations t
                 WHERE p.status = :contentStatus
                   AND p.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   AND p.deleted = false
                 ORDER BY p.createdAt DESC
             """)
     Page<Event> getEventsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
@@ -109,7 +120,6 @@ public interface EventRepository extends BaseContentRepository<Event> {
                 JOIN e.eventTranslations t
                 WHERE e.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   AND e.deleted = false
                 ORDER BY e.createdAt DESC
             """)
     Page<Event> getEventsWithQuery(@Param("query") String query,

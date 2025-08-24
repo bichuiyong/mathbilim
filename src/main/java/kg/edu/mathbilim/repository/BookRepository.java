@@ -71,11 +71,18 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
 
 
     @Query("""
+            SELECT DISTINCT b FROM Book b
+               WHERE b.status = :contentStatus and
+                        b.creator.id = :userId
+                      and b.deleted=false
+            """)
+    Page<Book> getBooksByCreator(ContentStatus contentStatus, Pageable pageable, Long userId);
+
+    @Query("""
                 SELECT DISTINCT b FROM Book b
                 WHERE b.status = :contentStatus
                   AND b.creator.id = :userId
                   AND LOWER(b.name) LIKE LOWER(CONCAT('%', :query, '%'))
-                  and b.deleted=false
             """)
     Page<Book> getBooksByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
                                                   @Param("userId") Long userId,
@@ -94,7 +101,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
                 SELECT DISTINCT b FROM Book b
                 WHERE b.creator.id = :userId
                   AND LOWER(b.name) LIKE LOWER(CONCAT('%', :query, '%'))
-                  and b.deleted=false
             """)
     Page<Book> getBooksWithQuery(@Param("userId") Long userId,
                                  @Param("query") String query,
