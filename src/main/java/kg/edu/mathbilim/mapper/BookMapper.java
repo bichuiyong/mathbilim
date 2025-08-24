@@ -18,6 +18,7 @@ public interface BookMapper extends BaseMapper<Book, BookDto> {
     @Mapping(source = "creator", target = "creator")
     @Mapping(source = "mainImage", target = "mainImage")
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "deleted", source = "deleted")
     BookDto toDto(Book book);
 
     default CategoryTranslationDto mapCategoryTranslation(CategoryTranslation translation) {

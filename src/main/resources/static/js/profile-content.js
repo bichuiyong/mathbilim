@@ -774,7 +774,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="content-badges">
                             <span class="badge content-type-badge">${getTypeLabel(item.type)}</span>
-                            ${getStatusBadge(item.status)}
+                            ${getStatusBadge(item.status, item.deleted)}
                         </div>
                     </div>`;
             });
@@ -816,7 +816,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        function getStatusBadge(status) {
+        function getStatusBadge(status, deleted = false) {
+            if (deleted) {
+                return '<span class="badge bg-dark">Удалён</span>';
+            }
             const statusName = status?.name || status;
 
             switch (statusName) {

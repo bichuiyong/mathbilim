@@ -410,6 +410,7 @@
             animation: slideInLeft 0.6s ease-out 0.1s both;
         }
 
+
         .book-title {
             color: #2c3e50;
             transition: color 0.3s ease;
