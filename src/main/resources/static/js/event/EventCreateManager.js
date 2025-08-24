@@ -1,37 +1,359 @@
-class EventCreateManager extends BaseContentCreateManager {
+class EventCreateManager {
     constructor() {
-        super({
-            formId: 'eventForm',
-            contentType: 'event',
-            imageCropOptions: {
-                inputId: 'mainImageInput'
-            },
-            validationOptions: {
-                titleFieldSelector: 'input[name*="eventTranslations"][name*="title"]'
-            }
-        });
+        this.formId = 'eventForm';
+        this.startDatePicker = null;
+        this.endDatePicker = null;
+        this.froalaInstances = {};
+        this.cropper = null;
+        this.validationTimeout = null;
 
-        this.initEventSpecificFeatures();
+        console.log('EventCreateManager: Starting initialization...');
+        this.init();
     }
 
-    initEventSpecificFeatures() {
-        this.initLocationToggle();
-        this.initFlatpickrDates();
-        this.initOrganizationSelection();
+    init() {
+        // Ждем полной загрузки DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.initializeComponents();
+            });
+        } else {
+            this.initializeComponents();
+        }
+    }
+
+    initializeComponents() {
+        console.log('EventCreateManager: Initializing all components...');
+
+        setTimeout(() => {
+            try {
+                this.initLocationToggle();
+                this.initDatePickers();
+                this.initImageCrop();
+                this.initFroalaEditors();
+                this.initOrganizationSelection();
+                this.initFormSubmission();
+                this.initLanguageTabs();
+
+                console.log('EventCreateManager: All components initialized successfully');
+            } catch (error) {
+                console.error('EventCreateManager: Initialization error:', error);
+            }
+        }, 200); // Даем время для загрузки всех библиотек
     }
 
     // ==========================================
-    // УПРАВЛЕНИЕ ПОЛЯМИ ЛОКАЦИИ
+    // ИНИЦИАЛИЗАЦИЯ ВЫБОРА ДАТ (исправленная версия)
+    // ==========================================
+
+    initDatePickers() {
+        console.log('Initializing date pickers...');
+
+        // Проверяем наличие Flatpickr
+        if (typeof flatpickr === 'undefined') {
+            console.error('Flatpickr library not found!');
+            return;
+        }
+
+        const startInput = document.getElementById('startDatePicker');
+        const endInput = document.getElementById('endDatePicker');
+
+        if (!startInput || !endInput) {
+            console.error('Date input elements not found:', { startInput, endInput });
+            return;
+        }
+
+        console.log('Found date inputs, initializing Flatpickr...');
+
+        // Конфигурация для Flatpickr
+        const config = {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i:S",
+            altInput: true,
+            altFormat: "d.m.Y в H:i",
+            time_24hr: true,
+            locale: "ru",
+            allowInput: true,
+            clickOpens: true,
+            minuteIncrement: 15,
+            static: false,
+            wrap: false,
+            minDate: "today" // Не позволяем выбирать прошедшие даты
+        };
+
+        try {
+            // Инициализация выбора даты начала
+            this.startDatePicker = flatpickr(startInput, {
+                ...config,
+                placeholder: "Выберите дату и время начала",
+                onChange: (selectedDates, dateStr) => {
+                    console.log('Start date selected:', dateStr);
+                    this.handleStartDateChange(selectedDates[0]);
+                },
+                onReady: () => {
+                    console.log('Start date picker ready');
+                },
+                onClose: () => {
+                    // Валидируем при закрытии календаря
+                    setTimeout(() => this.validateDates(), 100);
+                }
+            });
+
+            // Инициализация выбора даты окончания
+            this.endDatePicker = flatpickr(endInput, {
+                ...config,
+                placeholder: "Выберите дату и время окончания",
+                onChange: (selectedDates, dateStr) => {
+                    console.log('End date selected:', dateStr);
+                    this.handleEndDateChange(selectedDates[0]);
+                },
+                onReady: () => {
+                    console.log('End date picker ready');
+                },
+                onClose: () => {
+                    // Валидируем при закрытии календаря
+                    setTimeout(() => this.validateDates(), 100);
+                }
+            });
+
+            // Добавляем обработчики кликов на иконки календаря
+            this.setupDateIconHandlers();
+
+            // Добавляем валидацию на изменение полей ввода
+            this.setupDateInputValidation();
+
+            console.log('Date pickers initialized successfully');
+
+        } catch (error) {
+            console.error('Failed to initialize date pickers:', error);
+        }
+    }
+
+    setupDateIconHandlers() {
+        const startIcon = document.querySelector('#startDatePicker').closest('.datetime-input-wrapper')?.querySelector('.datetime-icon');
+        const endIcon = document.querySelector('#endDatePicker').closest('.datetime-input-wrapper')?.querySelector('.datetime-icon');
+
+        if (startIcon) {
+            startIcon.addEventListener('click', () => {
+                console.log('Start date icon clicked');
+                this.startDatePicker?.open();
+            });
+            startIcon.style.cursor = 'pointer';
+        }
+
+        if (endIcon) {
+            endIcon.addEventListener('click', () => {
+                console.log('End date icon clicked');
+                this.endDatePicker?.open();
+            });
+            endIcon.style.cursor = 'pointer';
+        }
+    }
+
+    // Добавляем валидацию на изменение полей ввода
+    setupDateInputValidation() {
+        const startInput = document.getElementById('startDatePicker');
+        const endInput = document.getElementById('endDatePicker');
+
+        if (startInput) {
+            startInput.addEventListener('blur', () => {
+                setTimeout(() => this.validateDates(), 100);
+            });
+
+            startInput.addEventListener('input', () => {
+                // Debounce validation
+                clearTimeout(this.validationTimeout);
+                this.validationTimeout = setTimeout(() => this.validateDates(), 500);
+            });
+        }
+
+        if (endInput) {
+            endInput.addEventListener('blur', () => {
+                setTimeout(() => this.validateDates(), 100);
+            });
+
+            endInput.addEventListener('input', () => {
+                // Debounce validation
+                clearTimeout(this.validationTimeout);
+                this.validationTimeout = setTimeout(() => this.validateDates(), 500);
+            });
+        }
+    }
+
+    handleStartDateChange(selectedDate) {
+        if (!selectedDate) {
+            this.validateDates();
+            return;
+        }
+
+        console.log('Processing start date change:', selectedDate);
+
+        // Устанавливаем минимальную дату для окончания (минимум 30 минут после начала)
+        if (this.endDatePicker) {
+            const minEndDate = new Date(selectedDate.getTime() + 30 * 60 * 1000);
+            this.endDatePicker.set('minDate', minEndDate);
+
+            // Сбрасываем дату окончания если она стала невалидной
+            const currentEndDate = this.endDatePicker.selectedDates[0];
+            if (currentEndDate && currentEndDate <= selectedDate) {
+                this.endDatePicker.clear();
+                this.showNotification('Дата окончания была сброшена, так как она должна быть позже даты начала', 'info');
+            }
+        }
+
+        this.syncDateToForm('startDate', selectedDate);
+        // Валидируем с небольшой задержкой
+        setTimeout(() => this.validateDates(), 100);
+    }
+
+    handleEndDateChange(selectedDate) {
+        if (!selectedDate) {
+            this.validateDates();
+            return;
+        }
+
+        console.log('Processing end date change:', selectedDate);
+        this.syncDateToForm('endDate', selectedDate);
+        // Валидируем с небольшой задержкой
+        setTimeout(() => this.validateDates(), 100);
+    }
+
+    syncDateToForm(fieldName, date) {
+        // Ищем соответствующее скрытое поле
+        const hiddenInput = document.querySelector(`input[name*="${fieldName}"]`);
+        if (hiddenInput && date) {
+            const formattedDate = this.formatDateForServer(date);
+            hiddenInput.value = formattedDate;
+            console.log(`Synced ${fieldName}:`, formattedDate);
+        }
+    }
+
+    formatDateForServer(date) {
+        if (!date) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+
+    // ==========================================
+    // ИСПРАВЛЕННАЯ ВАЛИДАЦИЯ ДАТ
+    // ==========================================
+
+    validateDates() {
+        console.log('Validating dates...');
+
+        const startDate = this.getSelectedStartDate();
+        const endDate = this.getSelectedEndDate();
+
+        console.log('Current dates:', { startDate, endDate });
+
+        let isValid = true;
+        const now = new Date();
+
+        // Очищаем предыдущие ошибки
+        this.clearAllDateErrors();
+
+        // Проверка даты начала
+        if (!startDate) {
+            this.showFieldError(this.startDatePicker?.input, 'Дата начала обязательна');
+            isValid = false;
+        } else {
+            // Проверяем что дата не в прошлом (с учетом текущего времени)
+            if (startDate < now) {
+                this.showFieldError(this.startDatePicker?.input, 'Дата начала не может быть в прошлом');
+                isValid = false;
+            }
+        }
+
+        // Проверка даты окончания
+        if (endDate) {
+            if (!startDate) {
+                this.showFieldError(this.endDatePicker?.input, 'Сначала выберите дату начала');
+                isValid = false;
+            } else if (endDate <= startDate) {
+                this.showFieldError(this.endDatePicker?.input, 'Дата окончания должна быть позже даты начала');
+                isValid = false;
+            } else {
+                // Проверяем минимальную разницу (30 минут)
+                const timeDiff = endDate.getTime() - startDate.getTime();
+                const minDiff = 30 * 60 * 1000; // 30 минут в миллисекундах
+
+                if (timeDiff < minDiff) {
+                    this.showFieldError(this.endDatePicker?.input, 'Мероприятие должно длиться минимум 30 минут');
+                    isValid = false;
+                }
+            }
+        }
+
+        console.log('Date validation result:', isValid);
+        this.updateSubmitButton(isValid);
+
+        return isValid;
+    }
+
+    // Вспомогательные методы для получения выбранных дат
+    getSelectedStartDate() {
+        if (this.startDatePicker && this.startDatePicker.selectedDates.length > 0) {
+            return this.startDatePicker.selectedDates[0];
+        }
+
+        // Fallback: пытаемся парсить значение из поля
+        const startInput = document.getElementById('startDatePicker');
+        if (startInput && startInput.value) {
+            const parsed = new Date(startInput.value);
+            if (!isNaN(parsed.getTime())) {
+                return parsed;
+            }
+        }
+
+        return null;
+    }
+
+    getSelectedEndDate() {
+        if (this.endDatePicker && this.endDatePicker.selectedDates.length > 0) {
+            return this.endDatePicker.selectedDates[0];
+        }
+
+        // Fallback: пытаемся парсить значение из поля
+        const endInput = document.getElementById('endDatePicker');
+        if (endInput && endInput.value) {
+            const parsed = new Date(endInput.value);
+            if (!isNaN(parsed.getTime())) {
+                return parsed;
+            }
+        }
+
+        return null;
+    }
+
+    // Очищаем все ошибки дат
+    clearAllDateErrors() {
+        if (this.startDatePicker?.input) {
+            this.clearFieldError(this.startDatePicker.input);
+        }
+        if (this.endDatePicker?.input) {
+            this.clearFieldError(this.endDatePicker.input);
+        }
+    }
+
+    // ==========================================
+    // УПРАВЛЕНИЕ ТИПОМ МЕРОПРИЯТИЯ
     // ==========================================
 
     initLocationToggle() {
+        console.log('Initializing location toggle...');
+
         const offlineRadio = document.getElementById('offlineEvent');
         const onlineRadio = document.getElementById('onlineEvent');
-        const addressField = document.getElementById('addressField');
-        const urlField = document.getElementById('urlField');
 
         if (!offlineRadio || !onlineRadio) {
-            console.warn('Radio buttons for event type not found');
+            console.warn('Location radio buttons not found');
             return;
         }
 
@@ -49,102 +371,50 @@ class EventCreateManager extends BaseContentCreateManager {
             }
         });
 
+        // Инициальное состояние
         this.updateLocationFields();
-
-        this.enhanceRadioButtons();
-    }
-
-    enhanceRadioButtons() {
-        const radioButtons = document.querySelectorAll('input[name*="isOffline"]');
-        const labels = document.querySelectorAll('.form-check-label');
-
-        radioButtons.forEach((radio, index) => {
-            radio.addEventListener('change', () => {
-                labels.forEach(label => label.classList.remove('selected'));
-                if (radio.checked) {
-                    labels[index].classList.add('selected');
-                }
-            });
-        });
-
-        const style = document.createElement('style');
-        style.textContent = `
-            .form-check-label.selected {
-                background: white;
-                color: white;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                transition: all 0.3s ease;
-                transform: scale(1.02);
-            }
-            .form-check-label {
-                transition: all 0.3s ease;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-            .form-check-label:hover {
-                background: #f1f5f9;
-            }
-        `;
-        document.head.appendChild(style);
+        console.log('Location toggle initialized');
     }
 
     showAddressField() {
-        const addressField = document.getElementById('addressField');
-        const addressInput = addressField.querySelector('input[name*="address"]');
-
-        addressField.style.display = 'block';
-        setTimeout(() => {
-            addressField.classList.add('show');
-        }, 10);
-
-        if (addressInput) {
-            addressInput.setAttribute('required', 'required');
+        const field = document.getElementById('addressField');
+        if (field) {
+            field.style.display = 'block';
+            const input = field.querySelector('input');
+            if (input) input.required = true;
         }
     }
 
     hideAddressField() {
-        const addressField = document.getElementById('addressField');
-        const addressInput = addressField.querySelector('input[name*="address"]');
-
-        addressField.classList.remove('show');
-        setTimeout(() => {
-            addressField.style.display = 'none';
-        }, 300);
-
-        if (addressInput) {
-            addressInput.removeAttribute('required');
-            addressInput.value = '';
+        const field = document.getElementById('addressField');
+        if (field) {
+            field.style.display = 'none';
+            const input = field.querySelector('input');
+            if (input) {
+                input.required = false;
+                input.value = '';
+            }
         }
     }
 
     showUrlField() {
-        const urlField = document.getElementById('urlField');
-        const urlInput = urlField.querySelector('input[name*="url"]');
-
-        urlField.style.display = 'block';
-        setTimeout(() => {
-            urlField.classList.add('show');
-        }, 10);
-
-        if (urlInput) {
-            urlInput.setAttribute('required', 'required');
+        const field = document.getElementById('urlField');
+        if (field) {
+            field.style.display = 'block';
+            const input = field.querySelector('input');
+            if (input) input.required = true;
         }
     }
 
     hideUrlField() {
-        const urlField = document.getElementById('urlField');
-        const urlInput = urlField.querySelector('input[name*="url"]');
-
-        urlField.classList.remove('show');
-        setTimeout(() => {
-            urlField.style.display = 'none';
-        }, 300);
-
-        if (urlInput) {
-            urlInput.removeAttribute('required');
-            urlInput.value = '';
+        const field = document.getElementById('urlField');
+        if (field) {
+            field.style.display = 'none';
+            const input = field.querySelector('input');
+            if (input) {
+                input.required = false;
+                input.value = '';
+            }
         }
     }
 
@@ -152,10 +422,10 @@ class EventCreateManager extends BaseContentCreateManager {
         const offlineRadio = document.getElementById('offlineEvent');
         const onlineRadio = document.getElementById('onlineEvent');
 
-        if (offlineRadio && offlineRadio.checked) {
+        if (offlineRadio?.checked) {
             this.showAddressField();
             this.hideUrlField();
-        } else if (onlineRadio && onlineRadio.checked) {
+        } else if (onlineRadio?.checked) {
             this.showUrlField();
             this.hideAddressField();
         } else {
@@ -165,271 +435,355 @@ class EventCreateManager extends BaseContentCreateManager {
     }
 
     // ==========================================
-    // ИНИЦИАЛИЗАЦИЯ FLATPICKR ДЛЯ ДАТ
+    // ОБРЕЗКА ИЗОБРАЖЕНИЙ
     // ==========================================
 
-    initFlatpickrDates() {
-        // Настройки по умолчанию для всех дат
-        const defaultConfig = {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            time_24hr: true,
-            locale: "ru",
-            theme: "material_blue",
-            allowInput: false,
-            clickOpens: true,
-            disableMobile: true,
-            animate: true,
-            minuteIncrement: 15,
-            minDate: new Date(Date.now() + 60 * 60 * 1000),
+    initImageCrop() {
+        console.log('Initializing image crop...');
+
+        const imageInput = document.getElementById('mainImageInput');
+        if (!imageInput) {
+            console.warn('Image input not found');
+            return;
+        }
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.handleImageSelection(file);
+            }
+        });
+
+        console.log('Image crop initialized');
+    }
+
+    handleImageSelection(file) {
+        if (!file.type.startsWith('image/')) {
+            this.showNotification('Пожалуйста, выберите изображение', 'warning');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.showImageCropInterface(e.target.result);
         };
-
-        this.startDatePicker = flatpickr("#startDatePicker", {
-            ...defaultConfig,
-            placeholder: "Выберите дату и время начала",
-            onChange: (selectedDates, dateStr) => {
-                this.onStartDateChange(selectedDates[0], dateStr);
-            },
-            onReady: (selectedDates, dateStr, instance) => {
-                this.stylePickerIcon(instance);
-            }
-        });
-
-        this.endDatePicker = flatpickr("#endDatePicker", {
-            ...defaultConfig,
-            placeholder: "Выберите дату и время окончания",
-            onChange: (selectedDates, dateStr) => {
-                this.onEndDateChange(selectedDates[0], dateStr);
-            },
-            onReady: (selectedDates, dateStr, instance) => {
-                this.stylePickerIcon(instance);
-            }
-        });
-
-        console.log('Flatpickr date pickers initialized');
+        reader.readAsDataURL(file);
     }
 
-    stylePickerIcon(instance) {
-        const input = instance.input;
-        const icon = input.parentNode.querySelector('.datetime-icon');
+    showImageCropInterface(imageSrc) {
+        const previewContainer = document.querySelector('.image-preview-container');
+        const previewImage = document.getElementById('imagePreview');
 
-        if (icon) {
-            input.addEventListener('focus', () => {
-                icon.style.transform = 'translateY(-50%) scale(1.1)';
-                icon.style.color = '#2563eb';
+        if (!previewContainer || !previewImage) {
+            console.warn('Image preview elements not found');
+            return;
+        }
+
+        previewImage.src = imageSrc;
+        previewContainer.style.display = 'block';
+
+        // Инициализация Cropper.js если доступен
+        if (typeof Cropper !== 'undefined') {
+            if (this.cropper) {
+                this.cropper.destroy();
+            }
+
+            this.cropper = new Cropper(previewImage, {
+                aspectRatio: 3 / 1, // 1200x400
+                viewMode: 2,
+                autoCropArea: 1,
+                responsive: true,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false
             });
 
-            input.addEventListener('blur', () => {
-                icon.style.transform = 'translateY(-50%) scale(1)';
-                icon.style.color = '#6b7280';
-            });
+            this.setupCropButtons();
         }
     }
 
-    onStartDateChange(selectedDate, dateStr) {
-        if (selectedDate) {
-            const minEndDate = new Date(selectedDate.getTime() + 30 * 60 * 1000);
-            this.endDatePicker.set('minDate', minEndDate);
+    setupCropButtons() {
+        const cropButton = document.getElementById('cropButton');
+        const cancelButton = document.getElementById('cancelCrop');
 
-            const endDate = this.endDatePicker.selectedDates[0];
-            if (endDate && endDate <= selectedDate) {
-                this.endDatePicker.clear();
-                this.showNotification('Дата окончания была сброшена, так как она была раньше даты начала', 'info');
-            }
+        if (cropButton) {
+            cropButton.onclick = () => this.applyCrop();
+        }
 
-            this.validateEventDates();
+        if (cancelButton) {
+            cancelButton.onclick = () => this.cancelCrop();
         }
     }
 
-    onEndDateChange(selectedDate, dateStr) {
-        if (selectedDate) {
-            this.validateEventDates();
+    applyCrop() {
+        if (!this.cropper) return;
+
+        const canvas = this.cropper.getCroppedCanvas({
+            width: 1200,
+            height: 400,
+            fillColor: '#fff'
+        });
+
+        const croppedImage = document.getElementById('croppedImage');
+        const croppedPreview = document.querySelector('.cropped-preview');
+
+        if (croppedImage && croppedPreview) {
+            croppedImage.src = canvas.toDataURL('image/jpeg', 0.8);
+            croppedPreview.style.display = 'block';
+        }
+
+        this.hideCropInterface();
+    }
+
+    cancelCrop() {
+        this.hideCropInterface();
+        const imageInput = document.getElementById('mainImageInput');
+        if (imageInput) {
+            imageInput.value = '';
+        }
+    }
+
+    hideCropInterface() {
+        const previewContainer = document.querySelector('.image-preview-container');
+        if (previewContainer) {
+            previewContainer.style.display = 'none';
+        }
+
+        if (this.cropper) {
+            this.cropper.destroy();
+            this.cropper = null;
         }
     }
 
     // ==========================================
-    // ВАЛИДАЦИЯ ДАТ (ОБНОВЛЕННАЯ)
+    // FROALA РЕДАКТОРЫ
     // ==========================================
 
-    validateEventDates() {
-        const startDate = this.startDatePicker.selectedDates[0];
-        const endDate = this.endDatePicker.selectedDates[0];
-        const now = new Date();
+    initFroalaEditors() {
+        console.log('Initializing Froala editors...');
+
+        if (typeof FroalaEditor === 'undefined') {
+            console.warn('FroalaEditor not available');
+            return;
+        }
+
+        const textareas = document.querySelectorAll('textarea.rich-text-editor');
+        console.log('Found textareas:', textareas.length);
+
+        textareas.forEach((textarea) => {
+            const lang = textarea.dataset.lang;
+            if (lang) {
+                try {
+                    this.froalaInstances[lang] = new FroalaEditor(textarea, {
+                        toolbarButtons: [
+                            'undo', 'redo', '|',
+                            'bold', 'italic', 'underline', '|',
+                            'paragraphFormat', 'formatUL', 'formatOL', '|',
+                            'insertLink', '|',
+                            'html'
+                        ],
+                        height: 300,
+                        language: 'ru',
+                        placeholderText: 'Введите описание мероприятия...',
+                        quickInsertEnabled: false,
+                        imageUpload: false
+                    });
+                    console.log(`Froala initialized for ${lang}`);
+                } catch (error) {
+                    console.error(`Failed to initialize Froala for ${lang}:`, error);
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // ЯЗЫКОВЫЕ ТАБЫ
+    // ==========================================
+
+    initLanguageTabs() {
+        console.log('Initializing language tabs...');
+
+        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+        const translationFields = document.querySelectorAll('.translation-field');
+
+        // Отслеживаем изменения в полях переводов
+        translationFields.forEach(field => {
+            field.addEventListener('input', () => {
+                this.updateTranslationIndicators();
+            });
+        });
+
+        // Инициальное обновление индикаторов
+        setTimeout(() => {
+            this.updateTranslationIndicators();
+        }, 500);
+
+        console.log('Language tabs initialized');
+    }
+
+    updateTranslationIndicators() {
+        const languages = ['ru', 'en', 'ky']; // Добавьте нужные языки
+
+        languages.forEach(lang => {
+            const indicator = document.getElementById(`indicator-${lang}`);
+            if (!indicator) return;
+
+            const titleField = document.querySelector(`input[data-lang="${lang}"][name*="title"]`);
+            const contentField = document.querySelector(`textarea[data-lang="${lang}"]`);
+
+            let hasTitle = titleField && titleField.value.trim().length > 0;
+            let hasContent = false;
+
+            // Проверяем контент в Froala или обычном textarea
+            if (this.froalaInstances[lang]) {
+                const froalaContent = this.froalaInstances[lang].html.get();
+                hasContent = froalaContent && froalaContent.replace(/<[^>]*>/g, '').trim().length > 0;
+            } else if (contentField) {
+                hasContent = contentField.value.trim().length > 0;
+            }
+
+            // Обновляем индикатор
+            const icon = indicator.querySelector('i');
+            if (icon) {
+                if (hasTitle && hasContent) {
+                    icon.className = 'fas fa-circle text-success';
+                    icon.title = 'Заполнено';
+                } else if (hasTitle || hasContent) {
+                    icon.className = 'fas fa-circle text-warning';
+                    icon.title = 'Частично заполнено';
+                } else {
+                    icon.className = 'fas fa-circle text-danger';
+                    icon.title = 'Не заполнено';
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // ВЫБОР ОРГАНИЗАЦИЙ
+    // ==========================================
+
+    initOrganizationSelection() {
+        console.log('Initializing organization selection...');
+
+        const select = document.querySelector('select[name="organizationIds"]');
+        if (select) {
+            select.addEventListener('change', () => {
+                const count = Array.from(select.selectedOptions).length;
+                console.log(`Selected organizations: ${count}`);
+            });
+        }
+
+        console.log('Organization selection initialized');
+    }
+
+    // ==========================================
+    // ОТПРАВКА ФОРМЫ
+    // ==========================================
+
+    initFormSubmission() {
+        console.log('Initializing form submission...');
+
+        const form = document.getElementById(this.formId);
+        if (!form) {
+            console.error('Form not found:', this.formId);
+            return;
+        }
+
+        form.addEventListener('submit', (e) => {
+            console.log('Form submission started...');
+
+            if (!this.validateForm()) {
+                e.preventDefault();
+                console.log('Form validation failed');
+                return false;
+            }
+
+            this.prepareFormData();
+            console.log('Form data prepared, submitting...');
+        });
+
+        console.log('Form submission initialized');
+    }
+
+    // ==========================================
+    // ОБНОВЛЕННАЯ ВАЛИДАЦИЯ ФОРМЫ
+    // ==========================================
+
+    validateForm() {
+        console.log('=== FORM VALIDATION START ===');
 
         let isValid = true;
 
-        if (!startDate) {
-            this.showFieldError(this.startDatePicker.input, 'Дата начала мероприятия обязательна');
+        // Валидация дат (основная проверка)
+        const datesValid = this.validateDates();
+        if (!datesValid) {
+            console.log('Date validation failed');
             isValid = false;
-        } else if (startDate <= now) {
-            this.showFieldError(this.startDatePicker.input, 'Дата начала должна быть в будущем');
-            isValid = false;
-        } else {
-            this.clearFieldError(this.startDatePicker.input);
         }
 
-        if (endDate) {
-            if (!startDate) {
-                this.showFieldError(this.endDatePicker.input, 'Сначала выберите дату начала');
-                isValid = false;
-            } else if (endDate <= startDate) {
-                this.showFieldError(this.endDatePicker.input, 'Дата окончания должна быть позже даты начала');
-                isValid = false;
-            } else {
-                this.clearFieldError(this.endDatePicker.input);
-            }
-        } else {
-            this.clearFieldError(this.endDatePicker.input);
+        // Валидация типа мероприятия
+        if (!this.validateEventType()) {
+            console.log('Event type validation failed');
+            isValid = false;
+        }
+
+        // Валидация локации
+        if (!this.validateLocation()) {
+            console.log('Location validation failed');
+            isValid = false;
+        }
+
+        // Валидация переводов
+        if (!this.validateTranslations()) {
+            console.log('Translations validation failed');
+            isValid = false;
+        }
+
+        console.log('=== FORM VALIDATION RESULT:', isValid, '===');
+
+        if (!isValid) {
+            // Прокручиваем к первой ошибке
+            this.scrollToFirstError();
         }
 
         return isValid;
     }
 
-    // ==========================================
-    // УТИЛИТЫ ДЛЯ РАБОТЫ С ДАТАМИ
-    // ==========================================
-
-    getSelectedStartDate() {
-        return this.startDatePicker.selectedDates[0] || null;
-    }
-
-    getSelectedEndDate() {
-        return this.endDatePicker.selectedDates[0] || null;
-    }
-
-    setStartDate(date) {
-        if (date) {
-            this.startDatePicker.setDate(date);
-        }
-    }
-
-    setEndDate(date) {
-        if (date) {
-            this.endDatePicker.setDate(date);
-        }
-    }
-
-    clearDates() {
-        this.startDatePicker.clear();
-        this.endDatePicker.clear();
-    }
-
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show notification-custom`;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1070;
-            min-width: 350px;
-            max-width: 400px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border: none;
-            border-radius: 8px;
-            animation: slideInRight 0.3s ease;
-        `;
-
-        const iconMap = {
-            'success': 'fas fa-check-circle',
-            'warning': 'fas fa-exclamation-triangle',
-            'danger': 'fas fa-times-circle',
-            'info': 'fas fa-info-circle'
-        };
-
-        notification.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="${iconMap[type] || iconMap.info} me-2"></i>
-                <span>${message}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 4000);
-    }
-
-    showFieldError(input, message) {
-        input.classList.add('is-invalid');
-
-        const existingError = input.parentNode.querySelector('.invalid-feedback.custom-error');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'invalid-feedback custom-error';
-        errorDiv.textContent = message;
-        input.parentNode.appendChild(errorDiv);
-    }
-
-    clearFieldError(input) {
-        input.classList.remove('is-invalid');
-        const errorDiv = input.parentNode.querySelector('.invalid-feedback.custom-error');
-        if (errorDiv) {
-            errorDiv.remove();
-        }
-    }
-
-    // ==========================================
-    // ВАЛИДАЦИЯ ДОПОЛНИТЕЛЬНЫХ ПОЛЕЙ
-    // ==========================================
-
-    validateAdditionalFields() {
-        return this.validateEventDatesForSubmit() &&
-            this.validateEventLocation() &&
-            this.validateEventType();
-    }
-
-    validateEventDatesForSubmit() {
-        const startDate = this.getSelectedStartDate();
-
-        if (!startDate) {
-            this.showAlert('Дата начала мероприятия обязательна', 'warning');
-            this.startDatePicker.open();
+    validateEventType() {
+        const typeSelect = document.querySelector('select[name*="typeId"]');
+        if (!typeSelect || !typeSelect.value) {
+            this.showNotification('Выберите тип мероприятия', 'warning');
             return false;
         }
-
-        return this.validateEventDates();
+        return true;
     }
 
-    validateEventLocation() {
+    validateLocation() {
         const offlineRadio = document.getElementById('offlineEvent');
         const onlineRadio = document.getElementById('onlineEvent');
 
         if (!offlineRadio?.checked && !onlineRadio?.checked) {
-            this.showAlert('Необходимо указать тип мероприятия (онлайн/офлайн)', 'warning');
+            this.showNotification('Выберите тип проведения мероприятия', 'warning');
             return false;
         }
 
         if (offlineRadio?.checked) {
             const addressInput = document.querySelector('input[name*="address"]');
-            if (!addressInput || !addressInput.value.trim()) {
-                this.showAlert('Для офлайн мероприятия необходимо указать адрес', 'warning');
-                addressInput?.focus();
+            if (!addressInput?.value?.trim()) {
+                this.showNotification('Укажите адрес для офлайн мероприятия', 'warning');
                 return false;
             }
         }
 
         if (onlineRadio?.checked) {
             const urlInput = document.querySelector('input[name*="url"]');
-            if (!urlInput || !urlInput.value.trim()) {
-                this.showAlert('Для онлайн мероприятия необходимо указать ссылку', 'warning');
-                urlInput?.focus();
-                return false;
-            }
-
-            try {
-                new URL(urlInput.value);
-            } catch {
-                this.showAlert('Указанная ссылка имеет неверный формат', 'warning');
-                urlInput?.focus();
+            if (!urlInput?.value?.trim()) {
+                this.showNotification('Укажите ссылку для онлайн мероприятия', 'warning');
                 return false;
             }
         }
@@ -437,236 +791,215 @@ class EventCreateManager extends BaseContentCreateManager {
         return true;
     }
 
-    validateEventType() {
-        const typeSelect = document.querySelector('select[name*="typeId"]');
+    validateTranslations() {
+        const titleFields = document.querySelectorAll('input[name*="title"]');
+        let hasAtLeastOneTranslation = false;
 
-        if (!typeSelect || !typeSelect.value) {
-            this.showAlert('Необходимо выбрать тип мероприятия', 'warning');
-            typeSelect?.focus();
+        titleFields.forEach(field => {
+            if (field.value.trim()) {
+                hasAtLeastOneTranslation = true;
+            }
+        });
+
+        if (!hasAtLeastOneTranslation) {
+            this.showNotification('Заполните название хотя бы на одном языке', 'warning');
             return false;
         }
 
         return true;
     }
 
-    // ==========================================
-    // ОРГАНИЗАЦИИ
-    // ==========================================
+    prepareFormData() {
+        // Синхронизируем данные из Froala редакторов
+        Object.keys(this.froalaInstances).forEach(lang => {
+            const editor = this.froalaInstances[lang];
+            const textarea = document.querySelector(`textarea[data-lang="${lang}"]`);
 
-    initOrganizationSelection() {
-        const organizationSelect = document.querySelector('select[name="organizationIds"]');
-
-        if (organizationSelect) {
-            const helpText = document.createElement('small');
-            helpText.className = 'form-text text-muted';
-            helpText.innerHTML = `
-                <i class="fas fa-info-circle me-1"></i>
-                Выбрано организаций: <span id="orgCount">0</span>
-            `;
-            organizationSelect.parentNode.appendChild(helpText);
-
-            organizationSelect.addEventListener('change', () => {
-                const selected = Array.from(organizationSelect.selectedOptions).length;
-                document.getElementById('orgCount').textContent = selected;
-            });
-
-            const initialCount = Array.from(organizationSelect.selectedOptions).length;
-            document.getElementById('orgCount').textContent = initialCount;
-        }
-    }
-
-    // ==========================================
-    // ОБРАБОТКА ОТПРАВКИ ФОРМЫ
-    // ==========================================
-
-    onFormSubmit(event) {
-        console.log('Submitting event form...');
-
-        this.prepareEventData();
-
-        return super.onFormSubmit(event);
-    }
-
-    prepareEventData() {
-        console.log('Preparing event data for submission');
-
-        this.syncTinyMCEWithForm();
-
-        this.syncFlatpickrDates();
-
-        this.validateAttachments();
-    }
-
-    syncFlatpickrDates() {
-        const startDate = this.getSelectedStartDate();
-        const endDate = this.getSelectedEndDate();
-
-        if (startDate) {
-            const startInput = document.querySelector('input[name*="startDate"]');
-            if (startInput) {
-                startInput.value = this.formatDateForServer(startDate);
-            }
-        }
-
-        if (endDate) {
-            const endInput = document.querySelector('input[name*="endDate"]');
-            if (endInput) {
-                endInput.value = this.formatDateForServer(endDate);
-            }
-        }
-    }
-
-
-    formatDateForServer(date) {
-        if (!date) return null;
-
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-    }
-
-    syncTinyMCEWithForm() {
-        const languages = this.languageTabsManager.getAvailableLanguages();
-
-        languages.forEach(lang => {
-            const editor = this.tinyMCEManager.getAllInstances()[lang];
-            if (editor) {
-                const content = editor.getContent();
-                const textarea = document.querySelector(`textarea[data-lang="${lang}"]`);
-                if (textarea) {
-                    textarea.value = content;
-                }
+            if (editor && textarea) {
+                textarea.value = editor.html.get();
             }
         });
-    }
 
-    validateAttachments() {
-        const attachmentsInput = document.querySelector('input[name="attachments"]');
-        if (attachmentsInput && attachmentsInput.files.length > 0) {
-            const maxSize = 10 * 1024 * 1024;
+        // Синхронизируем даты
+        const startDate = this.getSelectedStartDate();
+        const endDate = this.getSelectedEndDate();
 
-            for (let file of attachmentsInput.files) {
-                if (file.size > maxSize) {
-                    this.showAlert(`Файл "${file.name}" превышает максимальный размер 10MB`, 'warning');
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    // ==========================================
-    // ПУБЛИЧНЫЕ МЕТОДЫ
-    // ==========================================
-
-    getEventData() {
-        const formData = new FormData(document.getElementById(this.options.formId));
-        const eventData = {};
-
-        for (let [key, value] of formData.entries()) {
-            eventData[key] = value;
-        }
-
-        eventData.startDate = this.getSelectedStartDate();
-        eventData.endDate = this.getSelectedEndDate();
-
-        return eventData;
-    }
-
-    setEventType(isOffline) {
-        const offlineRadio = document.getElementById('offlineEvent');
-        const onlineRadio = document.getElementById('onlineEvent');
-
-        if (isOffline) {
-            offlineRadio.checked = true;
-            this.showAddressField();
-            this.hideUrlField();
-        } else {
-            onlineRadio.checked = true;
-            this.showUrlField();
-            this.hideAddressField();
-        }
-    }
-
-    setEventDates(startDate, endDate = null) {
         if (startDate) {
-            this.setStartDate(new Date(startDate));
+            this.syncDateToForm('startDate', startDate);
         }
         if (endDate) {
-            this.setEndDate(new Date(endDate));
+            this.syncDateToForm('endDate', endDate);
         }
     }
 
-    getEventDuration() {
-        const startDate = this.getSelectedStartDate();
-        const endDate = this.getSelectedEndDate();
-
-        if (startDate && endDate) {
-            return Math.round((endDate - startDate) / (1000 * 60 * 60)); // в часах
-        }
-        return null;
-    }
-
-    isMultiDayEvent() {
-        const startDate = this.getSelectedStartDate();
-        const endDate = this.getSelectedEndDate();
-
-        if (startDate && endDate) {
-            return startDate.toDateString() !== endDate.toDateString();
-        }
-        return false;
-    }
-
-    populateForm(eventData) {
-        if (eventData.startDate) {
-            this.setStartDate(new Date(eventData.startDate));
-        }
-        if (eventData.endDate) {
-            this.setEndDate(new Date(eventData.endDate));
-        }
-
-        if (eventData.isOffline !== undefined) {
-            this.setEventType(eventData.isOffline);
-        }
-
-        if (eventData.translations) {
-            eventData.translations.forEach(translation => {
-                this.setContentForLanguage(
-                    translation.languageCode,
-                    translation.title,
-                    translation.content
-                );
+    // Прокручиваем к первой ошибке
+    scrollToFirstError() {
+        const firstError = document.querySelector('.is-invalid');
+        if (firstError) {
+            firstError.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
             });
-        }
 
-        console.log('Form populated with event data:', eventData);
-    }
-
-    onValidationChange(isValid) {
-        super.onValidationChange(isValid);
-
-        const submitButton = document.getElementById('submitButton');
-        if (submitButton) {
-            if (isValid) {
-                submitButton.innerHTML = '<i class="fas fa-save me-2"></i>Создать мероприятие';
-            } else {
-                submitButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Заполните форму';
-            }
+            // Фокусируемся на поле с ошибкой
+            setTimeout(() => {
+                firstError.focus();
+            }, 500);
         }
     }
+
+    // ==========================================
+    // УЛУЧШЕННЫЕ МЕТОДЫ РАБОТЫ С ОШИБКАМИ
+    // ==========================================
+
+    showFieldError(input, message) {
+        if (!input) {
+            console.warn('Cannot show error: input element not found');
+            return;
+        }
+
+        console.log('Showing field error:', message);
+
+        input.classList.add('is-invalid');
+
+        // Удаляем существующую ошибку
+        const wrapper = input.closest('.datetime-input-wrapper') || input.parentNode;
+        const existingError = wrapper.querySelector('.invalid-feedback.custom-error');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        // Добавляем новую ошибку
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'invalid-feedback custom-error d-block';
+        errorDiv.textContent = message;
+        errorDiv.style.fontSize = '0.875rem';
+        errorDiv.style.marginTop = '0.25rem';
+
+        wrapper.appendChild(errorDiv);
+    }
+
+    clearFieldError(input) {
+        if (!input) return;
+
+        input.classList.remove('is-invalid');
+
+        // Ищем ошибку в разных возможных местах
+        const wrapper = input.closest('.datetime-input-wrapper') || input.parentNode;
+        const errorDiv = wrapper.querySelector('.invalid-feedback.custom-error');
+
+        if (errorDiv) {
+            errorDiv.remove();
+        }
+    }
+
+    // ==========================================
+    // УТИЛИТЫ
+    // ==========================================
+
+    updateSubmitButton(isValid) {
+        const button = document.getElementById('submitButton');
+        if (!button) return;
+
+        if (isValid) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-save me-2"></i>Создать мероприятие';
+            button.className = 'btn btn-primary';
+        } else {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Исправьте ошибки в форме';
+            button.className = 'btn btn-warning';
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+
+        // Простое уведомление через alert для начала
+        // Можно заменить на более красивые уведомления
+        if (type === 'warning' || type === 'danger') {
+            alert(message);
+        }
+    }
+
+    // ==========================================
+    // ДЕБАГ МЕТОДЫ
+    // ==========================================
+
+    debugDatePickers() {
+        console.log('=== DATE PICKERS DEBUG ===');
+        console.log('Start picker exists:', !!this.startDatePicker);
+        console.log('End picker exists:', !!this.endDatePicker);
+
+        if (this.startDatePicker) {
+            console.log('Start picker selected dates:', this.startDatePicker.selectedDates);
+            console.log('Start picker input value:', this.startDatePicker.input.value);
+        }
+
+        if (this.endDatePicker) {
+            console.log('End picker selected dates:', this.endDatePicker.selectedDates);
+            console.log('End picker input value:', this.endDatePicker.input.value);
+        }
+
+        console.log('Current validation result:', this.validateDates());
+        console.log('=== END DEBUG ===');
+    }
+
+    // ==========================================
+    // ТЕСТОВЫЕ МЕТОДЫ
+    // ==========================================
+
+    testDatePickers() {
+        console.log('=== TESTING DATE PICKERS ===');
+        console.log('Start picker:', this.startDatePicker);
+        console.log('End picker:', this.endDatePicker);
+
+        if (this.startDatePicker) {
+            console.log('Start picker input:', this.startDatePicker.input);
+            console.log('Start picker config:', this.startDatePicker.config);
+        }
+
+        // Тест установки даты
+        const testDate = new Date();
+        testDate.setHours(testDate.getHours() + 2);
+
+        console.log('Setting test date:', testDate);
+        if (this.startDatePicker) {
+            this.startDatePicker.setDate(testDate);
+        }
+    }
+
+    // ==========================================
+    // ОЧИСТКА
+    // ==========================================
 
     destroy() {
-        super.destroy();
+        console.log('Destroying EventCreateManager...');
+
+        // Очищаем таймауты
+        if (this.validationTimeout) {
+            clearTimeout(this.validationTimeout);
+        }
+
+        // Уничтожаем date pickers
         if (this.startDatePicker) {
             this.startDatePicker.destroy();
         }
         if (this.endDatePicker) {
             this.endDatePicker.destroy();
         }
+
+        // Уничтожаем cropper
+        if (this.cropper) {
+            this.cropper.destroy();
+        }
+
+        // Уничтожаем Froala редакторы
+        Object.values(this.froalaInstances).forEach(editor => {
+            if (editor && typeof editor.destroy === 'function') {
+                editor.destroy();
+            }
+        });
 
         console.log('EventCreateManager destroyed');
     }
@@ -679,16 +1012,66 @@ class EventCreateManager extends BaseContentCreateManager {
 let eventCreateManager;
 
 function initEventCreate() {
-    eventCreateManager = new EventCreateManager();
-    window.eventCreateManager = eventCreateManager;
+    console.log('=== STARTING EVENT CREATE INITIALIZATION ===');
 
-    console.log('EventCreateManager initialized successfully');
+    try {
+        eventCreateManager = new EventCreateManager();
+        window.eventCreateManager = eventCreateManager;
+
+        // Добавляем тестовую функцию
+        window.testEventManager = () => {
+            console.log('=== EVENT MANAGER TEST ===');
+            eventCreateManager.testDatePickers();
+
+            // Дополнительные тесты
+            console.log('Form element:', document.getElementById('eventForm'));
+            console.log('Date inputs:', {
+                start: document.getElementById('startDatePicker'),
+                end: document.getElementById('endDatePicker')
+            });
+        };
+
+        // Добавляем функцию отладки
+        window.debugEventManager = () => {
+            eventCreateManager.debugDatePickers();
+        };
+
+        // Добавляем функцию принудительной валидации
+        window.validateEventForm = () => {
+            const result = eventCreateManager.validateForm();
+            console.log('Manual validation result:', result);
+            return result;
+        };
+
+        console.log('EventCreateManager initialized successfully!');
+        console.log('Available test functions:');
+        console.log('- window.testEventManager() - basic tests');
+        console.log('- window.debugEventManager() - debug info');
+        console.log('- window.validateEventForm() - manual validation');
+
+        // Автотест через 3 секунды
+        setTimeout(() => {
+            console.log('Running auto-test...');
+            if (window.testEventManager) {
+                window.testEventManager();
+            }
+        }, 3000);
+
+    } catch (error) {
+        console.error('Failed to initialize EventCreateManager:', error);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initEventCreate();
-});
+// Инициализация при загрузке
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initEventCreate, 300);
+    });
+} else {
+    setTimeout(initEventCreate, 300);
+}
 
+// Очистка при выгрузке
 window.addEventListener('beforeunload', () => {
     if (eventCreateManager) {
         eventCreateManager.destroy();
