@@ -1,28 +1,33 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <div class="pdf-reader-container">
         <div class="pdf-toolbar">
             <div class="toolbar-left">
                 <a href="/books" class="btn btn-outline-light btn-sm back-btn">
-                    <i class="fas fa-arrow-left me-1"></i> Назад
+                    <i class="fas fa-arrow-left me-1"></i> <@spring.message "pdf.back"/>
                 </a>
                 <div class="document-info">
-                    <h5 class="mb-0 text-white ms-3 text-truncate" style="max-width: 300px;" title="${(fileDto.filename)!'Без названия'}">
-                        ${(fileDto.filename)!'Документ без названия'}
+                    <h5 class="mb-0 text-white ms-3 text-truncate"
+                        style="max-width: 300px;"
+                        title="${(fileDto.filename)!'<@spring.message "pdf.noTitleShort"/>'}">
+                        ${(fileDto.filename)!'<@spring.message "pdf.noTitle"/>'}
                     </h5>
                 </div>
             </div>
 
             <div class="toolbar-center">
                 <div class="navigation-controls">
-                    <button id="prevPage" class="btn btn-outline-light btn-sm" title="Previous (←)">
+                    <button id="prevPage" class="btn btn-outline-light btn-sm" title="<@spring.message 'pdf.prev'/> (←)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="page-info">
                         <input type="number" id="pageInput" class="page-input" value="1" min="1">
-                        <span class="page-count">из <span id="totalPages">0</span></span>
+                        <span class="page-count">
+                        <@spring.message "pdf.of"/> <span id="totalPages">0</span>
+                    </span>
                     </div>
-                    <button id="nextPage" class="btn btn-outline-light btn-sm" title="Next (→)">
+                    <button id="nextPage" class="btn btn-outline-light btn-sm" title="<@spring.message 'pdf.next'/> (→)">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -31,7 +36,7 @@
             <div class="toolbar-right">
                 <div class="toolbar-group">
                     <div class="zoom-controls">
-                        <button id="zoomOut" class="btn btn-outline-light btn-sm" title="Zoom Out (-)">
+                        <button id="zoomOut" class="btn btn-outline-light btn-sm" title="<@spring.message 'pdf.zoomOut'/> (-)">
                             <i class="fas fa-search-minus"></i>
                         </button>
                         <select id="zoomSelect" class="form-select form-select-sm">
@@ -41,24 +46,23 @@
                             <option value="1.25">125%</option>
                             <option value="1.5">150%</option>
                             <option value="2">200%</option>
-                            <option value="fit">Fit Width</option>
+                            <option value="fit"><@spring.message "pdf.fitWidth"/></option>
                         </select>
-                        <button id="zoomIn" class="btn btn-outline-light btn-sm" title="Zoom In (+)">
+                        <button id="zoomIn" class="btn btn-outline-light btn-sm" title="<@spring.message 'pdf.zoomIn'/> (+)">
                             <i class="fas fa-search-plus"></i>
                         </button>
                     </div>
 
                     <div class="divider"></div>
 
-                    <button
-                            id="downloadBtn"
+                    <button id="downloadBtn"
                             class="btn btn-outline-light btn-sm"
-                            title="Download"
+                            title="<@spring.message 'pdf.download'/>"
                             data-file-id="${(fileDto.id)!0}">
                         <i class="fas fa-download"></i>
                     </button>
 
-                    <button id="fullscreen" class="btn btn-outline-light btn-sm" title="Fullscreen (F11)">
+                    <button id="fullscreen" class="btn btn-outline-light btn-sm" title="<@spring.message 'pdf.fullscreen'/> (F11)">
                         <i class="fas fa-expand"></i>
                     </button>
                 </div>
@@ -69,14 +73,15 @@
             <div class="pdf-viewer" id="pdfViewer">
                 <div class="loading-state">
                     <div class="spinner-grow text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden"><@spring.message "pdf.loading"/></span>
                     </div>
-                    <h5 class="mt-3">Loading document</h5>
-                    <p class="text-muted">Please wait...</p>
+                    <h5 class="mt-3"><@spring.message "pdf.loadingDocument"/></h5>
+                    <p class="text-muted"><@spring.message "pdf.pleaseWait"/></p>
                 </div>
             </div>
         </div>
     </div>
+
 
     <style>
         :root {

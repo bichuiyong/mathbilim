@@ -74,12 +74,6 @@ public class BlogServiceImpl extends
     }
 
 
-//    @Transactional
-//    @Override
-//    public void incrementBlogShareCount(Long id) {
-//        incrementShareCount(id);
-//        log.debug("Share count incremented for blog {}", id);
-//    }
 
 
     @Override
@@ -265,7 +259,7 @@ public class BlogServiceImpl extends
 
     @Override
     public List<BlogDto> getBlogsByMainPage() {
-        List<Blog> blogs = repository.findTop10ByStatusOrderByCreatedAtDesc(ContentStatus.APPROVED);
+        List<Blog> blogs = repository.findTop10ByStatusAndDeletedFalseOrderByCreatedAtDesc(ContentStatus.APPROVED.getId());
         return blogs.stream().map(mapper::toDto).toList();
     }
 }

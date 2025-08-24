@@ -1,26 +1,8 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-<@main.layout>
-
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <title>Создать пост</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            .translation-tab {
-                display: none;
-            }
-
-            .translation-tab.active {
-                display: block;
-            }
-        </style>
-    </head>
-    <body>
+<@main.layout title="${springMacroRequestContext.getMessage('news.edit.title')}">
     <div class="container mt-5">
-        <h2>Редактирование новости</h2>
+        <h2><@spring.message "news.edit.title"/></h2>
         <form action="/news/update?id=${newsDto.id}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 
@@ -61,7 +43,9 @@
                              id="lang-${trans.languageCode}">
                             <@spring.bind "newsDto.newsTranslations[${trans?index}].title"/>
                             <div class="mb-3">
-                                <label class="form-label">Заголовок (необязательно)</label>
+                                <label class="form-label">
+                                    <@spring.message "news.title"/> (<@spring.message "common.optional"/>)
+                                </label>
                                 <input type="text"
                                        class="form-control <#if spring.status.error>is-invalid</#if>"
                                        name="news.newsTranslations[${trans?index}].title"
@@ -75,7 +59,9 @@
 
                             <@spring.bind "newsDto.newsTranslations[${trans?index}].content"/>
                             <div class="mb-3">
-                                <label class="form-label">Содержание (необязательно)</label>
+                                <label class="form-label">
+                                    <@spring.message "news.content"/> (<@spring.message "common.optional"/>)
+                                </label>
                                 <textarea class="form-control <#if spring.status.error>is-invalid</#if>"
                                           name="news.newsTranslations[${trans?index}].content"
                                           rows="10">${spring.status.value!''}</textarea>
@@ -92,15 +78,14 @@
                 </div>
             </div>
 
-
             <!-- Файлы -->
             <div class="mb-3">
-                <label class="form-label">Главное изображение</label>
+                <label class="form-label"><@spring.message "news.coverImage"/></label>
                 <input type="file" class="form-control" name="image" accept="image/*">
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Вложения</label>
+                <label class="form-label"><@spring.message "news.attachments"/></label>
                 <input type="file" class="form-control" name="attachments" multiple>
             </div>
 
@@ -110,14 +95,16 @@
 
             <!-- Кнопки -->
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Изменить новость</button>
-                <a href="/news" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary">
+                    <@spring.message "news.edit.button"/>
+                </button>
+                <a href="/news" class="btn btn-secondary">
+                    <@spring.message "common.cancel"/>
+                </a>
             </div>
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/switchLangTabs.js"></script>
-    </body>
-    </html>
 </@main.layout>

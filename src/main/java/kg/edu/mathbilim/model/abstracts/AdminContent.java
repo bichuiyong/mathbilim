@@ -57,6 +57,12 @@ public abstract class AdminContent {
     @JoinColumn(name = "main_image_id")
     File mainImage;
 
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    private boolean deleted = false;
+
     public void setStatus(ContentStatus status) {
 
     }

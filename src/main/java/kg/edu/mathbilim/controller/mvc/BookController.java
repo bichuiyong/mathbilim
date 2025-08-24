@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +40,7 @@ public class BookController {
                         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                         @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @RequestParam(required = false) Long categoryId,
-                        Model model) {
+                        Model model, Principal principal) {
 
         int safePage = Math.max(1, page);
         model.addAttribute("book", bookService.getAllBooks("APPROVED",
@@ -55,6 +57,7 @@ public class BookController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "books/book-list";
     }
 
@@ -100,10 +103,11 @@ public class BookController {
         return "redirect:/books";
     }
 
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @bookSecurity.isOwner(#id,  principal.username)")
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         bookService.delete(id);
-        return "redirect:/profile";
+        return "redirect:/books";
     }
 
     @GetMapping("update/{id}")

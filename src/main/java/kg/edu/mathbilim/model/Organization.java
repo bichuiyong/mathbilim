@@ -79,4 +79,9 @@ public class Organization {
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
 
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    boolean deleted = false;
 }

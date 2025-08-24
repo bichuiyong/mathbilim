@@ -8,6 +8,7 @@ import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
@@ -31,6 +32,7 @@ public class EventController {
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
+    private final UserService userService;
 
 
     @ModelAttribute
@@ -50,7 +52,7 @@ public class EventController {
     @GetMapping("/{id}")
     public String viewEvent(@PathVariable Long id,
                             HttpServletRequest request,
-                            Model model, Principal principal) {
+                            Model model,  Principal principal) {
 
         String email = (principal != null) ? principal.getName() : null;
         DisplayEventDto event = eventService.getDisplayEventById(id, email);
@@ -66,6 +68,7 @@ public class EventController {
 
         model.addAttribute("event", event);
         model.addAttribute("shareUrl", shareUrl);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 
         return "events/event-details";
     }
@@ -100,9 +103,9 @@ public class EventController {
         return "events/olymps/olymp-details";
     }
 
-    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('MODER')")
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         eventService.delete(id);
         return "redirect:/";
     }

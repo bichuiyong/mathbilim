@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 @MappedSuperclass
 @SuperBuilder
@@ -24,4 +25,10 @@ public abstract class ContentTranslation {
     @NotNull
     @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
     String content;
+
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    private boolean deleted = false;
 }

@@ -1105,6 +1105,181 @@ if (!document.getElementById('simple-content-styles')) {
     styleSheet.textContent = simpleStyles;
     document.head.appendChild(styleSheet);
 }
+document.addEventListener("DOMContentLoaded", () => {
+    loadHeroOlympiad();
+});
+
+function loadHeroOlympiad() {
+    const heroContainer = document.getElementById('hero-container');
+    if (!heroContainer) return;
+
+    // Показываем состояние загрузки
+    heroContainer.innerHTML = `
+                <div class="hero-loading">
+                    <div class="loading-spinner"></div>
+                    <h3>Загружаем актуальную олимпиаду...</h3>
+                </div>
+            `;
+
+    // Загружаем данные олимпиады (берем первую из списка)
+    fetch('/api/olymp/main')
+        .then(res => {
+            if (!res.ok) throw new Error('Ошибка загрузки олимпиады');
+            return res.json();
+        })
+        .then(data => {
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                showDefaultHero();
+                return;
+            }
+
+            // Берем первую олимпиаду из списка
+            const olympiad = data[0];
+            renderHeroOlympiad(olympiad);
+        })
+        .catch(err => {
+            console.error('Ошибка загрузки олимпиады:', err);
+            showErrorHero();
+        });
+}
+
+function renderHeroOlympiad(olympiad) {
+    const heroContainer = document.getElementById('hero-container');
+
+    const title = olympiad.title || 'Математическая олимпиада';
+    const description = olympiad.info || 'Присоединяйтесь к олимпиаде и проверьте свои математические навыки. Развивайте логическое мышление и соревнуйтесь с лучшими!';
+
+    const imageUrl = olympiad.fileId
+        ? `/api/files/${olympiad.fileId}/view`
+        : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop';
+
+    const dateObj = olympiad.createdAt ? new Date(olympiad.createdAt) : new Date();
+    const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    heroContainer.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <h1 class="hero-title">${title}</h1>
+                        <p class="hero-description">${description}</p>
+                        <div class="mb-3">
+                            <small class="text-muted">📅 Дата: ${formattedDate}</small>
+                        </div>
+                          <div class="hero-buttons">
+                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
+                        <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
+                    </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="hero-image">
+                            <img src="${imageUrl}" alt="${title}" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+            `;
+}
+const translations = {
+    ru: {
+        olympiadTitle: "🏆 Математические олимпиады",
+        olympiadDesc: "Следите за объявлениями о предстоящих олимпиадах и соревнованиях!",
+        olympiadBtn: "Все олимпиады",
+
+        heroTitle: 'Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span>',
+        heroDesc: "Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!",
+        heroStartBtn: "Начать тестирование",
+        heroOlympiadBtn: "Олимпиады",
+        heroAlt: "Математика"
+    },
+    ky: {
+        olympiadTitle: "🏆 Математикалык олимпиадалар",
+        olympiadDesc: "Алдыда боло турган олимпиадалар жана сынактар жөнүндө кабарларды көзөмөлдөңүз!",
+        olympiadBtn: "Бардык олимпиадалар",
+
+        heroTitle: 'Математикалык ой жүгүртүүнү <span class="text-primary">Кыргызстанда</span> өнүктүрөбүз',
+        heroDesc: "Олимпиадаларга, тесттерге даярдануу жана математика боюнча жөндөмдөрдү өркүндөтүү үчүн платформа. Математиктердин коомчулугуна кошулуңуз!",
+        heroStartBtn: "Тестти баштоо",
+        heroOlympiadBtn: "Олимпиадалар",
+        heroAlt: "Математика"
+    },
+    en: {
+        olympiadTitle: "🏆 Math Olympiads",
+        olympiadDesc: "Stay updated on upcoming olympiads and competitions!",
+        olympiadBtn: "All Olympiads",
+
+        heroTitle: 'Developing mathematical thinking in <span class="text-primary">Kyrgyzstan</span>',
+        heroDesc: "A platform for preparing for olympiads, tests, and improving math skills. Join the community of mathematicians!",
+        heroStartBtn: "Start Testing",
+        heroOlympiadBtn: "Olympiads",
+        heroAlt: "Mathematics"
+    }
+
+};
+
+const locale = document.getElementById('current-locale').textContent;
+
+function showDefaultOlympiadAlert() {
+    const t = translations[locale];
+    const alertContainer = document.querySelector('.alert.alert-warning');
+
+    alertContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+            <div class="announcement-icon me-3">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h4 class="mb-1">${t.olympiadTitle}</h4>
+                <p class="mb-0">${t.olympiadDesc}</p>
+            </div>
+            <div class="announcement-action">
+                <a href="/olympiads" class="btn btn-primary">${t.olympiadBtn}</a>
+            </div>
+        </div>
+    `;
+}
+
+function showDefaultHero() {
+    const t = translations[locale];
+    const heroContainer = document.getElementById('hero-container');
+
+    heroContainer.innerHTML = `
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="hero-title">${t.heroTitle}</h1>
+                <p class="hero-description">${t.heroDesc}</p>
+                <div class="hero-buttons">
+                    <a href="/tests" class="btn btn-primary me-3">${t.heroStartBtn}</a>
+                    <a href="/olympiads" class="btn btn-outline-primary">${t.heroOlympiadBtn}</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop" 
+                         alt="${t.heroAlt}" 
+                         class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+function showErrorHero() {
+    const heroContainer = document.getElementById('hero-container');
+
+    heroContainer.innerHTML = `
+                <div class="hero-error">
+                    <h2>⚠️ Ошибка загрузки</h2>
+                    <p>Не удалось загрузить информацию об олимпиаде</p>
+                    <button class="btn btn-primary" onclick="loadHeroOlympiad()">
+                        🔄 Попробовать снова
+                    </button>
+                </div>
+            `;
+}
+
 
 function renderOlympiadAlert(olympiad) {
     const alertContainer = document.querySelector('.alert.alert-warning');
@@ -1143,24 +1318,7 @@ function renderOlympiadAlert(olympiad) {
     `;
 }
 
-function showDefaultOlympiadAlert() {
-    const alertContainer = document.querySelector('.alert.alert-warning');
 
-    alertContainer.innerHTML = `
-        <div class="d-flex align-items-center">
-            <div class="announcement-icon me-3">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <div class="flex-grow-1">
-                <h4 class="mb-1">🏆 Математические олимпиады</h4>
-                <p class="mb-0">Следите за объявлениями о предстоящих олимпиадах и соревнованиях!</p>
-            </div>
-            <div class="announcement-action">
-                <a href="/olympiads" class="btn btn-primary">Все олимпиады</a>
-            </div>
-        </div>
-    `;
-}
 
 function showOlympiadAlertError() {
     const alertContainer = document.querySelector('.alert');

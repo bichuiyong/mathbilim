@@ -1,0 +1,11 @@
+ALTER TABLE blog_translations
+    ADD COLUMN deleted BOOLEAN DEFAULT FALSE NOT NULL;
+
+ALTER TABLE news_translation
+    ADD COLUMN deleted BOOLEAN DEFAULT FALSE NOT NULL;
+
+ALTER TABLE event_translations
+    ADD COLUMN deleted BOOLEAN DEFAULT FALSE NOT NULL;
+
+ALTER TABLE post_translations
+    ADD COLUMN deleted BOOLEAN DEFAULT FALSE NOT NULL;

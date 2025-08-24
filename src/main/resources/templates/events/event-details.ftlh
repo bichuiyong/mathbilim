@@ -1,7 +1,16 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
 
-<@main.layout title="${event.title!'Мероприятие'} - MathBilim.kg">
+<@main.layout title="${event.title!springMacroRequestContext.getMessage('event.defaultTitle')} - MathBilim.kg">
+
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
 
     <#if event.description??>
         <meta name="description" content="${event.description}">
@@ -10,14 +19,13 @@
         <meta property="og:image" content="/api/files/${event.mainImageId}/view">
         <meta name="twitter:image" content="/api/files/${event.mainImageId}/view">
     </#if>
-    <meta property="og:title" content="${event.title!'Мероприятие'} - MathBilim.kg">
+    <meta property="og:title" content="${event.title!springMacroRequestContext.getMessage('event.defaultTitle')} - MathBilim.kg">
     <meta property="og:description" content="${event.description!''}">
     <meta property="og:url" content="${shareUrl!''}">
     <meta property="og:type" content="event">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${event.title!'Мероприятие'} - MathBilim.kg">
+    <meta name="twitter:title" content="${event.title!springMacroRequestContext.getMessage('event.defaultTitle')} - MathBilim.kg">
     <meta name="twitter:description" content="${event.description!''}">
-
     <style>
         .hero-section {
             position: relative;
@@ -710,15 +718,15 @@
                 <#if event.endDate??>
                     <div class="event-badge">
                         <i class="fas fa-clock"></i>
-                        до ${event.formattedEndDate}
+                        <@spring.message "event.until"/> ${event.formattedEndDate}
                     </div>
                 </#if>
 
                 <div class="event-badge">
                     <#if event.isOffline>
-                        <i class="fas fa-map-marker-alt"></i>Офлайн
+                        <i class="fas fa-map-marker-alt"></i><@spring.message "event.format.offline"/>
                     <#else>
-                        <i class="fas fa-globe"></i>Онлайн
+                        <i class="fas fa-globe"></i><@spring.message "event.format.online"/>
                     </#if>
                 </div>
 
@@ -734,13 +742,22 @@
                 <#if !event.isOffline && event.url??>
                     <a href="${event.url}" target="_blank" class="btn-hero primary">
                         <i class="fas fa-external-link-alt"></i>
-                        Присоединиться
+                        <@spring.message "event.join"/>
                     </a>
                 </#if>
                 <button class="btn-hero secondary" onclick="scrollToShare()">
                     <i class="fas fa-share-alt"></i>
-                    Поделиться
+                    <@spring.message "event.share"/>
                 </button>
+                <#if currentUser?? && (isAdmin || (event.creator?? && event.creator.id == currentUser.id))>
+                    <form action="/events/delete/${event.id}" method="post" style="margin: 16px 24px;">
+                        <@main.csrf/>
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            🗑 <@spring.message "test.details.delete"/>
+                        </button>
+                    </form>
+                </#if>
             </div>
         </div>
     </section>
@@ -753,7 +770,7 @@
                 <div class="section-icon">
                     <i class="fas fa-info-circle"></i>
                 </div>
-                Детали мероприятия
+                <@spring.message "event.details"/>
             </h2>
 
             <div class="event-details-grid">
@@ -761,7 +778,7 @@
                     <div class="detail-card">
                         <div class="detail-title">
                             <i class="fas fa-calendar-start"></i>
-                            Дата начала
+                            <@spring.message "event.startDate"/>
                         </div>
                         <div class="detail-value">
                             ${event.formattedStartDate}
@@ -773,7 +790,7 @@
                     <div class="detail-card">
                         <div class="detail-title">
                             <i class="fas fa-calendar-times"></i>
-                            Дата окончания
+                            <@spring.message "event.endDate"/>
                         </div>
                         <div class="detail-value">
                             ${event.formattedEndDate}
@@ -781,30 +798,28 @@
                     </div>
                 </#if>
 
-
                 <div class="detail-card">
                     <div class="detail-title">
                         <i class="fas fa-map-marker-alt"></i>
-                        Формат проведения
+                        <@spring.message "event.format.title"/>
                     </div>
                     <div class="detail-value">
                         <#if event.isOffline>
-                            Офлайн мероприятие
+                            <@spring.message "event.format.offline.full"/>
                             <#if event.address?? && (event.address?trim != "")>
-                                <br><small class="text-muted">Адрес: ${event.address}</small>
+                                <br><small class="text-muted"><@spring.message "event.address"/>: ${event.address}</small>
                             </#if>
                         <#else>
-                            Онлайн мероприятие
+                            <@spring.message "event.format.online.full"/>
                         </#if>
                     </div>
                 </div>
-
 
                 <#if event.creator?? && event.creator.id??>
                     <div class="detail-card">
                         <div class="detail-title">
                             <i class="fas fa-user"></i>
-                            Создатель
+                            <@spring.message "event.creator"/>
                         </div>
                         <div class="detail-value">
             <span class="event-author-compact" data-author-id="${event.creator.id}">
@@ -815,7 +830,6 @@
                         </div>
                     </div>
                 </#if>
-
             </div>
         </div>
 
@@ -826,7 +840,7 @@
                     <div class="section-icon">
                         <i class="fas fa-file-alt"></i>
                     </div>
-                    Описание
+                    <@spring.message "event.description"/>
                 </h2>
                 <div class="event-content-text">
                     ${event.content?no_esc}
@@ -841,7 +855,7 @@
                     <div class="section-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    Организаторы
+                    <@spring.message "event.organizers"/>
                 </h2>
                 <div class="organizers-grid">
                     <#list organizations as org>
@@ -861,7 +875,7 @@
                             </#if>
                             <#if org.url??>
                                 <a href="${org.url}" target="_blank" class="organizer-link">
-                                    <i class="fas fa-external-link-alt"></i>Перейти на сайт
+                                    <i class="fas fa-external-link-alt"></i><@spring.message "event.organizer.website"/>
                                 </a>
                             </#if>
                         </div>
@@ -876,7 +890,7 @@
                     <div class="section-icon">
                         <i class="fas fa-download"></i>
                     </div>
-                    Дополнительные материалы
+                    <@spring.message "event.materials"/>
                 </h2>
                 <div class="files-grid">
                     <#list event.eventFiles as file>
@@ -898,7 +912,7 @@
 
         <!-- Share Section -->
         <div class="share-section" id="shareSection">
-            <h2 class="share-title">Поделиться мероприятием</h2>
+            <h2 class="share-title"><@spring.message "event.share.title"/></h2>
             <div class="social-buttons">
                 <button onclick="shareToFacebook()" class="social-btn facebook">
                     <i class="fab fa-facebook-f"></i>
@@ -918,7 +932,7 @@
                 </button>
                 <button onclick="copyLink()" class="social-btn copy-link" id="copyLinkBtn">
                     <i class="fas fa-link"></i>
-                    <div class="copy-feedback">Скопировано!</div>
+                    <div class="copy-feedback"><@spring.message "event.share.copied"/></div>
                 </button>
             </div>
             <div class="share-url-container">
@@ -934,10 +948,10 @@
     <div class="navigation-section">
         <div class="navigation-content">
             <a href="/events" class="nav-btn outline">
-                <i class="fas fa-arrow-left"></i>К списку мероприятий
+                <i class="fas fa-arrow-left"></i><@spring.message "event.backToList"/>
             </a>
             <a href="/events/create" class="nav-btn">
-                <i class="fas fa-plus"></i>Создать мероприятие
+                <i class="fas fa-plus"></i><@spring.message "event.createNew"/>
             </a>
         </div>
     </div>
@@ -946,7 +960,7 @@
     <div id="shareModal" class="share-modal">
         <div class="share-modal-content">
             <div class="share-modal-header">
-                <h3 class="share-modal-title">Поделиться мероприятием</h3>
+                <h3 class="share-modal-title"><@spring.message "event.share.title"/></h3>
                 <button class="close-modal" onclick="closeShareModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -968,7 +982,7 @@
                 </div>
                 <div class="share-url-container">
                     <input type="text" class="share-url-input" value="${shareUrl!''}" readonly>
-                    <button class="copy-url-btn" onclick="copyShareUrl()">Копировать</button>
+                    <button class="copy-url-btn" onclick="copyShareUrl()"><@spring.message "event.share.copy"/></button>
                 </div>
             </div>
         </div>

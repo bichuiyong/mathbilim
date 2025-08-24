@@ -767,142 +767,156 @@
         >
     </#if>
 
-    <div class="content-wrapper">
-        <a href="/blog" class="back-btn">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
-            </svg>
-            Назад к блогам
-        </a>
+  <div class="content-wrapper">
+    <a href="/blog" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
+        </svg>
+        <@spring.message "blog.back-to-list"/>
+    </a>
+      <#if currentUser?? && (isAdmin || (blog.creator?? && blog.creator.id == currentUser.id))>
+          <form action="/blog/delete/${blog.id}" method="post" style="margin: 16px 24px;">
+              <@main.csrf/>
+              <input type="hidden" name="_method" value="delete"/>
+              <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                  🗑 <@spring.message "test.details.delete"/>
+              </button>
+          </form>
+      </#if>
 
-        <article class="blog-card">
-            <header class="blog-header">
-                <div class="author-avatar">
-                    <#if blog.creator?? && blog.creator.name??>
-                        ${blog.creator.name?substring(0, 1)?upper_case}
-                    <#else>
-                        А
-                    </#if>
-                </div>
-                <div class="author-info">
-                    <#if blog.creator?? && blog.creator.id??>
-                        <a href="/users/${blog.creator.id}/public" class="author-name">
-                            ${blog.creator.name!"Автор"}
-                        </a>
-                    <#else>
-                        <span class="author-name">Автор</span>
-                    </#if>
-                    <div class="publication-date">
-                        <#if blog.createdAt??>
-                            ${blog.formattedDate}
-                        <#else>
-                            Сегодня
-                        </#if>
-                    </div>
-                </div>
-            </header>
-            <#assign translation = blog.blogTranslations[0]>
-
-
-            <#if translation.title?? && translation.title?has_content>
-                <h1 class="blog-title">${translation.title}</h1>
-            </#if>
-
-            <#if blog.mainImage??>
-                <div class="blog-main-image">
-                    <img src="/api/files/${blog.mainImage.id}/view"
-                         alt="${translation.title!"Изображение блога"}"
-                         loading="eager">
-                </div>
-            </#if>
-
-            <div class="blog-content">
-                <#if translation.content?? && translation.content?has_content>
-                    <div class="blog-text collapsed" id="blogContent">${translation.content?no_esc}</div>
-                    <button class="show-more-btn" id="toggleContentBtn">Читать полностью</button>
+    <article class="blog-card">
+        <header class="blog-header">
+            <div class="author-avatar">
+                <#if blog.creator?? && blog.creator.name??>
+                    ${blog.creator.name?substring(0, 1)?upper_case}
+                <#else>
+                    <@spring.message "blog.author.initial"/>
                 </#if>
             </div>
-            <#if blog.status == "APPROVED">
-                <div class="blog-meta">
-                    <div class="meta-item">
-                        <span class="icon">👁️</span>
-                        <span>${blog.viewCount!0} просмотров</span>
-                    </div>
-                    <#if blog.shareCount?? && blog.shareCount gt 0>
-                        <div class="meta-item">
-                            <span class="icon">📤</span>
-                            <span>${blog.shareCount} репостов</span>
-                        </div>
+            <div class="author-info">
+                <#if blog.creator?? && blog.creator.id??>
+                    <a href="/profile/info/${blog.creator.id}" class="author-name">
+                        ${blog.creator.name!springMacroRequestContext.getMessage('blog.author.default')}
+                    </a>
+                <#else>
+                    <span class="author-name"><@spring.message "blog.author.default"/></span>
+                </#if>
+                <div class="publication-date">
+                    <#if blog.createdAt??>
+                        ${blog.formattedDate}
+                    <#else>
+                        <@spring.message "blog.date.today"/>
                     </#if>
+                </div>
+            </div>
+        </header>
+        <#assign translation = blog.blogTranslations[0]>
+
+        <#if translation.title?? && translation.title?has_content>
+            <h1 class="blog-title">${translation.title}</h1>
+        </#if>
+
+        <#if blog.mainImage??>
+            <div class="blog-main-image">
+                <img src="/api/files/${blog.mainImage.id}/view"
+                     alt="${translation.title!springMacroRequestContext.getMessage('blog.image.alt')}"
+                     loading="eager">
+            </div>
+        </#if>
+
+        <div class="blog-content">
+            <#if translation.content?? && translation.content?has_content>
+                <div class="blog-text collapsed" id="blogContent">${translation.content?no_esc}</div>
+                <button class="show-more-btn" id="toggleContentBtn">
+                    <@spring.message "blog.read-more"/>
+                </button>
+            </#if>
+        </div>
+
+        <#if blog.status == "APPROVED">
+            <div class="blog-meta">
+                <div class="meta-item">
+                    <span class="icon">👁️</span>
+                    <span>${blog.viewCount!0} <@spring.message "blog.views"/></span>
+                </div>
+                <#if blog.shareCount?? && blog.shareCount gt 0>
                     <div class="meta-item">
+                        <span class="icon">📤</span>
+                        <span>${blog.shareCount} <@spring.message "blog.shares"/></span>
+                    </div>
+                </#if>
+                <div class="meta-item">
                     <span>
                         <button class="comments-btn" id="openCommentsBtn"
                                 data-post-id="${blog.id}"
                                 <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button></span>
-                    </div>
-
-                    <div class="share-buttons">
-                        <span class="share-label">Поделиться:</span>
-                        <button class="social-btn facebook" onclick="shareToFacebook()" title="Facebook">
-                            <i class="fab fa-facebook-f"></i>
+                            <span class="icon">💬</span>
+                            <@spring.message "blog.comments"/>
                         </button>
-                        <button class="social-btn twitter" onclick="shareToTwitter()" title="Twitter">
-                            <i class="fab fa-twitter"></i>
-                        </button>
-                        <button class="social-btn telegram" onclick="shareToTelegram()" title="Telegram">
-                            <i class="fab fa-telegram-plane"></i>
-                        </button>
-                        <button class="social-btn whatsapp" onclick="shareToWhatsApp()" title="WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </button>
-                        <button class="social-btn copy-link" onclick="copyLink()" id="copyLinkBtn" title="Копировать ссылку">
-                            <i class="fas fa-link"></i>
-                            <span class="copy-feedback">Скопировано!</span>
-                        </button>
-                    </div>
+                    </span>
                 </div>
-            </#if>
 
-        </article>
-    </div>
-
-    <div class="comments-modal-overlay" id="commentsModalOverlay">
-        <div class="comments-modal">
-            <div class="comments-modal-header">
-                <h3 class="comments-modal-title">Комментарии</h3>
-                <button class="comments-modal-close" id="closeCommentsModal" aria-label="Закрыть комментарии">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="comments-modal-body">
-                <ul class="comments-list" id="commentsList"></ul>
-                <div class="comments-empty" id="commentsEmpty" style="display: none;">
-                    <div class="comments-empty-icon">💬</div>
-                    <div class="comments-empty-text">Пока нет комментариев</div>
-                    <div class="comments-empty-subtext">Станьте первым, кто оставит комментарий</div>
+                <div class="share-buttons">
+                    <span class="share-label"><@spring.message "blog.share"/></span>
+                    <button class="social-btn facebook" onclick="shareToFacebook()" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="social-btn twitter" onclick="shareToTwitter()" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="social-btn telegram" onclick="shareToTelegram()" title="Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </button>
+                    <button class="social-btn whatsapp" onclick="shareToWhatsApp()" title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                    <button class="social-btn copy-link" onclick="copyLink()" id="copyLinkBtn"
+                            title="<@spring.message 'blog.copy-link'/>">
+                        <i class="fas fa-link"></i>
+                        <span class="copy-feedback"><@spring.message "blog.copied"/></span>
+                    </button>
                 </div>
             </div>
-            <div class="comments-modal-footer">
-                <#if currentUser??>
-                    <div class="comment-input-wrapper">
-                        <textarea id="commentInput" placeholder="Оставьте комментарий..."></textarea>
-                        <button class="comment-submit-btn" id="submitCommentBtn">Отправить</button>
-                    </div>
-                <#else>
-                    <div style="text-align: center; padding: 16px;">
-                        <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
-                            Войти для комментирования
-                        </a>
-                    </div>
-                </#if>
+        </#if>
+    </article>
+</div>
+
+<div class="comments-modal-overlay" id="commentsModalOverlay">
+    <div class="comments-modal">
+        <div class="comments-modal-header">
+            <h3 class="comments-modal-title"><@spring.message "blog.comments.title"/></h3>
+            <button class="comments-modal-close" id="closeCommentsModal" aria-label="<@spring.message 'blog.comments.close'/>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="comments-modal-body">
+            <ul class="comments-list" id="commentsList"></ul>
+            <div class="comments-empty" id="commentsEmpty" style="display: none;">
+                <div class="comments-empty-icon">💬</div>
+                <div class="comments-empty-text"><@spring.message "blog.comments.empty"/></div>
+                <div class="comments-empty-subtext"><@spring.message "blog.comments.first"/></div>
             </div>
         </div>
+        <div class="comments-modal-footer">
+            <#if currentUser??>
+                <div class="comment-input-wrapper">
+                    <textarea id="commentInput" placeholder="<@spring.message 'blog.comments.placeholder'/>"></textarea>
+                    <button class="comment-submit-btn" id="submitCommentBtn">
+                        <@spring.message "blog.comments.submit"/>
+                    </button>
+                </div>
+            <#else>
+                <div style="text-align: center; padding: 16px;">
+                    <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
+                        <@spring.message "blog.comments.login"/>
+                    </a>
+                </div>
+            </#if>
+        </div>
     </div>
+</div>
 
     <script>
         // Данные для шаринга

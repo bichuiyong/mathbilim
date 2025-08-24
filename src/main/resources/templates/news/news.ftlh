@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
 
     <style>
@@ -573,20 +574,20 @@
     <div class="content-wrapper">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">📰 Новости</h1>
-            <p class="page-subtitle">Последние события и объявления</p>
+            <h1 class="page-title">📰 <@spring.message "news.list.title"/></h1>
+            <p class="page-subtitle"><@spring.message "news.list.subtitle"/></p>
         </div>
 
         <!-- Search Container -->
         <div class="search-container">
             <div class="search-header">
-                <h2 class="search-title">Поиск и фильтры</h2>
+                <h2 class="search-title"><@spring.message "news.search.title"/></h2>
             </div>
             <form method="get" action="/news">
                 <div class="search-row">
                     <div class="search-input-group">
                         <input type="text" name="query" value="${query!}"
-                               placeholder="🔍 Найти новости по названию или содержанию..."/>
+                               placeholder="${springMacroRequestContext.getMessage('news.search.placeholder')}"/>
                     </div>
                 </div>
 
@@ -594,19 +595,26 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 По дате создания
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>
+                                    📅 <@spring.message "news.sort.createdAt"/>
                                 </option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 По просмотрам
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>
+                                    👁 <@spring.message "news.sort.viewCount"/>
                                 </option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 По репостам
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>
+                                    📤 <@spring.message "news.sort.shareCount"/>
                                 </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>
+                                    ⬇️ <@spring.message "news.sort.newFirst"/>
+                                </option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>
+                                    ⬆️ <@spring.message "news.sort.oldFirst"/>
+                                </option>
                             </select>
                         </div>
 
@@ -619,7 +627,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">✨ Применить</button>
+                    <button type="submit" class="search-button">
+                        ✨ <@spring.message "news.search.apply"/>
+                    </button>
                 </div>
             </form>
         </div>
@@ -663,20 +673,20 @@
                                 </#if>
 
                                 <div class="post-meta">
-            <span class="post-date">
-               📅 ${p.formattedDate}
-            </span>
+                                <span class="post-date">
+                                    📅 ${p.formattedDate}
+                                </span>
 
                                     <span class="post-date">
-<#if p.newsTranslations?size gt 0>
-    🌐 ${p.newsTranslations[0].languageCode!'не указан'}
-<#else>
-    🌐 не указан
-</#if>            </span>
+                                    <#if p.newsTranslations?size gt 0>
+                                        🌐 ${p.newsTranslations[0].languageCode!'<@spring.message "common.notSpecified"/>'}
+                                    <#else>
+                                        🌐 <@spring.message "common.notSpecified"/>
+                                    </#if>
+                                </span>
                                 </div>
                             </#if>
                         </div>
-
                     </article>
                 </#list>
             </div>
@@ -684,16 +694,15 @@
             <div class="posts-grid">
                 <#if news?? && news.content?size == 0>
                     <div class="no-posts">
-                        Новости не найдены
-                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">Попробуйте изменить параметры
-                            поиска
-                            или выбрать другой язык
+                        <@spring.message "news.notFound.title"/>
+                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">
+                            <@spring.message "news.notFound.message"/>
                         </div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Загружаем новости...</span>
+                        <span><@spring.message "news.loading"/></span>
                     </div>
                 </#if>
             </div>
@@ -704,9 +713,13 @@
                 <@main.csrf/>
                 <input type="hidden" name="type" value="NEWS">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="subscription-button btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="subscription-button btn-outline-danger">
+                        🔕 <@spring.message "news.subscription.unsubscribe"/>
+                    </button>
                 <#else>
-                    <button class="subscription-button btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="subscription-button btn-outline-primary">
+                        📩 <@spring.message "news.subscription.subscribe"/>
+                    </button>
                 </#if>
             </form>
         </div>
@@ -716,18 +729,18 @@
                 <#if news.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn prev">
-                        ← Назад
+                        ← <@spring.message "pagination.previous"/>
                     </a>
                 </#if>
 
                 <div class="pagination-info">
-                    Страница ${page + 1}
+                    <@spring.message "pagination.page"/> ${page + 1}
                 </div>
 
                 <#if news.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                        class="pagination-btn next">
-                        Вперёд →
+                        <@spring.message "pagination.next"/> →
                     </a>
                 </#if>
             </div>

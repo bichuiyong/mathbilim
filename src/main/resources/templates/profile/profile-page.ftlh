@@ -674,6 +674,9 @@
         isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
+
+    <span id="currentLocale" style="display: none;">${.locale}</span>
+
     <div class="container mt-4" data-user-id="${user.id!}">
         <div class="row">
             <div class="col-lg-4 mb-4">

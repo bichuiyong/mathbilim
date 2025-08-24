@@ -193,6 +193,9 @@ public class PostServiceImpl extends
     @Override
     public PostDto getPostById(Long id) {
         Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
+        if(post.isDeleted()==true){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         incrementViewCount(id);
         return mapper.toDto(post);
     }
