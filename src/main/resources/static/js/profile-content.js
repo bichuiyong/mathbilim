@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const urlMap = {
                 post: `/posts/${id}`,
-                blog: `/blogs/${id}`,
+                blog: `/blog/${id}`,
                 event: `/events/${id}`,
                 book: `/books/${id}`
             };
