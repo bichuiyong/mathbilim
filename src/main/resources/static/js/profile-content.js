@@ -162,7 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const historyContentList = document.getElementById("historyContentList");
     if (historyContentList) {
-        console.log("Инициализация истории контента");
         initHistoryContent(userId, historyContentList);
     }
 
@@ -284,7 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 lastLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log(`Нажата кнопка страницы ${totalPages}`);
                     loadContentPage(totalPages - 1);
                 });
 
@@ -314,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function loadContentPage(page) {
             currentPage = page;
-            console.log(`Загрузка контента: страница=${currentPage + 1}, фильтр='${currentFilter}', запрос='${currentQuery}'`);
 
             contentList.innerHTML = `
                 <div class="text-center text-muted py-5">
@@ -334,7 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Функция для получения правильного title как в истории
         function getContentTitle(item, type) {
-            console.log(`🎯 Получение title для типа "${type}":`, item);
 
             let title = '';
 
@@ -376,7 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `/api/users/content?type=${type}&creatorId=${userId}&page=0&size=1000${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`
             );
 
-            console.log('📡 Отправка запросов для всех типов контента:', urls);
+        console.log('📡 Отправка запросов для всех типов контента:', urls);
 
             Promise.all(urls.map(url =>
                 fetch(url)
@@ -398,7 +394,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log(`📋 Обработка результатов для типа "${type}":`, result);
 
                         if (result.content && Array.isArray(result.content) && result.content.length > 0) {
-                            console.log(`✅ Найдено ${result.content.length} элементов типа "${type}"`);
 
                             result.content.forEach((item, itemIndex) => {
                                 console.log(`🔍 Элемент ${itemIndex + 1} типа "${type}":`, item);
@@ -414,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
 
-                    console.log('🗂️ Все собранные элементы:', allItems);
+                console.log('🗂️ Все собранные элементы:', allItems);
 
                     allItems.sort((a, b) => b.createdAt - a.createdAt);
 
@@ -424,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const endIndex = startIndex + pageSize;
                     const pageItems = allItems.slice(startIndex, endIndex);
 
-                    console.log(`📊 Пагинация: всего элементов ${totalItems}, страниц ${totalPages}, показываем элементы ${startIndex}-${endIndex}`);
+                console.log(`📊 Пагинация: всего элементов ${totalItems}, страниц ${totalPages}, показываем элементы ${startIndex}-${endIndex}`);
 
                     if (pageItems.length > 0) {
                         let html = '<div class="row g-3 fade-in">';
@@ -442,10 +437,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Используем правильную функцию получения title
                             const title = getContentTitle(item, type);
 
+                        // Формируем URL с помощью новой функции
+                        const contentUrl = getContentUrl(type, item.id);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
-                                     <a href="/${type === 'post' ? 'posts' : type + 's' || type === 'blog' ? 'blog' : type + 's'}/${item.id}" class="text-decoration-none">
+                                    <a href="${contentUrl}" class="text-decoration-none">
                                         <div class="position-relative overflow-hidden rounded-top">
                                             <img src="/api/files/${imageId}/view" alt="${type} Image" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy">
                                             <div class="position-absolute top-0 end-0 m-2">
@@ -494,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const apiType = typeMap[currentFilter] || 'post';
             const url = `/api/users/content?type=${apiType}&creatorId=${userId}&page=${page}&size=${pageSize}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
 
-            console.log(`📡 Запрос для конкретного типа "${apiType}":`, url);
+        console.log(`📡 Запрос для конкретного типа "${apiType}":`, url);
 
             fetch(url)
                 .then(response => {
@@ -520,10 +518,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Используем правильную функцию получения title
                             const title = getContentTitle(item, apiType);
 
+                        // Формируем URL с помощью новой функции
+                        const contentUrl = getContentUrl(apiType, item.id);
+
                         html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
-                                    <a href="/${apiType === 'post' ? 'posts' : apiType + 's'}/${item.id}" class="text-decoration-none">
+                                    <a href="${contentUrl}" class="text-decoration-none">
                                         <div class="position-relative overflow-hidden rounded-top">
                                             <img src="/api/files/${imageId}/view" alt="${apiType} Image" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy">
                                         </div>
@@ -549,12 +550,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         renderPagination(result.totalPages || 1, page);
                     } else {
-                        console.log('❌ Нет контента для отображения');
                         showNoContentMessage("Нет контента по выбранному фильтру и запросу.");
                     }
                 })
                 .catch(error => {
-                    console.error("Ошибка при загрузке контента: ", error);
                     showErrorMessage();
                 });
         }
@@ -740,7 +739,7 @@ document.addEventListener("DOMContentLoaded", function () {
             content.forEach(item => {
                 const createdDate = new Date(item.createdAt || item.publishedAt || Date.now()).toLocaleDateString('ru-RU');
 
-                console.log(`📋 История - элемент типа "${item.type}":`, item);
+            console.log(`📋 История - элемент типа "${item.type}":`, item);
 
                 html += `
                     <div class="content-card">
@@ -785,7 +784,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
                         currentPage = page;
-                        console.log(`📄 Переход на страницу ${currentPage + 1} из ${totalPages}`);
 
                         // Для режима "all" показываем правильный срез данных
                         if (currentType === "all") {
@@ -794,7 +792,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             const pageContent = allContent.slice(startIndex, endIndex);
                             displayContent(pageContent, totalElements);
                         } else {
-                            // Для конкретных типов перезагружаем данные
                             loadContent();
                         }
                     });
@@ -963,7 +960,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     (currentStatus !== "all" ? `&status=${currentStatus}` : '') +
                     (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '');
 
-                console.log(`📡 История - запрос для конкретного типа "${currentType}":`, url);
 
                 fetch(url)
                     .then(res => {
@@ -982,7 +978,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             return;
                         }
 
-                        console.log(`✅ История - найдено ${data.content.length} элементов`);
+                    console.log(`✅ История - найдено ${data.content.length} элементов`);
+                    data.content.forEach((item, index) => {
+                        console.log(`🔍 История - элемент ${index + 1}:`, item);
+                    });
 
                         allContent = data.content.map(item => ({ ...item, type: currentType }));
                         displayContent(allContent, totalElements);
