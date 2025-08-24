@@ -144,6 +144,19 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                          String query,
                                          Pageable pageable);
 
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            WHERE p.status = :contentStatus
+                        AND p.creator.id = :creatorId
+                  AND p.deleted=false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogByCreator(ContentStatus contentStatus,
+                                Long creatorId,
+                                Pageable pageable);
+
+
     @Query("""
             SELECT DISTINCT p FROM Blog p
             JOIN p.blogTranslations t
@@ -165,7 +178,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 WHERE p.status = :contentStatus
                   AND p.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   and p.deleted = false
                 ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByCreatorAndStatusAndQuery(@Param("contentStatus") ContentStatus contentStatus,
@@ -179,7 +191,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 JOIN p.blogTranslations t
                 WHERE p.creator.id = :userId
                   AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   and p.deleted=false
                 ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsWithQuery(@Param("query") String query,

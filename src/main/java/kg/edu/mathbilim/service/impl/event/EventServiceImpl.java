@@ -191,13 +191,8 @@ public class EventServiceImpl extends
             return allEventWithQuery.map(mapper::toDto);
         }
 
-        Page<EventDto> allEvents = getContentByCreatorId(creatorId, pageable);
-
-        List<EventDto> approvedEvents = allEvents.stream()
-                .filter(event -> event.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedEvents, pageable, approvedEvents.size());
+        Page<Event> allEvents = repository.getEventsByCreatorId(ContentStatus.APPROVED, creatorId, pageable);
+        return allEvents.map(mapper::toDto);
     }
 
     @Override

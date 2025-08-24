@@ -39,6 +39,11 @@ public abstract class AdminContentDto {
 
     FileDto mainImage;
 
+
+    @NotNull
+    boolean deleted;
+
+
     public String getFormattedDate() {
         if (createdAt == null) {
             return "";

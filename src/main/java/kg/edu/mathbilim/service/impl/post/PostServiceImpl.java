@@ -142,7 +142,7 @@ public class PostServiceImpl extends
 
     @Override
     @Transactional
-    public PostDto getPostById(Long id, String email){
+    public PostDto getPostById(Long id, String email) {
         Post post = repository.findById(id)
                 .orElseThrow(BlogNotFoundException::new);
 
@@ -193,7 +193,7 @@ public class PostServiceImpl extends
     @Override
     public PostDto getPostById(Long id) {
         Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
-        if(post.isDeleted()==true){
+        if (post.isDeleted() == true) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         incrementViewCount(id);
@@ -207,13 +207,9 @@ public class PostServiceImpl extends
 
             return allPostWithQuery.map(mapper::toDto);
         }
-        Page<PostDto> allPosts = getContentByCreatorId(creatorId, pageable);
+        Page<Post> allPosts = repository.getPostsByCreatorId(ContentStatus.APPROVED, creatorId, pageable);
 
-        List<PostDto> approvedPosts = allPosts.stream()
-                .filter(post -> post.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedPosts, pageable, approvedPosts.size());
+        return allPosts.map(mapper::toDto);
     }
 
     @Override

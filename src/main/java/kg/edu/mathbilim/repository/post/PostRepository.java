@@ -33,7 +33,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
             WHERE p.creator.id = :userId
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-             and p.deleted=false
             ORDER BY p.createdAt DESC
             """)
     Page<Post> getUserPostsWithQuery(@Param("userId") Long userId,
@@ -70,7 +69,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     WHERE p.status = :status
       AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
       AND p.creator.id = :userId
-           and p.deleted=false
     ORDER BY p.createdAt DESC
 """)
     Page<Post> getPostsByStatusAndQuery(
@@ -101,10 +99,24 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
                  and p.deleted=false
+                              and
+                        p.deleted=false
             ORDER BY p.createdAt DESC
             """)
     Page<Post> getPostsByQuery(ContentStatus contentStatus,
                                String query,
+                               Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p FROM Post p
+            WHERE p.status = :contentStatus
+                        AND
+            p.creator.id = :userId
+                 and p.deleted=false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> getPostsByCreatorId(ContentStatus contentStatus,
+                               Long userId,
                                Pageable pageable);
 
 
