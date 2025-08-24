@@ -558,18 +558,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
 
-        function showNoContentMessage(message = "У вас пока нет ни одного поста, блога, события или книги.") {
-            console.log("Нет контента для отображения.");
-            contentList.innerHTML = `
-                <div class="no-content text-center py-5">
-                    <div class="mb-4">
-                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                    </div>
-                    <h5 class="text-muted">Пока нет контента</h5>
-                    <p class="text-muted">${message}</p>
-                </div>`;
-            paginationNav.style.display = 'none';
-        }
+
+        function showNoContentMessage(message = "Пока нет ни одного поста, блога, события или книги.") {
+        console.log("Нет контента для отображения.");
+        contentList.innerHTML = `
+            <div class="no-content text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                </div>
+                <h5 class="text-muted">Пока нет контента</h5>
+                <p class="text-muted">${message}</p>
+            </div>`;
+        paginationNav.style.display = 'none';
+    }
 
         function showErrorMessage() {
             contentList.innerHTML = `

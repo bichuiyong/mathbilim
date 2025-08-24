@@ -849,7 +849,7 @@
                     ${newsDto.creator.name?substring(0, 1)?upper_case}
                 </div>
                 <div class="author-info">
-                    <a href="/profile/info/${newsDto.creator.id}" class="author-name">
+                    <a href="/users/${newsDto.creator.id}/public" class="author-name">
                         ${newsDto.creator.name}
                     </a>
                     <div class="publication-date">

@@ -613,7 +613,7 @@
                         </div>
 
                         <div class="select-wrapper">
-                            <select name="lang" class="language-selector">
+                            <select name="language" class="language-selector">
                                 <option value="ru" <#if currentLang=="ru">selected</#if>>🇷🇺 Русский</option>
                                 <option value="en" <#if currentLang=="en">selected</#if>>🇺🇸 English</option>
                                 <option value="ky" <#if currentLang=="ky">selected</#if>>🇰🇬 Кыргызча</option>
@@ -705,7 +705,7 @@
     <#if blog?? && blog.content?size gt 0 && (blog.hasPrevious() || blog.hasNext())>>
         <div class="pagination-container">
             <#if blog.hasPrevious()>
-                <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                    class="pagination-btn prev">
                     ← Назад
                 </a>
@@ -716,7 +716,7 @@
             </div>
 
             <#if blog.hasNext()>
-                <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                    class="pagination-btn next">
                     Вперёд →
                 </a>
@@ -728,7 +728,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Language selector change handler
-            const langSelect = document.querySelector('select[name="lang"]');
+            const langSelect = document.querySelector('select[name="language"]');
             if (langSelect) {
                 langSelect.addEventListener('change', function () {
                     const form = this.closest('form');
@@ -1042,7 +1042,7 @@
                     }).catch(error => {
                         console.log('Auto-refresh failed:', error);
                     });
-                }, 300000); // Refresh every 5 minutes
+                }, 300000);
             };
 
             const stopAutoRefresh = () => {
@@ -1051,7 +1051,6 @@
                 }
             };
 
-            // Start auto-refresh when page is visible
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
                     stopAutoRefresh();
@@ -1060,10 +1059,8 @@
                 }
             });
 
-            // Initialize auto-refresh
             startAutoRefresh();
 
-            // Search form enhancements
             const searchInput = document.querySelector('input[name="query"]');
             if (searchInput) {
                 let searchTimeout;

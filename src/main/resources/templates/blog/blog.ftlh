@@ -786,7 +786,7 @@
                 </div>
                 <div class="author-info">
                     <#if blog.creator?? && blog.creator.id??>
-                        <a href="/profile/info/${blog.creator.id}" class="author-name">
+                        <a href="/users/${blog.creator.id}/public" class="author-name">
                             ${blog.creator.name!"Автор"}
                         </a>
                     <#else>
