@@ -20,9 +20,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "WHERE bc.blog_id = :blogId", nativeQuery = true)
     List<Comment> findByBlogsId(@Param("blogId") Long blogId);
 
-    @Query(value = "SELECT c.* FROM comments c " +
-            "JOIN news_comments nc ON c.id = nc.comment_id " +
-            "WHERE nc.news_id = :newsId", nativeQuery = true)
-    List<Comment> findByNewsId(@Param("newsId") Long newsId);
+
 
 };

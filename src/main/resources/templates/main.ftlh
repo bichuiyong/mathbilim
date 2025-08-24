@@ -1,55 +1,88 @@
 <#import "layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout title="Главная">
+
+
+    <style>
+        .custom-alert {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 300px;
+            z-index: 1050;
+            opacity: 1 !important;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+        }
+
+    </style>
+
+
+
+
     <div class="container mt-4">
+        <span id="current-locale" style="display:none;">${.locale}</span>
         <div class="hero-section mb-5" id="hero-container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
+                    <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
+                    <div class="hero-buttons">
+                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
+                        <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
+                             alt="Математика" class="img-fluid border-radius">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="alert alert-warning mb-5">
         </div>
 
-        <!-- Новости - Main Content -->
         <div class="row g-4 mb-5">
-            <!-- Featured News Carousel -->
             <div class="col-lg-8">
                 <div class="section-header mb-3">
-                    <h3>Последние новости</h3>
+                    <h3><@spring.message "home.latest.news"/></h3>
                 </div>
                 <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
                     <div class="carousel-indicators" id="news-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
                     </div>
                     <div class="carousel-inner" id="news-carousel-inner">
-                        <!-- Слайды будут загружены динамически -->
                         <div class="carousel-item active d-flex justify-content-center align-items-center"
                              style="height: 400px;">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка новостей...</span>
+                                <span class="visually-hidden"><@spring.message "home.loading.news"/></span>
                             </div>
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
                             data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+                        <span class="visually-hidden"><@spring.message "carousel.previous"/></span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
                             data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                        <span class="visually-hidden"><@spring.message "carousel.next"/></span>
                     </button>
                 </div>
             </div>
 
-            <!-- Latest News Sidebar -->
             <div class="col-lg-4">
                 <div class="news-section">
                     <div class="section-header">
-                        <h3>Все новости</h3>
+                        <h3><@spring.message "home.all.news"/></h3>
                     </div>
                     <div class="news-container" id="news-container">
                         <div class="d-flex justify-content-center p-3">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
+                                <span class="visually-hidden"><@spring.message "home.loading"/></span>
                             </div>
                         </div>
                     </div>
@@ -57,60 +90,54 @@
             </div>
         </div>
 
-        <!-- Публикации -->
         <div class="row g-4 mb-5">
-            <!-- Latest Publications Sidebar -->
             <div class="col-lg-4">
                 <div class="news-section">
                     <div class="section-header">
-                        <h3>Все публикации</h3>
+                        <h3><@spring.message "home.all.publications"/></h3>
                     </div>
                     <div class="news-container" id="post-container">
                         <div class="d-flex justify-content-center p-3">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
+                                <span class="visually-hidden"><@spring.message "home.loading"/></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Featured Publications Carousel -->
             <div class="col-lg-8">
                 <div class="section-header mb-3">
-                    <h3>Последние публикации</h3>
+                    <h3><@spring.message "home.latest.publications"/></h3>
                 </div>
                 <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
                     <div class="carousel-indicators" id="publications-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
                     </div>
                     <div class="carousel-inner" id="publications-carousel-inner">
-                        <!-- Слайды публикаций будут загружены динамически -->
                         <div class="carousel-item active d-flex justify-content-center align-items-center"
                              style="height: 400px;">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка публикаций...</span>
+                                <span class="visually-hidden"><@spring.message "home.loading.publications"/></span>
                             </div>
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
                             data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+                        <span class="visually-hidden"><@spring.message "carousel.previous"/></span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
                             data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                        <span class="visually-hidden"><@spring.message "carousel.next"/></span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Upcoming Events -->
         <div class="events-section mb-5">
             <div class="section-header mb-4">
-                <h3>Предстоящие соревнования</h3>
+                <h3><@spring.message "home.upcoming.events"/></h3>
             </div>
             <div class="events-scroll-container">
                 <div class="events-scroll-wrapper" id="eventsScroll">
@@ -118,14 +145,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop"
-                                     alt="Вебинар по подготовке к ОРТ">
+                                     alt="<@spring.message "event.ort.webinar"/>">
                                 <div class="event-date-overlay">
                                     <span class="event-day">25</span>
-                                    <span class="event-month">ИЮН</span>
+                                    <span class="event-month"><@spring.message "month.jun"/></span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5>Вебинар по подготовке к ОРТ</h5>
+                                <h5><@spring.message "event.ort.webinar"/></h5>
                             </div>
                         </div>
                     </div>
@@ -134,14 +161,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1477281765962-ef34e8bb0967?w=400&h=300&fit=crop"
-                                     alt="Летняя математическая школа">
+                                     alt="<@spring.message "event.summer.school"/>">
                                 <div class="event-date-overlay">
                                     <span class="event-day">2</span>
-                                    <span class="event-month">ИЮЛ</span>
+                                    <span class="event-month"><@spring.message "month.jul"/></span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5>Летняя математическая школа</h5>
+                                <h5><@spring.message "event.summer.school"/></h5>
                             </div>
                         </div>
                     </div>
@@ -150,14 +177,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop"
-                                     alt="Городская олимпиада">
+                                     alt="<@spring.message "event.city.olympiad"/>">
                                 <div class="event-date-overlay">
                                     <span class="event-day">15</span>
-                                    <span class="event-month">ИЮЛ</span>
+                                    <span class="event-month"><@spring.message "month.jul"/></span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5>Городская олимпиада</h5>
+                                <h5><@spring.message "event.city.olympiad"/></h5>
                             </div>
                         </div>
                     </div>
@@ -166,14 +193,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop"
-                                     alt="Мастер-класс по комбинаторике">
+                                     alt="<@spring.message "event.combinatorics.workshop"/>">
                                 <div class="event-date-overlay">
                                     <span class="event-day">28</span>
-                                    <span class="event-month">ИЮЛ</span>
+                                    <span class="event-month"><@spring.message "month.jul"/></span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5>Мастер-класс по комбинаторике</h5>
+                                <h5><@spring.message "event.combinatorics.workshop"/></h5>
                             </div>
                         </div>
                     </div>
@@ -182,14 +209,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop"
-                                     alt="Республиканская олимпиада">
+                                     alt="<@spring.message "event.republic.olympiad"/>">
                                 <div class="event-date-overlay">
                                     <span class="event-day">5</span>
-                                    <span class="event-month">АВГ</span>
+                                    <span class="event-month"><@spring.message "month.aug"/></span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5>Республиканская олимпиада</h5>
+                                <h5><@spring.message "event.republic.olympiad"/></h5>
                             </div>
                         </div>
                     </div>
@@ -197,10 +224,9 @@
             </div>
         </div>
 
-        <!-- Quick Access Section -->
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
-                <h3>Быстрый доступ</h3>
+                <h3><@spring.message "home.quick.access"/></h3>
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
@@ -209,9 +235,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calculator"></i>
                             </div>
-                            <h4>Тесты</h4>
-                            <p class="h-25">Проверьте свои знания в различных разделах математики</p>
-                            <a href="/tests" class="btn btn-primary mt-3">Начать тест</a>
+                            <h4><@spring.message "quick.tests"/></h4>
+                            <p class="h-25"><@spring.message "quick.tests.description"/></p>
+                            <a href="/tests" class="btn btn-primary mt-3"><@spring.message "quick.start.test"/></a>
                         </div>
                     </div>
                 </div>
@@ -221,9 +247,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-trophy"></i>
                             </div>
-                            <h4>Олимпиады</h4>
-                            <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
-                            <a href="/olympiads" class="btn btn-primary mt-3">Участвовать</a>
+                            <h4><@spring.message "quick.olympiads"/></h4>
+                            <p class="h-25"><@spring.message "quick.olympiads.description"/></p>
+                            <a href="/olympiad" class="btn btn-primary mt-3"><@spring.message "quick.participate"/></a>
                         </div>
                     </div>
                 </div>
@@ -233,9 +259,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <h4>Книги</h4>
-                            <p class="h-25">Изучайте математику по качественным учебникам</p>
-                            <a href="/books" class="btn btn-primary mt-3">Изучать</a>
+                            <h4><@spring.message "quick.books"/></h4>
+                            <p class="h-25"><@spring.message "quick.books.description"/></p>
+                            <a href="/books" class="btn btn-primary mt-3"><@spring.message "quick.study"/></a>
                         </div>
                     </div>
                 </div>
@@ -243,29 +269,27 @@
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <h4>Сообщество</h4>
-                            <p class="h-25">Общайтесь с единомышленниками и преподавателями</p>
-                            <a href="/community" class="btn btn-primary mt-3">Присоединиться</a>
+                            <h4><@spring.message "quick.community"/></h4>
+                            <p class="h-25"><@spring.message "quick.community.description"/></p>
+                            <a href="/community" class="btn btn-primary mt-3"><@spring.message "quick.join"/></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Blog Section -->
         <div class="blog-section mb-5">
             <div class="section-header mb-4">
-                <h3>Блог</h3>
+                <h3><@spring.message "home.blog"/></h3>
             </div>
             <div class="blog-masonry-grid"></div>
 
             <div class="text-center mt-4">
-                <a href="/blog" class="btn btn-outline-primary">Все статьи блога</a>
+                <a href="/blog" class="btn btn-outline-primary"><@spring.message "home.all.blog.articles"/></a>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -298,7 +322,6 @@
                 indicator.setAttribute('aria-current', 'true');
             }
 
-            // Создание слайда
             const carouselItem = document.createElement('div');
             carouselItem.className = index === 0 ? 'carousel-item active' : 'carousel-item';
             carouselItem.innerHTML =
@@ -324,6 +347,14 @@
         }
 
 
+        // Функция для скрытия/показа целых секций
+        function toggleSectionVisibility(sectionSelector, isVisible) {
+            const section = document.querySelector(sectionSelector);
+            if (section) {
+                section.style.display = isVisible ? 'block' : 'none';
+            }
+        }
+
         async function loadNewsCarousel() {
             try {
                 const response = await fetch('/api/news/main');
@@ -333,6 +364,9 @@
                 const carouselIndicators = document.getElementById('news-carousel-indicators');
 
                 if (news && news.length > 0) {
+                    // Показываем секцию новостей
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -349,26 +383,16 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Математика">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Добро пожаловать!</h5>
-                                    <p>Здесь будут отображаться последние новости</p>
-                                    <a href="/news" class="btn btn-primary btn-sm">Все новости</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию новостей если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки новостей для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
             }
         }
 
-        // Загрузка публикаций для карусели
         async function loadPublicationsCarousel() {
             try {
                 const response = await fetch('/api/posts/main');
@@ -378,6 +402,9 @@
                 const carouselIndicators = document.getElementById('publications-carousel-indicators');
 
                 if (publications && publications.length > 0) {
+                    // Показываем секцию публикаций
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -394,26 +421,93 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Публикации">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Публикации</h5>
-                                    <p>Здесь будут отображаться последние публикации</p>
-                                    <a href="/posts" class="btn btn-primary btn-sm">Все публикации</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию публикаций если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки публикаций для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
             }
         }
 
-        // Универсальная функция для загрузки элементов в боковую панель
+        // Альтернативный вариант если :has() не поддерживается в старых браузерах
+        function loadNewsCarouselAlternative() {
+            fetch('/api/news/main')
+                .then(response => response.json())
+                .then(news => {
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('news-carousel-inner');
+                    const carouselIndicators = document.getElementById('news-carousel-indicators');
+
+                    if (news && news.length > 0) {
+                        // Показываем секцию
+                        newsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        news.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'newsCarousel',
+                                '/news',
+                                'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        // Скрываем секцию
+                        newsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки новостей для карусели:', error);
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    newsSection.style.display = 'none';
+                });
+        }
+
+        function loadPublicationsCarouselAlternative() {
+            fetch('/api/posts/main')
+                .then(response => response.json())
+                .then(publications => {
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('publications-carousel-inner');
+                    const carouselIndicators = document.getElementById('publications-carousel-indicators');
+
+                    if (publications && publications.length > 0) {
+                        publicationsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        publications.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'publicationsCarousel',
+                                '/posts',
+                                'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        publicationsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки публикаций для карусели:', error);
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    publicationsSection.style.display = 'none';
+                });
+        }
+
         async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
             try {
                 const response = await fetch(apiUrl);
@@ -466,13 +560,10 @@
             }
         }
 
-        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function () {
-            // Загрузка каруселей
             loadNewsCarousel();
             loadPublicationsCarousel();
 
-            // Загрузка боковых панелей
             loadLatestItems(
                 '/api/news/main',
                 'news-container',

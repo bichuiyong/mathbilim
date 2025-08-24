@@ -10,13 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const paginationContainer = document.getElementById("moderationPagination");
     let currentItem = null;
     let currentPage = 0;
-    let currentSize = 10;
+    let currentSize = 5;
     let currentType = 'all';
     let currentQuery = '';
     let totalPages = 0;
     let totalElements = 0;
 
-    // Получение CSRF токена
     function getCsrfToken() {
         return document.querySelector('meta[name="_csrf"]')?.getAttribute('content') || '';
     }
@@ -433,20 +432,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const prevLi = document.createElement('li');
         prevLi.className = `page-item ${currentPageNum === 0 ? 'disabled' : ''}`;
         prevLi.innerHTML = `
-            <a class="page-link" href="#" data-page="${currentPageNum - 1}" ${currentPageNum === 0 ? 'tabindex="-1"' : ''}>
-                <i class="fas fa-chevron-left"></i>
-            </a>
-        `;
+        <a class="page-link" href="#" data-page="${currentPageNum - 1}" ${currentPageNum === 0 ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Previous">
+            &laquo;
+        </a>
+    `;
         pagination.appendChild(prevLi);
 
-        const maxVisiblePages = 5;
+        const maxVisiblePages = 7; // Увеличено с 5 до 7 для соответствия другим функциям
         let startPage = Math.max(0, currentPageNum - Math.floor(maxVisiblePages / 2));
         let endPage = Math.min(totalPagesNum - 1, startPage + maxVisiblePages - 1);
 
+        // Корректируем диапазон если недостаточно страниц
         if (endPage - startPage < maxVisiblePages - 1) {
             startPage = Math.max(0, endPage - maxVisiblePages + 1);
         }
 
+        // Первая страница и многоточие (если нужно)
         if (startPage > 0) {
             const firstLi = document.createElement('li');
             firstLi.className = 'page-item';
@@ -461,13 +462,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Основные страницы
         for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement('li');
-            li.className = `page-item ${i === currentPageNum ? 'active' : ''}`;
-            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
+            if (i === currentPageNum) {
+                li.className = 'page-item active';
+                li.setAttribute('aria-current', 'page');
+                li.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+            } else {
+                li.className = 'page-item';
+                li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
+            }
             pagination.appendChild(li);
         }
 
+        // Многоточие и последняя страница (если нужно)
         if (endPage < totalPagesNum - 1) {
             if (endPage < totalPagesNum - 2) {
                 const dotsLi = document.createElement('li');
@@ -486,13 +495,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const nextLi = document.createElement('li');
         nextLi.className = `page-item ${currentPageNum === totalPagesNum - 1 ? 'disabled' : ''}`;
         nextLi.innerHTML = `
-            <a class="page-link" href="#" data-page="${currentPageNum + 1}" ${currentPageNum === totalPagesNum - 1 ? 'tabindex="-1"' : ''}>
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        `;
+        <a class="page-link" href="#" data-page="${currentPageNum + 1}" ${currentPageNum === totalPagesNum - 1 ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Next">
+            &raquo;
+        </a>
+    `;
         pagination.appendChild(nextLi);
 
-        // Добавляем обработчики событий для всех ссылок
         pagination.addEventListener('click', function(e) {
             if (e.target.matches('a[data-page], a[data-page] *')) {
                 e.preventDefault();

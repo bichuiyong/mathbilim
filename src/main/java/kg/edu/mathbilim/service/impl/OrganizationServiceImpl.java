@@ -14,6 +14,8 @@ import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,13 +32,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final UserService userService;
 
     private Organization getEntityById(Long id) {
-        return organizationRepository.findById(id)
+        return organizationRepository.findByIdAndByDeletedFalse(id)
                 .orElseThrow(OrganizationNotFound::new);
     }
 
     @Override
     public List<OrganizationIdNameDto> getAllOrganizationIdNames() {
-        return organizationRepository.findAll().stream().map(organization -> OrganizationIdNameDto
+        return organizationRepository.findAllByDeletedFalse().stream().map(organization -> OrganizationIdNameDto
                 .builder()
                 .id(organization.getId())
                 .name(organization.getName())
@@ -51,18 +53,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization getByIdModel(Long id) {
-        return organizationRepository.getById(id);
+        return organizationRepository.findByIdAndByDeletedFalse(id)
+                .orElseThrow(OrganizationNotFound::new);
     }
 
     @Override
     public List<OrganizationDto> getOrganizations(String query) {
         if (query != null && !query.isEmpty()) {
-            return organizationRepository.findByNameStartingWith(query)
+            return organizationRepository.findByNameStartingWithAndDeletedFalse(query)
                     .stream()
                     .map(organizationMapper::toDto)
                     .toList();
         }
-        return organizationRepository.findAll()
+        return organizationRepository.findAllByDeletedFalse()
                 .stream()
                 .map(organizationMapper::toDto)
                 .toList();
@@ -102,7 +105,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public OrganizationDto create(OrganizationDto dto, MultipartFile avatarFile) {
         dto.setCreator(userService.getAuthUser());
-        dto.setStatus(ContentStatus.PENDING_REVIEW);
+        dto.setStatus(ContentStatus.APPROVED);
 
         if (avatarFile != null) {
             FileDto avatar = fileService.uploadAvatar(avatarFile);
@@ -112,5 +115,39 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationMapper.toEntity(dto);
         organizationRepository.save(organization);
         return organizationMapper.toDto(organization);
+    }
+
+    @Override
+    public Page<OrganizationDto> getOrganizations(String query, Pageable pageable) {
+        Page<Organization> page;
+        if (query != null && !query.isEmpty()) {
+            page = organizationRepository.findByNameStartingWithAndDeletedFalse(query, pageable);
+        } else {
+            page = organizationRepository.findAllByDeletedFalse(pageable);
+        }
+        return page.map(organizationMapper::toDto);
+    }
+
+    @Transactional
+    @Override
+    public OrganizationDto update(Long id, OrganizationDto dto) {
+        Organization organization = getEntityById(id);
+        organization.setName(dto.getName());
+        organization.setDescription(dto.getDescription());
+        organization.setUrl(dto.getUrl());
+        organizationRepository.save(organization);
+        return organizationMapper.toDto(organization);
+    }
+
+
+    @Transactional
+    @Override
+    public boolean delete(Long id) {
+        Organization organization = getEntityById(id);
+        if (!organization.getEvents().isEmpty() || !organization.getOlympiadOrganizations().isEmpty()) {
+            return false;
+        }
+        organizationRepository.deleteByIdAndSetDeleted(id);
+        return true;
     }
 }

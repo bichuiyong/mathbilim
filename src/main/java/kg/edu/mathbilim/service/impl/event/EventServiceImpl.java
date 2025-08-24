@@ -5,22 +5,23 @@ import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.EventNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventMapper;
-import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.event.EventRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
-import kg.edu.mathbilim.service.interfaces.event.EventService;
-import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.util.PaginationUtil;
+import kg.edu.mathbilim.service.interfaces.event.EventService;
+import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
+import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -102,14 +103,56 @@ public class EventServiceImpl extends
 
     @Override
     @Transactional
-    public DisplayEventDto getDisplayEventById(Long id) {
+    public DisplayEventDto getDisplayEventById(Long id, String email) {
         DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
                 .orElseThrow(this::getNotFoundException);
+
+        if (email == null || email.trim().isEmpty()) {
+            if (event.getStatus() != ContentStatus.APPROVED) {
+                throw new ContentNotAvailableException("Для просмотра этого мероприятия необходимо войти в систему");
+            }
+            incrementViewCount(id);
+            return event;
+        }
+
+        User user = userService.findByEmail(email);
+
+
         List<Long> organizationIds = repository.findOrganizationIdsByEventId(id);
         event.setOrganizationIds(organizationIds);
         incrementViewCount(id);
 
+        boolean isOwner = event.getCreator().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
+        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
 
+        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
+
+        if (isOwner) {
+            incrementViewCount(id);
+            return event;
+        }
+
+        if (hasAdminPrivileges) {
+            incrementViewCount(id);
+            return event;
+        }
+
+        if (event.getStatus() == ContentStatus.PENDING_REVIEW) {
+            throw new ContentNotAvailableException("Книга находится на модерации и недоступен для просмотра");
+        }
+
+        if (event.getStatus() == ContentStatus.REJECTED) {
+            throw new ContentNotAvailableException("Книга был отклонен модерацией и недоступен для просмотра");
+        }
+
+        if (event.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Книга недоступен для просмотра");
+
+        }
+
+        incrementViewCount(id);
         return event;
     }
 
@@ -148,13 +191,8 @@ public class EventServiceImpl extends
             return allEventWithQuery.map(mapper::toDto);
         }
 
-        Page<EventDto> allEvents = getContentByCreatorId(creatorId, pageable);
-
-        List<EventDto> approvedEvents = allEvents.stream()
-                .filter(event -> event.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedEvents, pageable, approvedEvents.size());
+        Page<Event> allEvents = repository.getEventsByCreatorId(ContentStatus.APPROVED, creatorId, pageable);
+        return allEvents.map(mapper::toDto);
     }
 
     @Override

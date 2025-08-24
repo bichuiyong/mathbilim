@@ -834,6 +834,14 @@
             }
         }
     </style>
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
 
     <div class="content-wrapper">
         <a href="/posts" class="back-btn">
@@ -842,6 +850,16 @@
             </svg>
             Назад к публикациям
         </a>
+        <#if currentUser?? && (isAdmin || (post.creator?? && post.creator.id == currentUser.id))>
+            <form action="/posts/delete/${post.id}" method="post" style="">
+                <@main.csrf/>
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                    🗑 <@spring.message "test.details.delete"/>
+                </button>
+            </form>
+        </#if>
+
 
         <article class="publication-item">
             <header class="publication-header">
@@ -849,7 +867,7 @@
                     ${post.creator.name?substring(0, 1)?upper_case}
                 </div>
                 <div class="author-info">
-                    <a href="/profile/info/${post.creator.id}" class="publication-author">
+                    <a href="/users/${post.creator.id}/public" class="publication-author">
                         ${post.creator.name}
                     </a>
                     <div class="publication-date">
@@ -920,30 +938,31 @@
                     <button class="show-more-btn" id="toggleButton">Читать полностью</button>
                 </#if>
             </div>
-
-            <div class="publication-meta">
-                <div class="meta-item">
-                    <span class="icon">👁️</span>
-                    <span>${post.viewCount!0} просмотров</span>
+            <#if post.status == "APPROVED">
+                <div class="publication-meta">
+                    <div class="meta-item">
+                        <span class="icon">👁️</span>
+                        <span>${post.viewCount!0} просмотров</span>
+                    </div>
+                    <#if post.shareCount?? && post.shareCount gt 0>
+                        <div class="meta-item">
+                            <span class="icon">📤</span>
+                            <span>${post.shareCount} репостов</span>
+                        </div>
+                    </#if>
+                    <#if allImages?size gt 1>
+                        <div class="meta-item">
+                            <span class="icon">📷</span>
+                            <span>${allImages?size} фотографий</span>
+                        </div>
+                    </#if>
+                    <button id="viewCommentsBtn" data-post-id="${post.id}"
+                            <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
+                        <span class="icon">💬</span>
+                        Комментарии
+                    </button>
                 </div>
-                <#if post.shareCount?? && post.shareCount gt 0>
-                    <div class="meta-item">
-                        <span class="icon">📤</span>
-                        <span>${post.shareCount} репостов</span>
-                    </div>
-                </#if>
-                <#if allImages?size gt 1>
-                    <div class="meta-item">
-                        <span class="icon">📷</span>
-                        <span>${allImages?size} фотографий</span>
-                    </div>
-                </#if>
-                <button id="viewCommentsBtn" data-post-id="${post.id}"
-                        <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button>
-            </div>
+            </#if>
         </article>
     </div>
 
@@ -1151,8 +1170,9 @@
                         : 'U';
                     const timeAgo = formatTimeAgo(comment.createdAt);
 
+                    const moderOrAdmin = <#if (isAdmin?? && isAdmin) || (isModer?? && isModer)>true<#else>false</#if>
                     const isCurrentUserAuthor = currentUserId && comment.author &&
-                        (comment.author.id == currentUserId || comment.author.id === currentUserId);
+                        (comment.author.id == currentUserId || comment.author.id === currentUserId) || moderOrAdmin;
 
                     const menuHtml = isCurrentUserAuthor ? `
                         <div class="comment-menu">

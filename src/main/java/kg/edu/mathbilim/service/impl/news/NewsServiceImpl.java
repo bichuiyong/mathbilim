@@ -129,6 +129,9 @@ public class NewsServiceImpl extends
     @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElse(null);
+        if(news.isDeleted()==true) {
+            throw new NoSuchElementException("News with id " + id + " not found");
+        }
         incrementViewCount(id);
         log.info("News {} with id {}", news.getId(), news.getCreator().getId());
 

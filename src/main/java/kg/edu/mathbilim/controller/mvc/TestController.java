@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.test.TestCreateDto;
 import kg.edu.mathbilim.dto.test.TestPassDto;
 import kg.edu.mathbilim.dto.test.TestsListDto;
+import kg.edu.mathbilim.exception.nsee.TopicNotFoundException;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.test.TestService;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 
 @Controller("mvcTest")
@@ -41,8 +45,9 @@ public class TestController {
     }
 
     @GetMapping("{id}")
-    public String testDetails(@PathVariable("id") Long id, Model model,Authentication auth) {
+    public String testDetails(@PathVariable("id") Long id, Model model,Authentication auth, Principal principal) {
         model.addAttribute("test", testService.getTestById(id));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             model.addAttribute("lastResults", testService.getLastResultsForUser(auth.getName(), id));
         }
@@ -84,12 +89,19 @@ public class TestController {
     @PostMapping("create")
     public String createTestPost(@Valid @ModelAttribute TestCreateDto testCreateDto,
                                  BindingResult bindingResult,
-                                 Model model) {
+                                 Model model) throws TopicNotFoundException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("testCreateDto", testCreateDto);
             return "tests/test-create";
         }
         testService.createTest(testCreateDto);
+        return "redirect:/tests";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String deleteTest(@PathVariable long id) {
+        testService.deleteTestById(id);
         return "redirect:/tests";
     }
 }

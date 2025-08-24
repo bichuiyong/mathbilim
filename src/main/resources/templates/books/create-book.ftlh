@@ -5,14 +5,19 @@
     <div class="container my-5">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="mb-0">Create New Book</h3>
+                <h3 class="mb-0"><@spring.message "books.create.title"/></h3>
             </div>
             <div class="card-body">
                 <form id="bookForm" action="/books/create" method="post" enctype="multipart/form-data">
                     <@main.csrf/>
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">
+                            <@spring.message "books.cover"/>
+                            <span class="text-danger">*</span>
+                        </label>
+
+
                         <div class="image-upload-container">
                             <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
                             <div class="image-preview-container" style="display: none;">
@@ -20,57 +25,75 @@
                                     <img id="imagePreview" class="img-fluid">
                                 </div>
                                 <div class="crop-controls mt-3">
-                                    <button type="button" class="btn btn-primary" id="cropButton">Применить кроп</button>
-                                    <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить</button>
+                                    <button type="button" class="btn btn-primary" id="cropButton">
+                                        <@spring.message "books.crop.apply"/>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                        <@spring.message "books.crop.cancel"/>
+                                    </button>
                                 </div>
                             </div>
                             <div class="cropped-preview" style="display: none;">
-                                <label class="form-label">Предпросмотр (1200x400):</label>
+                                <label class="form-label">
+                                    <@spring.message "books.preview"/> (1200x400):
+                                </label>
                                 <div class="cropped-image-container">
                                     <img id="croppedImage" class="img-fluid border rounded">
                                 </div>
-                                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">
+                                    <@spring.message "books.crop.change"/>
+                                </button>
                             </div>
                         </div>
                         <small class="form-text text-muted">
-                            Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                            <@spring.message "books.cover.aspectRatio"/>
                         </small>
                     </div>
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Book Title</label>
-                        <@spring.formInput "book.name" 'class="form-control" id="name" placeholder="Enter book title"'/>
+                        <label for="name" class="form-label">
+                            <@spring.message "books.title"/>
+                        </label>
+                        <@spring.formInput "book.name" 'class="form-control" id="name" placeholder="${springMacroRequestContext.getMessage("books.title.placeholder")}"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="authors" class="form-label">Author(s)</label>
-                        <@spring.formInput "book.authors" 'class="form-control" id="authors" placeholder="Enter author(s)"'/>
+                        <label for="authors" class="form-label">
+                            <@spring.message "books.authors"/>
+                        </label>
+                        <@spring.formInput "book.authors" 'class="form-control" id="authors" placeholder="${springMacroRequestContext.getMessage("books.authors.placeholder")}"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <@spring.formInput "book.isbn" 'class="form-control" id="isbn" placeholder="e.g. 978-3-16-148410-0"'/>
+                        <label for="isbn" class="form-label">
+                            <@spring.message "books.isbn"/>
+                        </label>
+                        <@spring.formInput "book.isbn" 'class="form-control" id="isbn" placeholder="${springMacroRequestContext.getMessage("books.isbn.placeholder")}"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label">
+                            <@spring.message "books.description"/>
+                        </label>
                         <@spring.formTextarea "book.description" 'class="form-control" id="description" rows="4"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
 
-
-
-
                     <div class="mb-3">
-                        <label for="attachments" class="form-label">Attachments</label>
+                        <label for="attachments" class="form-label">
+                            <@spring.message "books.attachments"/>
+                        </label>
                         <input type="file" class="form-control"
                                id="attachments"
                                name="attachments"
                                multiple required
                                accept=".pdf">
                         <div class="form-text text-danger">
-                            📎 Supported files: PDF only<br>
+                            📎 <@spring.message "books.attachments.supported"/>
                         </div>
+                        <#if attachmentError??>
+                            <span class="text-danger small">${attachmentError}</span>
+                        </#if>
                     </div>
 
                     <div class="mb-3">
@@ -79,7 +102,9 @@
                             <#assign categoryOptions = categoryOptions + {category.id?string: category.translations[0].translation}>
                         </#list>
 
-                        <label for="category" class="form-label">Category</label>
+                        <label for="category" class="form-label">
+                            <@spring.message "books.category"/>
+                        </label>
                         <@spring.formSingleSelect
                         "book.category.id",
                         categoryOptions,
@@ -92,10 +117,12 @@
                         </div>
                         <div class="d-flex gap-2">
                             <a href="/books" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i>Отменить
+                                <i class="fas fa-times me-2"></i>
+                                <@spring.message "books.cancel"/>
                             </a>
                             <button type="submit" class="btn btn-primary" id="submitButton">
-                                <i class="fas fa-save me-2"></i>Создать книгу
+                                <i class="fas fa-save me-2"></i>
+                                <@spring.message "books.create.button"/>
                             </button>
                         </div>
                     </div>
@@ -180,6 +207,5 @@
             window.bookCreateManager = new BookCreateManager();
         });
     </script>
-
 
 </@main.layout>

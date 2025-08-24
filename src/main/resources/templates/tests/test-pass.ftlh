@@ -201,7 +201,7 @@
     <div>
         <#assign totalQuestions = test.questionCount>
         <#assign perColumn = 5>
-        <#assign columns = ((totalQuestions - 1) / perColumn + 1)>
+        <#assign columns = ((totalQuestions - 1) / perColumn + 1)?floor>
         <#assign index = 0>
         <form action="/tests/${test.id}/pass" method="post" class="answers-wrapper" id="sendAnswersForm">
             <@main.csrf/>
@@ -216,7 +216,7 @@
                     </div>
                     <#list test.questionDtoList as question>
                         <#assign questionNum = question.numberOrder>
-                        <#if questionNum <= totalQuestions>
+                        <#if questionNum <= totalQuestions && (questionNum > (col * perColumn)) && (questionNum <= ((col + 1) * perColumn))>
                             <div class="answer-row" data-question="${questionNum}">
                                 <div class="number">${questionNum}</div>
                                 <input type="hidden" name="attemptAnswerDtoList[${index}].questionNumber"
@@ -237,12 +237,10 @@
                                     <div><input type="radio" name="attemptAnswerDtoList[${index}].chosenAnswer" value="D"
                                                 data-page="${question.testPageNumber}"></div>
                                 </#if>
-
                                 <#assign index = index + 1>
                             </div>
                         </#if>
                     </#list>
-
                 </div>
             </#list>
         </form>

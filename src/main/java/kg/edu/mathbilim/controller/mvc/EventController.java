@@ -8,18 +8,23 @@ import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTypeService;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Locale;
 
 @Controller("mvcEvent")
 @RequestMapping("events")
@@ -29,11 +34,13 @@ public class EventController {
     private final EventTypeService eventTypeService;
     private final OrganizationService organizationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
+    private final UserService userService;
 
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
-        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage("ru"));
+        Locale lan =  LocaleContextHolder.getLocale();
+        model.addAttribute("eventsTypes", eventTypeService.getEventTypesByLanguage(lan.getLanguage()));
         model.addAttribute("organizations", organizationService.getOrganizations(null));
         model.addAttribute("languages", Language.getLanguagesMap());
         model.addAttribute("languageEnum", Language.values());
@@ -48,10 +55,10 @@ public class EventController {
     @GetMapping("/{id}")
     public String viewEvent(@PathVariable Long id,
                             HttpServletRequest request,
-                            Model model) {
+                            Model model,  Principal principal) {
 
-
-        DisplayEventDto event = eventService.getDisplayEventById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        DisplayEventDto event = eventService.getDisplayEventById(id, email);
 
         model.addAttribute("eventType", eventTypeService.getEventTypeById(event.getTypeId()));
 
@@ -64,6 +71,7 @@ public class EventController {
 
         model.addAttribute("event", event);
         model.addAttribute("shareUrl", shareUrl);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 
         return "events/event-details";
     }
@@ -98,9 +106,9 @@ public class EventController {
         return "events/olymps/olymp-details";
     }
 
-    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('MODER')")
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PreAuthorize("@eventSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         eventService.delete(id);
         return "redirect:/";
     }

@@ -1,6 +1,11 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
+        .container {
+            max-width: 1400px;
+        }
+
         .tab-pane {
             min-height: 300px;
         }
@@ -23,9 +28,39 @@
             top: 0;
         }
 
-        .table th,td {
+        .table {
             text-align: center;
             vertical-align: middle;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            border: none;
+        }
+
+        .table thead {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         @media (max-width: 1000px) {
@@ -63,44 +98,37 @@
 
         .mybtn {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 6px 12px; /* Slightly larger padding */
             background-color: #77a6ff;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             line-height: 1;
             cursor: pointer;
             user-select: none;
             border: none;
             outline: none;
-            box-shadow: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            min-height: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .mybtn-off {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 6px 12px;
             background-color: #a9a8a8;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             line-height: 1;
-            cursor: pointer;
+            cursor: not-allowed;
             user-select: none;
             border: none;
             outline: none;
-            box-shadow: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            min-height: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .mybtn:hover,
@@ -108,6 +136,7 @@
             background-color: #5388fb;
             outline: none;
             color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .mybtn:active {
@@ -117,23 +146,20 @@
 
         .mybtn-admin {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 6px 12px;
             background-color: #b56df1;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             line-height: 1;
             cursor: pointer;
             user-select: none;
             border: none;
             outline: none;
-            box-shadow: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            min-height: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .mybtn-admin:hover,
@@ -141,6 +167,7 @@
             background-color: #a94eed;
             outline: none;
             color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .mybtn-admin:active {
@@ -421,15 +448,39 @@
             .organization-name {
                 font-size: 18px;
             }
-
         }
+
+        .table-responsive {
+            padding: 0 10px;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.98);
+            transition: all 0.2s ease;
+            transform: translateX(1px);
+        }
+
+        .table thead {
+            background-color: #d6ecff;
+            color: #343a40;
+        }
+
+        .table {
+            width: 97%;
+            font-size: 0.79rem;
+        }
+
+        .table thead th {
+            font-size: 0.7rem;
+        }
+
     </style>
 
     <#if SPRING_SECURITY_CONTEXT??>
         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
         <#assign authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)>
         <#assign
-        isAdmin = authorities?seq_contains("ADMIN")
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
         isModer = authorities?seq_contains("MODER") || isAdmin
         isUser = authorities?seq_contains("USER")
         >
@@ -459,6 +510,7 @@
             ReactDOM.render(<Notification />, document.getElementById("notification-root"));
         </script>
     </#if>
+
 
     <div class="container mt-4 mb-5">
         <h1 class="mb-4">${olympiad.title}</h1>
@@ -497,13 +549,21 @@
 
             <#if (user??) && ((isModer!false) || (isAdmin!false))>
                 <li class="nav-item edit" role="presentation">
-                    <button class="nav-link active" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization"
-                            type="button" role="tab" aria-controls="organization" aria-selected="false">
+                    <button class="nav-link" id="edit-tab" type="button" role="tab">
                         <a style="color: #ff6464; text-decoration: none;" href="/olympiad/edit?id=${olympiad.id}">
                             <@spring.message "olympiad.button.edit">Редактировать</@spring.message>
                         </a>
                     </button>
                 </li>
+                <#if currentUser?? && (isAdmin || (olympiad.creator?? && olympiad.creator.id == currentUser.id))>
+                    <form action="/olympiad/delete/${olympiad.id}" method="post" style="">
+                        <@main.csrf/>
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="contact-card btn btn-sm d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            🗑 <@spring.message "test.details.delete"/>
+                        </button>
+                    </form>
+                </#if>
             </#if>
         </ul>
 
@@ -520,12 +580,7 @@
                 <h4 class="h4head"><@spring.message "olympiad.heading.stages">Этапы проведения</@spring.message></h4>
                 <#if olympiad.stages?? && (olympiad.stages?size > 0)>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-sm small" style="margin-top: 20px;
-                            <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                width: 100%
-                            <#else>
-                                width: 90%"
-                            </#if>>
+                        <table class="table table-hover table-sm" style="margin-top: 20px;">
                             <thead class="table-light">
                             <tr>
                                 <th><@spring.message "olympiad.stage.col.stage">Этап</@spring.message></th>
@@ -540,7 +595,7 @@
                                 </#if>
                                 <th><@spring.message "olympiad.stage.col.participantList">Список участников</@spring.message></th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                                    <th><@spring.message "olympiad.stage.col.participants">участники</@spring.message></th>
+                                    <th><@spring.message "olympiad.stage.col.participants">Участники</@spring.message></th>
                                 </#if>
                                 <th><@spring.message "olympiad.stage.col.registration">Регистрация</@spring.message></th>
                                 <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -564,10 +619,10 @@
                                     <td>
                                         <#if stage.result?? && (stage.result?size > 0)>
                                             <a href="скачать результаты" onclick="window.location.href='/api/files/${stage.result[0].file.id}/download'; return false;" class="mybtn">
-                                                <@spring.message "olympiad.stage.results.link">результаты</@spring.message>
+                                                <@spring.message "olympiad.stage.results.link">Результаты</@spring.message>
                                             </a>
                                         <#else>
-                                            <span class="mybtn-off"><@spring.message "olympiad.stage.results.none">отсутствует</@spring.message></span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.results.none">Отсутствует</@spring.message></span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -581,11 +636,11 @@
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.result?? && (stage.result?size > 0)>
                                                     <button type="button" class="uploadBtn mybtn-admin">
-                                                        <@spring.message "olympiad.stage.results.changeBtn">поменять</@spring.message>
+                                                        <@spring.message "olympiad.stage.results.changeBtn">Поменять</@spring.message>
                                                     </button>
                                                 <#else>
                                                     <button type="button" class="uploadBtn mybtn-admin">
-                                                        <@spring.message "olympiad.stage.results.addBtn">добавить</@spring.message>
+                                                        <@spring.message "olympiad.stage.results.addBtn">Добавить</@spring.message>
                                                     </button>
                                                 </#if>
                                             </form>
@@ -594,10 +649,10 @@
                                     <td>
                                         <#if stage.approvedList?? && (stage.approvedList?size > 0)>
                                             <a href="скачать список участников" onclick="window.location.href='/api/files/${stage.approvedList[0].file.id}/download'; return false;" class="mybtn">
-                                                <@spring.message "olympiad.stage.participants.link">список</@spring.message>
+                                                <@spring.message "olympiad.stage.participants.link">Список</@spring.message>
                                             </a>
                                         <#else>
-                                            <span class="mybtn-off"><@spring.message "olympiad.stage.participants.none">отсутствует</@spring.message></span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.participants.none">Отсутствует</@spring.message></span>
                                         </#if>
                                     </td>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -611,11 +666,11 @@
                                                 <input type="number" name="stageId" value="${stage.id}" hidden="hidden" />
                                                 <#if stage.approvedList?? && (stage.approvedList?size > 0)>
                                                     <button type="button" class="uploadBtn mybtn-admin">
-                                                        <@spring.message "olympiad.stage.participants.changeBtn">поменять</@spring.message>
+                                                        <@spring.message "olympiad.stage.participants.changeBtn">Поменять</@spring.message>
                                                     </button>
                                                 <#else>
                                                     <button type="button" class="uploadBtn mybtn-admin">
-                                                        <@spring.message "olympiad.stage.participants.addBtn">добавить</@spring.message>
+                                                        <@spring.message "olympiad.stage.participants.addBtn">Добавить</@spring.message>
                                                     </button>
                                                 </#if>
                                             </form>
@@ -624,12 +679,12 @@
                                     <#if (stage.registrationDate?long <= today?long) && (stage.registrationEndDate?long >= today?long)>
                                         <td>
                                             <a href="/olympiad/registration?stageId=${stage.id}" class="mybtn">
-                                                <@spring.message "olympiad.stage.registration.registerBtn">зарегистрироваться</@spring.message>
+                                                <@spring.message "olympiad.stage.registration.registerBtn">Зарегистрироваться</@spring.message>
                                             </a>
                                         </td>
                                     <#else>
                                         <td>
-                                            <span class="mybtn-off"><@spring.message "olympiad.stage.registration.unavailable">недоступно</@spring.message></span>
+                                            <span class="mybtn-off"><@spring.message "olympiad.stage.registration.unavailable">Недоступно</@spring.message></span>
                                         </td>
                                     </#if>
                                     <#if (user??) && ((isModer!false) || (isAdmin!false))>
@@ -643,7 +698,6 @@
                                             </a>
                                         </td>
                                     </#if>
-
                                 </tr>
                             </#list>
                             </tbody>

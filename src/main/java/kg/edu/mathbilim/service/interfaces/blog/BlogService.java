@@ -19,7 +19,7 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
 
     Page<BlogDto> getBlogsForModeration(Pageable pageable, String query);
 
-    BlogDto getDisplayBlogById(Long id);
+    BlogDto getDisplayBlogById(Long id, String email);
 
     Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection);
 

@@ -14,11 +14,16 @@ import java.util.function.Supplier;
 public class PaginationUtil {
 
     public Pageable createPageableWithSort(int page, int size, String sortBy, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc")
-                ? Sort.Direction.ASC
-                : Sort.Direction.DESC;
+        String sortField = (sortBy == null || sortBy.isBlank()) ? "id" : sortBy;
 
-        return PageRequest.of(page - 1, size, Sort.by(direction, sortBy));
+        Sort.Direction direction = Sort.Direction.DESC;
+        if (sortDirection != null && sortDirection.equalsIgnoreCase("asc")) {
+            direction = Sort.Direction.ASC;
+        }
+
+        int pageIndex = Math.max(page - 1, 0);
+
+        return PageRequest.of(pageIndex, size, Sort.by(direction, sortField));
     }
 
     public static <E, D> Page<D> getPage(Supplier<Page<E>> supplier,

@@ -2,6 +2,8 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.dto.book.BookDto;
+import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
+import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.BookNotFoundException;
 import kg.edu.mathbilim.mapper.BookMapper;
 import kg.edu.mathbilim.mapper.FileMapper;
@@ -115,6 +117,54 @@ public class BookServiceImpl extends
     }
 
     @Override
+    public BookDto getBookById(Long id, String email) {
+        Book book = repository.findById(id)
+                .orElseThrow(BlogNotFoundException::new);
+
+        if (email == null || email.trim().isEmpty()) {
+            if (book.getStatus() != ContentStatus.APPROVED) {
+                throw new ContentNotAvailableException("Для просмотра этой книги необходимо войти в систему");
+            }
+            return mapper.toDto(book);
+        }
+
+        User user = userService.findByEmail(email);
+
+        boolean isOwner = book.getCreator().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
+        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
+
+        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
+
+        if (isOwner) {
+            incrementViewCount(id);
+            return mapper.toDto(book);
+        }
+
+        if (hasAdminPrivileges) {
+            incrementViewCount(id);
+            return mapper.toDto(book);
+        }
+
+        if (book.getStatus() == ContentStatus.PENDING_REVIEW) {
+            throw new ContentNotAvailableException("Книга находится на модерации и недоступен для просмотра");
+        }
+
+        if (book.getStatus() == ContentStatus.REJECTED) {
+            throw new ContentNotAvailableException("Книга был отклонен модерацией и недоступен для просмотра");
+        }
+
+        if (book.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Книга недоступен для просмотра");
+
+        }
+
+        incrementViewCount(id);
+        return mapper.toDto(book);
+    }
+
+    @Override
     public Page<BookDto> getContentByCreatorIdBook(Long creatorId, Pageable pageable, String query) {
 
         if (query != null) {
@@ -123,14 +173,10 @@ public class BookServiceImpl extends
             return allBooksWithQuery.map(mapper::toDto);
         }
 
-        Page<BookDto> allBooks = getContentByCreatorId(creatorId, pageable);
+        Page<Book> allBooks = repository.getBooksByCreator(ContentStatus.APPROVED, pageable, creatorId);
 
-        List<BookDto> approvedBooks = allBooks
-                .stream()
-                .filter(book -> book.getStatus() == ContentStatus.APPROVED)
-                .toList();
 
-        return new PageImpl<>(approvedBooks, pageable, approvedBooks.size());
+        return allBooks.map(mapper::toDto);
     }
 
     @Override
@@ -158,7 +204,7 @@ public class BookServiceImpl extends
 
         if (contentStatus != null) {
             return repository.getBooksByCreatorAndStatus(
-                    contentStatus, creatorId, pageable
+                            contentStatus, creatorId, pageable
                     )
                     .map(mapper::toDto);
         }

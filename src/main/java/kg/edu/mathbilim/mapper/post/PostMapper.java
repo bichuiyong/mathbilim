@@ -15,5 +15,6 @@ public interface PostMapper extends BaseMapper<Post, PostDto> {
 
     @Mapping(target = "postTranslations", source = "postTranslations")
     @Mapping(target = "typeId", source = "type.id")
+    @Mapping(target = "deleted", source = "deleted")
     PostDto toDto(Post post);
 }

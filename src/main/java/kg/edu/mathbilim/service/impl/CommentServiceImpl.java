@@ -31,7 +31,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final PostService postService;
     private final BlogService blogService;
-    private final NewsService newsService;
     private final UserService userService;
 
     public CommentDto getComment(Long id) {
@@ -52,11 +51,6 @@ public class CommentServiceImpl implements CommentService {
         return createComment(comment, com -> com.getBlogs().add(blog));
     }
 
-    @Override
-    public CommentDto addCommentNews(CommentCreateDto comment, Long newsId) {
-        News news = newsService.findByNewsId(newsId);
-        return createComment(comment, com -> com.getNews().add(news));
-    }
 
     @Override
     public void deleteComment(Long commentId) {
@@ -75,10 +69,6 @@ public class CommentServiceImpl implements CommentService {
         return mapCommentsToDto(commentRepository.findByBlogsId(blogId));
     }
 
-    @Override
-    public List<CommentDto> getCommentsForNews(Long newsId) {
-        return mapCommentsToDto(commentRepository.findByNewsId(newsId));
-    }
 
     private CommentDto createComment(CommentCreateDto commentDto, Consumer<Comment> entitySetter) {
         Comment comment = new Comment();

@@ -1,11 +1,13 @@
 package kg.edu.mathbilim.model.olympiad;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.user.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,4 +65,11 @@ public class Olympiad {
 
     @OneToMany(mappedBy = "olympiad", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OlympiadOrganization> olympiadOrganizations = new ArrayList<>();
+
+
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    boolean deleted = false;
 }
