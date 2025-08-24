@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
     <style>
         :root {
@@ -340,11 +341,10 @@
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-
     <div class="tc-page-wrapper">
         <div class="tc-container">
             <div class="tc-header">
-                <h1 class="tc-title">Создание нового теста</h1>
+                <h1 class="tc-title"><@spring.message "test.create.title"/></h1>
             </div>
 
             <div class="tc-form-content">
@@ -362,52 +362,52 @@
                         </#if>
 
                         <div class="tc-form-group">
-                            <label for="testName" class="tc-label tc-required">Название теста</label>
+                            <label for="testName" class="tc-label tc-required"><@spring.message "test.create.name"/></label>
                             <input type="text" id="testName" name="name" class="tc-input" required maxlength="50">
-                            <div class="tc-page-error" id="testNameError">Название теста должно быть от 1 до 50 символов</div>
+                            <div class="tc-page-error" id="testNameError"><@spring.message "test.create.name.error"/></div>
                         </div>
 
                         <div class="tc-form-group">
-                            <label for="testName" class="tc-label tc-required">Описание</label>
-                            <input type="text" id="testName" name="description" class="tc-input" required maxlength="100">
-                            <div class="tc-page-error" id="testNameError">Описание должно быть от 1 до 100 символов</div>
+                            <label for="description" class="tc-label tc-required"><@spring.message "test.create.description"/></label>
+                            <input type="text" id="description" name="description" class="tc-input" required maxlength="100">
+                            <div class="tc-page-error" id="descriptionError"><@spring.message "test.create.description.error"/></div>
                         </div>
 
                         <div class="tc-form-group">
-                            <label for="timeLimit" class="tc-label tc-required">Ограничение времени (минуты)</label>
+                            <label for="timeLimit" class="tc-label tc-required"><@spring.message "test.create.timeLimit"/></label>
                             <input type="number" id="timeLimit" name="timeLimit" class="tc-input" min="1">
                             <label class="tc-checkbox-label">
                                 <input type="hidden" name="_hasLimit" value="false">
                                 <input type="checkbox" id="hasLimit" name="hasLimit" value="true" checked onchange="testCreator.toggleTimeLimit()">
-                                Установить ограничение времени
+                                <@spring.message "test.create.timeLimit.set"/>
                             </label>
                         </div>
 
                         <div class="tc-form-group tc-full-width">
-                            <label for="pdfFile" class="tc-label tc-required">PDF файл с материалами</label>
+                            <label for="pdfFile" class="tc-label tc-required"><@spring.message "test.create.file"/></label>
                             <input type="file" id="pdfFile" name="file" class="tc-file-input" accept=".pdf" required>
-                            <div class="tc-file-info tc-hidden" id="fileInfo"></div>
+                            <div class="tc-file-info tc-hidden" id="fileInfo"><@spring.message "test.create.file.info"/></div>
                         </div>
 
                         <div class="tc-form-group">
-                            <label for="pageCount" class="tc-label">Количество страниц (авто)</label>
+                            <label for="pageCount" class="tc-label"><@spring.message "test.create.pageCount"/></label>
                             <input type="number" id="pageCount" class="tc-input" readonly>
                         </div>
                     </div>
 
                     <div class="tc-questions-container">
-                        <h2>Вопросы теста</h2>
+                        <h2><@spring.message "test.create.questions"/></h2>
                         <div id="questionsList"></div>
-                        <div class="tc-page-error" id="questionsError">Добавьте хотя бы один вопрос</div>
+                        <div class="tc-page-error" id="questionsError"><@spring.message "test.create.questions.error"/></div>
 
                         <button type="button" id="addQuestionBtn" class="tc-btn tc-btn-primary">
-                            Добавить вопрос
+                            <@spring.message "test.create.questions.add"/>
                         </button>
                     </div>
 
                     <div class="tc-form-group tc-full-width" style="margin-top: 2rem;">
                         <button type="submit" class="tc-btn tc-btn-primary tc-submit-btn">
-                            Сохранить тест
+                            <@spring.message "test.create.save"/>
                         </button>
                     </div>
                 </form>
@@ -422,6 +422,27 @@
             { id: ${topic.id}, name: "${topic.name}" }<#if topic_has_next>,</#if>
             </#list>
         ];
+        const i18n = {
+            fileSelected: "<@spring.message 'test.file.selected'/>",
+            fileError: "<@spring.message 'test.file.error'/>",
+            question: "<@spring.message 'test.question'/>",
+            pageLabel: "<@spring.message 'test.question.page'/>",
+            pageError: "<@spring.message 'test.question.page.error'/>",
+            coefficient: "<@spring.message 'test.question.coefficient'/>",
+            topic: "<@spring.message 'test.question.topic'/>",
+            selectTopic: "<@spring.message 'test.question.topic.select'/>",
+            textAnswer: "<@spring.message 'test.question.textAnswer'/>",
+            correct: "<@spring.message 'test.question.correct'/>",
+            optionA: "<@spring.message 'test.question.optionA'/>",
+            optionB: "<@spring.message 'test.question.optionB'/>",
+            optionC: "<@spring.message 'test.question.optionC'/>",
+            optionD: "<@spring.message 'test.question.optionD'/>",
+            answerLabel: "<@spring.message 'test.question.answer.label'/>",
+            answerPlaceholder: "<@spring.message 'test.question.answer.placeholder'/>",
+            removeConfirm: "<@spring.message 'test.question.remove.confirm'/>",
+            noQuestions: "<@spring.message 'test.question.error'/>",
+            textAnswerRequired: "<@spring.message 'test.question.textAnswer.required'/>"
+        };
         <#noparse>
         class TestCreator {
             constructor() {
@@ -477,7 +498,7 @@
             async handleFileUpload(e) {
                 if (e.target.files.length > 0) {
                     const file = e.target.files[0];
-                    this.fileInfo.textContent = `Выбран файл: ${file.name}`;
+                    this.fileInfo.textContent = `${i18n.fileSelected} ${file.name}`;
                     this.fileInfo.classList.remove('tc-hidden');
 
                     try {
@@ -488,7 +509,7 @@
                         this.updatePageInputsMax(pageCount);
                     } catch (error) {
                         console.error('Ошибка при чтении PDF:', error);
-                        this.fileInfo.textContent = `Ошибка при чтении файла: ${file.name}`;
+                        this.fileInfo.textContent = `${i18n.fileError} ${file.name}`;
                         this.pageCountInput.value = '';
                         this.updatePageInputsMax(999);
                     }
@@ -530,7 +551,7 @@
 
                 return `
     <div class="tc-question-header">
-        <span class="tc-question-number">Вопрос #${index + 1}</span>
+        <span class="tc-question-number">${i18n.question} ${index + 1}</span>
         <button type="button" class="tc-remove-question" onclick="testCreator.removeQuestion('${questionId}')">
             ×
         </button>
@@ -539,20 +560,20 @@
     <div class="tc-question-inline">
         <div class="tc-compact-group">
             <input type="hidden" name="questions[${index}].numberOrder" value="${index + 1}">
-            <label for="${questionId}_page">Страница</label>
+            <label for="${questionId}_page">${i18n.pageLabel}</label>
             <input type="number" id="${questionId}_page" name="questions[${index}].testPageNumber" class="tc-input tc-page-input" min="1" max="${maxPages}" required>
-            <div class="tc-page-error">Страница должна быть от 1 до ${maxPages}</div>
+            <div class="tc-page-error">${i18n.pageError.replace('{0}', maxPages)}</div>
         </div>
 
         <div class="tc-compact-group">
-            <label for="${questionId}_coefficient">Коэффициент</label>
+            <label for="${questionId}_coefficient">${i18n.coefficient}</label>
             <input type="number" id="${questionId}_coefficient" name="questions[${index}].weight" class="tc-input" min="0.1" max="10" step="0.1" required value="1.0">
         </div>
 
         <div class="tc-compact-group">
-            <label for="${questionId}_topicId">Тема</label>
+            <label for="${questionId}_topicId">${i18n.topic}</label>
             <select id="${questionId}_topicId" name="questions[${index}].topicId" class="tc-select" required>
-                <option value="">Выберите тему</option>
+                <option value="">${i18n.selectTopic}</option>
                 ${topics.map(topic => `<option value="${topic.id}">${topic.name}</option>`).join('')}
             </select>
         </div>
@@ -560,33 +581,33 @@
         <div class="tc-compact-group">
             <label class="tc-checkbox-label">
                 <input type="checkbox" id="${questionId}_isTextFormat" name="questions[${index}].textFormat" value="true" onchange="testCreator.toggleAnswerType('${questionId}', ${index})">
-                Текстовый ответ
+                ${i18n.textAnswer}
             </label>
         </div>
 
         <div class="tc-answer-options" id="${questionId}_multipleOptions">
-            <div style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--tc-text-light);">Правильный:</div>
+            <div style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--tc-text-light);">${i18n.correct}</div>
             <div class="tc-option-row">
                 <input type="radio" id="${questionId}_option_a" name="questions[${index}].correctAnswer" value="A" checked required>
-                <label for="${questionId}_option_a">A</label>
+                <label for="${questionId}_option_a">${i18n.optionA}</label>
             </div>
             <div class="tc-option-row">
                 <input type="radio" id="${questionId}_option_b" name="questions[${index}].correctAnswer" value="B">
-                <label for="${questionId}_option_b">B</label>
+                <label for="${questionId}_option_b">${i18n.optionB}</label>
             </div>
             <div class="tc-option-row">
                 <input type="radio" id="${questionId}_option_c" name="questions[${index}].correctAnswer" value="C">
-                <label for="${questionId}_option_c">C</label>
+                <label for="${questionId}_option_c">${i18n.optionC}</label>
             </div>
             <div class="tc-option-row">
                 <input type="radio" id="${questionId}_option_d" name="questions[${index}].correctAnswer" value="D">
-                <label for="${questionId}_option_d">D</label>
+                <label for="${questionId}_option_d">${i18n.optionD}</label>
             </div>
         </div>
 
         <div class="tc-text-answer tc-hidden" id="${questionId}_textAnswer">
-            <label for="${questionId}_correctAnswer" style="font-size: 0.8rem; color: var(--tc-text-light);">Ответ:</label>
-            <input type="text" id="${questionId}_correctAnswer" name="questions[${index}].correctAnswer" class="tc-input" placeholder="Правильный ответ" disabled>
+            <label for="${questionId}_correctAnswer" style="font-size: 0.8rem; color: var(--tc-text-light);">${i18n.answerLabel}</label>
+            <input type="text" id="${questionId}_correctAnswer" name="questions[${index}].correctAnswer" class="tc-input" placeholder="${i18n.answerPlaceholder}" disabled>
         </div>
     </div>
     `;
@@ -626,7 +647,7 @@
             }
 
             removeQuestion(questionId) {
-                if (confirm('Вы уверены, что хотите удалить этот вопрос?')) {
+                if (confirm(i18n.removeConfirm)) {
                     document.getElementById(questionId).remove();
                     this.updateQuestionNumbers();
                     this.reindexQuestions();
@@ -691,7 +712,7 @@
                     const correctAnswerInput = card.querySelector(`input[id="question_${index}_correctAnswer"]`);
                     if (textFormatCheckbox.checked && (!correctAnswerInput.value || correctAnswerInput.value.trim() === '')) {
                         e.preventDefault();
-                        correctAnswerInput.setCustomValidity('Пожалуйста, введите правильный ответ');
+                        correctAnswerInput.setCustomValidity(i18n.textAnswerRequired);
                         correctAnswerInput.reportValidity();
                         return;
                     } else {
