@@ -2,6 +2,7 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.user.ChangePasswordDto;
+import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditDto;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
@@ -16,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 
 @Controller
@@ -38,6 +41,22 @@ public class UserController {
         model.addAttribute("pending", userService.pendingContentCount(id));
         model.addAttribute("total", userService.totalContentCount(id));
         return "profile/profile-page";
+    }
+
+    @GetMapping("/{id}/public")
+    public String publicProfile(@PathVariable Long id, Principal principal, Model model) {
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            UserDto currentUser = userService.getUserByEmail(currentUserEmail);
+
+            if (currentUser != null && currentUser.getId().equals(id)) {
+                return "redirect:/users/" + id;
+            }
+        }
+
+        PublicUserDto userDto = userService.getPublicDtoById(id);
+        model.addAttribute("userDto", userDto);
+        return "profile/public-profile-page";
     }
 
 

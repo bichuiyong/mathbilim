@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.interfaces;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.model.user.User;
@@ -100,6 +101,8 @@ public interface UserService {
     boolean checkOldPassword(String oldPassword);
 
     int approvedContentCount(Long userId);
+
+    PublicUserDto getPublicDtoById(Long userId);
 
     int pendingContentCount(Long userId);
 

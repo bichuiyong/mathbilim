@@ -8,6 +8,7 @@ import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller("mvcBook")
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class BookController {
     private final BookService bookService;
     private final FileService fileService;
     private final TranslationService translationService;
+    private final UserService userService;
 
     @GetMapping
     public String books(@RequestParam(required = false) String query,
@@ -38,7 +41,13 @@ public class BookController {
                         Model model) {
 
         int safePage = Math.max(1, page);
-        model.addAttribute("book", bookService.getAllBooks("APPROVED",query,safePage, size, sortBy, sortDirection, categoryId));
+        model.addAttribute("book", bookService.getAllBooks("APPROVED",
+                query,
+                safePage,
+                size,
+                sortBy,
+                sortDirection,
+                categoryId));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -51,9 +60,12 @@ public class BookController {
 
     @GetMapping("{id}")
     public String book(@PathVariable("id") Long id, Model model, Principal principal) {
-        String email = (principal != null) ? principal.getName() : null;
-        model.addAttribute("book", bookService.getBookById(id, email));
-        return "books/book";
+        String email = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .orElse(null);
+
+        model.addAttribute("currentUser", email != null ? userService.getUserByEmail(email) : null);        model.addAttribute("book", bookService.getById(id));
+        return "books/book-detail";
     }
 
     @GetMapping("/create")

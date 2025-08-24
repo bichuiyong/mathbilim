@@ -21,116 +21,117 @@
 
 
     <div class="container mt-4">
-        <div class="hero-section mb-5" id="hero-container">
+        <div class="hero-section mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
+                    <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
+                    <div class="hero-buttons">
+                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
+                        <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
+                             alt="Математика" class="img-fluid border-radius">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="alert alert-warning mb-5">
         </div>
 
-        <div class="row g-4 mb-5">
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3>Последние новости</h3>
-                </div>
-                <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="news-carousel-indicators">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3>Последние новости</h3>
                     </div>
-                    <div class="carousel-inner" id="news-carousel-inner">
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка новостей...</span>
+                    <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="news-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="news-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка новостей...</span>
+                                </div>
                             </div>
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
-            </div>
 
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3>Все новости</h3>
-                    </div>
-                    <div class="news-container" id="news-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
-                            </div>
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3>Все новости</h3>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row g-4 mb-5">
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3>Все публикации</h3>
-                    </div>
-                    <div class="news-container" id="post-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
+                        <div class="news-container" id="news-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <#if errorMessage??>
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4 custom-alert" role="alert">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-ban fa-lg text-danger"></i>
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3>Все публикации</h3>
                         </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="alert-heading mb-1 fw-bold">Доступ ограничен</h6>
-                            <p class="mb-0">${errorMessage}</p>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
-                    </div>
-                </div>
-            </#if>
-
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3>Последние публикации</h3>
-                </div>
-                <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="publications-carousel-indicators">
-                    </div>
-                    <div class="carousel-inner" id="publications-carousel-inner">
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка публикаций...</span>
+                        <div class="news-container" id="post-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3>Последние публикации</h3>
+                    </div>
+                    <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="publications-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="publications-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка публикаций...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <div class="events-section mb-5">
             <div class="section-header mb-4">
@@ -266,11 +267,11 @@
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <h4>Сообщество</h4>
-                            <p class="h-25">Общайтесь с единомышленниками и преподавателями</p>
-                            <a href="/community" class="btn btn-primary mt-3">Присоединиться</a>
+                            <h4>Мероприятия</h4>
+                            <p class="h-25">Участвуйте в интересных событиях и встречах</p>
+                            <a href="/events" class="btn btn-primary mt-3">Узнать больше</a>
                         </div>
                     </div>
                 </div>
@@ -345,6 +346,14 @@
         }
 
 
+        // Функция для скрытия/показа целых секций
+        function toggleSectionVisibility(sectionSelector, isVisible) {
+            const section = document.querySelector(sectionSelector);
+            if (section) {
+                section.style.display = isVisible ? 'block' : 'none';
+            }
+        }
+
         async function loadNewsCarousel() {
             try {
                 const response = await fetch('/api/news/main');
@@ -354,6 +363,9 @@
                 const carouselIndicators = document.getElementById('news-carousel-indicators');
 
                 if (news && news.length > 0) {
+                    // Показываем секцию новостей
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -370,22 +382,13 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Математика">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Добро пожаловать!</h5>
-                                    <p>Здесь будут отображаться последние новости</p>
-                                    <a href="/news" class="btn btn-primary btn-sm">Все новости</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию новостей если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки новостей для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
             }
         }
 
@@ -398,6 +401,9 @@
                 const carouselIndicators = document.getElementById('publications-carousel-indicators');
 
                 if (publications && publications.length > 0) {
+                    // Показываем секцию публикаций
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -414,23 +420,91 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Публикации">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Публикации</h5>
-                                    <p>Здесь будут отображаться последние публикации</p>
-                                    <a href="/posts" class="btn btn-primary btn-sm">Все публикации</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию публикаций если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки публикаций для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
             }
+        }
+
+        // Альтернативный вариант если :has() не поддерживается в старых браузерах
+        function loadNewsCarouselAlternative() {
+            fetch('/api/news/main')
+                .then(response => response.json())
+                .then(news => {
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('news-carousel-inner');
+                    const carouselIndicators = document.getElementById('news-carousel-indicators');
+
+                    if (news && news.length > 0) {
+                        // Показываем секцию
+                        newsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        news.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'newsCarousel',
+                                '/news',
+                                'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        // Скрываем секцию
+                        newsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки новостей для карусели:', error);
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    newsSection.style.display = 'none';
+                });
+        }
+
+        function loadPublicationsCarouselAlternative() {
+            fetch('/api/posts/main')
+                .then(response => response.json())
+                .then(publications => {
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('publications-carousel-inner');
+                    const carouselIndicators = document.getElementById('publications-carousel-indicators');
+
+                    if (publications && publications.length > 0) {
+                        publicationsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        publications.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'publicationsCarousel',
+                                '/posts',
+                                'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        publicationsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки публикаций для карусели:', error);
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    publicationsSection.style.display = 'none';
+                });
         }
 
         async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
