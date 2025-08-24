@@ -22,6 +22,39 @@
             padding: 32px 20px;
         }
 
+        /* Кнопка удаления */
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            color: #dc2626;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            margin-bottom: 32px;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+            background: #fef2f2;
+            border-color: #f87171;
+            text-decoration: none;
+            color: #b91c1c;
+        }
+
+        .delete-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+        }
+
         /* Кнопка возврата */
         .back-btn {
             display: inline-flex;
@@ -664,6 +697,12 @@
                 padding: 20px 16px;
             }
 
+            .delete-btn {
+                margin-bottom: 20px;
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
             .publication-item {
                 border-radius: 16px;
                 margin: 0 -16px 24px;
@@ -745,6 +784,10 @@
                 margin-bottom: 20px;
                 padding: 10px 16px;
                 font-size: 13px;
+            }
+
+            .delete-btn {
+                margin-bottom: 16px;
             }
 
             .publication-item {
@@ -843,22 +886,13 @@
         >
     </#if>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper pb-0">
         <a href="/posts" class="back-btn">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
             </svg>
             Назад к публикациям
         </a>
-        <#if currentUser?? && (isAdmin || (post.creator?? && post.creator.id == currentUser.id))>
-            <form action="/posts/delete/${post.id}" method="post" style="">
-                <@main.csrf/>
-                <input type="hidden" name="_method" value="delete"/>
-                <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                    🗑 <@spring.message "test.details.delete"/>
-                </button>
-            </form>
-        </#if>
 
 
         <article class="publication-item">
@@ -1000,6 +1034,22 @@
             </div>
         </div>
     </div>
+
+    <div class="content-wrapper py-0">
+        <#if currentUser?? && (isAdmin || (post.creator?? && post.creator.id == currentUser.id))>
+            <form action="/posts/delete/${post.id}" method="post">
+                <@main.csrf/>
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="delete-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11z"/>
+                    </svg>
+                    <@spring.message "test.details.delete"/>
+                </button>
+            </form>
+        </#if>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

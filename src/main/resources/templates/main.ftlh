@@ -1,29 +1,7 @@
 <#import "layout.ftlh" as main>
-<#import "/spring.ftl" as spring>
 <@main.layout title="Главная">
-
-
-    <style>
-        .custom-alert {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            width: 300px;
-            z-index: 1050;
-            opacity: 1 !important;
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-        }
-
-    </style>
-
-
-
-
     <div class="container mt-4">
-        <span id="current-locale" style="display:none;">${.locale}</span>
-        <div class="hero-section mb-5" id="hero-container">
+        <div class="hero-section mb-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
@@ -45,99 +23,99 @@
         <div class="alert alert-warning mb-5">
         </div>
 
-        <div class="row g-4 mb-5">
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3><@spring.message "home.latest.news"/></h3>
-                </div>
-                <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="news-carousel-indicators">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3>Последние новости</h3>
                     </div>
-                    <div class="carousel-inner" id="news-carousel-inner">
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden"><@spring.message "home.loading.news"/></span>
+                    <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="news-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="news-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка новостей...</span>
+                                </div>
                             </div>
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden"><@spring.message "carousel.previous"/></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden"><@spring.message "carousel.next"/></span>
-                    </button>
                 </div>
-            </div>
 
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3><@spring.message "home.all.news"/></h3>
-                    </div>
-                    <div class="news-container" id="news-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden"><@spring.message "home.loading"/></span>
-                            </div>
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3>Все новости</h3>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-4 mb-5">
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3><@spring.message "home.all.publications"/></h3>
-                    </div>
-                    <div class="news-container" id="post-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden"><@spring.message "home.loading"/></span>
+                        <div class="news-container" id="news-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3><@spring.message "home.latest.publications"/></h3>
-                </div>
-                <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="publications-carousel-indicators">
-                    </div>
-                    <div class="carousel-inner" id="publications-carousel-inner">
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden"><@spring.message "home.loading.publications"/></span>
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3>Все публикации</h3>
+                        </div>
+                        <div class="news-container" id="post-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden"><@spring.message "carousel.previous"/></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden"><@spring.message "carousel.next"/></span>
-                    </button>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3>Последние публикации</h3>
+                    </div>
+                    <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="publications-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="publications-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка публикаций...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <div class="events-section mb-5">
             <div class="section-header mb-4">
-                <h3><@spring.message "home.upcoming.events"/></h3>
+                <h3>Предстоящие соревнования</h3>
             </div>
             <div class="events-scroll-container">
                 <div class="events-scroll-wrapper" id="eventsScroll">
@@ -145,14 +123,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop"
-                                     alt="<@spring.message "event.ort.webinar"/>">
+                                     alt="Вебинар по подготовке к ОРТ">
                                 <div class="event-date-overlay">
                                     <span class="event-day">25</span>
-                                    <span class="event-month"><@spring.message "month.jun"/></span>
+                                    <span class="event-month">ИЮН</span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5><@spring.message "event.ort.webinar"/></h5>
+                                <h5>Вебинар по подготовке к ОРТ</h5>
                             </div>
                         </div>
                     </div>
@@ -161,14 +139,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1477281765962-ef34e8bb0967?w=400&h=300&fit=crop"
-                                     alt="<@spring.message "event.summer.school"/>">
+                                     alt="Летняя математическая школа">
                                 <div class="event-date-overlay">
                                     <span class="event-day">2</span>
-                                    <span class="event-month"><@spring.message "month.jul"/></span>
+                                    <span class="event-month">ИЮЛ</span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5><@spring.message "event.summer.school"/></h5>
+                                <h5>Летняя математическая школа</h5>
                             </div>
                         </div>
                     </div>
@@ -177,14 +155,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop"
-                                     alt="<@spring.message "event.city.olympiad"/>">
+                                     alt="Городская олимпиада">
                                 <div class="event-date-overlay">
                                     <span class="event-day">15</span>
-                                    <span class="event-month"><@spring.message "month.jul"/></span>
+                                    <span class="event-month">ИЮЛ</span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5><@spring.message "event.city.olympiad"/></h5>
+                                <h5>Городская олимпиада</h5>
                             </div>
                         </div>
                     </div>
@@ -193,14 +171,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop"
-                                     alt="<@spring.message "event.combinatorics.workshop"/>">
+                                     alt="Мастер-класс по комбинаторике">
                                 <div class="event-date-overlay">
                                     <span class="event-day">28</span>
-                                    <span class="event-month"><@spring.message "month.jul"/></span>
+                                    <span class="event-month">ИЮЛ</span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5><@spring.message "event.combinatorics.workshop"/></h5>
+                                <h5>Мастер-класс по комбинаторике</h5>
                             </div>
                         </div>
                     </div>
@@ -209,14 +187,14 @@
                         <div class="card event-card">
                             <div class="event-image">
                                 <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop"
-                                     alt="<@spring.message "event.republic.olympiad"/>">
+                                     alt="Республиканская олимпиада">
                                 <div class="event-date-overlay">
                                     <span class="event-day">5</span>
-                                    <span class="event-month"><@spring.message "month.aug"/></span>
+                                    <span class="event-month">АВГ</span>
                                 </div>
                             </div>
                             <div class="event-content">
-                                <h5><@spring.message "event.republic.olympiad"/></h5>
+                                <h5>Республиканская олимпиада</h5>
                             </div>
                         </div>
                     </div>
@@ -226,7 +204,7 @@
 
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
-                <h3><@spring.message "home.quick.access"/></h3>
+                <h3>Быстрый доступ</h3>
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
@@ -235,9 +213,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calculator"></i>
                             </div>
-                            <h4><@spring.message "quick.tests"/></h4>
-                            <p class="h-25"><@spring.message "quick.tests.description"/></p>
-                            <a href="/tests" class="btn btn-primary mt-3"><@spring.message "quick.start.test"/></a>
+                            <h4>Тесты</h4>
+                            <p class="h-25">Проверьте свои знания в различных разделах математики</p>
+                            <a href="/tests" class="btn btn-primary mt-3">Начать тест</a>
                         </div>
                     </div>
                 </div>
@@ -247,9 +225,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-trophy"></i>
                             </div>
-                            <h4><@spring.message "quick.olympiads"/></h4>
-                            <p class="h-25"><@spring.message "quick.olympiads.description"/></p>
-                            <a href="/olympiad" class="btn btn-primary mt-3"><@spring.message "quick.participate"/></a>
+                            <h4>Олимпиады</h4>
+                            <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
+                            <a href="/olympiad" class="btn btn-primary mt-3">Участвовать</a>
                         </div>
                     </div>
                 </div>
@@ -259,9 +237,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <h4><@spring.message "quick.books"/></h4>
-                            <p class="h-25"><@spring.message "quick.books.description"/></p>
-                            <a href="/books" class="btn btn-primary mt-3"><@spring.message "quick.study"/></a>
+                            <h4>Книги</h4>
+                            <p class="h-25">Изучайте математику по качественным учебникам</p>
+                            <a href="/books" class="btn btn-primary mt-3">Изучать</a>
                         </div>
                     </div>
                 </div>
@@ -271,9 +249,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <h4><@spring.message "quick.community"/></h4>
-                            <p class="h-25"><@spring.message "quick.community.description"/></p>
-                            <a href="/community" class="btn btn-primary mt-3"><@spring.message "quick.join"/></a>
+                            <h4>Мероприятия</h4>
+                            <p class="h-25">Участвуйте в интересных событиях и встречах</p>
+                            <a href="/events" class="btn btn-primary mt-3">Узнать больше</a>
                         </div>
                     </div>
                 </div>
@@ -282,14 +260,15 @@
 
         <div class="blog-section mb-5">
             <div class="section-header mb-4">
-                <h3><@spring.message "home.blog"/></h3>
+                <h3>Блог</h3>
             </div>
             <div class="blog-masonry-grid"></div>
 
             <div class="text-center mt-4">
-                <a href="/blog" class="btn btn-outline-primary"><@spring.message "home.all.blog.articles"/></a>
+                <a href="/blog" class="btn btn-outline-primary">Все статьи блога</a>
             </div>
         </div>
+
     </div>
 
     <script>
