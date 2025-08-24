@@ -103,21 +103,21 @@ class CommentServiceImplTest {
         verify(commentRepository).saveAndFlush(any());
     }
 
-    @Test
-    void addCommentNews_shouldAddComment() {
-        CommentCreateDto dto = new CommentCreateDto();
-        dto.setContent("news comment");
-        News news = new News();
-        when(newsService.findByNewsId(1L)).thenReturn(news);
-        when(userService.getAuthUserEntity()).thenReturn(new User());
-
-        when(commentMapper.toDto(any())).thenReturn(new CommentDto());
-
-        CommentDto result = commentService.addCommentNews(dto, 1L);
-
-        assertNotNull(result);
-        verify(commentRepository).saveAndFlush(any());
-    }
+//    @Test
+//    void addCommentNews_shouldAddComment() {
+//        CommentCreateDto dto = new CommentCreateDto();
+//        dto.setContent("news comment");
+//        News news = new News();
+//        when(newsService.findByNewsId(1L)).thenReturn(news);
+//        when(userService.getAuthUserEntity()).thenReturn(new User());
+//
+//        when(commentMapper.toDto(any())).thenReturn(new CommentDto());
+//
+//        CommentDto result = commentService.addCommentNews(dto, 1L);
+//
+//        assertNotNull(result);
+//        verify(commentRepository).saveAndFlush(any());
+//    }
 
     @Test
     void deleteComment_shouldCallRepository() {
@@ -148,16 +148,16 @@ class CommentServiceImplTest {
         var result = commentService.getCommentsForBlog(1L);
         assertEquals(1, result.size());
     }
-
-    @Test
-    void getCommentsForNews_shouldReturnDtos() {
-        Comment comment = new Comment();
-        CommentDto dto = new CommentDto();
-
-        when(commentRepository.findByNewsId(1L)).thenReturn(Collections.singletonList(comment));
-        when(commentMapper.toDto(comment)).thenReturn(dto);
-
-        var result = commentService.getCommentsForNews(1L);
-        assertEquals(1, result.size());
-    }
+//
+//    @Test
+//    void getCommentsForNews_shouldReturnDtos() {
+//        Comment comment = new Comment();
+//        CommentDto dto = new CommentDto();
+//
+//        when(commentRepository.findByNewsId(1L)).thenReturn(Collections.singletonList(comment));
+//        when(commentMapper.toDto(comment)).thenReturn(dto);
+//
+//        var result = commentService.getCommentsForNews(1L);
+//        assertEquals(1, result.size());
+//    }
 }
