@@ -13,7 +13,6 @@ import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.user.UserType;
 import kg.edu.mathbilim.model.reference.Role;
 import kg.edu.mathbilim.model.user.User;
-import kg.edu.mathbilim.model.user.UserTypeTranslation;
 import kg.edu.mathbilim.repository.user.UserRepository;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.reference.UserTypeService;
@@ -115,6 +114,25 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(getEntityById(id));
     }
 
+    @Override
+    public void createUserFromAdmin(UserDto userDto, HttpServletRequest request) {
+        log.info("Creating user with email: {}", userDto.getEmail());
+        User user = userMapper.toEntity(userDto);
+        Role role = roleService.getRoleByName("USER");
+        if (user.getRole() != null) {
+            role = roleService.getRoleByName(user.getRole().getName());
+        }
+
+        user.setRole(role);
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setEmail(StringUtil.normalizeField(userDto.getEmail(), false));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setIsEmailVerified(true);
+
+        user = userRepository.saveAndFlush(user);
+        log.info("Created user with id: {}", user.getId());
+    }
 
     @Override
     public void createUser(UserDto userDto, HttpServletRequest request) {
