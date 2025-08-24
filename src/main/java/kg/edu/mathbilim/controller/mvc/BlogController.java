@@ -12,6 +12,9 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
@@ -95,7 +98,9 @@ public class BlogController {
                            Model model, Principal principal) {
 
 //        blogService.incrementViewCount(id);
-        BlogDto blog = blogService.getDisplayBlogById(id);
+        String email = (principal != null) ? principal.getName() : null;
+        BlogDto blog = blogService.getDisplayBlogById(id, email);
+
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
@@ -105,5 +110,12 @@ public class BlogController {
 
 
         return "blog/blog";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @blogSecurity.isOwner(#id,  principal.username)")
+    @PostMapping("delete/{id}")
+    public String deleteBlog(@PathVariable Long id){
+        blogService.delete(id);
+        return "redirect:/blog";
     }
 }

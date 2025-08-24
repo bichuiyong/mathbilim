@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.enums.ContentStatus;
@@ -22,21 +23,17 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -117,6 +114,25 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(getEntityById(id));
     }
 
+    @Override
+    public void createUserFromAdmin(UserDto userDto, HttpServletRequest request) {
+        log.info("Creating user with email: {}", userDto.getEmail());
+        User user = userMapper.toEntity(userDto);
+        Role role = roleService.getRoleByName("USER");
+        if (user.getRole() != null) {
+            role = roleService.getRoleByName(user.getRole().getName());
+        }
+
+        user.setRole(role);
+        user.setName(StringUtil.normalizeField(userDto.getName(), true));
+        user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
+        user.setEmail(StringUtil.normalizeField(userDto.getEmail(), false));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setIsEmailVerified(true);
+
+        user = userRepository.saveAndFlush(user);
+        log.info("Created user with id: {}", user.getId());
+    }
 
     @Override
     public void createUser(UserDto userDto, HttpServletRequest request) {
@@ -509,6 +525,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public int approvedContentCount(Long userId) {
         return userRepository.countContentByStatus(userId, ContentStatus.APPROVED.getId());
+    }
+
+    @Override
+    public PublicUserDto getPublicDtoById(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        return PublicUserDto.builder()
+                .id(user.getId())
+                .type(user.getType())
+                .name(user.getName())
+                .surname(user.getSurname())
+
+                .build();
     }
 
     @Override

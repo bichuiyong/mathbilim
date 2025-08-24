@@ -5,6 +5,11 @@ import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,5 +43,12 @@ public class OrganizationController {
         if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
         organizationService.create(organization, avatarFile);
         return "redirect:/";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String deleteOrganization(@PathVariable long id) {
+        organizationService.delete(id);
+        return "redirect:/olympiad";
     }
 }

@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-<@main.layout title="Создать пост">
+<@main.layout title="${springMacroRequestContext.getMessage('posts.create.title')}">
 
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -11,7 +11,7 @@
                         ${imageError!""}
                     </small>
                     <div class="card-header">
-                        <h2 class="mb-0">Создание поста</h2>
+                        <h2 class="mb-0"><@spring.message "posts.create.title"/></h2>
                     </div>
                     <div class="card-body">
                         <form id="postForm" action="/posts/create" method="post" enctype="multipart/form-data">
@@ -23,7 +23,9 @@
                             </#if>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Главное изображение</label>
+                                <label class="form-label fw-bold">
+                                    <@spring.message "posts.cover"/>
+                                </label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="image" accept="image/*"
                                            class="form-control mb-3">
@@ -32,25 +34,29 @@
                                             <img id="imagePreview" class="img-fluid">
                                         </div>
                                         <div class="crop-controls mt-3">
-                                            <button type="button" class="btn btn-primary" id="cropButton">Применить
-                                                кроп
+                                            <button type="button" class="btn btn-primary" id="cropButton">
+                                                <@spring.message "posts.crop.apply"/>
                                             </button>
-                                            <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить
+                                            <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                                <@spring.message "posts.crop.cancel"/>
                                             </button>
                                         </div>
                                     </div>
                                     <div class="cropped-preview" style="display: none;">
-                                        <label class="form-label">Предпросмотр (1200x400):</label>
+                                        <label class="form-label">
+                                            <@spring.message "posts.preview"/> (1200x400):
+                                        </label>
                                         <div class="cropped-image-container">
                                             <img id="croppedImage" class="img-fluid border rounded">
                                         </div>
                                         <button type="button" class="btn btn-outline-secondary btn-sm mt-2"
-                                                id="changeCrop">Изменить кроп
+                                                id="changeCrop">
+                                            <@spring.message "posts.crop.change"/>
                                         </button>
                                     </div>
                                 </div>
                                 <small class="form-text text-muted">
-                                    Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                                    <@spring.message "posts.cover.aspectRatio"/>
                                 </small>
                             </div>
 
@@ -67,8 +73,8 @@
                                                     ${languages[trans.languageCode]}
                                                     <span class="translation-indicator ms-2"
                                                           id="indicator-${trans.languageCode}">
-                                                    <i class="fas fa-circle text-danger"></i>
-                                                </span>
+                                                        <i class="fas fa-circle text-danger" title="<@spring.message 'posts.translation.notFilled'/>"></i>
+                                                    </span>
                                                 </button>
                                             </li>
                                         </#list>
@@ -89,13 +95,15 @@
 
                                                 <div class="mb-4">
                                                     <@spring.bind "createPostDto.post.postTranslations[${trans?index}].title"/>
-                                                    <label class="form-label fw-bold">Заголовок</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "posts.title"/>
+                                                    </label>
                                                     <input type="text"
                                                            class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                            name="post.postTranslations[${trans?index}].title"
                                                            data-lang="${trans.languageCode}"
                                                            value="${spring.status.value!''}"
-                                                           placeholder="Введите заголовок поста...">
+                                                           placeholder="${springMacroRequestContext.getMessage('posts.title.placeholder')}">
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -105,7 +113,9 @@
 
                                                 <div class="mb-4">
                                                     <@spring.bind "createPostDto.post.postTranslations[${trans?index}].content"/>
-                                                    <label class="form-label fw-bold">Содержание</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "posts.content"/>
+                                                    </label>
                                                     <textarea
                                                             class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                             name="post.postTranslations[${trans?index}].content"
@@ -129,9 +139,9 @@
 
                             <div class="mb-4">
                                 <@spring.bind "createPostDto.post.typeId"/>
-                                <label class="form-label fw-bold">Тип поста</label>
+                                <label class="form-label fw-bold"> <@spring.message "posts.type"/></label>
                                 <select class="form-select <#if spring.status.error>is-invalid</#if>" name="post.typeId">
-                                    <option value="">-- Выберите тип --</option>
+                                    <option value="">-- <@spring.message "posts.type.select"/> --</option>
                                     <#list postTypes as type>
                                         <#assign translations = type.translations![]>
                                         <#assign translation = translations?filter(t -> t.languageCode == currentLocale)?first!>
@@ -156,23 +166,25 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Вложения</label>
+                                <label class="form-label fw-bold">
+                                    <@spring.message "posts.attachments"/>
+                                </label>
                                 <input type="file" class="form-control" name="attachments" multiple>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                <span class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Заполните хотя бы один перевод для публикации
-                                </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <@spring.message "posts.translation.required"/>
+                                    </span>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <a href="/posts" class="btn btn-secondary">
-                                        <i class="fas fa-times me-2"></i>Отменить
+                                        <i class="fas fa-times me-2"></i><@spring.message "posts.cancel"/>
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Создать пост
+                                        <i class="fas fa-save me-2"></i><@spring.message "posts.create.button"/>
                                     </button>
                                 </div>
                             </div>

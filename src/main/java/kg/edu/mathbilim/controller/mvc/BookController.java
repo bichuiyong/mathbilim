@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,8 +9,10 @@ import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +21,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.util.Optional;
+
 @Controller("mvcBook")
 @RequiredArgsConstructor
 @RequestMapping("books")
@@ -25,6 +31,7 @@ public class BookController {
     private final BookService bookService;
     private final FileService fileService;
     private final TranslationService translationService;
+    private final UserService userService;
 
     @GetMapping
     public String books(@RequestParam(required = false) String query,
@@ -33,10 +40,16 @@ public class BookController {
                         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                         @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @RequestParam(required = false) Long categoryId,
-                        Model model) {
+                        Model model, Principal principal) {
 
         int safePage = Math.max(1, page);
-        model.addAttribute("book", bookService.getAllBooks("APPROVED",query,safePage, size, sortBy, sortDirection, categoryId));
+        model.addAttribute("book", bookService.getAllBooks("APPROVED",
+                query,
+                safePage,
+                size,
+                sortBy,
+                sortDirection,
+                categoryId));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -44,13 +57,18 @@ public class BookController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("categories", translationService.getCategoriesByLanguage());
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "books/book-list";
     }
 
     @GetMapping("{id}")
-    public String book(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("book", bookService.getById(id));
-        return "books/book";
+    public String book(@PathVariable("id") Long id, Model model, Principal principal) {
+        String email = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .orElse(null);
+
+        model.addAttribute("currentUser", email != null ? userService.getUserByEmail(email) : null);        model.addAttribute("book", bookService.getById(id));
+        return "books/book-detail";
     }
 
     @GetMapping("/create")
@@ -85,10 +103,11 @@ public class BookController {
         return "redirect:/books";
     }
 
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @bookSecurity.isOwner(#id,  principal.username)")
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
         bookService.delete(id);
-        return "redirect:/profile";
+        return "redirect:/books";
     }
 
     @GetMapping("update/{id}")

@@ -26,4 +26,6 @@ public interface TestService {
     TestResultDto getResultByAttemptId(Long attemptId, String username);
 
     List<Map<String, String>> getLastResultsForUser(String username, Long testId);
+
+    void deleteTestById(Long id);
 }

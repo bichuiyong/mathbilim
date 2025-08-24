@@ -15,6 +15,7 @@ import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import kg.edu.mathbilim.service.interfaces.olympiad.ResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.http.HttpRequest;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -53,10 +55,11 @@ public class OlympiadController {
     }
 
     @GetMapping("details")
-    public String olympiadPageDetails(@RequestParam long id, Model model, @ModelAttribute("message") String message) {
+    public String olympiadPageDetails(@RequestParam long id, Model model, @ModelAttribute("message") String message,  Principal principal) {
         model.addAttribute("today", java.sql.Date.valueOf(LocalDate.now()));
         model.addAttribute("message", message);
         model.addAttribute("olympiad", olympiadService.getById(id));
+        model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "olympiad/olymp-details";
     }
 
@@ -206,5 +209,12 @@ public class OlympiadController {
         model.addAttribute("size",size);
 
         return "olympiad/stageRegiteredList";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String deleteOlympiad(@PathVariable long id) {
+        olympiadService.deleteOlympiad(id);
+        return "redirect:/olympiad";
     }
 }

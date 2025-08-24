@@ -480,7 +480,7 @@
         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
         <#assign authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)>
         <#assign
-        isAdmin = authorities?seq_contains("ADMIN")
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
         isModer = authorities?seq_contains("MODER") || isAdmin
         isUser = authorities?seq_contains("USER")
         >
@@ -510,6 +510,7 @@
             ReactDOM.render(<Notification />, document.getElementById("notification-root"));
         </script>
     </#if>
+
 
     <div class="container mt-4 mb-5">
         <h1 class="mb-4">${olympiad.title}</h1>
@@ -554,6 +555,15 @@
                         </a>
                     </button>
                 </li>
+                <#if currentUser?? && (isAdmin || (olympiad.creator?? && olympiad.creator.id == currentUser.id))>
+                    <form action="/olympiad/delete/${olympiad.id}" method="post" style="">
+                        <@main.csrf/>
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="contact-card btn btn-sm d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            🗑 <@spring.message "test.details.delete"/>
+                        </button>
+                    </form>
+                </#if>
             </#if>
         </ul>
 

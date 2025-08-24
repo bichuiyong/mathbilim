@@ -1,13 +1,12 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
 <@main.layout title="Создать мероприятие">
-
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="mb-0">Создание мероприятия</h2>
+                        <h2 class="mb-0"><@spring.message "events.create.title"/></h2>
                     </div>
                     <div class="card-body">
                         <form id="eventForm" action="/events/create" method="post" enctype="multipart/form-data">
@@ -18,9 +17,11 @@
                                 </div>
                             </#if>
 
-
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold">
+                                    <@spring.message "events.cover"/>
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="image" accept="image/*" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
@@ -28,20 +29,28 @@
                                             <img id="imagePreview" class="img-fluid">
                                         </div>
                                         <div class="crop-controls mt-3">
-                                            <button type="button" class="btn btn-primary" id="cropButton">Применить кроп</button>
-                                            <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить</button>
+                                            <button type="button" class="btn btn-primary" id="cropButton">
+                                                <@spring.message "events.crop.apply"/>
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                                <@spring.message "events.crop.cancel"/>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="cropped-preview" style="display: none;">
-                                        <label class="form-label">Предпросмотр (1200x400):</label>
+                                        <label class="form-label">
+                                            <@spring.message "events.preview"/> (1200x400):
+                                        </label>
                                         <div class="cropped-image-container">
                                             <img id="croppedImage" class="img-fluid border rounded">
                                         </div>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">
+                                            <@spring.message "events.crop.change"/>
+                                        </button>
                                     </div>
                                 </div>
                                 <small class="form-text text-muted">
-                                    Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                                    <@spring.message "events.cover.aspectRatio"/>
                                 </small>
                             </div>
 
@@ -51,7 +60,7 @@
                                     <@spring.bind "createEventDto.event.startDate"/>
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-play-circle me-2 text-success"></i>
-                                        Дата и время начала <span class="text-danger">*</span>
+                                        <@spring.message "events.startDate"/> <span class="text-danger">*</span>
                                     </label>
                                     <div class="datetime-input-wrapper">
                                         <input type="text"
@@ -59,11 +68,10 @@
                                                class="form-control datetime-picker <#if spring.status.error>is-invalid</#if>"
                                                name="event.startDate"
                                                value="${spring.status.value!''}"
-                                               placeholder="Выберите дату и время начала"
+                                               placeholder="${springMacroRequestContext.getMessage('events.startDate.placeholder')}"
                                                required
                                                readonly>
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
-                                        <@spring.showErrors '<br>',"text-danger small"/>
                                     </div>
                                     <#if spring.status.error>
                                         <div class="invalid-feedback">
@@ -83,7 +91,7 @@
                                                class="form-control datetime-picker <#if spring.status.error>is-invalid</#if>"
                                                name="event.endDate"
                                                value="${spring.status.value!''}"
-                                               placeholder="Выберите дату и время окончания"
+                                               placeholder="${springMacroRequestContext.getMessage('events.endDate.placeholder')}"
                                                readonly>
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
                                     </div>
@@ -94,7 +102,7 @@
                                     </#if>
                                     <small class="form-text text-muted">
                                         <i class="fas fa-info-circle me-1"></i>
-                                        Необязательно, если мероприятие не имеет четкого времени окончания
+                                        <@spring.message "events.endDate.optional"/>
                                     </small>
                                 </div>
                             </div>
@@ -102,9 +110,11 @@
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <@spring.bind "createEventDto.event.typeId"/>
-                                    <label class="form-label fw-bold">Тип мероприятия <span class="text-danger">*</span></label>
+                                    <label class="form-label fw-bold">
+                                        <@spring.message "events.type"/> <span class="text-danger">*</span>
+                                    </label>
                                     <select class="form-select <#if spring.status.error>is-invalid</#if>" name="event.typeId" required>
-                                        <option value="">-- Выберите тип --</option>
+                                        <option value="">-- <@spring.message "events.type.select"/> --</option>
                                         <#list eventsTypes as type>
                                             <option value="${type.id}"
                                                     <#if spring.status.value?? && spring.status.value == type.id?string>selected</#if>>
@@ -120,23 +130,29 @@
                                 </div>
                                 <div class="col-md-6">
                                     <@spring.bind "createEventDto.organizationIds"/>
-                                    <label class="form-label fw-bold">Организации</label>
+                                    <label class="form-label fw-bold">
+                                        <@spring.message "events.organizations"/>
+                                    </label>
                                     <select class="form-select" name="organizationIds" multiple>
                                         <#if organizations?has_content>
                                             <#list organizations as org>
                                                 <option value="${org.id}">${org.name}</option>
                                             </#list>
-                                            <#else>
-                                                <option disabled>Организации не найдены</option>
+                                        <#else>
+                                            <option disabled><@spring.message "events.organizations.notFound"/></option>
                                         </#if>
 
                                     </select>
-                                    <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких</small>
+                                    <small class="form-text text-muted">
+                                        <@spring.message "events.organizations.multiple"/>
+                                    </small>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Тип проведения <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold">
+                                    <@spring.message "events.format"/> <span class="text-danger">*</span>
+                                </label>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-check">
@@ -148,7 +164,8 @@
                                                    value="true"
                                                    <#if spring.status.value?? && spring.status.value == "true">checked</#if>>
                                             <label class="form-check-label" for="offlineEvent">
-                                                <i class="fas fa-map-marker-alt me-2"></i>Офлайн мероприятие
+                                                <i class="fas fa-map-marker-alt me-2"></i>
+                                                <@spring.message "events.format.offline"/>
                                             </label>
                                         </div>
                                     </div>
@@ -159,9 +176,10 @@
                                                    id="onlineEvent"
                                                    name="event.isOffline"
                                                    value="false"
-                                                   <#if spring.status.value?? && spring.status.value=="false">checked</#if>>
+                                                   <#if spring.status.value?? && spring.status.value == "false">checked</#if>>
                                             <label class="form-check-label" for="onlineEvent">
-                                                <i class="fas fa-globe me-2"></i>Онлайн мероприятие
+                                                <i class="fas fa-globe me-2"></i>
+                                                <@spring.message "events.format.online"/>
                                             </label>
                                         </div>
                                     </div>
@@ -169,18 +187,18 @@
                             </div>
 
                             <div class="location-fields">
-
                                 <div class="mb-4" id="addressField" style="display: none;">
                                     <@spring.bind "createEventDto.event.address"/>
                                     <label class="form-label fw-bold">
-                                        <i class="fas fa-map-marker-alt me-2"></i>Адрес проведения
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <@spring.message "events.address"/>
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text"
                                            class="form-control <#if spring.status.error>is-invalid</#if>"
                                            name="event.address"
                                            value="${spring.status.value!''}"
-                                           placeholder="Укажите адрес проведения мероприятия">
+                                           placeholder="${springMacroRequestContext.getMessage('events.address.placeholder')}">
                                     <#if spring.status.error>
                                         <div class="invalid-feedback">
                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -191,7 +209,8 @@
                                 <div class="mb-4" id="urlField" style="display: none;">
                                     <@spring.bind "createEventDto.event.url"/>
                                     <label class="form-label fw-bold">
-                                        <i class="fas fa-link me-2"></i>Ссылка на мероприятие
+                                        <i class="fas fa-link me-2"></i>
+                                        <@spring.message "events.url"/>
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="url"
@@ -219,8 +238,8 @@
                                                         data-lang="${trans.languageCode}">
                                                     ${languages[trans.languageCode]}
                                                     <span class="translation-indicator ms-2" id="indicator-${trans.languageCode}">
-                                                        <i class="fas fa-circle text-danger" title="Не заполнено"></i>
-                                                    </span>
+                                                    <i class="fas fa-circle text-danger" title="<@spring.message 'events.translation.notFilled'/>"></i>
+                                                </span>
                                                 </button>
                                             </li>
                                         </#list>
@@ -242,13 +261,15 @@
                                                 <!-- Заголовок -->
                                                 <div class="mb-4">
                                                     <@spring.bind "createEventDto.event.eventTranslations[${trans?index}].title"/>
-                                                    <label class="form-label fw-bold">Название мероприятия</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "events.title"/>
+                                                    </label>
                                                     <input type="text"
                                                            class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                            name="event.eventTranslations[${trans?index}].title"
                                                            data-lang="${trans.languageCode}"
                                                            value="${spring.status.value!''}"
-                                                           placeholder="Введите название мероприятия...">
+                                                           placeholder="${springMacroRequestContext.getMessage('events.title.placeholder')}">
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -259,7 +280,9 @@
                                                 <!-- Контент -->
                                                 <div class="mb-4">
                                                     <@spring.bind "createEventDto.event.eventTranslations[${trans?index}].content"/>
-                                                    <label class="form-label fw-bold">Описание мероприятия</label>
+                                                    <label class="form-label fw-bold">
+                                                        <@spring.message "events.description"/>
+                                                    </label>
                                                     <textarea class="form-control rich-text-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                               name="event.eventTranslations[${trans?index}].content"
                                                               data-lang="${trans.languageCode}"
@@ -279,26 +302,30 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Дополнительные файлы</label>
+                                <label class="form-label fw-bold">
+                                    <@spring.message "events.attachments"/>
+                                </label>
                                 <input type="file" name="attachments" multiple class="form-control">
                                 <small class="form-text text-muted">
-                                    Можно загрузить несколько файлов (документы, презентации, программы мероприятия)
+                                    <@spring.message "events.attachments.description"/>
                                 </small>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Заполните хотя бы один перевод для публикации
-                                    </span>
+                                <span class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    <@spring.message "events.translation.required"/>
+                                </span>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <a href="/events" class="btn btn-secondary">
-                                        <i class="fas fa-times me-2"></i>Отменить
+                                        <i class="fas fa-times me-2"></i>
+                                        <@spring.message "events.cancel"/>
                                     </a>
                                     <button type="submit" class="btn btn-primary" id="submitButton">
-                                        <i class="fas fa-save me-2"></i>Создать мероприятие
+                                        <i class="fas fa-save me-2"></i>
+                                        <@spring.message "events.create.button"/>
                                     </button>
                                 </div>
                             </div>
@@ -309,53 +336,29 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/css/froala_editor.pkgd.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.2.2/js/froala_editor.pkgd.min.js"></script>
+    <!-- Подключение Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Подключение Froala Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
+
+    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
+    <!-- Подключение Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
 
+    <!-- Подключение компонентов -->
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
     <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
     <script src="/static/js/components/content-create/BaseContentCreateManager.js"></script>
-
     <script src="/static/js/event/EventCreateManager.js"></script>
-
-    <script>
-        const csrfHeader = 'X-XSRF-TOKEN';
-        const csrfToken = '${_csrf.token}';
-        new FroalaEditor('textarea.rich-text-editor', {
-            toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
-            height: 400,
-            requestHeaders: {
-                [csrfHeader]: csrfToken
-            },
-            language: 'ru',
-            placeholderText: 'Введите текст...',
-            contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
-            imageUploadURL: '/api/files/froala/image',
-            imageUploadParam: 'file',
-            imageUploadMethod: 'POST',
-            imageMaxSize: 5 * 1024 * 1024,
-            imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-            events: {
-                'image.uploaded': function (response) {
-                    console.log('Изображение загружено:', response);
-                },
-                'image.error': function (error, response) {
-                    console.error('Ошибка загрузки изображения:', error.message);
-                    alert('Ошибка при загрузке изображения: ' + error.message);
-                }
-            }
-        });
-    </script>
-
 
     <style>
         /* Стили для кропа */
@@ -582,8 +585,8 @@
             background: rgba(37, 99, 235, 0.1);
         }
 
-        /* Стили для TinyMCE */
-        .tox-tinymce {
+        /* Стили для Froala */
+        .fr-box.fr-basic {
             border-radius: 8px !important;
         }
     </style>

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(renderBlogs)
         .catch(err => {
             console.error('Ошибка загрузки блогов:', err);
-            showEmptyState(document.querySelector('.blog-masonry-grid'), 'блогов', '📖');
+            hideContainer(document.querySelector('.blog-masonry-grid'));
         });
 });
 
@@ -16,11 +16,30 @@ function fetchAndRender(endpoint, containerId, contentType, icon) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Показываем индикатор загрузки
+    function truncateText(text, maxLength = 20) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+
+        const truncated = text.substring(0, maxLength);
+        const lastSpaceIndex = truncated.lastIndexOf(' ');
+
+        if (lastSpaceIndex > 0 && lastSpaceIndex > maxLength * 0.8) {
+            return truncated.substring(0, lastSpaceIndex) + '...';
+        }
+
+        return truncated + '...';
+    }
+
+    const parentSection = container.closest('.col-lg-4');
+    if (parentSection) {
+        parentSection.style.display = 'block';
+    }
+    container.style.display = 'block';
     container.innerHTML = `
-        <div class="modern-loading-state">
-            <div class="modern-loading-spinner"></div>
-            <p>Загружаем ${contentType}...</p>
+        <div class="loading-pulse">
+            <div class="pulse-dot"></div>
+            <div class="pulse-dot"></div>
+            <div class="pulse-dot"></div>
         </div>
     `;
 
@@ -32,92 +51,234 @@ function fetchAndRender(endpoint, containerId, contentType, icon) {
         .then(data => {
             container.innerHTML = '';
 
-            // Проверяем, есть ли данные
             if (!data || !Array.isArray(data) || data.length === 0) {
-                showEmptyState(container, contentType, icon);
+                hideContainer(container);
                 return;
             }
 
-            // Создаем сетку простых карточек
-            const grid = document.createElement('div');
-            grid.className = 'simple-content-grid';
+            const parentSection = container.closest('.col-lg-4');
+            if (parentSection) {
+                parentSection.style.display = 'block';
+            }
+            container.style.display = 'block';
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'modern-content-wrapper';
+            contentWrapper.innerHTML = `
+                <style>
+                    .modern-content-wrapper {
+                        border-radius: 16px;
+                        padding: 20px;
+                        border: 1px solid #bfdbfe;
+                        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+                    }
+                    
+                    .content-item {
+                        display: block;
+                        text-decoration: none;
+                        color: inherit;
+                        padding: 16px 0;
+                        border-bottom: 1px solid #f1f4f8;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    
+                    .content-item:last-child {
+                        border-bottom: none;
+                    }
+                    
+                    .content-item:hover {
+                        color: #2563eb;
+                        transform: translateX(8px);
+                        background: linear-gradient(90deg, rgba(37, 99, 235, 0.04) 0%, transparent 100%);
+                    }
+                    
+                    .content-item::before {
+                        content: '';
+                        position: absolute;
+                        left: -100%;
+                        top: 0;
+                        width: 4px;
+                        height: 100%;
+                        background: linear-gradient(180deg, #2563eb, #1d4ed8);
+                        transition: left 0.3s ease;
+                    }
+                    
+                    .content-item:hover::before {
+                        left: 0;
+                    }
+                    
+                    .item-title {
+                        font-weight: 600;
+                        font-size: 15px;
+                        line-height: 1.4;
+                        margin: 0 0 4px 0;
+                        color: #1f2937;
+                        transition: color 0.3s ease;
+                    }
+                    
+                    .item-description {
+                        font-size: 13px;
+                        color: #6b7280;
+                        line-height: 1.4;
+                        margin: 0 0 8px 0;
+                    }
+                    
+                    .item-meta {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        font-size: 12px;
+                        color: #9ca3af;
+                    }
+                    
+                    .meta-badge {
+                        background: #e0f2fe;
+                        color: #0369a1;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        font-size: 11px;
+                        font-weight: 500;
+                    }
+                    
+                    .loading-pulse {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 30px;
+                    }
+                    
+                    .pulse-dot {
+                        width: 8px;
+                        height: 8px;
+                        background: #2563eb;
+                        border-radius: 50%;
+                        animation: pulse 1.4s infinite ease-in-out;
+                    }
+                    
+                    .pulse-dot:nth-child(2) { animation-delay: -0.2s; }
+                    .pulse-dot:nth-child(3) { animation-delay: -0.4s; }
+                    
+                    @keyframes pulse {
+                        0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+                        40% { transform: scale(1.2); opacity: 1; }
+                    }
+                    
+                    .view-all-section {
+                        margin-top: 20px;
+                        text-align: center;
+                    }
+                    
+                    .view-all-btn {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 10px 20px;
+                        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 25px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+                    }
+                    
+                    .view-all-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+                        color: white;
+                    }
+                    
+                    .arrow-icon {
+                        transition: transform 0.3s ease;
+                    }
+                    
+                    .view-all-btn:hover .arrow-icon {
+                        transform: translateX(4px);
+                    }
+                </style>
+            `;
 
             data.forEach((item, index) => {
-                const title =
+                const fullTitle =
                     item.newsTranslations?.[0]?.title ||
                     item.postTranslations?.[0]?.title ||
                     item.title || 'Без заголовка';
 
-                const dateStr = item.formattedDate || new Date(item.createdAt).toLocaleString('ru-RU');
-                const views = item.viewCount ?? 0;
-                const shares = item.shareCount ?? 0;
+                const fullContent =
+                    item.newsTranslations?.[0]?.content ||
+                    item.postTranslations?.[0]?.content ||
+                    item.content ||
+                    item.newsTranslations?.[0]?.description ||
+                    item.postTranslations?.[0]?.description ||
+                    item.description || '';
 
+                const title = truncateText(fullTitle, 20);
+                const description = truncateText(fullContent.replace(/<[^>]*>/g, ''), 30); // Убираем HTML теги
+
+                const dateStr = item.formattedDate || new Date(item.createdAt).toLocaleDateString('ru-RU');
+                const views = item.viewCount ?? 0;
                 const linkUrl = contentType === 'новостей' ? `/news/${item.id}` : `/posts/${item.id}`;
 
-                const card = document.createElement('article');
-                card.className = 'simple-content-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-category">
-                            ${icon} ${contentType === 'новостей' ? 'Новость' : 'Публикация'}
-                        </div>
-                        <div class="card-stats">
-                            <span class="stat-item">👁 ${views}</span>
-                            ${shares > 0 ? `<span class="stat-item">📤 ${shares}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-meta">
-                            <time class="card-date">${dateStr}</time>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="${linkUrl}">${title}</a>
-                        </h3>
-                        <div class="card-footer">
-                            <a href="${linkUrl}" class="read-more-btn">
-                                Читать далее
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                                </svg>
-                            </a>
-                        </div>
+                const contentItem = document.createElement('a');
+                contentItem.href = linkUrl;
+                contentItem.className = 'content-item';
+                contentItem.innerHTML = `
+                    <h4 class="item-title">${title}</h4>
+                    ${description ? `<p class="item-description">${description}</p>` : ''}
+                    <div class="item-meta">
+                        <span>${dateStr}</span>
+                        <span class="meta-badge">${views} ${views === 1 ? 'просмотр' : 'просмотров'}</span>
                     </div>
                 `;
 
-                // Добавляем анимацию появления
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(15px);'
+                contentItem.style.opacity = '0';
+                contentItem.style.transform = 'translateY(20px)';
 
-                grid.appendChild(card);
+                contentWrapper.appendChild(contentItem);
 
-                // Анимация с задержкой
                 setTimeout(() => {
-                    card.style.transition = 'all 0.6s ease-out';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
+                    contentItem.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    contentItem.style.opacity = '1';
+                    contentItem.style.transform = 'translateY(0)';
                 }, index * 100);
             });
 
-            container.appendChild(grid);
+            container.appendChild(contentWrapper);
 
-            // Добавляем кнопку "Показать все"
-            const showAllBtn = document.createElement('div');
-            showAllBtn.className = 'show-all-wrapper';
-            showAllBtn.innerHTML = `
-                <a href="/${contentType === 'новостей' ? 'news' : 'posts'}" class="show-all-btn">
-                    Все ${contentType}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            const viewAllSection = document.createElement('div');
+            viewAllSection.className = 'view-all-section';
+            viewAllSection.innerHTML = `
+                <a href="/${contentType === 'новостей' ? 'news' : 'posts'}" class="view-all-btn">
+                    <span>Посмотреть все</span>
+                    <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </a>
             `;
-            container.appendChild(showAllBtn);
+            container.appendChild(viewAllSection);
         })
         .catch(err => {
             console.error(err);
-            showErrorState(container, contentType);
+            hideContainer(container);
         });
 }
+
+function hideContainer(container) {
+    if (container) {
+        const parentSection = container.closest('.col-lg-4');
+        if (parentSection) {
+            parentSection.style.display = 'none';
+        } else {
+            container.style.display = 'none';
+        }
+        container.innerHTML = '';
+    }
+}
+
 
 function renderBlogs(data) {
     const blogGrid = document.querySelector('.blog-masonry-grid');
@@ -255,7 +416,6 @@ function viewOlympiadDetails(olympiadId) {
     }
 }
 
-// Функция для показа пустого состояния
 function showEmptyState(container, contentType, icon) {
     const isCentered = contentType === 'блогов' || contentType === 'олимпиад';
     const stateClass = isCentered ? 'modern-empty-state-centered' : 'modern-empty-state-normal';
@@ -274,7 +434,6 @@ function showEmptyState(container, contentType, icon) {
     `;
 }
 
-// Функция для показа состояния ошибки
 function showErrorState(container, contentType) {
     container.innerHTML = `
         <div class="modern-error-state">
@@ -1125,10 +1284,12 @@ function showErrorHero() {
 function renderOlympiadAlert(olympiad) {
     const alertContainer = document.querySelector('.alert.alert-warning');
 
-    const title = olympiad.title || 'Математическая олимпиада';
-    const description = olympiad.info || 'Регистрация открыта. Покажи свои знания на республиканском уровне!';
+    let title = olympiad.title || 'Математическая олимпиада';
+    if (title.length > 20) {
+        title = title.substring(0, 97) + '...';
+    }
 
-    const olympiadUrl = `/olympiad/${olympiad.id}`;
+    const olympiadUrl = `/olympiad/details?id=${olympiad.id}`;
 
     let dateInfo = '';
     if (olympiad.createdAt) {
@@ -1148,7 +1309,7 @@ function renderOlympiadAlert(olympiad) {
             </div>
             <div class="flex-grow-1">
                 <h4 class="mb-1">${title}</h4>
-                <p class="mb-0">${description}${dateInfo}</p>
+                <p class="mb-0">${dateInfo}</p>
             </div>
             <div class="announcement-action">
                 <a href="${olympiadUrl}" class="btn btn-primary">Подать заявку</a>

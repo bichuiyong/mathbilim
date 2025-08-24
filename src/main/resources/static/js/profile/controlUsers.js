@@ -8,6 +8,72 @@ usersTab.addEventListener('shown.bs.tab', function (e) {
     doFetch('/api/users', 1, addUserToTable, changeEditModal, () => showEmptyMessage('usersContentList'));
 });
 
+
+const locale = document.getElementById("currentLocale").textContent;
+console.log(locale)
+
+const i18n = {
+    en: {
+        id: "ID",
+        username: "Username",
+        email: "Email",
+        role: "Role",
+        status: "Status",
+        actions: "Actions",
+        userActive: "Active",
+        userInactive: "Inactive",
+        edit: "Edit",
+        delete: "Delete",
+        block: "Block",
+        unblock: "Unblock",
+        emptyMessage: "😕 Nothing found",
+        emptyMessageDesc: "Try changing search or filter parameters.",
+        prev: "Previous",
+        next: "Next"
+    },
+    ru: {
+        id: "ID",
+        username: "Имя пользователя",
+        email: "Email",
+        role: "Роль",
+        status: "Статус",
+        actions: "Действия",
+        userActive: "Активен",
+        userInactive: "Неактивен",
+        edit: "Изменить",
+        delete: "Удалить",
+        block: "Заблокировать",
+        unblock: "Разблокировать",
+        emptyMessage: "😕 Ничего не найдено",
+        emptyMessageDesc: "Попробуйте изменить параметры поиска или фильтрации.",
+        prev: "Предыдущая",
+        next: "Следующая"
+    },
+    ky: {
+        id: "ID",
+        username: "Колдонуучунун аты",
+        email: "Email",
+        role: "Роль",
+        status: "Статус",
+        actions: "Иш-аракеттер",
+        userActive: "Активдүү",
+        userInactive: "Активдүү эмес",
+        edit: "Өзгөртүү",
+        delete: "Өчүрүү",
+        block: "Блоктоо",
+        unblock: "Блоктон чыгаруу",
+        emptyMessage: "😕 Эч нерсе табылган жок",
+        emptyMessageDesc: "Издөө же фильтр параметрлерин өзгөртүп көрүңүз.",
+        prev: "Мурунку",
+        next: "Кийинки"
+    }
+};
+
+function t(key) {
+    return i18n[locale]?.[key] || key;
+}
+
+
 const searchButton = document.getElementById('usersSearchBtn');
 searchButton.onclick = function () {
     let searchInputValue = document.getElementById('usersSearch').value;
@@ -121,7 +187,7 @@ function showEmptyMessage(containerId = 'usersContentList', message = '😕 Ни
     container.innerHTML = `
         <div class="alert alert-warning text-center mt-4" role="alert">
             <h5 class="mb-0">${message}</h5>
-            <p class="mb-0">Попробуйте изменить параметры поиска или фильтрации.</p>
+              <p class="mb-0">${t('emptyMessageDesc')}</p>
         </div>
     `;
 }
@@ -140,12 +206,12 @@ function addUserToTable(content) {
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Имя пользователя</th>
-                        <th>Email</th>
-                        <th>Роль</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
+                       <th>${t('id')}</th>
+                        <th>${t('username')}</th>
+                        <th>${t('email')}</th>
+                        <th>${t('role')}</th>
+                        <th>${t('status')}</th>
+                        <th>${t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody id="resultTableUsers"></tbody>
@@ -163,13 +229,13 @@ function addUserToTable(content) {
             <td><span class="badge bg-secondary">${user.role.name}</span></td>
             <td>
                 <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
-                    ${user.enabled ? 'Активен' : 'Неактивен'}
+                 ${user.enabled ? t('userActive') : t('userInactive')}
                 </span>
             </td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Действия
+                        ${t('actions')}
                     </button>
                     <ul class="dropdown-menu">
                         <li>
@@ -182,7 +248,7 @@ function addUserToTable(content) {
                                data-user-surname="${user.surname}"
                                data-user-role="${user.role.name}"
                                data-user-type="${user.type?.id || ''}">
-                                ✏️ Изменить
+                                ✏️${t('edit')}
                             </a>
                         </li>
                         <li>
@@ -191,14 +257,14 @@ function addUserToTable(content) {
                                data-bs-toggle="modal"
                                data-bs-target="#deleteUserModal"
                                data-user-id="${user.id}">
-                                🗑️ Удалить
+                                🗑️ ${t('delete')}
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item block-button text-warning"
                                href="#"
                                data-user-id="${user.id}">
-                                ${user.enabled ? '🔒 Заблокировать' : '🔓 Разблокировать'}
+                                    ${user.enabled ? t('block') : t('unblock')}
                             </a>
                         </li>
                     </ul>

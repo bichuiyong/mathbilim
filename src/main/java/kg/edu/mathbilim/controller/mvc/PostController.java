@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +32,7 @@ import java.util.Locale;
 @Controller("mvcPost")
 @RequestMapping("posts")
 @RequiredArgsConstructor
-public class PostController {
+public class    PostController {
     private final PostService postService;
     private final PostTypeService postTypeService;
     private final RestTemplate restTemplate;
@@ -111,8 +114,16 @@ public class PostController {
 
     @GetMapping("{postId}")
     public String detailPost(@PathVariable Long postId, Model model, Principal principal) {
-        model.addAttribute("post", postService.getPostById(postId));
+        String email = (principal != null) ? principal.getName() : null;
+        model.addAttribute("post", postService.getPostById(postId, email));
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
+    }
+
+    @PreAuthorize("@postSecurity.isOwner(#id, principal.username) or hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
+        postService.delete(id);
+        return "redirect:/";
     }
 }

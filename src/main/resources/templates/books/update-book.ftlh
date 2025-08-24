@@ -5,7 +5,7 @@
     <div class="container my-5">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="mb-0">Update Book</h3>
+                <h3 class="mb-0"><@spring.message "book.update.title"/></h3>
             </div>
             <div class="card-body">
                 <form id="bookForm" action="/books/update/${book.id}" method="post" enctype="multipart/form-data">
@@ -13,18 +13,20 @@
                     <input type="hidden" name="id" value="${book.id}"/>
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">
+                            <@spring.message "book.mainImage"/> <span class="text-danger">*</span>
+                        </label>
                         <#if book.mainImage??>
                             <div class="existing-image-section mb-3 p-3 bg-light rounded">
-                                <h6 class="mb-2">🖼️ Current Image:</h6>
+                                <h6 class="mb-2">🖼️ <@spring.message "book.currentImage"/></h6>
                                 <div class="existing-image-container">
                                     <img src="/api/files/${book.mainImage.id}/view"
                                          class="img-fluid border rounded"
-                                         alt="Current book cover"
+                                         alt="<@spring.message "book.currentImageAlt"/>"
                                          style="max-width: 300px; max-height: 200px; object-fit: cover;">
                                 </div>
                                 <small class="text-muted d-block mt-2">
-                                    Upload a new image to replace this one
+                                    <@spring.message "book.replaceImageHint"/>
                                 </small>
                             </div>
                         </#if>
@@ -35,82 +37,80 @@
                                     <img id="imagePreview" class="img-fluid">
                                 </div>
                                 <div class="crop-controls mt-3">
-                                    <button type="button" class="btn btn-primary" id="cropButton">Применить кроп</button>
-                                    <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить</button>
+                                    <button type="button" class="btn btn-primary" id="cropButton">
+                                        <@spring.message "book.applyCrop"/>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                        <@spring.message "book.cancelCrop"/>
+                                    </button>
                                 </div>
                             </div>
                             <div class="cropped-preview" style="display: none;">
-                                <label class="form-label">Предпросмотр (1200x400):</label>
+                                <label class="form-label"><@spring.message "book.croppedPreview"/></label>
                                 <div class="cropped-image-container">
                                     <img id="croppedImage" class="img-fluid border rounded">
                                 </div>
-                                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">
+                                    <@spring.message "book.changeCrop"/>
+                                </button>
                             </div>
                         </div>
                         <small class="form-text text-muted">
-                            Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                            <@spring.message "book.imageSizeHint"/>
                         </small>
                     </div>
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Book Title</label>
-                        <@spring.formInput "book.name" 'class="form-control" id="name" placeholder="Enter book title"'/>
+                        <label for="name" class="form-label"><@spring.message "book.label.title"/></label>
+                        <@spring.formInput "book.name" 'class="form-control" id="name" placeholder="' + springMacroRequestContext.getMessage("book.placeholder.title") + '"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="authors" class="form-label">Author(s)</label>
-                        <@spring.formInput "book.authors" 'class="form-control" id="authors" placeholder="Enter author(s)"'/>
+                        <label for="authors" class="form-label"><@spring.message "book.label.authors"/></label>
+                        <@spring.formInput "book.authors" 'class="form-control" id="authors" placeholder="' +springMacroRequestContext.getMessage("book.placeholder.authors") + '"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <@spring.formInput "book.isbn" 'class="form-control" id="isbn" placeholder="e.g. 978-3-16-148410-0"'/>
+                        <label for="isbn" class="form-label"><@spring.message "book.label.isbn"/></label>
+                        <@spring.formInput "book.isbn" 'class="form-control" id="isbn" placeholder="' + springMacroRequestContext.getMessage("book.placeholder.isbn") + '"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label"><@spring.message "book.label.description"/></label>
                         <@spring.formTextarea "book.description" 'class="form-control" id="description" rows="4"'/>
                         <@spring.showErrors '<br>',"text-danger small"/>
                     </div>
 
-
-
-
                     <div class="mb-3">
-                        <label for="attachments" class="form-label">Attachments</label>
+                        <label for="attachments" class="form-label"><@spring.message "book.label.attachments"/></label>
 
                         <#if existingFile??>
                             <div class="existing-file-section mb-3 p-3 bg-light rounded">
-                                <h6 class="mb-2">📎 Current File:</h6>
+                                <h6 class="mb-2">📎 <@spring.message "book.currentFile"/></h6>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="file-info">
                                         <strong>${existingFile.filename}</strong>
                                         <br>
                                         <small class="text-muted">
-                                            Size: ${(existingFile.size / 1024 / 1024)?string("0.##")} MB
+                                            <@spring.message "book.file.size"/>: ${(existingFile.size / 1024 / 1024)?string("0.##")} MB
                                             <#if existingFile.type??>
-                                                | Type: ${existingFile.type.mimeType}
+                                                | <@spring.message "book.file.type"/>: ${existingFile.type.mimeType}
                                             </#if>
                                         </small>
                                     </div>
-                                    <div class="file-actions d-flex gap-2 align-items-center">
+                                    <div class="file-actions d-flex gap-2 flex-wrap">
                                         <#if existingFile.type?? && existingFile.type.mimeType == "application/pdf">
                                             <a href="/books/${existingFile.id}/pdf-reader"
-                                               class="btn btn-sm btn-outline-primary w-100 text-center"
-                                               target="_blank"
-                                               style="max-width: 130px; max-height: 58px;">
-                                                 View File
+                                               class="btn btn-sm btn-outline-primary flex-grow-1 text-center file-action-btn"
+                                               target="_blank">
+                                                <@spring.message "book.viewFile"/>
                                             </a>
                                         </#if>
                                         <a href="/api/files/${existingFile.id}/download"
-                                           class="btn btn-sm btn-outline-secondary w-100 text-center"
-                                           style="max-width: 130px; max-height: 58px;">
-                                             Download File
+                                           class="btn btn-sm btn-outline-secondary flex-grow-1 text-center file-action-btn">
+                                            <@spring.message "book.downloadFile"/>
                                         </a>
                                     </div>
-
-
-
 
                                 </div>
                             </div>
@@ -121,13 +121,9 @@
 
                         <div class="form-text">
                             <#if existingFile??>
-                                <span class="text-info">
-                💡 Leave empty to keep current file, or select a new file to replace it
-            </span>
+                                <span class="text-info"><@spring.message "book.attachments.keepHint"/></span>
                             <#else>
-                                <span class="text-danger">
-                📎 Supported files: PDF only
-            </span>
+                                <span class="text-danger"><@spring.message "book.attachments.hint"/></span>
                             </#if>
                         </div>
                     </div>
@@ -138,7 +134,7 @@
                             <#assign categoryOptions = categoryOptions + {category.id?string: category.translations[0].translation}>
                         </#list>
 
-                        <label for="category" class="form-label">Category</label>
+                        <label for="category" class="form-label"><@spring.message "book.label.category"/></label>
                         <@spring.formSingleSelect
                         "book.category.id",
                         categoryOptions,
@@ -147,14 +143,13 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                        </div>
+                        <div></div>
                         <div class="d-flex gap-2">
                             <a href="/books" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i>Отменить
+                                <i class="fas fa-times me-2"></i><@spring.message "book.button.cancel"/>
                             </a>
                             <button type="submit" class="btn btn-primary" id="submitButton">
-                                <i class="fas fa-save me-2"></i>Создать книгу
+                                <i class="fas fa-save me-2"></i><@spring.message "book.button.save"/>
                             </button>
                         </div>
                     </div>
@@ -162,6 +157,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="https://cdn.tiny.cloud/1/7v0gkd2f6uam1hogetosjlogqkf8vz98nsxikg6vsrntra2k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
@@ -238,6 +234,16 @@
             min-width: 130px;
             text-align: center;
         }
+        .file-action-btn {
+            min-width: 120px;
+            max-width: 200px;
+            padding: 0.5rem 1rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+        }
+
 
     </style>
 

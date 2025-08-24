@@ -7,7 +7,7 @@
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="mb-0">Создание блога</h2>
+                        <h2 class="mb-0"><@spring.message "blog.create.title"/></h2>
                     </div>
                     <div class="card-body">
                         <form id="blogForm" action="/blog/create" method="post" enctype="multipart/form-data">
@@ -18,12 +18,13 @@
                                 </div>
                             </#if>
 
-
                             <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <@spring.message "blog.mainImage.label"/> <span class="text-danger">*</span>
+                                </label>
                                 <small class="text-danger">
                                     ${image!""}
                                 </small>
-                                <label class="form-label fw-bold">Главное изображение <span class="text-danger">*</span></label>
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
@@ -31,23 +32,28 @@
                                             <img id="imagePreview" class="img-fluid">
                                         </div>
                                         <div class="crop-controls mt-3">
-                                            <button type="button" class="btn btn-primary" id="cropButton">Применить кроп</button>
-                                            <button type="button" class="btn btn-secondary" id="cancelCrop">Отменить</button>
+                                            <button type="button" class="btn btn-primary" id="cropButton">
+                                                <@spring.message "blog.mainImage.crop.apply"/>
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" id="cancelCrop">
+                                                <@spring.message "blog.mainImage.crop.cancel"/>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="cropped-preview" style="display: none;">
-                                        <label class="form-label">Предпросмотр (1200x400):</label>
+                                        <label class="form-label"><@spring.message "blog.mainImage.preview.label"/></label>
                                         <div class="cropped-image-container">
                                             <img id="croppedImage" class="img-fluid border rounded">
                                         </div>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">Изменить кроп</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="changeCrop">
+                                            <@spring.message "blog.mainImage.preview.change"/>
+                                        </button>
                                     </div>
                                 </div>
                                 <small class="form-text text-muted">
-                                    Изображение будет обрезано до размера 1200x400 пикселей (соотношение 3:1)
+                                    <@spring.message "blog.mainImage.info"/>
                                 </small>
                             </div>
-
 
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -61,7 +67,7 @@
                                                         data-lang="${trans.languageCode}">
                                                     ${languages[trans.languageCode]}
                                                     <span class="translation-indicator ms-2" id="indicator-${trans.languageCode}">
-                                                    <i class="fas fa-circle text-danger" title="Не заполнено"></i>
+                                                    <i class="fas fa-circle text-danger" title="<@spring.message 'blog.translation.incomplete'/>"></i>
                                                 </span>
                                                 </button>
                                             </li>
@@ -83,13 +89,13 @@
 
                                                 <div class="mb-4">
                                                     <@spring.bind "blogDto.blogTranslations[${trans?index}].title"/>
-                                                    <label class="form-label fw-bold">Заголовок</label>
+                                                    <label class="form-label fw-bold"><@spring.message "blog.translation.title"/></label>
                                                     <input type="text"
                                                            class="form-control translation-field <#if spring.status.error>is-invalid</#if>"
                                                            name="blogTranslations[${trans?index}].title"
                                                            data-lang="${trans.languageCode}"
                                                            value="${spring.status.value!''}"
-                                                           placeholder="Введите заголовок блога...">
+                                                           placeholder="<@spring.message 'blog.translation.title.placeholder'/>">
                                                     <#if spring.status.error>
                                                         <div class="invalid-feedback">
                                                             <#list spring.status.errorMessages as error>${error}</#list>
@@ -99,7 +105,7 @@
 
                                                 <div class="mb-4">
                                                     <@spring.bind "blogDto.blogTranslations[${trans?index}].content"/>
-                                                    <label class="form-label fw-bold">Содержание</label>
+                                                    <label class="form-label fw-bold"><@spring.message "blog.translation.content"/></label>
                                                     <textarea class="form-control rich-text-editor translation-field <#if spring.status.error>is-invalid</#if>"
                                                               name="blogTranslations[${trans?index}].content"
                                                               data-lang="${trans.languageCode}"
@@ -122,15 +128,15 @@
                                 <div>
                                 <span class="text-muted">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Заполните хотя бы один перевод для публикации
+                                    <@spring.message "blog.info.translationRequired"/>
                                 </span>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <a href="/blog" class="btn btn-secondary">
-                                        <i class="fas fa-times me-2"></i>Отменить
+                                        <i class="fas fa-times me-2"></i><@spring.message "blog.button.cancel"/>
                                     </a>
                                     <button type="submit" class="btn btn-primary" id="submitButton">
-                                        <i class="fas fa-save me-2"></i>Создать блог
+                                        <i class="fas fa-save me-2"></i><@spring.message "blog.button.save"/>
                                     </button>
                                 </div>
                             </div>
@@ -158,13 +164,18 @@
             const csrfHeader = 'X-XSRF-TOKEN';
             const csrfToken = '${_csrf.token}';
 
+            const FROALA_LANG = '${springMacroRequestContext.locale}';
+
+            const FROALA_PLACEHOLDER = '${springMacroRequestContext.getMessage("editor.placeholder")?js_string}';
+
+
             <#noparse>
             new FroalaEditor('textarea.rich-text-editor', {
                 toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'paragraphFormat', 'formatUL', 'formatOL', '|', 'insertLink', 'insertImage', '|', 'html'],
                 height: 400,
                 requestHeaders: { [csrfHeader]: csrfToken },
-                language: 'ru',
-                placeholderText: 'Введите текст...',
+                language: FROALA_LANG,
+                placeholderText: FROALA_PLACEHOLDER,
                 contentStyle: 'body { font-family: Arial, sans-serif; font-size: 14px; color: #1e293b; }',
                 imageUploadURL: '/api/files/froala/image',
                 imageUploadParam: 'file',

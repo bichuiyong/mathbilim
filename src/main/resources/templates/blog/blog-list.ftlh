@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
 
 
@@ -576,19 +577,19 @@
     <div class="content-wrapper">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">📝 Блоги</h1>
-            <p class="page-subtitle">Последние статьи и материалы от наших авторов</p>
+            <h1 class="page-title">📝 <@spring.message "blog.title"/></h1>
+            <p class="page-subtitle"><@spring.message "blog.subtitle"/></p>
         </div>
 
         <div class="search-container">
             <div class="search-header">
-                <h2 class="search-title">Поиск и фильтры</h2>
+                <h2 class="search-title"><@spring.message "blog.search.title"/></h2>
             </div>
             <form method="get" action="/blog">
                 <div class="search-row">
                     <div class="search-input-group">
                         <input type="text" name="query" value="${query!}"
-                               placeholder="🔍 Найти блоги по названию или содержанию..."/>
+                               placeholder="🔍 <@spring.message 'blog.search.placeholder'/>"/>
                     </div>
                 </div>
 
@@ -596,32 +597,39 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 По дате создания
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>
+                                    📅 <@spring.message "blog.sort.createdAt"/>
                                 </option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 По просмотрам
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>
+                                    👁 <@spring.message "blog.sort.viewCount"/>
                                 </option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 По репостам
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>
+                                    📤 <@spring.message "blog.sort.shareCount"/>
                                 </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>
+                                    ⬇️ <@spring.message "blog.sort.desc"/>
+                                </option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>
+                                    ⬆️ <@spring.message "blog.sort.asc"/>
+                                </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="lang" class="language-selector">
-                                <option value="ru" <#if currentLang=="ru">selected</#if>>🇷🇺 Русский</option>
-                                <option value="en" <#if currentLang=="en">selected</#if>>🇺🇸 English</option>
-                                <option value="ky" <#if currentLang=="ky">selected</#if>>🇰🇬 Кыргызча</option>
+                                <option value="ru" <#if currentLang=="ru">selected</#if>>🇷🇺 <@spring.message "lang.ru"/></option>
+                                <option value="en" <#if currentLang=="en">selected</#if>>🇺🇸 <@spring.message "lang.en"/></option>
+                                <option value="ky" <#if currentLang=="ky">selected</#if>>🇰🇬 <@spring.message "lang.ky"/></option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">✨ Применить</button>
+                    <button type="submit" class="search-button">✨ <@spring.message "blog.search.apply"/></button>
                 </div>
             </form>
         </div>
@@ -658,12 +666,9 @@
                                 </#if>
 
                                 <div class="post-meta">
-            <span class="post-date">
-               📅 ${b.formattedDate}
-            </span>
-
-                                    <span class="post-date">
-            </span>
+                                <span class="post-date">
+                                    📅 ${b.formattedDate}
+                                </span>
                                 </div>
                             </#if>
                         </div>
@@ -674,15 +679,15 @@
             <div class="blogs-grid">
                 <#if blog?? && blog.content?size == 0>
                     <div class="no-blogs">
-                        Блоги не найдены
-                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">Попробуйте изменить параметры
-                            поиска
+                        <@spring.message "blog.empty"/>
+                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">
+                            <@spring.message "blog.empty.hint"/>
                         </div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Загружаем блоги...</span>
+                        <span><@spring.message "blog.loading"/></span>
                     </div>
                 </#if>
             </div>
@@ -693,42 +698,38 @@
                 <@main.csrf/>
                 <input type="hidden" name="type" value="BLOG">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="subscription-button btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="subscription-button btn-outline-danger">🔕 <@spring.message "blog.unsubscribe"/></button>
                 <#else>
-                    <button class="subscription-button btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="subscription-button btn-outline-primary">📩 <@spring.message "blog.subscribe"/></button>
                 </#if>
             </form>
         </div>
 
-    </div>
-
-    <#if blog?? && blog.content?size gt 0 && (blog.hasPrevious() || blog.hasNext())>>
-        <div class="pagination-container">
-            <#if blog.hasPrevious()>
-                <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
-                   class="pagination-btn prev">
-                    ← Назад
-                </a>
-            </#if>
-
-            <div class="pagination-info">
-                Страница ${page + 1}
+        <#if blog?? && blog.content?size gt 0 && (blog.hasPrevious() || blog.hasNext())>
+            <div class="pagination-container">
+                <#if blog.hasPrevious()>
+                    <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                       class="pagination-btn prev">
+                        ← <@spring.message "pagination.prev"/>
+                    </a>
+                </#if>
+                <div class="pagination-info">
+                    <@spring.message "pagination.page"/> ${page + 1}
+                </div>
+                <#if blog.hasNext()>
+                    <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
+                       class="pagination-btn next">
+                        <@spring.message "pagination.next"/> →
+                    </a>
+                </#if>
             </div>
-
-            <#if blog.hasNext()>
-                <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&lang=${currentLang!'ru'}"
-                   class="pagination-btn next">
-                    Вперёд →
-                </a>
-            </#if>
-        </div>
-    </#if>
+        </#if>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Language selector change handler
-            const langSelect = document.querySelector('select[name="lang"]');
+            const langSelect = document.querySelector('select[name="language"]');
             if (langSelect) {
                 langSelect.addEventListener('change', function () {
                     const form = this.closest('form');
@@ -1042,7 +1043,7 @@
                     }).catch(error => {
                         console.log('Auto-refresh failed:', error);
                     });
-                }, 300000); // Refresh every 5 minutes
+                }, 300000);
             };
 
             const stopAutoRefresh = () => {
@@ -1051,7 +1052,6 @@
                 }
             };
 
-            // Start auto-refresh when page is visible
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
                     stopAutoRefresh();
@@ -1060,10 +1060,8 @@
                 }
             });
 
-            // Initialize auto-refresh
             startAutoRefresh();
 
-            // Search form enhancements
             const searchInput = document.querySelector('input[name="query"]');
             if (searchInput) {
                 let searchTimeout;

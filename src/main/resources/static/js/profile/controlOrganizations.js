@@ -154,10 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="col-auto">
                             <div class="organization-avatar">
                                 ${org.avatar ?
-                `<img src="/api/files/${org.avatar.id}/download" 
-                                         alt="${escapeHtml(org.name)}" 
-                                         class="rounded-circle" 
-                                         style="width: 60px; height: 60px; object-fit: cover;">` :
+                `<img src="/api/files/${org.avatar ? org.avatar.id : 'default-image-id'}/download" 
+                             alt="${escapeHtml(org.name)}"
+                             class="rounded-circle"
+                             style="width: 60px; height: 60px; object-fit: cover;">` :
                 `<div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
                                           style="width: 60px; height: 60px;">
                                         <i class="fas fa-building text-white fa-lg"></i>
@@ -401,7 +401,7 @@ function showEditModal(orgData) {
                                 <label class="form-label">Текущий аватар</label>
                                 <div class="current-avatar">
                                     ${orgData.avatar ?
-        `<img src="/api/files/${orgData.avatar.id}/download" 
+        `<img src="/api/files/${org.avatar ? org.avatar.id : 'default-image-id'}/download" 
                                              alt="Текущий аватар" 
                                              class="rounded border" 
                                              style="width: 100px; height: 100px; object-fit: cover;">` :
