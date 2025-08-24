@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    function showNoContentMessage(message = "У вас пока нет ни одного поста, блога, события или книги.") {
+        function showNoContentMessage(message = "Пока нет ни одного поста, блога, события или книги.") {
         console.log("Нет контента для отображения.");
         contentList.innerHTML = `
             <div class="no-content text-center py-5">

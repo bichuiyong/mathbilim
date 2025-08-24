@@ -804,12 +804,15 @@
                             Создатель
                         </div>
                         <div class="detail-value">
-                            <span class="event-author-compact" data-author-id="${event.creator.id}">
-                                <span class="author-name">${event.creator.name}</span>
-                            </span>
+            <span class="event-author-compact" data-author-id="${event.creator.id}">
+                <a href="/users/${event.creator.id}/public" class="author-name">
+                    ${event.creator.name}
+                </a>
+            </span>
                         </div>
                     </div>
                 </#if>
+
             </div>
         </div>
 
