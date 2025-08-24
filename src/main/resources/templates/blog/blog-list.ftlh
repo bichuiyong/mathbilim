@@ -655,12 +655,10 @@
 
                         <div class="blog-content">
                             <#assign translation = (b.blogTranslations?first)!>
-
                             <#if translation??>
                                 <#if translation.title?? && translation.title?has_content>
                                     <h3 class="post-title">${translation.title}</h3>
                                 </#if>
-
                                 <#if translation.description?? && translation.description?has_content>
                                     <p class="post-description">${translation.description}</p>
                                 </#if>
@@ -725,6 +723,7 @@
             </div>
         </#if>
     </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
