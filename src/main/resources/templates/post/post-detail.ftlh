@@ -867,7 +867,7 @@
                     ${post.creator.name?substring(0, 1)?upper_case}
                 </div>
                 <div class="author-info">
-                    <a href="/profile/info/${post.creator.id}" class="publication-author">
+                    <a href="/users/${post.creator.id}/public" class="publication-author">
                         ${post.creator.name}
                     </a>
                     <div class="publication-date">

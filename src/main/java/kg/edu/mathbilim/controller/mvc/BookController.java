@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Optional;
+
+import java.security.Principal;
 
 @Controller("mvcBook")
 @RequiredArgsConstructor
@@ -42,7 +45,13 @@ public class BookController {
                         Model model, Principal principal) {
 
         int safePage = Math.max(1, page);
-        model.addAttribute("book", bookService.getAllBooks("APPROVED",query,safePage, size, sortBy, sortDirection, categoryId));
+        model.addAttribute("book", bookService.getAllBooks("APPROVED",
+                query,
+                safePage,
+                size,
+                sortBy,
+                sortDirection,
+                categoryId));
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -55,9 +64,13 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public String book(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("book", bookService.getById(id));
-        return "books/book";
+    public String book(@PathVariable("id") Long id, Model model, Principal principal) {
+        String email = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .orElse(null);
+
+        model.addAttribute("currentUser", email != null ? userService.getUserByEmail(email) : null);        model.addAttribute("book", bookService.getById(id));
+        return "books/book-detail";
     }
 
     @GetMapping("/create")

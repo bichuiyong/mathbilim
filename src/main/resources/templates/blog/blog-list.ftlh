@@ -728,7 +728,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Language selector change handler
-            const langSelect = document.querySelector('select[name="lang"]');
+            const langSelect = document.querySelector('select[name="language"]');
             if (langSelect) {
                 langSelect.addEventListener('change', function () {
                     const form = this.closest('form');
@@ -1042,7 +1042,7 @@
                     }).catch(error => {
                         console.log('Auto-refresh failed:', error);
                     });
-                }, 300000); // Refresh every 5 minutes
+                }, 300000);
             };
 
             const stopAutoRefresh = () => {
@@ -1051,7 +1051,6 @@
                 }
             };
 
-            // Start auto-refresh when page is visible
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
                     stopAutoRefresh();
@@ -1060,10 +1059,8 @@
                 }
             });
 
-            // Initialize auto-refresh
             startAutoRefresh();
 
-            // Search form enhancements
             const searchInput = document.querySelector('input[name="query"]');
             if (searchInput) {
                 let searchTimeout;
