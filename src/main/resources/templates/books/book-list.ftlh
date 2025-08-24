@@ -12,24 +12,25 @@
     <div class="container-fluid mt-4" style="margin-bottom: 50px">
         <div class="row">
             <!-- Sidebar with collapse ID for toggle -->
-            <aside id="sidebarCategories" class="col-md-3 col-lg-2 bg-light sidebar collapse d-md-block">
-                <div class="filter-section p-3">
-                    <h3 class="h5 fw-bold mb-3"><@spring.message "books.sidebar.title"/></h3>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a href="/books" class="nav-link <#if categoryId??>text-primary<#else>fw-bold</#if>">
-                                <@spring.message "books.sidebar.all"/>
-                            </a>
-                        </li>
-                        <#list categories as category>
+            <aside id="sidebarCategories" class="col-md-3 col-lg-2 sidebar-wrapper collapse d-md-block">
+                <div class="bg-light sidebar-content">
+                    <div class="filter-section p-3">
+                        <h3 class="h5 fw-bold mb-3"><@spring.message "books.sidebar.title"/></h3>
+                        <ul class="nav flex-column categories-list">
                             <li class="nav-item">
-                                <a href="/books?categoryId=${category.id}"
-                                   class="nav-link <#if categoryId?? && categoryId == category.id>fw-bold</#if>">
-                                    ${category.translations[0].translation}
+                                <a href="/books" class="nav-link category-link <#if categoryId??>text-primary<#else>fw-bold active-category</#if>">
+                                    <@spring.message "books.sidebar.all"/>
                                 </a>
                             </li>
-                        </#list>
-                    </ul>
+                            <#list categories as category>
+                                <li class="nav-item">
+                                    <a href="/books?categoryId=${category.id}" class="nav-link category-link <#if categoryId?? && categoryId == category.id>fw-bold active-category</#if>">
+                                        ${category.translations[0].translation}
+                                    </a>
+                                </li>
+                            </#list>
+                        </ul>
+                    </div>
                 </div>
             </aside>
 
@@ -118,25 +119,9 @@
                                         </div>
                                         <p class="mb-2 text-muted">${bookItem.description}</p>
                                         <div class="mt-auto d-flex gap-2">
-                                            <#if bookItem.file.type.mimeType == "application/pdf">
-                                                <a href="/books/${bookItem.file.id}/pdf-reader"
-                                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                                                   style="min-width: 120px; height: 36px;">
-                                                    <i class="bi bi-book me-1"></i> <@spring.message "books.read"/>
-                                                </a>
-                                            <#else>
-                                                <a href="/api/files/${bookItem.file.id}/view"
-                                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                                                   style="min-width: 120px; height: 36px;"
-                                                   target="_blank">
-                                                    <i class="bi bi-file-earmark-text me-1"></i> <@spring.message "books.open"/>
-                                                </a>
-                                            </#if>
-
-                                            <a href="/api/files/${bookItem.file.id}/download"
-                                               class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
-                                               style="min-width: 120px; height: 36px;">
-                                                <i class="bi bi-download me-1"></i> <@spring.message "books.download"/>
+                                            <a href="/books/${bookItem.id}"
+                                               class="btn btn-sm btn-outline-primary details-btn">
+                                                Подробнее
                                             </a>
                                             <#if currentUser?? && (isAdmin || (bookItem.creator?? && bookItem.creator.id == currentUser.id))>
                                                 <form action="/books/delete/${bookItem.id}" method="post" style="">
@@ -148,14 +133,12 @@
                                                 </form>
                                             </#if>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </#list>
                     </#if>
                 </div>
-
 
                 <#if book.totalPages gt 1>
                     <#assign currentPage = page>
@@ -409,7 +392,6 @@
         .book-info {
             animation: slideInLeft 0.6s ease-out 0.1s both;
         }
-
 
         .book-title {
             color: #2c3e50;
