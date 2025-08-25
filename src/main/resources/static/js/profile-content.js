@@ -335,17 +335,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p>Загрузка контента...</p>
                 </div>`;
 
-            contentList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 
             if (currentFilter === 'all') {
                 loadAllContentTypes(page);
             } else {
-                // Загрузка определенного типа контента
                 loadSpecificContentType(page);
             }
         }
 
-        // Функция для получения правильного title как в истории
         function getContentTitle(item, type) {
 
             let title = '';

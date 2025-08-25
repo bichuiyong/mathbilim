@@ -17,6 +17,7 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -41,8 +42,10 @@ public abstract class AbstractTranslatableContentService<
     protected final UserNotificationService notificationService;
 
     protected AbstractTranslatableContentService(R repository, M mapper, UserService userService,
-                                                 FileService fileService, TS translationService, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService);
+                                                 FileService fileService, TS translationService,
+                                                 UserNotificationService notificationService,
+                                                 MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, messageSource);
         this.translationService = translationService;
         this.notificationService = notificationService;
     }

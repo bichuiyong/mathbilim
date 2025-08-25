@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.organization.OrganizationIdNameDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.nsee.OrganizationNotFound;
 import kg.edu.mathbilim.mapper.OrganizationMapper;
+import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.repository.OrganizationRepository;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -104,10 +106,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional
     @Override
     public OrganizationDto create(OrganizationDto dto, MultipartFile avatarFile) {
+        if (!StringUtils.hasText(dto.getName()) || !StringUtils.hasText(dto.getDescription())) {
+            throw new IllegalArgumentException("Имя и описание требуется заполнить");
+        }
+
         dto.setCreator(userService.getAuthUser());
         dto.setStatus(ContentStatus.APPROVED);
 
-        if (avatarFile != null) {
+        if (avatarFile != null && !avatarFile.isEmpty()) {
             FileDto avatar = fileService.uploadAvatar(avatarFile);
             dto.setAvatar(avatar);
         }
@@ -130,11 +136,21 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional
     @Override
-    public OrganizationDto update(Long id, OrganizationDto dto) {
+    public OrganizationDto update(Long id, OrganizationDto dto, MultipartFile avatarFile) {
+        if (!StringUtils.hasText(dto.getName()) || !StringUtils.hasText(dto.getDescription())) {
+            throw new IllegalArgumentException("Name and description must not be empty");
+        }
+
         Organization organization = getEntityById(id);
         organization.setName(dto.getName());
         organization.setDescription(dto.getDescription());
         organization.setUrl(dto.getUrl());
+
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            File avatar = fileService.uploadAvatarReturnEntity(avatarFile);
+            organization.setAvatar(avatar);
+        }
+
         organizationRepository.save(organization);
         return organizationMapper.toDto(organization);
     }

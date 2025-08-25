@@ -18,6 +18,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +47,11 @@ public class BookServiceImpl extends
     private final BookRepository bookRepository;
     private final FileMapper fileMapper;
 
-    public BookServiceImpl(BookRepository repository, BookMapper mapper, UserService userService, FileService fileService, CategoryService categoryService, BookRepository bookRepository, FileMapper fileMapper) {
-        super(repository, mapper, userService, fileService);
+    public BookServiceImpl(BookRepository repository, BookMapper mapper, UserService userService,
+                           FileService fileService, CategoryService categoryService,
+                           BookRepository bookRepository, FileMapper fileMapper,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, messageSource);
         this.categoryService = categoryService;
         this.bookRepository = bookRepository;
         this.fileMapper = fileMapper;
