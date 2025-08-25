@@ -35,4 +35,6 @@ public class NewsController {
     public ResponseEntity<?> getLatestNews() {
         return ResponseEntity.ofNullable(newsService.getNewsByMainPage());
     }
+
+
 }

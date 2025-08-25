@@ -126,6 +126,31 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    public Page<NewsDto> getContentByCreatorIdNews(Long creatorId, Pageable pageable, String query) {
+        if (query != null) {
+            Page<News> allBlogWithQuery = repository.getNewsByStatusWithQuery(query, creatorId, pageable);
+
+            return allBlogWithQuery.map(mapper::toDto);
+        }
+
+        Page<News> allBlogs = repository.getNewsByCreator(creatorId, pageable);
+
+        return allBlogs.map(mapper::toDto);
+    }
+
+
+
+    @Override
+    public Page<NewsDto> getHistoryNews(Long creatorId, Pageable pageable, String query, String status) {
+        if (query != null && !query.trim().isEmpty()) {
+            return repository.getNewsWithQuery(creatorId, query, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
+    @Override
     @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElse(null);

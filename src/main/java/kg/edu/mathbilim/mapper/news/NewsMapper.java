@@ -17,6 +17,7 @@ public interface NewsMapper extends BaseMapper<News, NewsDto> {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "creator", source = "creator")
     @Mapping(target = "newsTranslations", source = "newsTranslations")
+    @Mapping(target = "deleted", source = "deleted")
     NewsDto toDto(News news);
 
     @Mapping(target = "newsTranslations", source = "newsTranslations")
