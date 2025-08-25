@@ -22,6 +22,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +49,12 @@ public class PostServiceImpl extends
         implements PostService {
 
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService,
+                           FileService fileService, PostTranslationService translationService,
+                           PostRepository postRepository, PostMapperImpl postMapperImpl,
+                           UserNotificationService notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override

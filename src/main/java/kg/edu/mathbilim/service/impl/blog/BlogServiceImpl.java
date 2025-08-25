@@ -19,6 +19,7 @@ import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +45,11 @@ public class BlogServiceImpl extends
                 >
         implements BlogService {
 
-    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService, FileService fileService, BlogTranslationService translationService, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService,
+                           FileService fileService, BlogTranslationService translationService,
+                           UserNotificationService notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override

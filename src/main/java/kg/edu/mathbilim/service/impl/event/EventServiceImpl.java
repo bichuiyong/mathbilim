@@ -24,6 +24,7 @@ import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -48,8 +49,12 @@ public class EventServiceImpl extends
 
     private final OrganizationService organizationService;
 
-    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService,
+                            FileService fileService, EventTranslationService translationService,
+                            OrganizationService organizationService,
+                            UserNotificationService notificationService,
+                            MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
         this.organizationService = organizationService;
     }
 

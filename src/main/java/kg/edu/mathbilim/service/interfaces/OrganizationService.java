@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.interfaces;
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.dto.organization.OrganizationIdNameDto;
 import kg.edu.mathbilim.model.event.Event;
@@ -26,12 +27,12 @@ public interface OrganizationService {
     @Transactional
     List<Organization> addEventToOrganizations(List<Long> organizationIds, Event event);
 
-    OrganizationDto create(OrganizationDto dto, MultipartFile avatarFile);
+    OrganizationDto create(@Valid OrganizationDto dto, MultipartFile avatarFile);
 
     Page<OrganizationDto> getOrganizations(String query, Pageable pageable);
 
     @Transactional
-    OrganizationDto update(Long id, OrganizationDto dto);
+    OrganizationDto update(Long id, @Valid OrganizationDto dto, MultipartFile avatarFile);
 
     @Transactional
     boolean delete(Long id);
