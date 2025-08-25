@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +57,8 @@ class BookServiceImplTest {
     private MultipartFile attachment;
     @Mock
     private MultipartFile image;
+    @Mock
+    private MessageSource messageSource;
 
     @InjectMocks
     private BookServiceImpl bookService;

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,6 +53,9 @@ class BlogServiceImplTest {
 
     @Mock
     UserNotificationService userNotificationService;
+
+    @Mock
+    MessageSource messageSource;
 
     @InjectMocks
     BlogServiceImpl blogService;
