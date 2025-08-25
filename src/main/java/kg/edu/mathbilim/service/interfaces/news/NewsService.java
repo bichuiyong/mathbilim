@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,6 +14,10 @@ import java.util.List;
 public interface NewsService extends BaseTranslatableService<NewsDto, NewsTranslationDto> {
     @Transactional
     NewsDto create(CreateNewsDto createNewsDto);
+
+    Page<NewsDto> getContentByCreatorIdNews(Long creatorId, Pageable pageable, String query);
+
+    Page<NewsDto> getHistoryNews(Long creatorId, Pageable pageable, String query, String status);
 
     NewsDto getNewsById(Long id);
 

@@ -1226,36 +1226,24 @@
             }
         }
 
-        // Функция подтверждения удаления блога
-        window.confirmBlogDelete = function() {
+        window.confirmBlogDelete = function(blogId) {
+            console.log("blog ", ${blog.id})
             if (confirm('Вы уверены, что хотите удалить эту статью?')) {
-                // Создаем форму динамически
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = '/blog/delete/${blog.id}';
-
-                // Добавляем CSRF токен
-                var csrfToken = getCsrfToken();
-                if (csrfToken) {
-                    var csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = getCsrfHeader().replace('X-CSRF-TOKEN', '_csrf');
-                    csrfInput.value = csrfToken;
-                    form.appendChild(csrfInput);
-                }
-
-                // Добавляем метод DELETE
-                var methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = '_method';
-                methodInput.value = 'delete';
-                form.appendChild(methodInput);
-
-                // Добавляем форму в DOM и отправляем
-                document.body.appendChild(form);
-                form.submit();
+                fetch('/api/blog/delete/' + ${blog.id}, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [getCsrfHeader()]: getCsrfToken() // добавляем CSRF токен
+                    },
+                    body: JSON.stringify({ blogId: blogId }) // тело запроса, если сервер ожидает JSON
+                })
+                    .catch(error => {
+                        console.error('Error deleting blog:', error);
+                        alert('Ошибка при удалении статьи');
+                    });
             }
         };
+
 
         function formatTime(hour, minute) {
             return hour.toString().padStart(2, '0') + ':' + minute.toString().padStart(2, '0');

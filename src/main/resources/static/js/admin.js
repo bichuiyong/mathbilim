@@ -717,7 +717,3 @@ function updateModerationCount() {
             console.error('Ошибка:', error);
         });
 }
-
-
-
-

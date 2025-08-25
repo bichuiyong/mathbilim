@@ -19,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -82,7 +83,7 @@ public class BlogController {
         if (bindingResult.hasErrors() || mpMainImage == null || mpMainImage.isEmpty()) {
             if (mpMainImage == null || mpMainImage.isEmpty()) {
                 String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
-                model.addAttribute("image",errorMessage);
+                model.addAttribute("image", errorMessage);
             }
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
@@ -111,12 +112,5 @@ public class BlogController {
 
 
         return "blog/blog";
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @blogSecurity.isOwner(#id,  principal.username)")
-    @PostMapping("delete/{id}")
-    public String deleteBlog(@PathVariable Long id){
-        blogService.delete(id);
-        return "redirect:/blog";
     }
 }

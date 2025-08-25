@@ -23,17 +23,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         .content-card {
-            background: #fff;
+            background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             overflow: hidden;
+            border: 1px solid #e8ecef;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
         }
         
         .content-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         
         .content-image {
@@ -51,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             font-size: 0.75rem;
             padding: 0.25rem 0.5rem;
             border-radius: 12px;
+            font-weight: 500;
         }
         
         .pagination .page-link {
@@ -108,16 +114,18 @@ document.addEventListener("DOMContentLoaded", function () {
         .content-card-header {
             display: flex;
             align-items: center;
-            padding: 1rem;
             gap: 1rem;
+            flex: 1;
+            min-width: 0;
         }
         
         .content-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 8px;
             overflow: hidden;
             flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .content-info {
@@ -128,24 +136,107 @@ document.addEventListener("DOMContentLoaded", function () {
         .content-title {
             margin: 0 0 0.25rem 0;
             font-weight: 600;
-            color: #333;
+            color: #2c3e50;
+            font-size: 1rem;
+            line-height: 1.4;
         }
         
         .content-meta {
-            font-size: 0.875rem;
-            color: #6c757d;
+            font-size: 0.8rem;
+            color: #7a8e9a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .content-author {
+            font-weight: 600;
+            color: #495057;
+            background: #e3f2fd;
+            padding: 0.125rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .content-date {
+            color: #6c757d;
             font-weight: 500;
-            margin-right: 0.5rem;
+            font-size: 0.75rem;
         }
         
         .content-badges {
-            padding: 0 1rem 1rem 1rem;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.4rem;
             flex-wrap: wrap;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .badge {
+            border-radius: 6px;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        
+        .bg-primary {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+        
+        .bg-success {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+        
+        .bg-warning {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+        
+        .bg-danger {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+        
+        .bg-secondary {
+            background-color: #6c757d !important;
+            color: white !important;
+        }
+        
+        .bg-info {
+            background-color: #17a2b8 !important;
+            color: white !important;
+        }
+        
+        .bg-dark {
+            background-color: #343a40 !important;
+            color: white !important;
+        }
+        
+        .text-center {
+            color: #495057;
+        }
+        
+        .text-muted {
+            color: #6c757d !important;
+        }
+        
+        .no-content {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 1px solid #e8ecef;
+        }
+        
+        .no-content h5 {
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        .no-content p {
+            color: #7a8e9a;
         }
         </style>
     `;
@@ -166,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function initUserContent(userId, contentList, paginationNav, paginationUl) {
-        const types = ['post', 'blog', 'event', 'book'];
+        const types = ['post', 'blog', 'event', 'book', 'news'];
         const pageSize = 5;
 
         let currentPage = 0;
@@ -317,7 +408,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 post: `/posts/${id}`,
                 blog: `/blog/${id}`,
                 event: `/events/${id}`,
-                book: `/books/${id}`
+                book: `/books/${id}`,
+                news: `/news/${id}`
             };
 
             const url = urlMap[type] || `/${type}s/${id}`;
@@ -370,6 +462,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         title = item.title || 'Без заголовка';
                     }
                     break;
+                case 'news':
+                    if (item.newsTranslations && item.newsTranslations[0]?.title) {
+                        title = item.newsTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
                 case 'book':
                     title = item.name || item.title || 'Без заголовка';
                     break;
@@ -386,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `/api/users/content?type=${type}&creatorId=${userId}&page=0&size=1000${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`
             );
 
-        console.log('📡 Отправка запросов для всех типов контента:', urls);
+            console.log('📡 Отправка запросов для всех типов контента:', urls);
 
             Promise.all(urls.map(url =>
                 fetch(url)
@@ -423,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
 
-                console.log('🗂️ Все собранные элементы:', allItems);
+                    console.log('🗂️ Все собранные элементы:', allItems);
 
                     allItems.sort((a, b) => b.createdAt - a.createdAt);
 
@@ -433,7 +532,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const endIndex = startIndex + pageSize;
                     const pageItems = allItems.slice(startIndex, endIndex);
 
-                console.log(`📊 Пагинация: всего элементов ${totalItems}, страниц ${totalPages}, показываем элементы ${startIndex}-${endIndex}`);
+                    console.log(`📊 Пагинация: всего элементов ${totalItems}, страниц ${totalPages}, показываем элементы ${startIndex}-${endIndex}`);
 
                     if (pageItems.length > 0) {
                         let html = '<div class="row g-3 fade-in">';
@@ -451,10 +550,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Используем правильную функцию получения title
                             const title = getContentTitle(item, type);
 
-                        // Формируем URL с помощью новой функции
-                        const contentUrl = getContentUrl(type, item.id);
+                            // Формируем URL с помощью новой функции
+                            const contentUrl = getContentUrl(type, item.id);
 
-                        html += `
+                            html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
                                     <a href="${contentUrl}" class="text-decoration-none">
@@ -471,7 +570,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </a>
                                 </div>
                             </div>`;
-                    });
+                        });
 
                         html += '</div>';
                         contentList.innerHTML = html;
@@ -501,12 +600,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 posts: "post",
                 blog: "blog",
                 events: "event",
-                books: "book"
+                books: "book",
+                news: "news"
             };
             const apiType = typeMap[currentFilter] || 'post';
             const url = `/api/users/content?type=${apiType}&creatorId=${userId}&page=${page}&size=${pageSize}${currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : ''}`;
 
-        console.log(`📡 Запрос для конкретного типа "${apiType}":`, url);
+            console.log(`📡 Запрос для конкретного типа "${apiType}":`, url);
 
             fetch(url)
                 .then(response => {
@@ -532,10 +632,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Используем правильную функцию получения title
                             const title = getContentTitle(item, apiType);
 
-                        // Формируем URL с помощью новой функции
-                        const contentUrl = getContentUrl(apiType, item.id);
+                            // Формируем URL с помощью новой функции
+                            const contentUrl = getContentUrl(apiType, item.id);
 
-                        html += `
+                            html += `
                             <div class="col-md-4 col-6 mb-3">
                                 <div class="card h-100 border-0 shadow-sm">
                                     <a href="${contentUrl}" class="text-decoration-none">
@@ -549,7 +649,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </a>
                                 </div>
                             </div>`;
-                    });
+                        });
 
                         html += '</div>';
                         contentList.innerHTML = html;
@@ -573,9 +673,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        function showNoContentMessage(message = "Пока нет ни одного поста, блога, события или книги.") {
-        console.log("Нет контента для отображения.");
-        contentList.innerHTML = `
+        function showNoContentMessage(message = "Пока нет ни одного поста, блога, события, новости или книги.") {
+            console.log("Нет контента для отображения.");
+            contentList.innerHTML = `
             <div class="no-content text-center py-5">
                 <div class="mb-4">
                     <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
@@ -583,8 +683,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h5 class="text-muted">Пока нет контента</h5>
                 <p class="text-muted">${message}</p>
             </div>`;
-        paginationNav.style.display = 'none';
-    }
+            paginationNav.style.display = 'none';
+        }
 
         function showErrorMessage() {
             contentList.innerHTML = `
@@ -600,7 +700,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 post: 'Пост',
                 blog: 'Блог',
                 event: 'Событие',
-                book: 'Книга'
+                book: 'Книга',
+                news: 'Новость'
             };
             return labels[type] || type;
         }
@@ -754,7 +855,7 @@ document.addEventListener("DOMContentLoaded", function () {
             content.forEach(item => {
                 const createdDate = new Date(item.createdAt || item.publishedAt || Date.now()).toLocaleDateString('ru-RU');
 
-            console.log(`📋 История - элемент типа "${item.type}":`, item);
+                console.log(`📋 История - элемент типа "${item.type}":`, item);
 
                 html += `
                     <div class="content-card">
@@ -771,8 +872,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         <div class="content-badges">
-                            <span class="badge content-type-badge">${getTypeLabel(item.type)}</span>
-                            ${getStatusBadge(item.status, item.deleted)}
+                            <span class="badge content-type-badge bg-primary text-white">${getTypeLabel(item.type)}</span>
+                            ${getStatusBadge(item.status, item.deleted, item.type)}
                         </div>
                     </div>`;
             });
@@ -814,23 +915,29 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        function getStatusBadge(status, deleted = false) {
-            if (deleted) {
-                return '<span class="badge bg-dark">Удалён</span>';
+        function getStatusBadge(status, deleted = false, type = null) {
+            if (deleted === true || deleted === "true") {
+                return '<span class="badge bg-dark text-white">Удалён</span>';
             }
+
+            // Для новостей статус не показываем
+            if (type === 'news') {
+                return '';
+            }
+
             const statusName = status?.name || status;
 
             switch (statusName) {
                 case 'APPROVED':
-                    return '<span class="badge bg-success">Одобрен</span>';
+                    return '<span class="badge bg-success text-white">Одобрен</span>';
                 case 'PENDING_REVIEW':
                     return '<span class="badge bg-warning text-dark">На рассмотрении</span>';
                 case 'REJECTED':
-                    return '<span class="badge bg-danger">Отклонён</span>';
+                    return '<span class="badge bg-danger text-white">Отклонён</span>';
                 case 'DRAFT':
-                    return '<span class="badge bg-secondary">Черновик</span>';
+                    return '<span class="badge bg-secondary text-white">Черновик</span>';
                 default:
-                    return `<span class="badge bg-info">${statusName || 'Не указан'}</span>`;
+                    return statusName ? `<span class="badge bg-info text-white">${statusName}</span>` : '';
             }
         }
 
@@ -840,6 +947,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 case 'blog': return 'Блог';
                 case 'event': return 'Событие';
                 case 'book': return 'Книга';
+                case 'news': return 'Новость';
                 default: return 'Контент';
             }
         }
@@ -871,6 +979,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         title = item.title || 'Без заголовка';
                     }
                     break;
+                case 'news':
+                    if (item.newsTranslations && item.newsTranslations[0]?.title) {
+                        title = item.newsTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
                 case 'book':
                     title = item.name || item.title || 'Без заголовка';
                     break;
@@ -897,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (currentType === "all") {
                 // Для режима "all" загружаем все данные только один раз
-                const types = ['post', 'blog', 'event', 'book'];
+                const types = ['post', 'blog', 'event', 'book', 'news'];
                 const fetches = types.map(type => {
                     // Загружаем максимальное количество данных для правильной пагинации
                     const url = `/api/users/history?id=${userId}&type=${type}&page=0&size=1000` +
@@ -996,10 +1111,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             return;
                         }
 
-                    console.log(`✅ История - найдено ${data.content.length} элементов`);
-                    data.content.forEach((item, index) => {
-                        console.log(`🔍 История - элемент ${index + 1}:`, item);
-                    });
+                        console.log(`✅ История - найдено ${data.content.length} элементов`);
+                        data.content.forEach((item, index) => {
+                            console.log(`🔍 История - элемент ${index + 1}:`, item);
+                        });
 
                         allContent = data.content.map(item => ({ ...item, type: currentType }));
                         displayContent(allContent, totalElements);
