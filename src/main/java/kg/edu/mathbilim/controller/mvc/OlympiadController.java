@@ -163,13 +163,19 @@ public class OlympiadController {
     }
 
     @PostMapping("registration")
-    public String olympiadRegistration(Model model,
+    public String olympiadRegistration(
                                        Authentication auth,
                                        @RequestParam long stageId,
-                                       @ModelAttribute RegistrationDto registrationDto,
+                                       @ModelAttribute @Valid RegistrationDto registrationDto,
+                                       BindingResult bindingResult,
+                                       Model model,
                                        RedirectAttributes redirectAttributes) {
             model.addAttribute("registrationDto", registrationDto);
-
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", userService.getUserByEmail(auth.getName()));
+            model.addAttribute("stageId", stageId);
+            return "olympiad/registration";
+        }
         Optional<Long> id = olympiadStageServiceImpl.createRegistrationOlympiad(registrationDto, stageId, auth.getName());
         redirectAttributes.addFlashAttribute("message","Успешно зарегистрировано!");
         redirectAttributes.addFlashAttribute("messageType","success");
