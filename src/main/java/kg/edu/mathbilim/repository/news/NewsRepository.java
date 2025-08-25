@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.repository.news;
 
+import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.repository.abstracts.BaseContentRepository;
 import org.springframework.data.domain.Page;
@@ -49,6 +51,40 @@ public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRe
     @Transactional
     @Query("UPDATE News n SET n.deleted = true WHERE n.id = :newsId")
     void deleteContentById(@Param("newsId") Long newsId);
+
+    @Query("""
+            SELECT DISTINCT p FROM News p
+            JOIN p.newsTranslations t
+            WHERE   LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+             and p.creator.id = :creatorId
+             and p.deleted=false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<News> getNewsByStatusWithQuery(String query,
+                                         Long userId,
+                                         Pageable pageable);
+
+
+    @Query("""
+            SELECT DISTINCT p FROM News p
+            WHERE p.creator.id = :creatorId
+                  AND p.deleted=false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<News> getNewsByCreator(Long creatorId,
+                                Pageable pageable);
+
+
+    @Query("""
+                SELECT DISTINCT p FROM News p
+                JOIN p.newsTranslations t
+                WHERE  p.creator.id = :userId
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                ORDER BY p.createdAt DESC
+            """)
+    Page<News> getNewsWithQuery(@Param("userId") Long userId,
+                                                  @Param("query") String query,
+                                                  Pageable pageable);
 
 
 

@@ -203,7 +203,11 @@
                 const bar = row.querySelector('.progress-bar');
                 const correct = parseInt(row.getAttribute('data-correct'));
                 const total = parseInt(row.getAttribute('data-total'));
-                const percent = Math.round((correct / total) * 100);
+
+                let percent = 0;
+                if (total > 0) {
+                    percent = Math.round((correct / total) * 100);
+                }
 
                 const percentElem = row.querySelector('.category-percent');
                 let currentPercent = 0;
@@ -213,11 +217,15 @@
                     row.style.transform = 'translateX(0)';
                     bar.style.width = percent + '%';
 
-                    const interval = setInterval(() => {
-                        currentPercent++;
-                        percentElem.textContent = currentPercent + '%';
-                        if (currentPercent >= percent) clearInterval(interval);
-                    }, 8);
+                    if (percent > 0) {
+                        const interval = setInterval(() => {
+                            currentPercent++;
+                            percentElem.textContent = currentPercent + '%';
+                            if (currentPercent >= percent) clearInterval(interval);
+                        }, 8);
+                    } else {
+                        percentElem.textContent = '0%';
+                    }
                 }, index * 150);
             });
         });

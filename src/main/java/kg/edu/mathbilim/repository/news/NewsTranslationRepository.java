@@ -14,4 +14,6 @@ public interface NewsTranslationRepository extends BaseTranslationRepository<New
     @Transactional
     @Query("UPDATE NewsTranslation pt SET pt.deleted = true WHERE pt.id.newsId = :entityId")
     void deleteByNews_Id(Long entityId);
+
+
 }

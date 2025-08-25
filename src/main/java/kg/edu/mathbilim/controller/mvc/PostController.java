@@ -5,6 +5,7 @@ import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.service.interfaces.CommentService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
@@ -19,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -125,6 +127,11 @@ public class    PostController {
     @PostMapping("delete/{id}")
     public String delete(@PathVariable Long id) {
         postService.delete(id);
-        return "redirect:/";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userDetails = (User) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
+        return "redirect:/users/" + userId;
     }
 }
