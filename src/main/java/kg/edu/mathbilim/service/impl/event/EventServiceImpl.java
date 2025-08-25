@@ -5,6 +5,7 @@ import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
 import kg.edu.mathbilim.dto.event.EventTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.EventNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventMapper;
@@ -105,7 +106,8 @@ public class EventServiceImpl extends
     @Transactional
     public DisplayEventDto getDisplayEventById(Long id, String email) {
         DisplayEventDto event = repository.findDisplayEventById(id, getCurrentLanguage())
-                .orElseThrow(this::getNotFoundException);
+                .orElseGet(() -> repository.findDisplayEventById(id, Language.RU.getCode())
+                        .orElseThrow(this::getNotFoundException));
 
         if (email == null || email.trim().isEmpty()) {
             if (event.getStatus() != ContentStatus.APPROVED) {

@@ -29,8 +29,8 @@
         }
 
         .news-subtitle {
-            font-size: 1rem;
-            opacity: 0.85;
+            font-size: 1.1rem;
+            opacity: 0.9;
             font-weight: 400;
         }
 
@@ -198,14 +198,13 @@
         }
 
         .news-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 5px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff, #f0f4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .news-description {
@@ -487,7 +486,7 @@
                             <#assign translation = (p.newsTranslations?first)!>
                             <#if translation??>
                                 <#if translation.title?? && translation.title?has_content>
-                                    <h3 class="news-title">${translation.title}</h3>
+                                    <h3 class="news-title-card">${translation.title}</h3>
                                 </#if>
                                 <#if translation.description?? && translation.description?has_content>
                                     <p class="news-description">${translation.description}</p>

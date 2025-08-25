@@ -137,6 +137,19 @@
             font-size: 1rem;
         }
 
+        .btn-hero.danger {
+            background: transparent;
+            color: #ff6b6b;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-hero.danger:hover {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
         .btn-hero.primary {
             background: white;
             color: #2563eb;
@@ -750,13 +763,10 @@
                     <@spring.message "event.share"/>
                 </button>
                 <#if currentUser?? && (isAdmin || (event.creator?? && event.creator.id == currentUser.id))>
-                    <form action="/events/delete/${event.id}" method="post" style="margin: 16px 24px;">
-                        <@main.csrf/>
-                        <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="back-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                            🗑 <@spring.message "test.details.delete"/>
-                        </button>
-                    </form>
+                    <button type="button" class="btn-hero danger" onclick="confirmDelete()">
+                        <i class="fas fa-trash-alt"></i>
+                        <@spring.message "test.details.delete"/>
+                    </button>
                 </#if>
             </div>
         </div>
@@ -1016,6 +1026,33 @@
                     setTimeout(function() {
                         shareSection.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.1)';
                     }, 1000);
+                }
+            };
+
+            window.confirmDelete = function() {
+                if (confirm('Вы уверены, что хотите удалить это мероприятие?')) {
+                    // Создаем форму динамически
+                    var form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = '/events/delete/${event.id}';
+
+                    // Добавляем CSRF токен
+                    var csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '${_csrf.parameterName}';
+                    csrfInput.value = '${_csrf.token}';
+                    form.appendChild(csrfInput);
+
+                    // Добавляем метод DELETE
+                    var methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'delete';
+                    form.appendChild(methodInput);
+
+                    // Добавляем форму в DOM и отправляем
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             };
 
