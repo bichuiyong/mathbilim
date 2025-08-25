@@ -996,34 +996,35 @@
 
 
     <script>
+        function getCsrfToken() {
+            const meta = document.querySelector('meta[name="_csrf"]');
+            return meta ? meta.getAttribute('content') : '';
+        }
+
+        function getCsrfHeader() {
+            const meta = document.querySelector('meta[name="_csrf_header"]');
+            return meta ? meta.getAttribute('content') : 'X-CSRF-TOKEN';
+        }
+
+
         window.confirmNewsDelete = function() {
-            if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = '/news/delete/${newsDto.id}';
-
-                // Добавляем CSRF токен
-                var csrfToken = getCsrfToken();
-                if (csrfToken) {
-                    var csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = getCsrfHeader().replace('X-CSRF-TOKEN', '_csrf');
-                    csrfInput.value = csrfToken;
-                    form.appendChild(csrfInput);
-                }
-
-                // Добавляем метод DELETE
-                var methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = '_method';
-                methodInput.value = 'delete';
-                form.appendChild(methodInput);
-
-                // Добавляем форму в DOM и отправляем
-                document.body.appendChild(form);
-                form.submit();
+            if (confirm('Вы уверены, что хотите удалить эту статью?')) {
+                fetch('/news/delete/' + ${newsDto.id}, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [getCsrfHeader()]: getCsrfToken()
+                    },
+                    body: JSON.stringify({ id: ${newsDto.id} })
+                })
+                    .catch(error => {
+                        console.error('Error deleting news:', error);
+                        alert('Ошибка при удалении новости');
+                    });
             }
         };
+
+
 
         document.addEventListener('DOMContentLoaded', function () {
             // Инициализация карусели (точно такая же как в постах)

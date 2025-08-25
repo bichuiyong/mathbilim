@@ -18,6 +18,8 @@ public class RegistrationDto {
     private Long userId;
     @NotNull
     private Long olympiadStageId;
+
+
     @Email
     private String email;
     @NotEmpty
@@ -47,5 +49,4 @@ public class RegistrationDto {
     private String parentPhoneNumber;
     @Size(max = 100)
     private String parentEmail;
-
 }

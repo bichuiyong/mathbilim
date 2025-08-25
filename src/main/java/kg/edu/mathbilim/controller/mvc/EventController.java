@@ -110,6 +110,6 @@ public class EventController {
     @PostMapping("delete/{id}")
     public String delete(@PathVariable Long id) {
         eventService.delete(id);
-        return "redirect:/";
+        return "redirect:/events";
     }
 }
