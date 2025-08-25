@@ -945,7 +945,6 @@
     </div>
 
     <script>
-        // Данные для шаринга
         window.blogData = {
             <#if blog.id??>id: ${blog.id},</#if>
             <#if blog.title??>title: '${blog.title?js_string}',</#if>
@@ -953,8 +952,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Инициализация контента (сворачивание/разворачивание)
-            const contentElement = document.getElementById('blogContent');
             const toggleButton = document.getElementById('toggleContentBtn');
 
             if (contentElement && toggleButton) {
@@ -1396,106 +1393,6 @@
             }
         });
     </script>
-
-    <div class="content-wrapper">
-        <a href="/blog" class="back-btn">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
-            </svg>
-            Назад к блогам
-        </a>
-
-        <article class="blog-card">
-            <header class="blog-header">
-                <div class="author-avatar">
-                    <#if blog.creator?? && blog.creator.name??>
-                        ${blog.creator.name?substring(0, 1)?upper_case}
-                    <#else>
-                        А
-                    </#if>
-                </div>
-                <div class="author-info">
-                    <#if blog.creator?? && blog.creator.id??>
-                        <a href="/profile/info/${blog.creator.id}" class="author-name">
-                            ${blog.creator.name!"Автор"}
-                        </a>
-                    <#else>
-                        <span class="author-name">Автор</span>
-                    </#if>
-                    <div class="publication-date">
-                        <#if blog.createdAt??>
-                            ${blog.formattedDate}
-                        <#else>
-                            Сегодня
-                        </#if>
-                    </div>
-                </div>
-            </header>
-            <#assign translation = blog.blogTranslations[0]>
-
-
-            <#if translation.title?? && translation.title?has_content>
-                <h1 class="blog-title">${translation.title}</h1>
-            </#if>
-
-            <#if blog.mainImage??>
-                <div class="blog-main-image">
-                    <img src="/api/files/${blog.mainImage.id}/view"
-                         alt="${translation.title!"Изображение блога"}"
-                         loading="eager">
-                </div>
-            </#if>
-
-            <div class="blog-content">
-                <#if translation.content?? && translation.content?has_content>
-                    <div class="blog-text collapsed" id="blogContent">${translation.content?no_esc}</div>
-                    <button class="show-more-btn" id="toggleContentBtn">Читать полностью</button>
-                </#if>
-            </div>
-
-            <div class="blog-meta">
-                <div class="meta-item">
-                    <span class="icon">👁️</span>
-                    <span>${blog.viewCount!0} просмотров</span>
-                </div>
-                <#if blog.shareCount?? && blog.shareCount gt 0>
-                    <div class="meta-item">
-                        <span class="icon">📤</span>
-                        <span>${blog.shareCount} репостов</span>
-                    </div>
-                </#if>
-                <div class="meta-item">
-                    <span>
-                        <button class="comments-btn" id="openCommentsBtn"
-                                  data-post-id="${blog.id}"
-                                  <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button></span>
-                </div>
-
-                <div class="share-buttons">
-                    <span class="share-label">Поделиться:</span>
-                    <button class="social-btn facebook" onclick="shareToFacebook()" title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </button>
-                    <button class="social-btn twitter" onclick="shareToTwitter()" title="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </button>
-                    <button class="social-btn telegram" onclick="shareToTelegram()" title="Telegram">
-                        <i class="fab fa-telegram-plane"></i>
-                    </button>
-                    <button class="social-btn whatsapp" onclick="shareToWhatsApp()" title="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </button>
-                    <button class="social-btn copy-link" onclick="copyLink()" id="copyLinkBtn" title="Копировать ссылку">
-                        <i class="fas fa-link"></i>
-                        <span class="copy-feedback">Скопировано!</span>
-                    </button>
-                </div>
-            </div>
-        </article>
-    </div>
 
     <div class="comments-modal-overlay" id="commentsModalOverlay">
         <div class="comments-modal">

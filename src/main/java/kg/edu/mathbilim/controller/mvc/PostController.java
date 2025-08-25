@@ -128,10 +128,6 @@ public class    PostController {
     public String delete(@PathVariable Long id) {
         postService.delete(id);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User userDetails = (User) authentication.getPrincipal();
-        Long userId = userDetails.getId();
-
-        return "redirect:/users/" + userId;
+        return "redirect:/posts";
     }
 }
