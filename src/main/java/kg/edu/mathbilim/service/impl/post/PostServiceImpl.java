@@ -10,6 +10,7 @@ import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.model.user.User;
@@ -281,8 +282,10 @@ public class PostServiceImpl extends
 
     @Override
     public List<PostDto> getPostByMainPage() {
-        List<Post> posts = repository.findTop10ByStatusOrderByCreatedAtDesc(ContentStatus.APPROVED);
-
-        return posts.stream().map(mapper::toDto).collect(Collectors.toList());
+        List<Post> news = repository.findTop10ByOrderByCreatedAtDesc();
+        return news.stream()
+                .filter(n -> !n.isDeleted())
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 }

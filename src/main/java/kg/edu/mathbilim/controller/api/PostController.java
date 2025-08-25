@@ -1,11 +1,16 @@
 package kg.edu.mathbilim.controller.api;
 
+import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController("restPost")
 @RequiredArgsConstructor
@@ -29,8 +34,22 @@ public class PostController {
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(required = false, defaultValue = "name") String sortBy,
                                                   @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return ResponseEntity.ofNullable(postService.getPage(query, page, size, sortBy, sortDirection));
-    }
+
+
+        Page<PostDto> news = postService.getPage(query, page, size, sortBy, sortDirection);
+
+        List<PostDto> filteredNews = news.stream()
+                .filter(dto -> !dto.isDeleted())
+                .collect(Collectors.toList());
+
+
+        Page<PostDto> filteredPage = new PageImpl<>(
+                filteredNews,
+                news.getPageable(),
+                filteredNews.size()
+        );
+
+        return ResponseEntity.ok(filteredPage);    }
 
     @GetMapping("by-status")
     public ResponseEntity<Page<PostDto>> getPostsByStatus(@RequestParam String status,
