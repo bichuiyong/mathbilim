@@ -18,11 +18,13 @@
         }
 
         .moderation-image {
-            width: 80px;
+            width: 85px;
             height: 80px;
             object-fit: cover;
-            border-radius: 8px;
+
             cursor: pointer;
+            padding-top: 10px;
+            padding-left: 16px;
         }
 
 

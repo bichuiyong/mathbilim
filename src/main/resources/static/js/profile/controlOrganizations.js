@@ -374,7 +374,7 @@ function showEditModal(orgData) {
                         <form id="editOrgForm">
                             <div class="mb-3">
                                 <label for="editOrgName" class="form-label">Название организации *</label>
-                                <input type="text" class="form-control" id="editOrgName" 
+                                <input type="text" class="form-control" id="editOrgName" name="name"
                                        value="${escapeHtml(orgData.name || '')}" required>
                                 <div class="invalid-feedback">
                                     Пожалуйста, введите название организации
@@ -382,15 +382,16 @@ function showEditModal(orgData) {
                             </div>
                             
                             <div class="mb-3">
-                                <label for="editOrgDescription" class="form-label">Описание</label>
-                                <textarea class="form-control" id="editOrgDescription" 
-                                          rows="4" placeholder="Введите описание организации">${escapeHtml(orgData.description || '')}</textarea>
+                                <label for="editOrgDescription" class="form-label">Описание *</label>
+                                <textarea class="form-control" id="editOrgDescription" name="description"
+                                          rows="4" placeholder="Введите описание организации" required>${escapeHtml(orgData.description || '')}</textarea>
+                                <div class="invalid-feedback">Пожалуйста, введите описание</div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="editOrgUrl" class="form-label">Веб-сайт</label>
-                                <input type="url" class="form-control" id="editOrgUrl" 
-                                       value="${escapeHtml(orgData.url || '')}" 
+                                <input type="url" class="form-control" id="editOrgUrl" name="url"
+                                       value="${escapeHtml(orgData.url || '')}"
                                        placeholder="https://example.com">
                                 <div class="invalid-feedback">
                                     Пожалуйста, введите корректный URL
@@ -398,20 +399,20 @@ function showEditModal(orgData) {
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label">Текущий аватар</label>
-                                <div class="current-avatar">
+                                <label for="editOrgAvatar" class="form-label">Аватар</label>
+                                <div class="current-avatar mb-2">
                                     ${orgData.avatar ?
-        `<img src="/api/files/${org.avatar ? org.avatar.id : 'default-image-id'}/download" 
-                                             alt="Текущий аватар" 
-                                             class="rounded border" 
+        `<img src="/api/files/${orgData.avatar.id}/download"
+                                             alt="Текущий аватар"
+                                             class="rounded border"
                                              style="width: 100px; height: 100px; object-fit: cover;">` :
-        `<div class="bg-light border rounded d-flex align-items-center justify-content-center" 
+        `<div class="bg-light border rounded d-flex align-items-center justify-content-center"
                                               style="width: 100px; height: 100px;">
                                             <i class="fas fa-building text-muted fa-2x"></i>
                                         </div>`
     }
                                 </div>
-                                <small class="text-muted">Для изменения аватара обратитесь к администратору</small>
+                                <input type="file" class="form-control" id="editOrgAvatar" name="avatarFile" accept="image/*">
                             </div>
                         </form>
                     </div>
@@ -455,15 +456,20 @@ function saveOrganization(orgId, saveBtn, modal) {
         return;
     }
 
-    const formData = {
-        name: document.getElementById('editOrgName').value.trim(),
-        description: document.getElementById('editOrgDescription').value.trim(),
-        url: document.getElementById('editOrgUrl').value.trim()
-    };
-
-    if (formData.url && !isValidUrl(formData.url)) {
+    const urlValue = document.getElementById('editOrgUrl').value.trim();
+    if (urlValue && !isValidUrl(urlValue)) {
         document.getElementById('editOrgUrl').classList.add('is-invalid');
         return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', document.getElementById('editOrgName').value.trim());
+    formData.append('description', document.getElementById('editOrgDescription').value.trim());
+    formData.append('url', urlValue);
+
+    const avatarInput = document.getElementById('editOrgAvatar');
+    if (avatarInput && avatarInput.files.length > 0) {
+        formData.append('avatarFile', avatarInput.files[0]);
     }
 
     saveBtn.disabled = true;
@@ -472,11 +478,7 @@ function saveOrganization(orgId, saveBtn, modal) {
 
     fetch(`/api/organizations/${orgId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(formData)
+        body: formData
     })
         .then(response => {
             if (!response.ok) {

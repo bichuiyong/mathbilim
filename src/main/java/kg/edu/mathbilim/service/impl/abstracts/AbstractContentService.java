@@ -22,13 +22,16 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,6 +48,7 @@ public abstract class AbstractContentService<
     protected final M mapper;
     protected final UserService userService;
     protected final FileService fileService;
+    protected final MessageSource messageSource;
 
     protected abstract RuntimeException getNotFoundException();
 
@@ -140,6 +144,15 @@ public abstract class AbstractContentService<
 
     @Transactional
     public D createBase(D dto, MultipartFile mainImage, MultipartFile[] attachments) {
+        if (mainImage == null || mainImage.isEmpty()) {
+            String errorMessage = messageSource.getMessage(
+                    "content.main-image.required",
+                    null,
+                    LocaleContextHolder.getLocale()
+            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+        }
+
         setupDtoBeforeSave(dto);
         E entity = mapper.toEntity(dto);
         log.info("Entity not null {} ", entity.toString());

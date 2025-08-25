@@ -92,6 +92,7 @@ public class TestController {
                                  Model model) throws TopicNotFoundException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("testCreateDto", testCreateDto);
+            model.addAttribute("topics",testService.getTopics());
             return "tests/test-create";
         }
         testService.createTest(testCreateDto);
