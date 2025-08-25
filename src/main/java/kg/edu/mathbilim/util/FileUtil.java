@@ -4,6 +4,8 @@ import kg.edu.mathbilim.config.S3Config;
 import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import lombok.experimental.UtilityClass;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -22,13 +24,17 @@ public class FileUtil {
         return folder + uniqueFileName;
     }
 
-    public void validateFile(MultipartFile file) {
+    public void validateFile(MultipartFile file, MessageSource messageSource) {
         if (file == null || file.isEmpty()) {
-            throw new FileValidationException("Файл не может быть пустым");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.empty", null, LocaleContextHolder.getLocale())
+            );
         }
 
         if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
-            throw new FileValidationException("Имя файла не может быть пустым");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.filename", null, LocaleContextHolder.getLocale())
+            );
         }
     }
 }
