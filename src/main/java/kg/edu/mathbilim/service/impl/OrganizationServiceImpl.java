@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.dto.organization.OrganizationIdNameDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.FileCategory;
 import kg.edu.mathbilim.exception.nsee.OrganizationNotFound;
 import kg.edu.mathbilim.mapper.OrganizationMapper;
 import kg.edu.mathbilim.model.File;

@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.FileCategory;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.File;
@@ -107,7 +108,8 @@ public abstract class AbstractContentService<
         if (mainImage != null && !mainImage.isEmpty()) {
             File mainImageFile = fileService.uploadFileReturnEntity(
                     mainImage,
-                    getFileUploadPath(entity) + "/main"
+                    getFileUploadPath(entity) + "/main",
+                    FileCategory.IMAGE
             );
             entity.setMainImage(mainImageFile);
             log.info("Uploaded main image for {} {}", getEntityName(), entity.getId());

@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.service.interfaces;
 
 import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.enums.FileCategory;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
@@ -38,7 +39,13 @@ public interface FileService {
     File uploadFileReturnEntity(MultipartFile multipartFile, String context);
 
     @Transactional
+    File uploadFileReturnEntity(MultipartFile multipartFile, String context, FileCategory expectedCategory);
+
+    @Transactional
     FileDto uploadFile(MultipartFile multipartFile, String context);
+
+    @Transactional
+    FileDto uploadFile(MultipartFile multipartFile, String context, FileCategory expectedCategory);
 
     @Transactional
     FileDto updateFile(Long fileId, MultipartFile newFile);

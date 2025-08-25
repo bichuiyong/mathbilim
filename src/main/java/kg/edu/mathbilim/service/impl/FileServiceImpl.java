@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import kg.edu.mathbilim.config.S3Config;
 import kg.edu.mathbilim.dto.FileDto;
+import kg.edu.mathbilim.enums.FileCategory;
 import kg.edu.mathbilim.enums.FileType;
 import kg.edu.mathbilim.exception.iae.FileValidationException;
 import kg.edu.mathbilim.exception.nsee.FileNotFoundException;
@@ -17,6 +18,8 @@ import kg.edu.mathbilim.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +36,7 @@ public class FileServiceImpl implements FileService {
     private final FileMapper fileMapper;
     private final S3Service s3Service;
     private final S3Config s3Config;
+    private final MessageSource messageSource;
     private final Tika tika = new Tika();
 
     @Override
@@ -123,11 +127,32 @@ public class FileServiceImpl implements FileService {
     @Transactional
     @Override
     public File uploadFileReturnEntity(MultipartFile multipartFile, String context) {
+        return uploadFileReturnEntity(multipartFile, context, null);
+    }
+
+    @Transactional
+    @Override
+    public File uploadFileReturnEntity(MultipartFile multipartFile, String context, FileCategory expectedCategory) {
         try {
-            FileUtil.validateFile(multipartFile);
+            FileUtil.validateFile(multipartFile, messageSource);
 
             String mimeType = tika.detect(multipartFile.getInputStream());
             FileType fileType = FileType.determineFileType(mimeType, multipartFile.getOriginalFilename());
+            if (fileType == null) {
+                throw new FileValidationException(
+                        messageSource.getMessage("file.error.invalidType", null, LocaleContextHolder.getLocale())
+                );
+            }
+            if (expectedCategory != null && fileType.getCategory() != expectedCategory) {
+                String categoryName = messageSource.getMessage(
+                        "file.category." + expectedCategory.name().toLowerCase(),
+                        null,
+                        LocaleContextHolder.getLocale()
+                );
+                throw new FileValidationException(
+                        messageSource.getMessage("file.error.category", new Object[]{categoryName}, LocaleContextHolder.getLocale())
+                );
+            }
 
             String s3Key = FileUtil.buildS3Key(multipartFile.getOriginalFilename(), context, fileType, s3Config);
             s3Service.uploadFile(multipartFile, s3Key, mimeType);
@@ -139,14 +164,22 @@ public class FileServiceImpl implements FileService {
             return file;
         } catch (IOException e) {
             log.error("Error uploading file: {}", e.getMessage());
-            throw new FileValidationException("Ошибка загрузки файла");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.upload", null, LocaleContextHolder.getLocale())
+            );
         }
     }
 
     @Transactional
     @Override
     public FileDto uploadFile(MultipartFile multipartFile, String context) {
-        return fileMapper.toDto(uploadFileReturnEntity(multipartFile, context));
+        return uploadFile(multipartFile, context, null);
+    }
+
+    @Transactional
+    @Override
+    public FileDto uploadFile(MultipartFile multipartFile, String context, FileCategory expectedCategory) {
+        return fileMapper.toDto(uploadFileReturnEntity(multipartFile, context, expectedCategory));
     }
 
     @Transactional
@@ -155,7 +188,7 @@ public class FileServiceImpl implements FileService {
         try {
             File existingFile = getEntityById(fileId);
 
-            FileUtil.validateFile(newFile);
+            FileUtil.validateFile(newFile, messageSource);
             String mimeType = tika.detect(newFile.getInputStream());
             FileType fileType = FileType.determineFileType(mimeType, newFile.getOriginalFilename());
 
@@ -176,7 +209,9 @@ public class FileServiceImpl implements FileService {
 
         } catch (IOException e) {
             log.error("Error updating file: {}", e.getMessage());
-            throw new FileValidationException("Ошибка обновления файла");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.update", null, LocaleContextHolder.getLocale())
+            );
         }
     }
 
@@ -196,7 +231,9 @@ public class FileServiceImpl implements FileService {
             return s3Service.downloadFile(file.getFilePath());
         } catch (IOException e) {
             log.error("Error downloading file: {}", e.getMessage());
-            throw new FileValidationException("Ошибка скачивания файла");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.download", null, LocaleContextHolder.getLocale())
+            );
         }
     }
 
@@ -206,7 +243,9 @@ public class FileServiceImpl implements FileService {
         try{
            return s3Service.downloadFileStream(file.getFilePath());
         }catch (IOException e){
-            throw new FileValidationException("Ошибка скачивания файла");
+            throw new FileValidationException(
+                    messageSource.getMessage("file.error.download", null, LocaleContextHolder.getLocale())
+            );
         }
     }
 
