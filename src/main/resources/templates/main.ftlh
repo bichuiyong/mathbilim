@@ -1,14 +1,15 @@
 <#import "layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout title="Главная">
     <div class="container mt-4">
         <div class="hero-section mb-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="hero-title">Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span></h1>
-                    <p class="hero-description">Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!</p>
+                    <h1 class="hero-title"><@spring.message "main.message1"/> <span class="text-primary"><@spring.message "main.kyrgyz"/></span></h1>
+                    <p class="hero-description"><@spring.message "main.message7"/></p>
                     <div class="hero-buttons">
-                        <a href="/tests" class="btn btn-primary me-3">Начать тестирование</a>
-                        <a href="/olympiad" class="btn btn-outline-primary">Олимпиады</a>
+                        <a href="/tests" class="btn btn-primary me-3"><@spring.message "main.readyTest"/></a>
+                        <a href="/olympiad" class="btn btn-outline-primary"><@spring.message "main.olympiads"/></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -26,7 +27,7 @@
             <div class="row g-4 mb-5">
                 <div class="col-lg-8">
                     <div class="section-header mb-3">
-                        <h3>Последние новости</h3>
+                        <h3><@spring.message "main.lastNews"/></h3>
                     </div>
                     <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
                         <div class="carousel-indicators" id="news-carousel-indicators">
@@ -35,7 +36,7 @@
                             <div class="carousel-item active d-flex justify-content-center align-items-center"
                                  style="height: 400px;">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Загрузка новостей...</span>
+                                    <span class="visually-hidden"><@spring.message "main.loadNews"/>...</span>
                                 </div>
                             </div>
                         </div>
@@ -55,12 +56,12 @@
                 <div class="col-lg-4">
                     <div class="news-section">
                         <div class="section-header">
-                            <h3>Все новости</h3>
+                            <h3><@spring.message "main.allNews"/></h3>
                         </div>
                         <div class="news-container" id="news-container">
                             <div class="d-flex justify-content-center p-3">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Загрузка...</span>
+                                    <span class="visually-hidden"><@spring.message "main.loading"/>...</span>
                                 </div>
                             </div>
                         </div>
@@ -72,12 +73,12 @@
                 <div class="col-lg-4">
                     <div class="news-section">
                         <div class="section-header">
-                            <h3>Все публикации</h3>
+                            <h3><@spring.message "main.allPublications"/></h3>
                         </div>
                         <div class="news-container" id="post-container">
                             <div class="d-flex justify-content-center p-3">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Загрузка...</span>
+                                    <span class="visually-hidden"><@spring.message "main.loading"/>...</span>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +87,7 @@
 
                 <div class="col-lg-8">
                     <div class="section-header mb-3">
-                        <h3>Последние публикации</h3>
+                        <h3><@spring.message "main.lastPosts"/></h3>
                     </div>
                     <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
                         <div class="carousel-indicators" id="publications-carousel-indicators">
@@ -95,7 +96,7 @@
                             <div class="carousel-item active d-flex justify-content-center align-items-center"
                                  style="height: 400px;">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Загрузка публикаций...</span>
+                                    <span class="visually-hidden"><@spring.message "main.loadPosts"/></span>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +116,7 @@
 
         <div class="events-section mb-5">
             <div class="section-header mb-4">
-                <h3>Предстоящие соревнования</h3>
+                <h3><@spring.message "main.wannaOLYMMP"/></h3>
             </div>
             <div class="events-scroll-container">
                 <div class="events-scroll-wrapper" id="eventsScroll">
@@ -204,7 +205,7 @@
 
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
-                <h3>Быстрый доступ</h3>
+                <h3><@spring.message "main.fast"/></h3>
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
@@ -213,9 +214,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calculator"></i>
                             </div>
-                            <h4>Тесты</h4>
-                            <p class="h-25">Проверьте свои знания в различных разделах математики</p>
-                            <a href="/tests" class="btn btn-primary mt-3">Начать тест</a>
+                            <h4><@spring.message "main.TeSt"/></h4>
+                            <p class="h-25"><@spring.message"main.message2"/></p>
+                            <a href="/tests" class="btn btn-primary mt-3"><@spring.message"main.readyTest"/></a>
                         </div>
                     </div>
                 </div>
@@ -225,9 +226,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-trophy"></i>
                             </div>
-                            <h4>Олимпиады</h4>
-                            <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
-                            <a href="/olympiad" class="btn btn-primary mt-3">Участвовать</a>
+                            <h4><@spring.message "main.olympiads"/></h4>
+                            <p class="h-25"><@spring.message "main.message3"/></p>
+                            <a href="/olympiad" class="btn btn-primary mt-3"><@spring.message "main.regis"/></a>
                         </div>
                     </div>
                 </div>
@@ -237,9 +238,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <h4>Книги</h4>
-                            <p class="h-25">Изучайте математику по качественным учебникам</p>
-                            <a href="/books" class="btn btn-primary mt-3">Изучать</a>
+                            <h4><@spring.message "main.book"/></h4>
+                            <p class="h-25"><@spring.message "main.message4"/></p>
+                            <a href="/books" class="btn btn-primary mt-3"><@spring.message "main.learn"/></a>
                         </div>
                     </div>
                 </div>
@@ -249,9 +250,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <h4>Мероприятия</h4>
-                            <p class="h-25">Участвуйте в интересных событиях и встречах</p>
-                            <a href="/events" class="btn btn-primary mt-3">Узнать больше</a>
+                            <h4><@spring.message "main.events"/></h4>
+                            <p class="h-25"><@spring.message "main.message5"/></p>
+                            <a href="/events" class="btn btn-primary mt-3"><@spring.message "main.learnMore"/></a>
                         </div>
                     </div>
                 </div>
@@ -260,12 +261,12 @@
 
         <div class="blog-section mb-5">
             <div class="section-header mb-4">
-                <h3>Блог</h3>
+                <h3><@spring.message "main.BLogs"/></h3>
             </div>
             <div class="blog-masonry-grid"></div>
 
             <div class="text-center mt-4">
-                <a href="/blog" class="btn btn-outline-primary">Все статьи блога</a>
+                <a href="/blog" class="btn btn-outline-primary"><@spring.message "main.allBlogs"/></a>
             </div>
         </div>
 

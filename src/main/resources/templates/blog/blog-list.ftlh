@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
 
 
@@ -576,19 +578,19 @@
     <div class="content-wrapper">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">📝 Блоги</h1>
-            <p class="page-subtitle">Последние статьи и материалы от наших авторов</p>
+            <h1 class="page-title">📝 <@spring.message "blogs.blogs"/></h1>
+            <p class="page-subtitle"><@spring.message "blogs.info1"/></p>
         </div>
 
         <div class="search-container">
             <div class="search-header">
-                <h2 class="search-title">Поиск и фильтры</h2>
+                <h2 class="search-title"><@spring.message "blogs.search"/></h2>
             </div>
             <form method="get" action="/blog">
                 <div class="search-row">
                     <div class="search-input-group">
                         <input type="text" name="query" value="${query!}"
-                               placeholder="🔍 Найти блоги по названию или содержанию..."/>
+                               placeholder="🔍 <@spring.message "blogs.byName"/>..."/>
                     </div>
                 </div>
 
@@ -596,19 +598,19 @@
                     <div class="select-group">
                         <div class="select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 По дате создания
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 <@spring.message "blogs.byDate"/>
                                 </option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 По просмотрам
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 <@spring.message "blogs.byView"/>
                                 </option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 По репостам
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 <@spring.message "blogs.byRepost"/>
                                 </option>
                             </select>
                         </div>
 
                         <div class="select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ <@spring.message "blogs.byNew"/></option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ <@spring.message "blogs.byOld"/></option>
                             </select>
                         </div>
 
@@ -621,7 +623,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="search-button">✨ Применить</button>
+                    <button type="submit" class="search-button">✨ <@spring.message "blogs.take"/></button>
                 </div>
             </form>
         </div>
@@ -674,15 +676,14 @@
             <div class="blogs-grid">
                 <#if blog?? && blog.content?size == 0>
                     <div class="no-blogs">
-                        Блоги не найдены
-                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">Попробуйте изменить параметры
-                            поиска
+                        <@spring.message "blogs.blogNotFind"/>
+                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;"><@spring.message "blogs.changeSearch"/>
                         </div>
                     </div>
                 <#else>
                     <div class="loader">
                         <div class="spinner"></div>
-                        <span>Загружаем блоги...</span>
+                        <span><@spring.message "blogs.loadBlogs"/>...</span>
                     </div>
                 </#if>
             </div>
@@ -693,9 +694,9 @@
                 <@main.csrf/>
                 <input type="hidden" name="type" value="BLOG">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="subscription-button btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="subscription-button btn-outline-danger">🔕 <@spring.message "blogs.unscribe"/></button>
                 <#else>
-                    <button class="subscription-button btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="subscription-button btn-outline-primary">📩 <@spring.message "blogs.subcribe"/></button>
                 </#if>
             </form>
         </div>
@@ -707,18 +708,18 @@
             <#if blog.hasPrevious()>
                 <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                    class="pagination-btn prev">
-                    ← Назад
+                    ← <@spring.message "blogs.back"/>
                 </a>
             </#if>
 
             <div class="pagination-info">
-                Страница ${page + 1}
+                <@spring.message "blogs.page"/> ${page + 1}
             </div>
 
             <#if blog.hasNext()>
                 <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
                    class="pagination-btn next">
-                    Вперёд →
+                    <@spring.message "blogs.next"/> →
                 </a>
             </#if>
         </div>
