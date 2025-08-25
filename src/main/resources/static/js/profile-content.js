@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p>Загрузка контента...</p>
                 </div>`;
 
-            contentList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 
             if (currentFilter === 'all') {
                 loadAllContentTypes(page);
