@@ -217,6 +217,9 @@ public class NewsServiceImpl extends
     @Override
     public List<NewsDto> getNewsByMainPage() {
         List<News> news = repository.findTop10ByOrderByCreatedAtDesc();
-        return news.stream().map(mapper::toDto).collect(Collectors.toList());
+        return news.stream()
+                .filter(n -> !n.isDeleted())
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 }
