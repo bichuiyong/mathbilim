@@ -19,13 +19,17 @@ import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -44,8 +48,12 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService,
+                           FileService fileService, NewsTranslationService translationService,
+                           NewsTranslationRepository newsTranslationRepository,
+                           UserNotificationService notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
         this.newsTranslationRepository = newsTranslationRepository;
     }
     private final NewsTranslationRepository newsTranslationRepository;;
@@ -88,6 +96,15 @@ public class NewsServiceImpl extends
     @Transactional
     @Override
     public NewsDto create(CreateNewsDto createNewsDto) {
+        if (createNewsDto.getImage() == null || createNewsDto.getImage().isEmpty()) {
+            String errorMessage = messageSource.getMessage(
+                    "content.main-image.required",
+                    null,
+                    LocaleContextHolder.getLocale()
+            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+        }
+
         News news = News.builder()
                 .creator(userService.getAuthUserEntity())
                 .createdAt(LocalDateTime.now())
@@ -126,9 +143,37 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    public Page<NewsDto> getContentByCreatorIdNews(Long creatorId, Pageable pageable, String query) {
+        if (query != null) {
+            Page<News> allBlogWithQuery = repository.getNewsByStatusWithQuery(query, creatorId, pageable);
+
+            return allBlogWithQuery.map(mapper::toDto);
+        }
+
+        Page<News> allBlogs = repository.getNewsByCreator(creatorId, pageable);
+
+        return allBlogs.map(mapper::toDto);
+    }
+
+
+
+    @Override
+    public Page<NewsDto> getHistoryNews(Long creatorId, Pageable pageable, String query, String status) {
+        if (query != null && !query.trim().isEmpty()) {
+            return repository.getNewsWithQuery(creatorId, query, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return getContentByCreatorId(creatorId, pageable);
+    }
+
+    @Override
     @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElse(null);
+        if(news.isDeleted()==true) {
+            throw new NoSuchElementException("News with id " + id + " not found");
+        }
         incrementViewCount(id);
         log.info("News {} with id {}", news.getId(), news.getCreator().getId());
 
@@ -172,6 +217,9 @@ public class NewsServiceImpl extends
     @Override
     public List<NewsDto> getNewsByMainPage() {
         List<News> news = repository.findTop10ByOrderByCreatedAtDesc();
-        return news.stream().map(mapper::toDto).collect(Collectors.toList());
+        return news.stream()
+                .filter(n -> !n.isDeleted())
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 }

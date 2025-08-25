@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.config;
 
-import com.sun.research.ws.wadl.HTTPMethods;
+import jakarta.servlet.http.HttpServletResponse;
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
@@ -9,15 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -40,19 +37,18 @@ public class SecurityConfig {
         return http
                 .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((req, res, e) -> res.sendError(HttpServletResponse.SC_FORBIDDEN))
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/auth/telegram/callback")
-                        .ignoringRequestMatchers("/api/users", "/api/users/**", "/api/categories", "/api/categories/**", "/api/eventTypes", "/api/eventTypes/**", "/api/postTypes", "/api/postTypes/**", "/api/userTypes", "/api/userTypes/**") // временно
+                        .ignoringRequestMatchers("/api/users", "/api/users/**", "/api/categories", "/api/categories/**", "/api/eventTypes", "/api/eventTypes/**", "/api/postTypes", "/api/postTypes/**", "/api/userTypes", "/api/userTypes/**", "/api/organizations", "/api/organizations/**")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
                 .httpBasic(Customizer.withDefaults())
-
 
                 .oauth2Login(oauth -> oauth
                         .loginPage("/auth/login")
@@ -66,7 +62,7 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
                         .failureUrl("/auth/login?error=true")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/", false)
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key(rememberMeKey)
@@ -86,8 +82,18 @@ public class SecurityConfig {
                         .hasAnyAuthority("ADMIN", "SUPER_ADMIN")
 
                         .requestMatchers(
+                                "/organizations/page",
+                                "/organizations/*/edit",
+                                "/organizations/*"
+                        ).hasAnyAuthority("ADMIN", "MODER", "SUPER_ADMIN")
+
+                        .requestMatchers(
+                                "/api/organizations/page",
+                                "/api/organizations/*"
+                        ).hasAnyAuthority("ADMIN", "MODER", "SUPER_ADMIN")
+
+                        .requestMatchers(
                                 "/posts/create/**",
-                                "/organizations/create/**",
                                 "/books/create/**",
                                 "/books/update/**",
                                 "/profile/**",
@@ -96,18 +102,19 @@ public class SecurityConfig {
                                 "/users/*"
                         ).authenticated()
 
-                        .requestMatchers( "/notifications/**").authenticated()
+                        .requestMatchers("/notifications/**").authenticated()
 
-                            .requestMatchers(
-                                    "/olympiad/create",
-                                    "/olympiad/edit",
-                                    "/olympiad/add-result",
-                                    "/olympiad/add-list",
-                                    "/olympiad/stage/register-list",
-                                    "/olympiad/stage/*/register-list",
-                                    "/api/excel/download/excel/*",
-                                    "/tests/create"
-                            ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
+                        .requestMatchers(
+                                "/olympiad/create",
+                                "/olympiad/edit",
+                                "/olympiad/add-result",
+                                "/olympiad/add-list",
+                                "/olympiad/stage/register-list",
+                                "/olympiad/stage/*/register-list",
+                                "/api/excel/download/excel/*",
+                                "/tests/create",
+                                "/organizations/create"
+                        ).hasAnyAuthority("ADMIN","MODER","SUPER_ADMIN")
 
                         .requestMatchers(
                                 "/auth/**",
@@ -117,7 +124,8 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/error"
+                                "/error",
+                                "/error/*"
                         ).permitAll()
                         .requestMatchers("/api/auth/check").permitAll()
 
@@ -126,6 +134,4 @@ public class SecurityConfig {
 
                 .build();
     }
-
 }
-

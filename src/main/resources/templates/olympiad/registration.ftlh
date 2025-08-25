@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring/>
 <@main.layout>
     <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -256,11 +257,6 @@
             display: block;
         }
 
-        .olympiad-form-footer {
-            margin-top: 20px;
-            width: 100%;
-        }
-
         .olympiad-success-message {
             text-align: center;
             padding: 40px 30px;
@@ -312,7 +308,6 @@
             top: 20px;
             right: 20px;
             background: rgba(229, 62, 62, 0.85);
-            /* Semi-transparent red using --olympiad-error */
             color: white;
             padding: 16px 24px;
             border-radius: 10px;
@@ -323,9 +318,7 @@
             font-weight: 500;
             max-width: 320px;
             backdrop-filter: blur(4px);
-            /* Adds a subtle blur effect for elegance */
             border: 1px solid rgba(255, 255, 255, 0.2);
-            /* Subtle white border for contrast */
         }
 
         @keyframes slideIn {
@@ -404,28 +397,34 @@
                 submit: '<@spring.message "registration.submit" />',
                 submitting: '<@spring.message "registration.submitting" />',
                 onceNotice: '<@spring.message "registration.onceNotice" />',
-                additionalInfo:'<@spring.message "registration.additionalInfo"/>',
-                basicInfo:'<@spring.message "registration.basicInfo"/>'
+                additionalInfo: '<@spring.message "registration.additionalInfo"/>',
+                basicInfo: '<@spring.message "registration.basicInfo"/>'
+            };
+
+            const serverErrors = {
+                <#if (registrationDto?? && errors??)>
+                <#list errors.fieldErrors as error>
+                "${error.field}": "<@spring.messageText "${error.code}" "${error.defaultMessage}" />",
+                </#list>
+                </#if>
             };
 
             const [formData, setFormData] = React.useState({
                 userId: '${user.id}',
-                olympiadId: '',
-                email: '',
-                region: '',
-                district: '',
-                fullName: '',
-                phoneNumber: '',
-                school: '',
-                telegram: '',
-                classNumber: '',
-                locality: '',
-                classTeacherFullName: '',
-                parentFullName: '',
-                parentPhoneNumber: '',
-                parentEmail: '',
-                consent: false
-            });
+                olympiadStageId: '${stageId}',
+                email: '${(registrationDto.email)!""}',
+                region: '${(registrationDto.region)!""}',
+                district: '${(registrationDto.district)!""}',
+                fullName: '${(registrationDto.fullName)!""}',
+                phoneNumber: '${(registrationDto.phoneNumber)!""}',
+                school: '${(registrationDto.school)!""}',
+                telegram: '${(registrationDto.telegram)!""}',
+                classNumber: '${(registrationDto.classNumber)!""}',
+                locality: '${(registrationDto.locality)!""}',
+                classTeacherFullName: '${(registrationDto.classTeacherFullName)!""}',
+                parentFullName: '${(registrationDto.parentFullName)!""}',
+                parentPhoneNumber: '${(registrationDto.parentPhoneNumber)!""}',
+                parentEmail: '${(registrationDto.parentEmail)!""}'});
 
             const [error, setError] = React.useState('');
             const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -534,6 +533,7 @@
                                             required
                                             placeholder="example@gmail.com"
                                         />
+                                        {serverErrors.email && <div className="olympiad-error show">{serverErrors.email}</div>}
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
@@ -550,6 +550,7 @@
                                                     <option key={region.name} value={region.name}>{region.name}</option>
                                                 ))}
                                             </select>
+                                            {serverErrors.region && <div className="olympiad-error show">{serverErrors.region}</div>}
                                         </div>
                                         <div className="olympiad-form-group">
                                             <label className="olympiad-required-field">{messages.district}</label>
@@ -565,6 +566,7 @@
                                                     <option key={d} value={d}>{d}</option>
                                                 ))}
                                             </select>
+                                            {serverErrors.district && <div className="olympiad-error show">{serverErrors.district}</div>}
                                         </div>
                                     </div>
                                     <div className="olympiad-form-group">
@@ -578,6 +580,7 @@
                                             required
                                             placeholder="Иванов Азамат Иванович"
                                         />
+                                        {serverErrors.fullName && <div className="olympiad-error show">{serverErrors.fullName}</div>}
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
@@ -591,6 +594,7 @@
                                                 required
                                                 placeholder="+996 ___ ___ ___"
                                             />
+                                            {serverErrors.phoneNumber && <div className="olympiad-error show">{serverErrors.phoneNumber}</div>}
                                         </div>
                                         <div className="olympiad-form-group">
                                             <label className="olympiad-label">{messages.telegram}</label>
@@ -602,6 +606,7 @@
                                                 onChange={handleChange}
                                                 placeholder="@username"
                                             />
+                                            {serverErrors.telegram && <div className="olympiad-error show">{serverErrors.telegram}</div>}
                                         </div>
                                     </div>
                                 </div>
@@ -622,6 +627,7 @@
                                                 required
                                                 placeholder="Название школы"
                                             />
+                                            {serverErrors.school && <div className="olympiad-error show">{serverErrors.school}</div>}
                                         </div>
                                         <div className="olympiad-form-group">
                                             <label className="olympiad-label">{messages.classNumber}</label>
@@ -634,6 +640,7 @@
                                                 required
                                                 placeholder="10А"
                                             />
+                                            {serverErrors.classNumber && <div className="olympiad-error show">{serverErrors.classNumber}</div>}
                                         </div>
                                     </div>
                                     <div className="olympiad-form-group">
@@ -647,6 +654,7 @@
                                             required
                                             placeholder="Город/село"
                                         />
+                                        {serverErrors.locality && <div className="olympiad-error show">{serverErrors.locality}</div>}
                                     </div>
                                     <div className="olympiad-form-group">
                                         <label className="olympiad-label">{messages.classTeacherFullName}</label>
@@ -659,6 +667,7 @@
                                             required
                                             placeholder="ФИО"
                                         />
+                                        {serverErrors.classTeacherFullName && <div className="olympiad-error show">{serverErrors.classTeacherFullName}</div>}
                                     </div>
                                 </div>
 
@@ -675,6 +684,7 @@
                                             required
                                             placeholder="ФИО"
                                         />
+                                        {serverErrors.parentFullName && <div className="olympiad-error show">{serverErrors.parentFullName}</div>}
                                     </div>
                                     <div className="olympiad-form-row">
                                         <div className="olympiad-form-group">
@@ -688,6 +698,7 @@
                                                 required
                                                 placeholder="+996 ___ ___ ___"
                                             />
+                                            {serverErrors.parentPhoneNumber && <div className="olympiad-error show">{serverErrors.parentPhoneNumber}</div>}
                                         </div>
                                         <div className="olympiad-form-group">
                                             <label className="olympiad-label">{messages.parentEmail}</label>
@@ -699,6 +710,7 @@
                                                 onChange={handleChange}
                                                 placeholder="parent@mail.com"
                                             />
+                                            {serverErrors.parentEmail && <div className="olympiad-error show">{serverErrors.parentEmail}</div>}
                                         </div>
                                     </div>
                                 </div>
@@ -721,6 +733,7 @@
                                     </label>
                                 </div>
                                 {error && <div className="olympiad-error show">{error}</div>}
+                                {serverErrors.consent && <div className="olympiad-error show">{serverErrors.consent}</div>}
                                 <button
                                     className="olympiad-submit-btn"
                                     type="submit"
@@ -735,9 +748,6 @@
                 </div>
             );
         }
-
-        const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
-        root.render(<RegistrationForm />);
 
         const root = ReactDOM.createRoot(document.getElementById('olympiad-root'));
         root.render(<RegistrationForm />);

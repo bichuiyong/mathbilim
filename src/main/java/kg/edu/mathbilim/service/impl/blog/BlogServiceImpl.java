@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
@@ -18,6 +19,7 @@ import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,8 +45,11 @@ public class BlogServiceImpl extends
                 >
         implements BlogService {
 
-    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService, FileService fileService, BlogTranslationService translationService, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService,
+                           FileService fileService, BlogTranslationService translationService,
+                           UserNotificationService notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override
@@ -73,12 +78,6 @@ public class BlogServiceImpl extends
     }
 
 
-//    @Transactional
-//    @Override
-//    public void incrementBlogShareCount(Long id) {
-//        incrementShareCount(id);
-//        log.debug("Share count incremented for blog {}", id);
-//    }
 
 
     @Override
@@ -102,13 +101,53 @@ public class BlogServiceImpl extends
         return PaginationUtil.getPage(() -> blogs, mapper::toDto);
     }
 
-    public BlogDto getDisplayBlogById(Long id) {
-        Blog blog = repository.findDisplayBlogById(id, getCurrentLanguage())
-                .orElseThrow(this::getNotFoundException);
-        incrementViewCount(id);
+    @Transactional
+    public BlogDto getDisplayBlogById(Long id, String email) {
+        Blog blog = repository.findDisplayBlogById(id)
+                .orElseThrow(BlogNotFoundException::new);
 
+        if (email == null || email.trim().isEmpty()) {
+            if (blog.getStatus() != ContentStatus.APPROVED) {
+                throw new ContentNotAvailableException("Для просмотра этого блога необходимо войти в систему");
+            }
+            return mapper.toDto(blog);
+        }
+
+        User user = userService.findByEmail(email);
+
+        boolean isOwner = blog.getCreator().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
+        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
+
+        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
+
+        if (isOwner) {
+            incrementViewCount(id);
+            return mapper.toDto(blog);
+        }
+
+        if (hasAdminPrivileges) {
+            incrementViewCount(id);
+            return mapper.toDto(blog);
+        }
+
+        if (blog.getStatus() == ContentStatus.PENDING_REVIEW) {
+            throw new ContentNotAvailableException("Блог находится на модерации и недоступен для просмотра");
+        }
+
+        if (blog.getStatus() == ContentStatus.REJECTED) {
+            throw new ContentNotAvailableException("Блог был отклонен модерацией и недоступен для просмотра");
+        }
+
+        if (blog.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Блог недоступен для просмотра");
+        }
+
+        incrementViewCount(id);
         return mapper.toDto(blog);
     }
+
 
     public Page<BlogDto> getAllDisplayBlogs(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
@@ -172,13 +211,9 @@ public class BlogServiceImpl extends
             return allBlogWithQuery.map(mapper::toDto);
         }
 
-        Page<BlogDto> allBlogs = getContentByCreatorId(creatorId, pageable);
+        Page<Blog> allBlogs = repository.getBlogByCreator(ContentStatus.APPROVED, creatorId, pageable);
 
-        List<BlogDto> approvedBlogs = allBlogs.stream()
-                .filter(blog -> blog.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedBlogs, pageable, approvedBlogs.size());
+        return allBlogs.map(mapper::toDto);
     }
 
     @Override
@@ -224,7 +259,7 @@ public class BlogServiceImpl extends
 
     @Override
     public List<BlogDto> getBlogsByMainPage() {
-        List<Blog> blogs = repository.findTop10ByOrderByCreatedAtDesc();
+        List<Blog> blogs = repository.findTop10ByStatusAndDeletedFalseOrderByCreatedAtDesc(ContentStatus.APPROVED.getId());
         return blogs.stream().map(mapper::toDto).toList();
     }
 }

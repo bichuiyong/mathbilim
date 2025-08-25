@@ -13,5 +13,6 @@ public interface EventMapper extends BaseMapper<Event, EventDto> {
 
     @Mapping(target = "typeId", source = "type.id")
     @Mapping(target = "creator", source = "creator")
+    @Mapping(target = "deleted", source = "deleted")
     EventDto toDto(Event event);
 }

@@ -18,6 +18,21 @@ public class MainController {
         return "main";
     }
 
+    @GetMapping("/privacy")
+    public String privacy() {
+        return "/mainPages/privacy";
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "";
+    }
+
+    @GetMapping("/help")
+    public String help() {
+        return "";
+    }
+
     @GetMapping("about")
     public String about() {
         return "about";

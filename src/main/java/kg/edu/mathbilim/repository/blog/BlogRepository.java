@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +25,25 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 JOIN b.blogTranslations bt 
                 WHERE b.id = :blogId 
                 AND bt.id.languageCode = :languageCode
+                and b.deleted=false
             """)
     Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId,
-                                                    @Param("languageCode") String languageCode);
+                                       @Param("languageCode") String languageCode);
+
+    @Query(value = "SELECT * FROM public.blogs b " +
+            "WHERE b.status_id = :status AND b.deleted = false " +
+            "ORDER BY b.created_at DESC " +
+            "LIMIT 10",
+            nativeQuery = true)
+    List<Blog> findTop10ByStatusAndDeletedFalseOrderByCreatedAtDesc(Integer status);
+
+    @Transactional
+    @Query("""
+                SELECT b FROM Blog b
+                JOIN b.blogTranslations bt
+                WHERE b.id = :blogId  and b.deleted=false
+            """)
+    Optional<Blog> findDisplayBlogById(@Param("blogId") Long blogId);
 
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
@@ -48,6 +65,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                   AND bt.title IS NOT NULL 
                   AND bt.title != ''
                   AND b.status = kg.edu.mathbilim.enums.ContentStatus.APPROVED
+                  and b.deleted=false
                 ORDER BY b.createdAt DESC
             """)
     Page<DisplayContentDto> findAllDisplayBlogsByLanguage(@Param("languageCode") String languageCode,
@@ -62,10 +80,11 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                   AND bt.title IS NOT NULL 
                   AND bt.title != ''
                   AND b.status = kg.edu.mathbilim.enums.ContentStatus.APPROVED
+                   and b.deleted=false
                 ORDER BY b.createdAt DESC
             """)
     Page<Blog> findAllDisplayBlogsByLanguageBlog(@Param("languageCode") String languageCode,
-                                             Pageable pageable);
+                                                 Pageable pageable);
 
     @Query("""
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
@@ -87,6 +106,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 AND bt.id.languageCode = :languageCode
                 AND bt.title IS NOT NULL 
                 AND bt.title != ''
+                and b.deleted=false
                 ORDER BY b.viewCount DESC, b.createdAt DESC
             """)
     List<DisplayContentDto> findRelatedBlogs(@Param("excludeId") Long excludeId,
@@ -94,17 +114,19 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                              Pageable pageable);
 
     @Modifying
-    @Query("UPDATE Blog b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId")
+    @Transactional
+    @Query("UPDATE Blog b SET b.viewCount = b.viewCount + 1 WHERE b.id = :blogId  and b.deleted=false")
     void incrementViewCount(@Param("blogId") Long blogId);
 
     @Modifying
-    @Query("UPDATE Blog b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
+    @Query("UPDATE Blog b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId  and b.deleted=false")
     void incrementShareCount(@Param("blogId") Long blogId);
 
     @Query("""
             SELECT DISTINCT p FROM Blog p
             JOIN p.blogTranslations t
             WHERE p.status = :contentStatus
+             and p.deleted=false
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> findBlogsByStatus(ContentStatus status, Pageable pageable);
@@ -115,11 +137,25 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             WHERE p.status = :contentStatus
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+             and p.deleted=false
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
                                          Pageable pageable);
+
+
+    @Query("""
+            SELECT DISTINCT p FROM Blog p
+            WHERE p.status = :contentStatus
+                        AND p.creator.id = :creatorId
+                  AND p.deleted=false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogByCreator(ContentStatus contentStatus,
+                                Long creatorId,
+                                Pageable pageable);
+
 
     @Query("""
             SELECT DISTINCT p FROM Blog p
@@ -128,11 +164,12 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                         AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
                         t.id.languageCode = :languageCode
+                         and p.deleted = false
             ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
-                                         String query,
-                                         Pageable pageable, String languageCode);
+                                                String query,
+                                                Pageable pageable, String languageCode);
 
 
     @Query("""
@@ -164,6 +201,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
     @Query("""
             SELECT DISTINCT b FROM Blog b
                WHERE b.status = :contentStatus
+                and b.deleted=false
             """)
     Page<Blog> getBlogsByStatus(ContentStatus contentStatus, Pageable pageable);
 
@@ -172,10 +210,16 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 SELECT DISTINCT b FROM Blog b
                 WHERE b.status = :contentStatus
                   AND b.creator.id = :userId
+                   and b.deleted=false
             """)
     Page<Blog> getBlogsByCreatorAndStatus(@Param("contentStatus") ContentStatus contentStatus,
                                           @Param("userId") Long userId,
                                           Pageable pageable);
 
     Long countByStatus(ContentStatus contentStatus);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Blog b SET b.deleted = true WHERE b.id = :blogId")
+    void deleteContentById(Long blogId);
 }

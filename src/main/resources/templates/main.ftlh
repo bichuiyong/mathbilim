@@ -1,116 +1,122 @@
 <#import "layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout title="Главная">
     <div class="container mt-4">
-        <div class="hero-section mb-5" id="hero-container">
+        <div class="hero-section mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title"><@spring.message "main.message1"/> <span class="text-primary"><@spring.message "main.kyrgyz"/></span></h1>
+                    <p class="hero-description"><@spring.message "main.message7"/></p>
+                    <div class="hero-buttons">
+                        <a href="/tests" class="btn btn-primary me-3"><@spring.message "main.readyTest"/></a>
+                        <a href="/olympiad" class="btn btn-outline-primary"><@spring.message "main.olympiads"/></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop"
+                             alt="Математика" class="img-fluid border-radius">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="alert alert-warning mb-5">
         </div>
 
-        <!-- Новости - Main Content -->
-        <div class="row g-4 mb-5">
-            <!-- Featured News Carousel -->
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3>Последние новости</h3>
-                </div>
-                <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="news-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3><@spring.message "main.lastNews"/></h3>
                     </div>
-                    <div class="carousel-inner" id="news-carousel-inner">
-                        <!-- Слайды будут загружены динамически -->
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка новостей...</span>
+                    <div id="newsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="news-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="news-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden"><@spring.message "main.loadNews"/>...</span>
+                                </div>
                             </div>
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
-            </div>
 
-            <!-- Latest News Sidebar -->
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3>Все новости</h3>
-                    </div>
-                    <div class="news-container" id="news-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
-                            </div>
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3><@spring.message "main.allNews"/></h3>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Публикации -->
-        <div class="row g-4 mb-5">
-            <!-- Latest Publications Sidebar -->
-            <div class="col-lg-4">
-                <div class="news-section">
-                    <div class="section-header">
-                        <h3>Все публикации</h3>
-                    </div>
-                    <div class="news-container" id="post-container">
-                        <div class="d-flex justify-content-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
+                        <div class="news-container" id="news-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden"><@spring.message "main.loading"/>...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Featured Publications Carousel -->
-            <div class="col-lg-8">
-                <div class="section-header mb-3">
-                    <h3>Последние публикации</h3>
-                </div>
-                <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
-                    <div class="carousel-indicators" id="publications-carousel-indicators">
-                        <!-- Индикаторы будут загружены динамически -->
-                    </div>
-                    <div class="carousel-inner" id="publications-carousel-inner">
-                        <!-- Слайды публикаций будут загружены динамически -->
-                        <div class="carousel-item active d-flex justify-content-center align-items-center"
-                             style="height: 400px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка публикаций...</span>
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4">
+                    <div class="news-section">
+                        <div class="section-header">
+                            <h3><@spring.message "main.allPublications"/></h3>
+                        </div>
+                        <div class="news-container" id="post-container">
+                            <div class="d-flex justify-content-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden"><@spring.message "main.loading"/>...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="section-header mb-3">
+                        <h3><@spring.message "main.lastPosts"/></h3>
+                    </div>
+                    <div id="publicationsCarousel" class="carousel slide card" data-bs-ride="carousel">
+                        <div class="carousel-indicators" id="publications-carousel-indicators">
+                        </div>
+                        <div class="carousel-inner" id="publications-carousel-inner">
+                            <div class="carousel-item active d-flex justify-content-center align-items-center"
+                                 style="height: 400px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden"><@spring.message "main.loadPosts"/></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#publicationsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Upcoming Events -->
         <div class="events-section mb-5">
             <div class="section-header mb-4">
-                <h3>Предстоящие соревнования</h3>
+                <h3><@spring.message "main.wannaOLYMMP"/></h3>
             </div>
             <div class="events-scroll-container">
                 <div class="events-scroll-wrapper" id="eventsScroll">
@@ -197,10 +203,9 @@
             </div>
         </div>
 
-        <!-- Quick Access Section -->
         <div class="quick-access-section mb-5">
             <div class="section-header mb-4">
-                <h3>Быстрый доступ</h3>
+                <h3><@spring.message "main.fast"/></h3>
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
@@ -209,9 +214,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-calculator"></i>
                             </div>
-                            <h4>Тесты</h4>
-                            <p class="h-25">Проверьте свои знания в различных разделах математики</p>
-                            <a href="/tests" class="btn btn-primary mt-3">Начать тест</a>
+                            <h4><@spring.message "main.TeSt"/></h4>
+                            <p class="h-25"><@spring.message"main.message2"/></p>
+                            <a href="/tests" class="btn btn-primary mt-3"><@spring.message"main.readyTest"/></a>
                         </div>
                     </div>
                 </div>
@@ -221,9 +226,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-trophy"></i>
                             </div>
-                            <h4>Олимпиады</h4>
-                            <p class="h-25">Участвуйте в олимпиадах разного уровня</p>
-                            <a href="/olympiads" class="btn btn-primary mt-3">Участвовать</a>
+                            <h4><@spring.message "main.olympiads"/></h4>
+                            <p class="h-25"><@spring.message "main.message3"/></p>
+                            <a href="/olympiad" class="btn btn-primary mt-3"><@spring.message "main.regis"/></a>
                         </div>
                     </div>
                 </div>
@@ -233,9 +238,9 @@
                             <div class="card-icon mb-3">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <h4>Книги</h4>
-                            <p class="h-25">Изучайте математику по качественным учебникам</p>
-                            <a href="/books" class="btn btn-primary mt-3">Изучать</a>
+                            <h4><@spring.message "main.book"/></h4>
+                            <p class="h-25"><@spring.message "main.message4"/></p>
+                            <a href="/books" class="btn btn-primary mt-3"><@spring.message "main.learn"/></a>
                         </div>
                     </div>
                 </div>
@@ -243,26 +248,25 @@
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <div class="card-icon mb-3">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <h4>Сообщество</h4>
-                            <p class="h-25">Общайтесь с единомышленниками и преподавателями</p>
-                            <a href="/community" class="btn btn-primary mt-3">Присоединиться</a>
+                            <h4><@spring.message "main.events"/></h4>
+                            <p class="h-25"><@spring.message "main.message5"/></p>
+                            <a href="/events" class="btn btn-primary mt-3"><@spring.message "main.learnMore"/></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Blog Section -->
         <div class="blog-section mb-5">
             <div class="section-header mb-4">
-                <h3>Блог</h3>
+                <h3><@spring.message "main.BLogs"/></h3>
             </div>
             <div class="blog-masonry-grid"></div>
 
             <div class="text-center mt-4">
-                <a href="/blog" class="btn btn-outline-primary">Все статьи блога</a>
+                <a href="/blog" class="btn btn-outline-primary"><@spring.message "main.allBlogs"/></a>
             </div>
         </div>
 
@@ -298,7 +302,6 @@
                 indicator.setAttribute('aria-current', 'true');
             }
 
-            // Создание слайда
             const carouselItem = document.createElement('div');
             carouselItem.className = index === 0 ? 'carousel-item active' : 'carousel-item';
             carouselItem.innerHTML =
@@ -324,6 +327,14 @@
         }
 
 
+        // Функция для скрытия/показа целых секций
+        function toggleSectionVisibility(sectionSelector, isVisible) {
+            const section = document.querySelector(sectionSelector);
+            if (section) {
+                section.style.display = isVisible ? 'block' : 'none';
+            }
+        }
+
         async function loadNewsCarousel() {
             try {
                 const response = await fetch('/api/news/main');
@@ -333,6 +344,9 @@
                 const carouselIndicators = document.getElementById('news-carousel-indicators');
 
                 if (news && news.length > 0) {
+                    // Показываем секцию новостей
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -349,26 +363,16 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Математика">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Добро пожаловать!</h5>
-                                    <p>Здесь будут отображаться последние новости</p>
-                                    <a href="/news" class="btn btn-primary btn-sm">Все новости</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию новостей если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки новостей для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
             }
         }
 
-        // Загрузка публикаций для карусели
         async function loadPublicationsCarousel() {
             try {
                 const response = await fetch('/api/posts/main');
@@ -378,6 +382,9 @@
                 const carouselIndicators = document.getElementById('publications-carousel-indicators');
 
                 if (publications && publications.length > 0) {
+                    // Показываем секцию публикаций
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', true);
+
                     carouselInner.innerHTML = '';
                     carouselIndicators.innerHTML = '';
 
@@ -394,26 +401,93 @@
                         carouselInner.appendChild(carouselItem);
                     });
                 } else {
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop"
-                                 class="d-block w-100 carousel-image" alt="Публикации">
-                            <div class="carousel-caption">
-                                <div class="caption-content">
-                                    <h5>Публикации</h5>
-                                    <p>Здесь будут отображаться последние публикации</p>
-                                    <a href="/posts" class="btn btn-primary btn-sm">Все публикации</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    // Скрываем секцию публикаций если нет контента
+                    toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки публикаций для карусели:', error);
+                // Скрываем секцию при ошибке
+                toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
             }
         }
 
-        // Универсальная функция для загрузки элементов в боковую панель
+        // Альтернативный вариант если :has() не поддерживается в старых браузерах
+        function loadNewsCarouselAlternative() {
+            fetch('/api/news/main')
+                .then(response => response.json())
+                .then(news => {
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('news-carousel-inner');
+                    const carouselIndicators = document.getElementById('news-carousel-indicators');
+
+                    if (news && news.length > 0) {
+                        // Показываем секцию
+                        newsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        news.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'newsCarousel',
+                                '/news',
+                                'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        // Скрываем секцию
+                        newsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки новостей для карусели:', error);
+                    const newsSection = document.querySelector('#newsCarousel').closest('.col-lg-8');
+                    newsSection.style.display = 'none';
+                });
+        }
+
+        function loadPublicationsCarouselAlternative() {
+            fetch('/api/posts/main')
+                .then(response => response.json())
+                .then(publications => {
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    const carouselInner = document.getElementById('publications-carousel-inner');
+                    const carouselIndicators = document.getElementById('publications-carousel-indicators');
+
+                    if (publications && publications.length > 0) {
+                        publicationsSection.style.display = 'block';
+
+                        carouselInner.innerHTML = '';
+                        carouselIndicators.innerHTML = '';
+
+                        publications.forEach((item, index) => {
+                            const { indicator, carouselItem } = createCarouselItem(
+                                item,
+                                index,
+                                'publicationsCarousel',
+                                '/posts',
+                                'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&h=400&fit=crop'
+                            );
+
+                            carouselIndicators.appendChild(indicator);
+                            carouselInner.appendChild(carouselItem);
+                        });
+                    } else {
+                        publicationsSection.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки публикаций для карусели:', error);
+                    const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
+                    publicationsSection.style.display = 'none';
+                });
+        }
+
         async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
             try {
                 const response = await fetch(apiUrl);
@@ -466,13 +540,10 @@
             }
         }
 
-        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function () {
-            // Загрузка каруселей
             loadNewsCarousel();
             loadPublicationsCarousel();
 
-            // Загрузка боковых панелей
             loadLatestItems(
                 '/api/news/main',
                 'news-container',

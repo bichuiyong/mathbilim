@@ -3,8 +3,17 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.OrganizationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.service.interfaces.OrganizationService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("organizations")
 public class OrganizationController {
     private final OrganizationService organizationService;
+    private final UserService userService;
 
     @GetMapping("create")
     public String create(Model model) {
@@ -24,6 +34,7 @@ public class OrganizationController {
                 .build());
         return "organizations/create-organization";
     }
+
 
     @PostMapping("create")
     public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,
@@ -36,6 +47,18 @@ public class OrganizationController {
         }
         if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
         organizationService.create(organization, avatarFile);
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User userDetails = (User) authentication.getPrincipal();
+//        Long userId = userDetails.getId();
+
         return "redirect:/";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")
+    @PostMapping("delete/{id}")
+    public String deleteOrganization(@PathVariable long id) {
+        organizationService.delete(id);
+        return "redirect:/olympiad";
     }
 }

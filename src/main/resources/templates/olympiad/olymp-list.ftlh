@@ -35,11 +35,11 @@
                         <input type="hidden" name="type" value="OLYMPIAD">
                         <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
                             <button class="btn btn-outline-danger">
-                                🔕 <@spring.message "olympiads.button.unsubscribe">Отписаться от уведомлений</@spring.message>
+                                🔕 <@spring.message "olympiads.button.unsubscribe">Отписаться</@spring.message>
                             </button>
                         <#else>
                             <button class="btn btn-outline-primary">
-                                📩 <@spring.message "olympiads.button.subscribe">Подписаться на уведомления</@spring.message>
+                                📩 <@spring.message "olympiads.button.subscribe">Подписаться</@spring.message>
                             </button>
                         </#if>
                     </form>
@@ -58,49 +58,55 @@
     </div>
 
 
-<script>
+    <script>
 
-    const i18n = {
-        subscribedSuccess: '<@spring.message "olympiads.notification.subscribed">✅ Вы успешно подписались на уведомления олимпиад!</@spring.message>',
-        unsubscribedSuccess: '<@spring.message "olympiads.notification.unsubscribed">❌ Вы отписались от уведомлений олимпиад</@spring.message>',
-        errorOccurred: '<@spring.message "olympiads.notification.error">❌ Произошла ошибка. Попробуйте позже.</@spring.message>'
-    };
-const urlParams = new URLSearchParams(window.location.search);
-    const currentPage = ${page!"0"};
-    const defaultSize = ${size!"8"};
-    <#noparse>
-    const actualSize = urlParams.get('size') || defaultSize;
-    function loadPage(page) {
-        const container = document.getElementById('olympiad-container');
-        const emptyBlock = document.getElementById('no-olympiads');
-        const pagination = document.getElementById('pagination');
-        const loadingSpinner = document.getElementById('loading-spinner');
+        const i18n = {
+            subscribedSuccess: '<@spring.message "olympiads.notification.subscribed"></@spring.message>',
+            unsubscribedSuccess: '<@spring.message "olympiads.notification.unsubscribed"></@spring.message>',
+            errorOccurred: '<@spring.message "olympiads.notification.error"></@spring.message>',
+            subscribe: '<@spring.message "olympiads.button.subscribe"></@spring.message>',
+            unsubscribe: '<@spring.message "olympiads.button.unsubscribe"></@spring.message>',
+            processing: 'loading',
+            detailsLink: 'обработка'
+        };
 
-        loadingSpinner.style.display = 'block';
-        emptyBlock.style.display = 'none';
-        pagination.style.display = 'none';
-        container.innerHTML = '';
-        container.style.display = 'flex';
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPage = ${page!"0"};
+        const defaultSize = ${size!"8"};
 
-        fetch(`/api/olymp/all?page=${page}&size=${actualSize}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const olympiads = data.content || [];
+        <#noparse>
+        const actualSize = urlParams.get('size') || defaultSize;
+        function loadPage(page) {
+            const container = document.getElementById('olympiad-container');
+            const emptyBlock = document.getElementById('no-olympiads');
+            const pagination = document.getElementById('pagination');
+            const loadingSpinner = document.getElementById('loading-spinner');
 
-                if (!olympiads || olympiads.length === 0) {
-                    emptyBlock.style.display = 'flex';
-                    container.style.display = 'none';
-                } else {
-                    emptyBlock.style.display = 'none';
-                    container.style.display = 'flex';
+            loadingSpinner.style.display = 'block';
+            emptyBlock.style.display = 'none';
+            pagination.style.display = 'none';
+            container.innerHTML = '';
+            container.style.display = 'flex';
 
-                    olympiads.forEach(olympiad => {
-                        const block = `
+            fetch(`/api/olymp/all?page=${page}&size=${actualSize}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const olympiads = data.content || [];
+
+                    if (!olympiads || olympiads.length === 0) {
+                        emptyBlock.style.display = 'flex';
+                        container.style.display = 'none';
+                    } else {
+                        emptyBlock.style.display = 'none';
+                        container.style.display = 'flex';
+
+                        olympiads.forEach(olympiad => {
+                            const block = `
                             <div class="col">
                                 <div class="card h-100 shadow-sm border-0">
                                     <img src="/api/files/${olympiad.fileId}/view" class="card-img-top p-3"
@@ -108,110 +114,110 @@ const urlParams = new URLSearchParams(window.location.search);
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title">${olympiad.title}</h5>
                                         <div class="mt-auto text-start">
-                                            <a href="/olympiad/details?id=${olympiad.id}" class="text-primary text-decoration-none">Подробнее</a>
+                                            <a href="/olympiad/details?id=${olympiad.id}" class="text-primary text-decoration-none">${i18n.detailsLink}</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>`;
-                        container.insertAdjacentHTML('beforeend', block);
-                    });
-                }
-
-                if (data.totalPages > 1) {
-                    pagination.style.display = 'flex';
-                    pagination.innerHTML = '';
-
-                    const maxPagesToShow = 5;
-                    let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
-                    let endPage = Math.min(data.totalPages - 1, startPage + maxPagesToShow - 1);
-
-                    if (endPage - startPage + 1 < maxPagesToShow) {
-                        startPage = Math.max(0, endPage - maxPagesToShow + 1);
+                            container.insertAdjacentHTML('beforeend', block);
+                        });
                     }
 
-                    const prevItem = document.createElement('li');
-                    prevItem.className = `page-item ${page <= 0 ? 'disabled' : ''}`;
-                    const prevLink = document.createElement('a');
-                    prevLink.className = 'page-link';
-                    prevLink.href = '#';
-                    prevLink.innerHTML = '«';
-                    prevLink.onclick = (e) => {
-                        e.preventDefault();
-                        if (page > 0) {
-                            loadPage(page - 1);
-                        }
-                    };
-                    prevItem.appendChild(prevLink);
-                    pagination.appendChild(prevItem);
+                    if (data.totalPages > 1) {
+                        pagination.style.display = 'flex';
+                        pagination.innerHTML = '';
 
-                    for (let i = startPage; i <= endPage; i++) {
-                        const pageItem = document.createElement('li');
-                        pageItem.className = `page-item ${i === page ? 'active' : ''}`;
-                        const pageLink = document.createElement('a');
-                        pageLink.className = 'page-link';
-                        pageLink.href = '#';
-                        pageLink.innerHTML = i + 1;
-                        pageLink.onclick = (e) => {
+                        const maxPagesToShow = 5;
+                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+                        let endPage = Math.min(data.totalPages - 1, startPage + maxPagesToShow - 1);
+
+                        if (endPage - startPage + 1 < maxPagesToShow) {
+                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+                        }
+
+                        const prevItem = document.createElement('li');
+                        prevItem.className = `page-item ${page <= 0 ? 'disabled' : ''}`;
+                        const prevLink = document.createElement('a');
+                        prevLink.className = 'page-link';
+                        prevLink.href = '#';
+                        prevLink.innerHTML = '«';
+                        prevLink.onclick = (e) => {
                             e.preventDefault();
-                            if (i !== page) {
-                                loadPage(i);
+                            if (page > 0) {
+                                loadPage(page - 1);
                             }
                         };
-                        pageItem.appendChild(pageLink);
-                        pagination.appendChild(pageItem);
+                        prevItem.appendChild(prevLink);
+                        pagination.appendChild(prevItem);
+
+                        for (let i = startPage; i <= endPage; i++) {
+                            const pageItem = document.createElement('li');
+                            pageItem.className = `page-item ${i === page ? 'active' : ''}`;
+                            const pageLink = document.createElement('a');
+                            pageLink.className = 'page-link';
+                            pageLink.href = '#';
+                            pageLink.innerHTML = i + 1;
+                            pageLink.onclick = (e) => {
+                                e.preventDefault();
+                                if (i !== page) {
+                                    loadPage(i);
+                                }
+                            };
+                            pageItem.appendChild(pageLink);
+                            pagination.appendChild(pageItem);
+                        }
+
+                        const nextItem = document.createElement('li');
+                        nextItem.className = `page-item ${page >= data.totalPages - 1 ? 'disabled' : ''}`;
+                        const nextLink = document.createElement('a');
+                        nextLink.className = 'page-link';
+                        nextLink.href = '#';
+                        nextLink.innerHTML = '»';
+                        nextLink.onclick = (e) => {
+                            e.preventDefault();
+                            if (page < data.totalPages - 1) {
+                                loadPage(page + 1);
+                            }
+                        };
+                        nextItem.appendChild(nextLink);
+                        pagination.appendChild(nextItem);
+                    } else {
+                        pagination.style.display = 'none';
                     }
 
-                    const nextItem = document.createElement('li');
-                    nextItem.className = `page-item ${page >= data.totalPages - 1 ? 'disabled' : ''}`;
-                    const nextLink = document.createElement('a');
-                    nextLink.className = 'page-link';
-                    nextLink.href = '#';
-                    nextLink.innerHTML = '»';
-                    nextLink.onclick = (e) => {
-                        e.preventDefault();
-                        if (page < data.totalPages - 1) {
-                            loadPage(page + 1);
-                        }
-                    };
-                    nextItem.appendChild(nextLink);
-                    pagination.appendChild(nextItem);
-                } else {
+                    updateUrl(page);
+                })
+                .catch(error => {
+                    emptyBlock.style.display = 'flex';
+                    container.style.display = 'none';
                     pagination.style.display = 'none';
-                }
+                })
+                .finally(() => {
+                    loadingSpinner.style.display = 'none';
+                });
+        }
 
-                updateUrl(page);
-            })
-            .catch(error => {
-                emptyBlock.style.display = 'flex';
-                container.style.display = 'none';
-                pagination.style.display = 'none';
-            })
-            .finally(() => {
-                loadingSpinner.style.display = 'none';
-            });
-    }
+        function updateUrl(page) {
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('page', page);
+            newUrl.searchParams.set('size', actualSize);
+            window.history.pushState({}, '', newUrl);
+        }
 
-    function updateUrl(page) {
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('page', page);
-        newUrl.searchParams.set('size', actualSize);
-        window.history.pushState({}, '', newUrl);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadPage(currentPage);
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPage(currentPage);
+        });
 
         // Olympiad subscription handler
         document.addEventListener('DOMContentLoaded', function() {
-            const subscriptionForm = document.querySelector('form[action="/notifications/subscribe"]');
+            const subscriptionForm = document.querySelector('form[action*="/notifications/"]');
             const subscriptionButton = subscriptionForm.querySelector('button');
 
             subscriptionForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
                 const formData = new FormData(subscriptionForm);
-                const isSubscribed = subscriptionButton.textContent.includes('Подписаться');
+                const isSubscribed = subscriptionButton.textContent.includes(i18n.subscribe) || subscriptionButton.textContent.includes('Подписаться');
 
                 try {
                     if (isSubscribed) {
@@ -223,7 +229,7 @@ const urlParams = new URLSearchParams(window.location.search);
                     }
 
                     subscriptionButton.disabled = true;
-                    subscriptionButton.textContent = '⏳ Обработка...';
+                    subscriptionButton.textContent = '⏳ ' + i18n.processing;
 
                     const response = await fetch(subscriptionForm.action, {
                         method: 'POST',
@@ -259,14 +265,14 @@ const urlParams = new URLSearchParams(window.location.search);
             });
 
             function updateButtonToUnsubscribe() {
-                subscriptionButton.textContent = '🔕 ' + '<@spring.message "olympiads.button.unsubscribe">Отписаться от уведомлений</@spring.message>';
-                subscriptionButton.className = 'btn btn-outline-secondary';
+                subscriptionButton.textContent = '🔕 ' + i18n.unsubscribe;
+                subscriptionButton.className = 'btn btn-outline-danger';
                 subscriptionButton.disabled = false;
                 subscriptionForm.action = '/notifications/unsubscribe';
             }
 
             function updateButtonToSubscribe() {
-                subscriptionButton.textContent = '📩 ' + '<@spring.message "olympiads.button.subscribe">Подписаться на уведомления</@spring.message>';
+                subscriptionButton.textContent = '📩 ' + i18n.subscribe;
                 subscriptionButton.className = 'btn btn-outline-primary';
                 subscriptionButton.disabled = false;
                 subscriptionForm.action = '/notifications/subscribe';
@@ -348,6 +354,6 @@ const urlParams = new URLSearchParams(window.location.search);
                 }
             }
         });
-</script>
+    </script>
 </#noparse>
 </@main.layout>

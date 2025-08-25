@@ -1,5 +1,5 @@
 <#macro layout title="">
-<#import "/spring.ftl" as spring>
+    <#import "/spring.ftl" as spring>
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -47,7 +47,7 @@
     <body>
     <nav class="navbar navbar-expand-lg navbar-light navbar-container">
         <div class="container-fluid">
-            <!-- Мобильная версия header -->
+
             <div class="d-flex justify-content-between align-items-center w-100 d-lg-none">
                 <a href="/" class="logo">mathbilim</a>
                 <div class="d-flex align-items-center">
@@ -65,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- Десктопная версия -->
             <div class="d-none d-lg-block w-100">
                 <div class="navbar-top">
                     <div class="row align-items-center">
@@ -85,7 +84,7 @@
                         <div class="col-lg-3">
                             <div class="d-flex justify-content-end auth-buttons">
                                 <#if user??>
-                                    <a href="/users/${user.authId}"  class="btn-icon">
+                                    <a href="/users/${user.authId!''}"  class="btn-icon">
                                         <i class="fas fa-user "></i>
                                     </a>
                                     <#if _csrf??>
@@ -137,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- Мобильное меню (collapse) -->
             <div class="collapse navbar-collapse d-lg-none" id="navbarContent">
                 <div class="navbar-mobile-content">
                     <div class="mobile-menu-section">
@@ -168,7 +166,7 @@
                                 <a class="nav-link" href="/blog"><@spring.message "navbar.blog"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/publications"><@spring.message "navbar.publications"/></a>
+                                <a class="nav-link" href="/posts"><@spring.message "navbar.publications"/></a>
                             </li>
                         </ul>
                     </div>
@@ -176,22 +174,20 @@
                     <div class="mobile-menu-section">
                         <div class="d-flex gap-2">
                             <#if user??>
-                                <a href="/users/${user.authId}" class="btn btn-outline-primary w-50">
-                                    <i class="fas fa-user  me-2"></i><@spring.message "navbar.profile"/>
+                                <a href="/users/${user.authId!''}   " class="btn btn-outline-primary w-50">
+                                    <i class="fas fa-user me-2"></i><@spring.message "navbar.profile"/>
                                 </a>
                                 <#if _csrf??>
-                                    <form action="/logout" method="post">
+                                    <form action="/logout" method="post" class="w-50">
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                                value="${(_csrf.token)!'--no-token--'}"/>
-                                        <button type="submit" class="btn btn-outline-primary w-50">
+                                        <button type="submit" class="btn btn-outline-primary w-100">
                                             <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
-
                                         </button>
                                     </form>
                                 <#else>
                                     <a href="/logout" class="btn btn-outline-primary w-50">
                                         <i class="fas fa-sign-out-alt me-2"></i><@spring.message "navbar.logout"/>
-
                                     </a>
                                 </#if>
                             <#else>
@@ -200,7 +196,6 @@
                                 </a>
                                 <a href="/auth/register" class="btn btn-primary w-50">
                                     <i class="fas fa-user-plus me-2"></i><@spring.message "navbar.register"/>
-
                                 </a>
                             </#if>
                         </div>
@@ -210,12 +205,10 @@
         </div>
     </nav>
 
-    <!-- Основной контент -->
     <main>
         <#nested>
     </main>
 
-    <!-- Футер -->
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -229,9 +222,9 @@
                     <h5><@spring.message "footer.sections"/></h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="/tests" class="footer-link"><@spring.message "navbar.tests"/></a></li>
-                        <li class="mb-2"><a href="/olympiads" class="footer-link"><@spring.message "navbar.olympiads"/></a></li>
+                        <li class="mb-2"><a href="/olympiad" class="footer-link"><@spring.message "navbar.olympiads"/></a></li>
                         <li class="mb-2"><a href="/books" class="footer-link"><@spring.message "navbar.books"/></a></li>
-                        <li class="mb-2"><a href="/publications" class="footer-link"><@spring.message "navbar.publications"/></a></li>
+                        <li class="mb-2"><a href="/posts" class="footer-link"><@spring.message "navbar.publications"/></a></li>
                         <li class="mb-2"><a href="/blog" class="footer-link"><@spring.message "navbar.blog"/></a></li>
                         <li class="mb-2"><a href="/events" class="footer-link"><@spring.message "navbar.events"/></a></li>
                         <li class="mb-2"><a href="/news" class="footer-link"><@spring.message "navbar.news"/></a></li>
@@ -242,9 +235,9 @@
                     <h5><@spring.message "footer.information"/></h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="/about" class="footer-link"><@spring.message "footer.about"/></a></li>
-                        <li class="mb-2"><a href="/privacy" class="footer-link"><@spring.message "footer.privacy"/></a></li>
-                        <li class="mb-2"><a href="/terms" class="footer-link"><@spring.message "footer.terms"/></a></li>
-                        <li class="mb-2"><a href="/help" class="footer-link"><@spring.message "footer.help"/></a></li>
+<#--                            <li class="mb-2"><a href="/privacy" class="footer-link"><@spring.message "footer.privacy"/></a></li>-->
+    <#--                        <li class="mb-2"><a href="/terms" class="footer-link"><@spring.message "footer.terms"/></a></li>-->
+    <#--                        <li class="mb-2"><a href="/help" class="footer-link"><@spring.message "footer.help"/></a></li>-->
                     </ul>
                 </div>
 
@@ -252,28 +245,31 @@
                     <h5><@spring.message "footer.contacts"/></h5>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
-                        <a href="mailto:info@mathbilim.kg" class="footer-link">info@mathbilim.kg</a>
+                        <a href="mailto:mathbilim@gmail.com" class="footer-link">mathbilim@gmail.com</a>
                     </p>
                     <p class="mb-2">
                         <i class="fas fa-phone me-2"></i>
-                        <a href="tel:+996555123456" class="footer-link">+996 555 123 456</a>
+                        <a href="tel:+996703296698" class="footer-link">+996703296698</a>
                     </p>
                     <p class="mb-3">
                         <i class="fas fa-map-marker-alt me-2"></i>
-                        <span class="footer-link">Бишкек, Кыргызстан</span>
+                        <a class="footer-link" href="https://www.google.com/maps/search/?api=1&query=Бишкек, Кыргызстан" target="_blank">
+                            Бишкек, Кыргызстан
+                        </a>
                     </p>
 
+
                     <div class="social-links">
-                        <a href="#" class="social-link" title="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="social-link" title="Instagram">
+<#--                        <a href="" class="social-link" title="Facebook">-->
+<#--                            <i class="fab fa-facebook-f"></i>-->
+<#--                        </a>-->
+                        <a href="https://www.instagram.com/mathbilim?igsh=djR6MmplYXZjYzZw" class="social-link" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="social-link" title="Telegram">
+                        <a href="https://t.me/mathaniyat" class="social-link" title="Telegram">
                             <i class="fab fa-telegram-plane"></i>
                         </a>
-                        <a href="#" class="social-link" title="YouTube">
+                        <a href="https://www.youtube.com/channel/UC_fY4eu74e2KJFyZJsm2NfA" class="social-link" title="YouTube">
                             <i class="fab fa-youtube"></i>
                         </a>
                     </div>
@@ -300,6 +296,30 @@
                     }
                 });
             }
+
+            function updateLanguageLinks() {
+                const currentUrl = new URL(window.location);
+                const currentParams = currentUrl.searchParams;
+
+                const langLinks = document.querySelectorAll('.lang-btn, .lang-btn-mobile');
+
+                langLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+
+                    const langMatch = href.match(/lang=([^&]+)/);
+                    if (langMatch) {
+                        const langCode = langMatch[1];
+
+                        const newParams = new URLSearchParams(currentParams);
+                        newParams.set('lang', langCode);
+
+                        link.setAttribute('href', '?' + newParams.toString());
+                    }
+                });
+            }
+
+            updateLanguageLinks();
+            window.addEventListener('popstate', updateLanguageLinks);
         });
     </script>
 

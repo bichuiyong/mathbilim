@@ -1,8 +1,9 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
 <@main.layout>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
     <style>
-        .content-wrapper {
+        .news-wrapper {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
@@ -11,17 +12,192 @@
             line-height: 1.6;
         }
 
-        .page-header {
+        .news-header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            border-radius: 24px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            border-radius: 16px;
             color: white;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .page-title {
+        .news-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .news-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Search Container */
+        .news-search-container {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .news-search-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .news-search-title::before {
+            content: "🔍";
+            font-size: 1.25rem;
+        }
+
+        .news-search-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .news-input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .news-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .news-input-group input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .news-select-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .news-select-wrapper {
+            position: relative;
+            min-width: 120px;
+            flex: 1;
+        }
+
+        .news-select-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        .news-select-wrapper::after {
+            content: "▼";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #1a73e8;
+            font-size: 0.8rem;
+        }
+
+        .news-select-wrapper select:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .news-search-button {
+            padding: 12px 24px;
+            background: #1a73e8;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .news-search-button:hover {
+            background: #1557b0;
+            transform: translateY(-2px);
+        }
+
+        /* News List (Vertical list layout) */
+        .news-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .news-card {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .news-card:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+        }
+
+        .news-image-container {
+            flex: 0 0 100px;
+            height: 60px;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .news-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 12px;
@@ -31,291 +207,9 @@
             background-clip: text;
         }
 
-        .page-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        /* Search Container */
-        .search-container {
-            background: white;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .search-header {
-            padding: 24px;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .search-title {
-            font-weight: 700;
-            font-size: 18px;
-            color: #2d3748;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search-title::before {
-            content: "🔍";
-            font-size: 20px;
-        }
-
-        .content-wrapper form {
-            padding: 24px;
-        }
-
-        .search-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: stretch;
-        }
-
-        .search-input-group {
-            flex: 2;
-            min-width: 250px;
-        }
-
-        .search-input-group input {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: white;
-            font-weight: 500;
-        }
-
-        .search-input-group input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .select-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            flex: 3;
-        }
-
-        .select-wrapper {
-            position: relative;
-            min-width: 140px;
-            flex: 1;
-        }
-
-        .select-wrapper select {
-            width: 100%;
-            padding: 16px 20px;
-            padding-right: 45px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            background: white;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.3s ease;
-            appearance: none;
-            font-weight: 500;
-        }
-
-        .select-wrapper::after {
-            content: "▼";
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #667eea;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .select-wrapper select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .search-button {
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            min-width: 120px;
-        }
-
-        .search-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        }
-
-        .search-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* Language selector styling */
-        .language-selector {
-            background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
-            border-color: #c7d2fe;
-        }
-
-        .language-selector:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        /* Posts Grid */
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .post-item {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-        }
-
-        .post-item:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .post-image-container {
-            position: relative;
-            height: 220px;
-            overflow: hidden;
-        }
-
-        .post-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.4s ease;
-        }
-
-        .post-item:hover img {
-            transform: scale(1.1);
-            filter: brightness(0.8);
-        }
-
-        .post-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
-        }
-
-        .post-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            opacity: 0;
-            transition: all 0.3s ease;
-            padding: 20px;
-        }
-
-        .post-item:hover .post-overlay {
-            opacity: 1;
-        }
-
-        .post-stats {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-views::before {
-            content: "👁";
-            font-size: 16px;
-        }
-
-        .stat-shares::before {
-            content: "📤";
-            font-size: 16px;
-        }
-
-        .multiple-images-indicator {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            backdrop-filter: blur(10px);
-        }
-
-        .multiple-images-indicator::before {
-            content: "📷";
-            font-size: 12px;
-        }
-
-        .post-content {
-            padding: 24px;
-        }
-
-        .post-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 12px;
+        .news-description {
+            color: #718096;
+            font-size: 0.85rem;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -323,294 +217,243 @@
             overflow: hidden;
         }
 
-        .post-description {
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 0.8rem;
             color: #718096;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
-        .post-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .post-date {
-            color: #a0aec0;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .post-stats-bottom {
-            display: flex;
-            gap: 16px;
-        }
-
-        .stat-item-bottom {
+        .news-meta span {
             display: flex;
             align-items: center;
-            gap: 4px;
-            color: #718096;
-            font-size: 0.85rem;
-            font-weight: 500;
+            gap: 5px;
         }
 
         /* Subscription Section */
-        .subscription-section {
+        .news-subscription {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin: 40px 0;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
         }
 
-        .subscription-button {
-            padding: 16px 32px;
+        .news-subscription-button {
+            padding: 12px 24px;
             border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 250px;
+            min-width: 200px;
         }
 
-        .btn-outline-primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        .news-subscription-button.subscribe {
+            background: #1a73e8;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-outline-primary:hover {
+        .news-subscription-button.subscribe:hover {
+            background: #1557b0;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
         }
 
-        .btn-outline-danger {
-            background: linear-gradient(135deg, #e53e3e, #c53030);
+        .news-subscription-button.unsubscribe {
+            background: #e53e3e;
             color: white;
-            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
         }
 
-        .btn-outline-danger:hover {
+        .news-subscription-button.unsubscribe:hover {
+            background: #c53030;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(229, 62, 62, 0.5);
         }
 
         /* Pagination */
-        .pagination-container {
+        .news-pagination {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 16px;
-            margin-top: 50px;
-            padding: 30px 0;
+            gap: 10px;
+            margin-top: 30px;
         }
 
-        .pagination-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
+        .news-pagination-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            min-width: 120px;
-            gap: 8px;
-        }
-
-        .pagination-btn.prev {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        .pagination-btn.prev:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
             text-decoration: none;
         }
 
-        .pagination-btn.next {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        .news-pagination-btn.prev {
+            background: white;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+        }
+
+        .news-pagination-btn.prev:hover {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .news-pagination-btn.next {
+            background: #1a73e8;
             color: white;
             border: none;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .pagination-btn.next:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            text-decoration: none;
+        .news-pagination-btn.next:hover {
+            background: #1557b0;
         }
 
-        .pagination-info {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 20px;
-            font-size: 16px;
+        .news-pagination-info {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
             color: #2d3748;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
 
         /* Loading and No Posts */
-        .loader {
+        .news-loader {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 300px;
+            height: 200px;
             color: #718096;
-            font-size: 18px;
-            grid-column: 1 / -1;
+            font-size: 1.1rem;
+            width: 100%;
         }
 
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #667eea;
+        .news-spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #1a73e8;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .no-posts {
-            grid-column: 1 / -1;
+        .news-no-posts {
+            width: 100%;
             text-align: center;
-            padding: 80px 20px;
+            padding: 40px;
             color: #718096;
-            font-size: 20px;
+            font-size: 1.2rem;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .no-posts::before {
+        .news-no-posts::before {
             content: "📰";
             display: block;
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
             opacity: 0.5;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .content-wrapper {
+            .news-wrapper {
                 padding: 15px;
             }
 
-            .page-title {
-                font-size: 2rem;
+            .news-title {
+                font-size: 1.75rem;
             }
 
-            .search-row {
+            .news-search-row {
                 flex-direction: column;
             }
 
-            .search-input-group,
-            .select-group {
+            .news-input-group,
+            .news-select-group {
                 width: 100%;
             }
 
-            .posts-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+            .news-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
             }
 
-            .pagination-container {
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-
-            .pagination-btn {
-                min-width: 100px;
-                padding: 12px 20px;
-                font-size: 14px;
+            .news-image-container {
+                width: 100%;
+                height: 120px;
+                margin-right: 0;
+                margin-bottom: 10px;
             }
         }
 
         @media (max-width: 480px) {
-            .select-group {
+            .news-select-group {
                 flex-direction: column;
             }
 
-            .select-wrapper {
+            .news-select-wrapper {
                 min-width: unset;
             }
 
-            .post-stats {
-                font-size: 12px;
-                gap: 12px;
+            .news-image-container {
+                height: 100px;
             }
         }
     </style>
 
-    <div class="content-wrapper">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">📰 Новости</h1>
-            <p class="page-subtitle">Последние события и объявления</p>
+    <div class="news-wrapper">
+        <!-- News Header -->
+        <div class="news-header">
+            <h1 class="news-title">📰 <@spring.message "news.list.title"/></h1>
+            <p class="news-subtitle"><@spring.message "news.list.subtitle"/></p>
         </div>
 
         <!-- Search Container -->
-        <div class="search-container">
-            <div class="search-header">
-                <h2 class="search-title">Поиск и фильтры</h2>
-            </div>
+        <div class="news-search-container">
+            <h2 class="news-search-title"><@spring.message "news.search.title"/></h2>
             <form method="get" action="/news">
-                <div class="search-row">
-                    <div class="search-input-group">
+                <div class="news-search-row">
+                    <div class="news-input-group">
                         <input type="text" name="query" value="${query!}"
-                               placeholder="🔍 Найти новости по названию или содержанию..."/>
+                               placeholder="${springMacroRequestContext.getMessage('news.search.placeholder')}"/>
                     </div>
-                </div>
-
-                <div class="search-row">
-                    <div class="select-group">
-                        <div class="select-wrapper">
+                    <div class="news-select-group">
+                        <div class="news-select-wrapper">
                             <select name="sortBy">
-                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>📅 По дате создания
+                                <option value="createdAt" <#if sortBy=="createdAt">selected</#if>>
+                                    📅 <@spring.message "news.sort.createdAt"/>
                                 </option>
-                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>👁 По просмотрам
+                                <option value="viewCount" <#if sortBy=="viewCount">selected</#if>>
+                                    👁 <@spring.message "news.sort.viewCount"/>
                                 </option>
-                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>📤 По репостам
+                                <option value="shareCount" <#if sortBy=="shareCount">selected</#if>>
+                                    📤 <@spring.message "news.sort.shareCount"/>
                                 </option>
                             </select>
                         </div>
-
-                        <div class="select-wrapper">
+                        <div class="news-select-wrapper">
                             <select name="sortDirection">
-                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>⬇️ Сначала новые</option>
-                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>⬆️ Сначала старые</option>
+                                <option value="DESC" <#if sortDirection=="DESC">selected</#if>>
+                                    ⬇️ <@spring.message "news.sort.newFirst"/>
+                                </option>
+                                <option value="ASC" <#if sortDirection=="ASC">selected</#if>>
+                                    ⬆️ <@spring.message "news.sort.oldFirst"/>
+                                </option>
                             </select>
                         </div>
-
-                        <div class="select-wrapper">
+                        <div class="news-select-wrapper">
                             <select name="language" class="language-selector">
                                 <option value="ru" <#if currentLang=="ru">selected</#if>>🇷🇺 Русский</option>
                                 <option value="en" <#if currentLang=="en">selected</#if>>🇺🇸 English</option>
@@ -618,116 +461,96 @@
                             </select>
                         </div>
                     </div>
-
-                    <button type="submit" class="search-button">✨ Применить</button>
+                    <button type="submit" class="news-search-button">
+                        🔍 <@spring.message "news.search.apply"/>
+                    </button>
                 </div>
             </form>
         </div>
 
+        <!-- News List -->
         <#if news?? && news.content?size gt 0>
-            <div class="posts-grid">
+            <div class="news-grid">
                 <#list news.content as p>
-                    <article class="post-item" onclick="window.location.href='/news/${p.id}'" tabindex="0">
-                        <div class="post-image-container">
+                    <article class="news-card" onclick="window.location.href='/news/${p.id}'" tabindex="0">
+                        <div class="news-image-container">
                             <#if p.mainImage??>
                                 <img src="/api/files/${p.mainImageId}/view" alt="News Image">
                             <#elseif p.newsFiles?? && p.newsFiles?size gt 0>
                                 <img src="/api/files/${p.newsFiles[0].id}/view" alt="News Image">
                             <#else>
-                                <div class="post-placeholder">📰</div>
+                                <div class="news-placeholder">📰</div>
                             </#if>
-
-                            <#assign totalImages = (p.newsFiles?size) + (p.mainImage?has_content?then(1, 0))>
-                            <#if totalImages gt 1>
-                                <div class="multiple-images-indicator"></div>
-                            </#if>
-
-                            <div class="post-overlay">
-                                <div class="post-stats">
-                                    <div class="stat-item stat-views">${p.viewCount!0}</div>
-                                    <div class="stat-item stat-shares">${p.shareCount!0}</div>
-                                </div>
-                            </div>
                         </div>
-
-                        <div class="post-content">
+                        <div class="news-content">
                             <#assign translation = (p.newsTranslations?first)!>
-
                             <#if translation??>
                                 <#if translation.title?? && translation.title?has_content>
-                                    <h3 class="post-title">${translation.title}</h3>
+                                    <h3 class="news-title-card">${translation.title}</h3>
                                 </#if>
-
                                 <#if translation.description?? && translation.description?has_content>
-                                    <p class="post-description">${translation.description}</p>
+                                    <p class="news-description">${translation.description}</p>
                                 </#if>
-
-                                <div class="post-meta">
-            <span class="post-date">
-               📅 ${p.formattedDate}
-            </span>
-
-                                    <span class="post-date">
-<#if p.newsTranslations?size gt 0>
-    🌐 ${p.newsTranslations[0].languageCode!'не указан'}
-<#else>
-    🌐 не указан
-</#if>            </span>
+                                <div class="news-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> ${p.formattedDate}</span>
+                                    <span><i class="fas fa-eye"></i> ${p.viewCount!0}</span>
                                 </div>
                             </#if>
                         </div>
-
                     </article>
                 </#list>
             </div>
         <#else>
-            <div class="posts-grid">
+            <div class="news-grid">
                 <#if news?? && news.content?size == 0>
-                    <div class="no-posts">
-                        Новости не найдены
-                        <div style="margin-top: 12px; font-size: 16px; opacity: 0.8;">Попробуйте изменить параметры
-                            поиска
-                            или выбрать другой язык
+                    <div class="news-no-posts">
+                        <@spring.message "news.notFound.title"/>
+                        <div style="margin-top: 10px; font-size: 1rem; opacity: 0.8;">
+                            <@spring.message "news.notFound.message"/>
                         </div>
                     </div>
                 <#else>
-                    <div class="loader">
-                        <div class="spinner"></div>
-                        <span>Загружаем новости...</span>
+                    <div class="news-loader">
+                        <div class="news-spinner"></div>
+                        <span><@spring.message "news.loading"/></span>
                     </div>
                 </#if>
             </div>
         </#if>
 
-        <div class="subscription-section">
+        <!-- Subscription Section -->
+        <div class="news-subscription">
             <form action="/notifications/${(isBlogSubscribed!false)?then('unsubscribe', 'subscribe')}" method="post">
                 <@main.csrf/>
                 <input type="hidden" name="type" value="NEWS">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="subscription-button btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="news-subscription-button unsubscribe">
+                        <i class="fas fa-bell-slash"></i> <@spring.message "news.subscription.unsubscribe"/>
+                    </button>
                 <#else>
-                    <button class="subscription-button btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="news-subscription-button subscribe">
+                        <i class="fas fa-bell"></i> <@spring.message "news.subscription.subscribe"/>
+                    </button>
                 </#if>
             </form>
         </div>
 
+        <!-- Pagination -->
         <#if news?? && news.content?size gt 0 && (news.hasPrevious() || news.hasNext())>
-            <div class="pagination-container">
+            <div class="news-pagination">
                 <#if news.hasPrevious()>
                     <a href="?page=${page - 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
-                       class="pagination-btn prev">
-                        ← Назад
+                       class="news-pagination-btn prev">
+                        <i class="fas fa-chevron-left"></i> <@spring.message "pagination.previous"/>
                     </a>
                 </#if>
-
-                <div class="pagination-info">
-                    Страница ${page + 1}
+                <div class="news-pagination-info">
+                    <@spring.message "pagination.page"/> ${page + 1}
                 </div>
-
                 <#if news.hasNext()>
                     <a href="?page=${page + 1}&size=${size}&query=${query!}&sortBy=${sortBy}&sortDirection=${sortDirection}&language=${currentLang!'ru'}"
-                       class="pagination-btn next">
-                        Вперёд →
+                       class="news-pagination-btn next">
+                        <@spring.message "pagination.next"/> <i class="fas fa-chevron-right"></i>
                     </a>
                 </#if>
             </div>
@@ -735,12 +558,6 @@
     </div>
 
     <script>
-        function switchLanguage(langCode) {
-            const url = new URL(window.location);
-            url.searchParams.set('language', langCode);
-            window.location.href = url.toString();
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
             // Language selector change handler
             const langSelect = document.querySelector('select[name="language"]');
@@ -753,57 +570,44 @@
                 });
             }
 
-            // Keyboard navigation for posts
-            document.addEventListener('keydown', function (e) {
-                const posts = document.querySelectorAll('.post-item');
-                const currentPost = document.querySelector('.post-item:focus');
+            // Keyboard navigation for news items
+            document.querySelectorAll('.news-card').forEach(item => {
+                item.setAttribute('tabindex', '0');
+            });
 
-                if (!currentPost && posts.length > 0) {
-                    if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                        posts[0].focus();
-                        e.preventDefault();
-                    }
+            document.addEventListener('keydown', function (e) {
+                const cards = document.querySelectorAll('.news-card');
+                const currentCard = document.querySelector('.news-card:focus');
+                if (!currentCard && cards.length > 0 && ['ArrowDown', 'ArrowUp'].includes(e.key)) {
+                    cards[0].focus();
+                    e.preventDefault();
                     return;
                 }
 
-                const currentIndex = Array.from(posts).indexOf(currentPost);
+                const currentIndex = Array.from(cards).indexOf(currentCard);
                 let newIndex = currentIndex;
 
                 switch (e.key) {
-                    case 'ArrowLeft':
+                    case 'ArrowUp':
                         newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
                         e.preventDefault();
                         break;
-                    case 'ArrowRight':
-                        newIndex = currentIndex < posts.length - 1 ? currentIndex + 1 : currentIndex;
-                        e.preventDefault();
-                        break;
-                    case 'ArrowUp':
-                        const cols = Math.floor(posts[0].parentElement.offsetWidth / posts[0].offsetWidth);
-                        newIndex = currentIndex >= cols ? currentIndex - cols : currentIndex;
-                        e.preventDefault();
-                        break;
                     case 'ArrowDown':
-                        const colsDown = Math.floor(posts[0].parentElement.offsetWidth / posts[0].offsetWidth);
-                        newIndex = currentIndex + colsDown < posts.length ? currentIndex + colsDown : currentIndex;
+                        newIndex = currentIndex < cards.length - 1 ? currentIndex + 1 : currentIndex;
                         e.preventDefault();
                         break;
                     case 'Enter':
-                        if (currentPost) {
-                            currentPost.click();
+                        if (currentCard) {
+                            currentCard.click();
                         }
                         e.preventDefault();
                         break;
                 }
 
-                if (newIndex !== currentIndex && posts[newIndex]) {
-                    posts[newIndex].focus();
+                if (newIndex !== currentIndex && cards[newIndex]) {
+                    cards[newIndex].focus();
+                    cards[newIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-            });
-
-            // Make posts focusable
-            document.querySelectorAll('.post-item').forEach(item => {
-                item.setAttribute('tabindex', '0');
             });
 
             // Subscription form handler
@@ -813,17 +617,15 @@
 
                 subscriptionForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
-
-                    const formData = new FormData(subscriptionForm);
-                    const isSubscribed = subscriptionButton.textContent.includes('Подписаться');
+                    const isSubscribed = subscriptionButton.classList.contains('subscribe');
 
                     try {
                         subscriptionButton.disabled = true;
-                        subscriptionButton.textContent = '⏳ Обработка...';
+                        subscriptionButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обработка...';
 
                         const response = await fetch(subscriptionForm.action, {
                             method: 'POST',
-                            body: formData
+                            body: new FormData(subscriptionForm)
                         });
 
                         if (response.status === 401 || response.status === 403) {
@@ -842,7 +644,6 @@
                         } else {
                             throw new Error('Network response was not ok');
                         }
-
                     } catch (error) {
                         console.error('Error:', error);
                         showNotification('❌ Произошла ошибка. Попробуйте позже.', 'error');
@@ -855,178 +656,75 @@
                 });
 
                 function updateButtonToUnsubscribe() {
-                    subscriptionButton.textContent = '🔕 Отписаться от уведомлений';
-                    subscriptionButton.className = 'subscription-button btn-outline-danger';
+                    subscriptionButton.innerHTML = '<i class="fas fa-bell-slash"></i> Отписаться от уведомлений';
+                    subscriptionButton.className = 'news-subscription-button unsubscribe';
                     subscriptionButton.disabled = false;
                     subscriptionForm.action = subscriptionForm.action.replace('/subscribe', '/unsubscribe');
                 }
 
                 function updateButtonToSubscribe() {
-                    subscriptionButton.textContent = '📩 Подписаться на уведомления';
-                    subscriptionButton.className = 'subscription-button btn-outline-primary';
+                    subscriptionButton.innerHTML = '<i class="fas fa-bell"></i> Подписаться на уведомления';
+                    subscriptionButton.className = 'news-subscription-button subscribe';
                     subscriptionButton.disabled = false;
                     subscriptionForm.action = subscriptionForm.action.replace('/unsubscribe', '/subscribe');
                 }
             }
-
+            <#noparse>
             function showNotification(message, type = 'info') {
                 const existingNotifications = document.querySelectorAll('.notification-toast');
                 existingNotifications.forEach(notification => notification.remove());
 
                 const notification = document.createElement('div');
-                let alertClass = 'info';
-                if (type === 'success') {
-                    alertClass = 'success';
-                } else if (type === 'error') {
-                    alertClass = 'error';
-                }
-
-                notification.className = `notification-toast alert-` + alertClass + ``;
+                notification.className = `notification-toast alert-${type}`;
                 notification.style.cssText = `
-position: fixed;
-top: 20px;
-right: 20px;
-z-index: 1050;
-min-width: 300px;
-max-width: 500px;
-padding: 16px 20px;
-border-radius: 12px;
-color: white;
-font-weight: 600;
-animation: slideInRight 0.3s ease-out;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-backdrop-filter: blur(10px);
-`;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 1050;
+                    min-width: 250px;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    animation: slideInRight 0.3s ease-out;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                `;
 
-                if (type === 'success') {
-                    notification.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
-                } else if (type === 'error') {
-                    notification.style.background = 'linear-gradient(135deg, #e53e3e, #c53030)';
-                } else {
-                    notification.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                }
-
+                notification.style.background = type === 'success' ? '#48bb78' : type === 'error' ? '#e53e3e' : '#1a73e8';
                 notification.innerHTML = `
-<div style="display: flex; justify-content: space-between; align-items: center;">
-    <span>` + message + `</span>
-    <button onclick="this.parentElement.parentElement.remove()"
-            style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-left: 12px;">×</button>
-</div>
-`;
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()"
+                                style="background: none; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0 8px;">×</button>
+                    </div>
+                `;
 
                 if (!document.querySelector('#notification-styles')) {
                     const style = document.createElement('style');
                     style.id = 'notification-styles';
                     style.textContent = `
-@keyframes slideInRight {
-from {
-transform: translateX(100%);
-opacity: 0;
-}
-to {
-transform: translateX(0);
-opacity: 1;
-}
-}
-
-@keyframes slideOutRight {
-from {
-transform: translateX(0);
-opacity: 1;
-}
-to {
-transform: translateX(100%);
-opacity: 0;
-}
-}
-
-.notification-toast:hover {
-transform: scale(1.02);
-}
-`;
+                        @keyframes slideInRight {
+                            from { transform: translateX(100%); opacity: 0; }
+                            to { transform: translateX(0); opacity: 1; }
+                        }
+                        @keyframes slideOutRight {
+                            from { transform: translateX(0); opacity: 1; }
+                            to { transform: translateX(100%); opacity: 0; }
+                        }
+                    `;
                     document.head.appendChild(style);
                 }
 
                 document.body.appendChild(notification);
-
                 setTimeout(() => {
                     if (notification.parentNode) {
                         notification.style.animation = 'slideOutRight 0.3s ease-in';
-                        setTimeout(() => {
-                            if (notification.parentNode) {
-                                notification.remove();
-                            }
-                        }, 300);
+                        setTimeout(() => notification.remove(), 300);
                     }
-                }, 5000);
-            }
-
-            // Auto-submit form on language change
-            const currentLang = new URLSearchParams(window.location.search).get('language') || 'ru';
-
-            // Smooth scroll for pagination
-            const paginationLinks = document.querySelectorAll('.pagination-btn');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    // Add loading state
-                    this.style.opacity = '0.7';
-                    this.style.pointerEvents = 'none';
-                });
-            });
-
-            // Enhanced hover effects for posts
-            const postItems = document.querySelectorAll('.post-item');
-            postItems.forEach(item => {
-                item.addEventListener('mouseenter', function () {
-                    this.style.zIndex = '10';
-                });
-
-                item.addEventListener('mouseleave', function () {
-                    this.style.zIndex = '1';
-                });
-
-                // Add ripple effect on click
-                item.addEventListener('click', function (e) {
-                    const ripple = document.createElement('div');
-                    ripple.style.cssText = `
-position: absolute;
-border-radius: 50%;
-background: rgba(102, 126, 234, 0.3);
-transform: scale(0);
-animation: ripple 0.6s linear;
-pointer-events: none;
-`;
-
-                    const rect = this.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-
-                    ripple.style.width = ripple.style.height = size + 'px';
-                    ripple.style.left = x + 'px';
-                    ripple.style.top = y + 'px';
-
-                    this.appendChild(ripple);
-
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
-                });
-            });
-
-            if (!document.querySelector('#ripple-styles')) {
-                const style = document.createElement('style');
-                style.id = 'ripple-styles';
-                style.textContent = `
-@keyframes ripple {
-to {
-transform: scale(2);
-opacity: 0;
-}
-}
-`;
-                document.head.appendChild(style);
+                }, 3000);
             }
         });
     </script>
+</#noparse>
 </@main.layout>

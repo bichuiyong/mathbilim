@@ -49,6 +49,38 @@
             color: white;
         }
 
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            color: #dc2626;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            margin-bottom: 32px;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+            background: #fef2f2;
+            border-color: #f87171;
+            text-decoration: none;
+            color: #b91c1c;
+        }
+
+        .delete-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+        }
+
         /* Основная карточка новости */
         .news-card {
             background: #ffffff;
@@ -835,12 +867,21 @@
         }
     </style>
 
-    <div class="content-wrapper">
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        >
+    </#if>
+
+    <div class="content-wrapper pb-0">
         <a href="/news" class="back-btn">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
             </svg>
-            Назад к новостям
+            <@spring.message "news.back.button"/>
         </a>
 
         <article class="news-card">
@@ -849,7 +890,7 @@
                     ${newsDto.creator.name?substring(0, 1)?upper_case}
                 </div>
                 <div class="author-info">
-                    <a href="/profile/info/${newsDto.creator.id}" class="author-name">
+                    <a href="/users/${newsDto.creator.id}/public" class="author-name">
                         ${newsDto.creator.name}
                     </a>
                     <div class="publication-date">
@@ -917,75 +958,74 @@
             <div class="news-content">
                 <#if translation.content?? && translation.content?has_content>
                     <div class="news-text collapsed" id="newsContent">${translation.content?no_esc}</div>
-                    <button class="show-more-btn" id="toggleContentBtn">Читать полностью</button>
+                    <button class="show-more-btn" id="toggleContentBtn"><@spring.message "news.read.more"/></button>
                 </#if>
             </div>
 
             <div class="news-meta">
                 <div class="meta-item">
                     <span class="icon">👁️</span>
-                    <span>${newsDto.viewCount!0} просмотров</span>
+                    <span><@spring.message "news.views" /> ${newsDto.viewCount}</span>
                 </div>
                 <#if newsDto.shareCount?? && newsDto.shareCount gt 0>
                     <div class="meta-item">
                         <span class="icon">📤</span>
-                        <span>${newsDto.shareCount} репостов</span>
+                        <span><@spring.message"news.shares"/>${newsDto.shareCount}</span>
                     </div>
                 </#if>
                 <#if allImages?size gt 1>
                     <div class="meta-item">
                         <span class="icon">📷</span>
-                        <span>${allImages?size} фотографий</span>
+                        <span>${allImages?size} <@spring.message "news.photos"/></span>
                     </div>
                 </#if>
-                <button class="comments-btn" id="openCommentsBtn"
-                        data-post-id="${newsDto.id}"
-                        <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
-                    <span class="icon">💬</span>
-                    Комментарии
-                </button>
-            </div>
-
-            <!-- Модальное окно комментариев -->
-            <div class="comments-modal-overlay" id="commentsModalOverlay">
-                <div class="comments-modal">
-                    <div class="comments-modal-header">
-                        <h3 class="comments-modal-title">Комментарии</h3>
-                        <button class="comments-modal-close" id="closeCommentsModal" aria-label="Закрыть комментарии">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="comments-modal-body">
-                        <ul class="comments-list" id="commentsList"></ul>
-                        <div class="comments-empty" id="commentsEmpty" style="display: none;">
-                            <div class="comments-empty-icon">💬</div>
-                            <div class="comments-empty-text">Пока нет комментариев</div>
-                            <div class="comments-empty-subtext">Станьте первым, кто оставит комментарий</div>
-                        </div>
-                    </div>
-                    <div class="comments-modal-footer">
-                        <#if currentUser??>
-                            <div class="comment-input-wrapper">
-                                <textarea id="commentInput" placeholder="Оставьте комментарий..."></textarea>
-                                <button class="comment-submit-btn" id="submitCommentBtn">Отправить</button>
-                            </div>
-                        <#else>
-                            <div style="text-align: center; padding: 16px;">
-                                <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
-                                    Войти для комментирования
-                                </a>
-                            </div>
-                        </#if>
-                    </div>
-                </div>
             </div>
         </article>
     </div>
+    <div class="content-wrapper py-0">
+        <#if currentUser?? && (isAdmin || (newsDto.creator?? && newsDto.creator.id == currentUser.id))>
+            <form action="/news/delete/${newsDto.id}" method="post" style="">
+                <@main.csrf/>
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="button" class="delete-btn" onclick="confirmNewsDelete()">
+                    <@spring.message "news.delete.button"/>
+                </button>
+            </form>
+        </#if>
+    </div>
+
 
     <script>
-        // Используем тот же подход, что и в постах
+        function getCsrfToken() {
+            const meta = document.querySelector('meta[name="_csrf"]');
+            return meta ? meta.getAttribute('content') : '';
+        }
+
+        function getCsrfHeader() {
+            const meta = document.querySelector('meta[name="_csrf_header"]');
+            return meta ? meta.getAttribute('content') : 'X-CSRF-TOKEN';
+        }
+
+
+        window.confirmNewsDelete = function() {
+            if (confirm('Вы уверены, что хотите удалить эту статью?')) {
+                fetch('/news/delete/' + ${newsDto.id}, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [getCsrfHeader()]: getCsrfToken()
+                    },
+                    body: JSON.stringify({ id: ${newsDto.id} })
+                })
+                    .catch(error => {
+                        console.error('Error deleting news:', error);
+                        alert('Ошибка при удалении новости');
+                    });
+            }
+        };
+
+
+
         document.addEventListener('DOMContentLoaded', function () {
             // Инициализация карусели (точно такая же как в постах)
             const carouselElement = document.getElementById('newsCarousel');

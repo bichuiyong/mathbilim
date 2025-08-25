@@ -137,9 +137,8 @@ public class OlympiadServiceImpl implements OlympiadService {
     @Transactional
     @Override
     public void olympiadUpdate(OlympiadCreateDto dto) {
-        Olympiad olympiad = olympiadRepository.findById(dto.getId())
+        Olympiad olympiad = olympiadRepository.findByIdAndDeletedFalse(dto.getId())
                 .orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
-
         if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
             FileDto fileDto = fileService.updateFile(olympiad.getImage().getId(), dto.getImageFile());
             olympiad.setImage(File.builder()
@@ -175,9 +174,8 @@ public class OlympiadServiceImpl implements OlympiadService {
         olympiadContactService.deleteByOlympiadId(olympiad.getId());
         entityManager.flush();
         entityManager.clear();
-        olympiad = olympiadRepository.findById(dto.getId())
+        olympiad = olympiadRepository.findByIdAndDeletedFalse(dto.getId())
                 .orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
-
         for (OlympiadContactDto contact : dto.getContacts()) {
             if (contact.getInfo() == null || contact.getInfo().isBlank()) {
                 continue;
@@ -226,7 +224,7 @@ public class OlympiadServiceImpl implements OlympiadService {
 
     @Override
     public Page<OlympListDto> getAll(Pageable pageable) {
-        return olympiadRepository.findAll(pageable)
+        return olympiadRepository.findAllActive(pageable)
                 .map(olympiad -> new OlympListDto(
                         Math.toIntExact(olympiad.getId()),
                         olympiad.getCreatedAt(),
@@ -238,7 +236,7 @@ public class OlympiadServiceImpl implements OlympiadService {
 
     @Override
     public OlympiadCreateDto getOlympiadCreateDto(Long olympId) {
-        Olympiad olympiad = olympiadRepository.findById(olympId).orElseThrow(() -> new PostNotFoundException("not found"));
+        Olympiad olympiad = olympiadRepository.findByIdAndDeletedFalse(olympId).orElseThrow(() -> new PostNotFoundException("not found"));
         boolean hasStarted = !olympiad.getStartDate().isAfter(LocalDate.now());
         boolean hasEnded = !olympiad.getEndDate().isAfter(LocalDate.now());
 
@@ -288,8 +286,7 @@ public class OlympiadServiceImpl implements OlympiadService {
 
     @Override
     public OlympiadDto getById(long id) {
-        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
-
+        Olympiad olympiad = olympiadRepository.findByIdAndDeletedFalse(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
         List<Long> organizations = olympOrganizationService.getOrganizationIds((int) id);
 
         List<OrganizationDto> organizationDtos = organizationService.getByIds(organizations);
@@ -320,12 +317,6 @@ public class OlympiadServiceImpl implements OlympiadService {
     }
 
 
-//    public boolean olympiadHasStarted(long id, LocalDate nowDate){
-//        Olympiad olympiad = olympiadRepository.findById(id).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
-//        if (nowDate.isBefore(olympiad.getStartDate())){
-//
-//        }
-//    }
     @Override
     public String uploadRegistrationResult(MultipartFile uploadFile, long stageId) {
         OlympiadStage olympStage = olympiadStageService.getOlympiadStageById((int) stageId);
@@ -351,7 +342,7 @@ public class OlympiadServiceImpl implements OlympiadService {
 
     @Override
     public List<OlympListDto> getOlympiadForMainPage() {
-        List<Olympiad> olympiads = olympiadRepository.findTop10ByOrderByCreatedAtDesc();
+        List<Olympiad> olympiads = olympiadRepository.findTop10ByDeletedFalseOrderByCreatedAtDesc();
 
         return olympiads.stream()
                 .map(olympiad -> new OlympListDto(
@@ -363,5 +354,12 @@ public class OlympiadServiceImpl implements OlympiadService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteOlympiad(long olympId) {
+        Olympiad o = olympiadRepository.findByIdAndDeletedFalse(olympId).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
+        olympiadRepository.deleteByIdAndDeletedFalse(o.getId());
+    }
+
 
 }

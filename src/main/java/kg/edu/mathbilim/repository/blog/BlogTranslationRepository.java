@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface BlogTranslationRepository extends BaseTranslationRepository<BlogTranslation, BlogTranslationId> {
 
     @Modifying
-    @Query("DELETE FROM BlogTranslation bt WHERE bt.id.blogId = :blogId")
+    @Transactional
+    @Query("UPDATE BlogTranslation pt SET pt.deleted = true WHERE pt.id.blogId = :blogId")
     void deleteByBlogId(@Param("blogId") Long blogId);
 }

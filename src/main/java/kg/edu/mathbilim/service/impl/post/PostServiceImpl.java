@@ -4,10 +4,13 @@ import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
+import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
+import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.model.user.User;
@@ -20,6 +23,7 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +50,12 @@ public class PostServiceImpl extends
         implements PostService {
 
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, UserNotificationService notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService,
+                           FileService fileService, PostTranslationService translationService,
+                           PostRepository postRepository, PostMapperImpl postMapperImpl,
+                           UserNotificationService notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override
@@ -140,8 +148,60 @@ public class PostServiceImpl extends
 
     @Override
     @Transactional
+    public PostDto getPostById(Long id, String email) {
+        Post post = repository.findById(id)
+                .orElseThrow(BlogNotFoundException::new);
+
+        if (email == null || email.trim().isEmpty()) {
+            if (post.getStatus() != ContentStatus.APPROVED) {
+                throw new ContentNotAvailableException("Для просмотра этой публикации необходимо войти в систему");
+            }
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        User user = userService.findByEmail(email);
+
+        boolean isOwner = post.getCreator().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
+        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
+
+        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
+
+        if (isOwner) {
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        if (hasAdminPrivileges) {
+            incrementViewCount(id);
+            return mapper.toDto(post);
+        }
+
+        if (post.getStatus() == ContentStatus.PENDING_REVIEW) {
+            throw new ContentNotAvailableException("Пост находится на модерации и недоступен для просмотра");
+        }
+
+        if (post.getStatus() == ContentStatus.REJECTED) {
+            throw new ContentNotAvailableException("Пост был отклонен модерацией и недоступен для просмотра");
+        }
+
+        if (post.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Пост недоступен для просмотра");
+        }
+
+        incrementViewCount(id);
+        return mapper.toDto(post);
+    }
+
+    @Transactional
+    @Override
     public PostDto getPostById(Long id) {
         Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
+        if (post.isDeleted() == true) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         incrementViewCount(id);
         return mapper.toDto(post);
     }
@@ -153,13 +213,9 @@ public class PostServiceImpl extends
 
             return allPostWithQuery.map(mapper::toDto);
         }
-        Page<PostDto> allPosts = getContentByCreatorId(creatorId, pageable);
+        Page<Post> allPosts = repository.getPostsByCreatorId(ContentStatus.APPROVED, creatorId, pageable);
 
-        List<PostDto> approvedPosts = allPosts.stream()
-                .filter(post -> post.getStatus() == ContentStatus.APPROVED)
-                .toList();
-
-        return new PageImpl<>(approvedPosts, pageable, approvedPosts.size());
+        return allPosts.map(mapper::toDto);
     }
 
     @Override
@@ -226,8 +282,10 @@ public class PostServiceImpl extends
 
     @Override
     public List<PostDto> getPostByMainPage() {
-        List<Post> posts = repository.findTop10ByOrderByCreatedAtDesc();
-
-        return posts.stream().map(mapper::toDto).collect(Collectors.toList());
+        List<Post> news = repository.findTop10ByOrderByCreatedAtDesc();
+        return news.stream()
+                .filter(n -> !n.isDeleted())
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 }

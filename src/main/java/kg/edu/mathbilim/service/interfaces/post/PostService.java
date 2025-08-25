@@ -8,6 +8,7 @@ import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,9 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     void reject(Long id, String email);
 
+    PostDto getPostById(Long id, String email);
+
+    @Transactional
     PostDto getPostById(Long id);
 
     Page<PostDto> getPostsByCreator(Long creatorId, Pageable pageable, String query);

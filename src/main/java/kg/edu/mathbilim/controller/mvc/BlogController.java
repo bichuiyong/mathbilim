@@ -12,7 +12,14 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +37,7 @@ public class BlogController {
     private final UserNotificationService userNotificationService;
     private final SubscriptionModelPopulator subscriptionModelPopulator;
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String all(@RequestParam(required = false) String query,
@@ -37,7 +45,7 @@ public class BlogController {
                       @RequestParam(value = "size", defaultValue = "5") int size,
                       @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                      @RequestParam(value = "lang", defaultValue = "ru", required = false) String lang,
+                      @RequestParam(value = "language", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
         model.addAttribute("blog",
@@ -72,14 +80,18 @@ public class BlogController {
                              BindingResult bindingResult,
                              @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              Model model) {
-
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || mpMainImage == null || mpMainImage.isEmpty()) {
+            if (mpMainImage == null || mpMainImage.isEmpty()) {
+                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
+                model.addAttribute("image", errorMessage);
+            }
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }
 
-        BlogDto createdBlog = blogService.create(blogDto, mpMainImage);
-        return "redirect:/blog/" + createdBlog.getId();
+        blogService.create(blogDto, mpMainImage);
+
+        return "redirect:/blog";
     }
 
     @GetMapping("/{id}")
@@ -87,12 +99,14 @@ public class BlogController {
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
-        blogService.incrementViewCount(id);
-        BlogDto blog = blogService.getDisplayBlogById(id);
+//        blogService.incrementViewCount(id);
+        String email = (principal != null) ? principal.getName() : null;
+        BlogDto blog = blogService.getDisplayBlogById(id, email);
+
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
-        log.info("Creator name {}", blog.getCreator().getName());
+//        log.info("Creator name {}", blog.getCreator().getName());
         model.addAttribute("shareUrl", shareUrl);
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 

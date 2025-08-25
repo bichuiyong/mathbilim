@@ -13,6 +13,7 @@ import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
+import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class UserController {
     private final EventService eventService;
     private final BlogService blogService;
     private final BookService bookService;
+    private final NewsService newsService;
 
     @GetMapping
     public ResponseEntity<Page<UserDto>> getUserPage(@RequestParam(required = false, defaultValue = "1") int page,
@@ -64,8 +66,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
-        userService.createUser(userDto, request);
+    public ResponseEntity<Void> createUserFromAdmin(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
+        userService.createUserFromAdmin(userDto, request);
         return ResponseEntity.ok().build();
     }
 
@@ -106,6 +108,10 @@ public class UserController {
                     contentPage = blogService.getContentByCreatorIdBlog(creatorId, pageable, query);
                     log.info("Получено {} блогов", contentPage.getNumberOfElements());
                 }
+                case "news" -> {
+                    contentPage = newsService.getContentByCreatorIdNews(creatorId, pageable, query);
+                    log.info("Получено {} новостей", contentPage.getNumberOfElements());
+                }
                 default -> {
                     log.warn("Неверный тип контента: {}", type);
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
@@ -113,7 +119,7 @@ public class UserController {
             }
         } catch (Exception e) {
             log.error("Ошибка при получении контента для creatorId={}, type={}", creatorId, type, e);
-            throw e; // Можно кастомизировать обработку ошибки
+            throw e;
         }
 
         return ResponseEntity.ok(contentPage);
@@ -135,6 +141,7 @@ public class UserController {
             case "event" -> historyPage = eventService.getHistoryEvent(id, pageable, query, status);
             case "book" -> historyPage = bookService.getHisotryBook(id, pageable, query, status);
             case "blog" -> historyPage = blogService.getHistoryBlog(id, pageable, query, status);
+            case "news" -> historyPage = newsService.getHistoryNews(id, pageable, query, status);
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
         }
         return ResponseEntity.ok(historyPage);
@@ -200,6 +207,7 @@ public class UserController {
                 case "events" -> eventService.getById(id);
                 case "books" -> bookService.getById(id);
                 case "blogs" -> blogService.getById(id);
+                case "news" -> newsService.getById(id);
                 default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
             };
             return ResponseEntity.ok(content);

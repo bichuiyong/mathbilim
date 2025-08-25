@@ -63,6 +63,17 @@
 
     </style>
     <body>
+
+    <#if SPRING_SECURITY_CONTEXT??>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#assign authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)>
+        <#assign
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
+        isModer = authorities?seq_contains("MODER") || isAdmin
+        isUser = authorities?seq_contains("USER")
+        >
+    </#if>
+
     <div class="container py-5">
         <div class="test-header text-center mb-5">
             <h1 class="display-5 fw-bold mb-3"><@spring.message "test.details.test"/> ${test.name}</h1>
@@ -73,6 +84,8 @@
             <div class="col-lg-8">
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
+
+
                         <h2 class="h4 fw-bold mb-3"><@spring.message "test.details.welcome"/> ${test.name}</h2>
                         <p class="mb-4"><@spring.message "test.details.consistOf"/> ${test.questionCount} <@spring.message "test.details.tasks"/><#if test.hasLimit> <@spring.message "test.details.execution"/> ${test.timeLimit} <@spring.message "test.details.minute"/>.<#else><@spring.message "test.details.unlimitedTime"/></#if> <@spring.message "test.details.message1"/></p>
 
@@ -115,6 +128,15 @@
                         <a class="btn btn-primary custom btn-start-test w-100 py-2" href="/tests/${test.id}/pass">
                             <@spring.message "test.details.ready"/>
                         </a>
+                        <#if currentUser?? && isAdmin>
+                            <form action="/tests/delete/${test.id}" method="post" class="w-100">
+                                <@main.csrf/>
+                                <input type="hidden" name="_method" value="delete"/>
+                                <button type="submit" class="btn btn-danger w-100 py-2 btn-start-test mt-1">
+                                    🗑 <@spring.message "test.details.delete"/>
+                                </button>
+                            </form>
+                        </#if>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.enums.ContentStatus;
+import kg.edu.mathbilim.enums.FileCategory;
 import kg.edu.mathbilim.exception.nsee.UserNotFoundException;
 import kg.edu.mathbilim.mapper.BaseMapper;
 import kg.edu.mathbilim.model.File;
@@ -22,13 +23,16 @@ import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,6 +49,7 @@ public abstract class AbstractContentService<
     protected final M mapper;
     protected final UserService userService;
     protected final FileService fileService;
+    protected final MessageSource messageSource;
 
     protected abstract RuntimeException getNotFoundException();
 
@@ -64,8 +69,12 @@ public abstract class AbstractContentService<
     }
 
     protected E getEntityById(Long id) {
-        return repository.findById(id)
+       E g =  repository.findById(id)
                 .orElseThrow(this::getNotFoundException);
+       if(g.isDeleted()==true){
+           throw new UserNotFoundException("User with id " + id + " not found");
+       }
+       return g;
     }
 
     public boolean existsById(Long id) {
@@ -91,7 +100,7 @@ public abstract class AbstractContentService<
             translationService.deleteAllTranslationsByEntityId(id);
         }
 
-        repository.deleteById(id);
+        repository.deleteContentById(id);
         log.info("Deleted {}: {}", getEntityName(), id);
     }
 
@@ -99,7 +108,8 @@ public abstract class AbstractContentService<
         if (mainImage != null && !mainImage.isEmpty()) {
             File mainImageFile = fileService.uploadFileReturnEntity(
                     mainImage,
-                    getFileUploadPath(entity) + "/main"
+                    getFileUploadPath(entity) + "/main",
+                    FileCategory.IMAGE
             );
             entity.setMainImage(mainImageFile);
             log.info("Uploaded main image for {} {}", getEntityName(), entity.getId());
@@ -122,7 +132,7 @@ public abstract class AbstractContentService<
 
         if (dto instanceof ContentDto contentDto) {
             if (creator.getRole().getName().equalsIgnoreCase("admin") ||
-                    creator.getRole().getName().equalsIgnoreCase("moder")) {
+                    creator.getRole().getName().equalsIgnoreCase("moder") || creator.getRole().getName().equalsIgnoreCase("super_admin")) {
                 contentDto.setStatus(ContentStatus.APPROVED);
             } else {
                 contentDto.setStatus(ContentStatus.PENDING_REVIEW);
@@ -136,6 +146,15 @@ public abstract class AbstractContentService<
 
     @Transactional
     public D createBase(D dto, MultipartFile mainImage, MultipartFile[] attachments) {
+        if (mainImage == null || mainImage.isEmpty()) {
+            String errorMessage = messageSource.getMessage(
+                    "content.main-image.required",
+                    null,
+                    LocaleContextHolder.getLocale()
+            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+        }
+
         setupDtoBeforeSave(dto);
         E entity = mapper.toEntity(dto);
         log.info("Entity not null {} ", entity.toString());

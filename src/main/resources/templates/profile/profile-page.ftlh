@@ -18,11 +18,13 @@
         }
 
         .moderation-image {
-            width: 80px;
+            width: 85px;
             height: 80px;
             object-fit: cover;
-            border-radius: 8px;
+
             cursor: pointer;
+            padding-top: 10px;
+            padding-left: 16px;
         }
 
 
@@ -354,6 +356,316 @@
             color: gold;
         }
 
+
+        #organizationsContentList .card {
+            border: 1px solid #e3e6f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        #organizationsContentList .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-color: #4e73df;
+        }
+
+        .organization-avatar img {
+            border: 2px solid #e3e6f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .organization-avatar .bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .btn-group .btn {
+            min-width: 44px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-width: 1px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-group .btn:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .btn-group .btn:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: 0;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #e74a3b;
+            border-color: #e74a3b;
+            transform: translateY(-1px);
+        }
+
+        .organization-info h5 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .organization-info .card-text {
+            line-height: 1.4;
+        }
+
+        /* Стили для пагинации */
+        #organizationsPagination .pagination {
+            gap: 4px;
+        }
+
+        #organizationsPagination .page-link {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            color: #6c757d;
+            padding: 8px 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsPagination .page-link:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        #organizationsPagination .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        #organizationsSearch {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsSearch:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        #organizationsSearchBtn {
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            background-color: #f8f9fc;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #organizationsSearchBtn:hover {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .modal-header .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        @media (max-width: 768px) {
+            #organizationsContentList .card-body .row {
+                text-align: center;
+            }
+
+            #organizationsContentList .card-body .col-auto:last-child {
+                margin-top: 1rem;
+            }
+
+            .btn-group {
+                width: 100%;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+            }
+        }
+
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .text-center i[style*="font-size: 4rem"] {
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #organizationsContentList .card {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        /* Красивые стили для пагинации */
+        #usersPagination {
+            margin: 20px 0;
+        }
+
+        #usersPagination .pagination {
+            gap: 8px;
+            margin: 0;
+            justify-content: center;
+        }
+
+        #usersPagination .page-item {
+            margin: 0;
+        }
+
+        #usersPagination .page-link {
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 10px;
+            width: 44px;
+            height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #usersPagination .page-link:hover {
+            background-color: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        #usersPagination .page-item.active .page-link {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        #usersPagination .page-item.active .page-link:hover {
+            background-color: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        #usersPagination .page-item.disabled .page-link {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #usersPagination .page-item.disabled .page-link:hover {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #usersPagination .page-link i {
+            font-size: 14px;
+        }
+
+        @media (max-width: 576px) {
+            #usersPagination .pagination {
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #usersPagination .page-link {
+                width: 38px;
+                height: 38px;
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #usersPagination .pagination {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #usersPagination .page-link:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
     </style>
 
     <#assign known = SPRING_SECURITY_CONTEXT?? >
@@ -364,6 +676,9 @@
         isModer = authorities?seq_contains("MODER") || isAdmin
         >
     </#if>
+
+    <span id="currentLocale" style="display: none;">${.locale}</span>
+
     <div class="container mt-4" data-user-id="${user.id!}">
         <div class="row">
             <div class="col-lg-4 mb-4">
@@ -450,9 +765,11 @@
                             <a href="/books/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
                             </a>
+                            <#if isModer || isAdmin>
                             <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
                             </a>
+                            </#if>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-book me-2"></i><@spring.message "content.type.olympiad"/>
@@ -463,7 +780,7 @@
                             </#if>
                             <#if isModer || isAdmin>
                                 <a href="/tests/create" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-book me-2"></i>Тест
+                                    <i class="fas fa-book me-2"></i><@spring.message "test"/>
                                 </a>
                             </#if>
                         </div>
@@ -493,6 +810,14 @@
                                             data-bs-target="#moderation" type="button" role="tab">
                                         <i class="fas fa-tasks me-2"></i><@spring.message "tab.moderation"/>
                                         <span class="badge bg-danger ms-1" id="moderationCount">0</span>
+                                    </button>
+                                </li>
+                            </#if>
+                            <#if isModer || isAdmin>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="organizations-tab" data-bs-toggle="tab"
+                                            data-bs-target="#organizations" type="button" role="tab">
+                                        <i class="fas fa-building me-2"></i><@spring.message "tab.organizations"/>
                                     </button>
                                 </li>
                             </#if>
@@ -644,6 +969,36 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
+                            </#if>
+
+                            <#if isModer || isAdmin>
+                                <div class="tab-pane fade" id="organizations" role="tabpanel">
+                                    <div class="organizations-filters mb-4">
+                                        <div class="row g-2">
+                                            <div class="col-md-12">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" class="form-control" id="organizationsSearch"
+                                                           placeholder="<@spring.message "placeholder.search"/>">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            id="organizationsSearchBtn">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                </div>
+                                </div>
+
+                                <div id="organizationsContentList" class="content-list">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                        <p><@spring.message "message.loading"/></p>
+                                    </div>
+                                </div>
+
+                                <nav id="organizationsPagination" class="mt-3" style="display: none;">
+                                    <ul class="pagination justify-content-center"></ul>
+                                </nav>
+                            </div>
                             </#if>
 
                             <!-- Вкладка "Пользователи" (для администраторов) -->
@@ -1016,7 +1371,7 @@
         </div>
     </div>
 
-
+    <script src="/static/js/profile/controlOrganizations.js"></script>
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>
 </@main.layout>

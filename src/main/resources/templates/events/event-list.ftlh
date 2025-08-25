@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+    <#import "/spring.ftl" as spring>
 <@main.layout>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -136,12 +137,12 @@
         <div class="main-content">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h1 class="page-title h3">Математические мероприятия</h1>
-                    <p class="page-subtitle">Олимпиады, семинары и лекции</p>
+                    <h1 class="page-title h3"><@spring.message "events.list.title"/></h1>
+                    <p class="page-subtitle"><@spring.message "events.list.subtitle"/></p>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <a href="/events/create" class="btn btn-add-event text-white rounded-pill px-4 py-2">
-                        <i class="fas fa-plus me-2"></i>Добавить мероприятие
+                        <i class="fas fa-plus me-2"></i><@spring.message "events.list.addEvent"/>
                     </a>
                 </div>
             </div>
@@ -153,27 +154,34 @@
         <div class="filters-card">
             <div class="row align-items-end">
                 <div class="col-md-3 mb-3">
-                    <label for="typeFilter" class="form-label fw-medium">Тип мероприятия:</label>
+                    <label for="typeFilter" class="form-label fw-medium">
+                        <@spring.message "events.filters.type"/>:
+                    </label>
                     <select id="typeFilter" class="form-select">
-                        <option value="">Все типы</option>
-                        <option value="online">Онлайн</option>
-                        <option value="offline">Офлайн</option>
+                        <option value=""><@spring.message "events.filters.allTypes"/></option>
+                        <option value="online"><@spring.message "events.format.online"/></option>
+                        <option value="offline"><@spring.message "events.format.offline"/></option>
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="sortFilter" class="form-label fw-medium">Сортировка:</label>
+                    <label for="sortFilter" class="form-label fw-medium">
+                        <@spring.message "events.filters.sort"/>:
+                    </label>
                     <select id="sortFilter" class="form-select">
-                        <option value="startDate,desc">Сначала новые</option>
-                        <option value="startDate,asc">Сначала старые</option>
+                        <option value="startDate,desc"><@spring.message "events.filters.newFirst"/></option>
+                        <option value="startDate,asc"><@spring.message "events.filters.oldFirst"/></option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="searchInput" class="form-label fw-medium">Поиск:</label>
-                    <input type="text" id="searchInput" class="form-control" placeholder="Поиск мероприятий...">
+                    <label for="searchInput" class="form-label fw-medium">
+                        <@spring.message "events.filters.search"/>:
+                    </label>
+                    <input type="text" id="searchInput" class="form-control"
+                           placeholder="${springMacroRequestContext.getMessage('events.filters.searchPlaceholder')}">
                 </div>
                 <div class="col-md-2 mb-3">
                     <button id="applyFilters" class="btn btn-primary w-100">
-                        <i class="fas fa-filter me-1"></i>Найти
+                        <i class="fas fa-filter me-1"></i><@spring.message "events.filters.apply"/>
                     </button>
                 </div>
             </div>
@@ -182,9 +190,9 @@
         <!-- Загрузка -->
         <div id="loadingSpinner" class="text-center py-4" style="display: none;">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Загрузка...</span>
+                <span class="visually-hidden"><@spring.message "common.loading"/></span>
             </div>
-            <p class="mt-2">Загрузка мероприятий...</p>
+            <p class="mt-2"><@spring.message "events.loading"/></p>
         </div>
 
         <!-- Рекомендуемое мероприятие -->
@@ -196,7 +204,9 @@
             </div>
         </div>
 
-        <h3 id="eventsTitle" class="h4 fw-semibold mb-4 text-dark">Ближайшие мероприятия</h3>
+        <h3 id="eventsTitle" class="h4 fw-semibold mb-4 text-dark">
+            <@spring.message "events.upcoming"/>
+        </h3>
 
         <!-- Контейнер для мероприятий -->
         <div id="eventsContainer" class="row g-4">
@@ -206,8 +216,8 @@
         <!-- Сообщение об отсутствии данных -->
         <div id="noEventsMessage" class="text-center py-5" style="display: none;">
             <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-            <h4 class="text-muted">Мероприятия не найдены</h4>
-            <p class="text-muted">Попробуйте изменить фильтры поиска</p>
+            <h4 class="text-muted"><@spring.message "events.notFound.title"/></h4>
+            <p class="text-muted"><@spring.message "events.notFound.message"/></p>
         </div>
 
         <!-- Пагинация -->
@@ -223,9 +233,13 @@
                 <@main.csrf/>
                 <input type="hidden" name="type" value="EVENT">
                 <#if (isAuthenticated!false) && (isBlogSubscribed!false)>
-                    <button class="btn btn-outline-danger">🔕 Отписаться от уведомлений</button>
+                    <button class="btn btn-outline-danger">
+                        🔕 <@spring.message "events.subscription.unsubscribe"/>
+                    </button>
                 <#else>
-                    <button class="btn btn-outline-primary">📩 Подписаться на уведомления</button>
+                    <button class="btn btn-outline-primary">
+                        📩 <@spring.message "events.subscription.subscribe"/>
+                    </button>
                 </#if>
             </form>
         </div>
