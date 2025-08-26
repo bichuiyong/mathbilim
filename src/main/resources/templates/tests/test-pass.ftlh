@@ -100,6 +100,35 @@
             position: relative;
         }
 
+        input[type="radio"].current {
+            background-color: #800080;
+            border: 2px solid #800080;
+            border-radius: 0;
+            appearance: none;
+        }
+
+        input[type="radio"].past {
+            position: relative;
+        }
+
+        input[type="radio"].past::after {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #800080;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
+
+        input[type="radio"].frozen {
+            opacity: 0.1;
+            cursor: not-allowed;
+            filter: grayscale(90%);
+        }
+
         #timer-container {
             display: flex;
             flex-direction: column;
@@ -122,39 +151,6 @@
             border: 2px solid #0d6efd;
             padding: 10px 25px;
             border-radius: 10px;
-        }
-
-        .frozen {
-            opacity: 0.1;
-            pointer-events: none;
-            filter: grayscale(90%);
-        }
-
-        .past {
-            position: relative;
-        }
-
-        .past::after {
-            content: '';
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background: #0d6efd;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-        }
-
-        input[type="radio"]:checked {
-            background-color: #0d6efd;
-            border-radius: 50%;
-        }
-
-        input[type="radio"].frozen {
-            opacity: 0.1;
-            cursor: not-allowed;
-            filter: grayscale(90%);
         }
 
         input[type="text"] {
@@ -362,17 +358,43 @@
             radio.addEventListener('click', e => {
                 const question = radio.name;
 
-                if (!answerClicks[question]) answerClicks[question] = 0;
+                if (!answerClicks[question]) {
+                    answerClicks[question] = 0;
+                }
 
                 if (answerClicks[question] < 2) {
+                    const radiosInGroup = form.querySelectorAll(`input[name="${question}"]`);
+                    radiosInGroup.forEach(r => {
+                        r.classList.remove('past');
+                        r.classList.remove('current');
+                        r.checked = false;
+                    });
+
+                    if (answerClicks[question] === 1) {
+                        const previousAnswer = chosenAnswers[question];
+                        if (previousAnswer) {
+                            const previousRadio = form.querySelector(`input[name="${question}"][value="${previousAnswer}"]`);
+                            if (previousRadio) {
+                                previousRadio.classList.add('past');
+                            }
+                        }
+                        radio.classList.add('current');
+                    }
+
+                    radio.checked = true;
+                    if (answerClicks[question] === 0) {
+                        radio.classList.remove('current');
+                    }
+
                     chosenAnswers[question] = radio.value;
                     answerClicks[question]++;
 
                     if (answerClicks[question] === 2) {
-                        const radiosInGroup = form.querySelectorAll(`input[name="${question}"]`);
                         radiosInGroup.forEach(r => {
-                            r.disabled = true;
-                            r.classList.add("frozen");
+                            if (!r.classList.contains('past') && !r.classList.contains('current')) {
+                                r.disabled = true;
+                                r.classList.add('frozen');
+                            }
                         });
                     }
                 } else {
@@ -436,7 +458,6 @@
         const timerElement = document.getElementById("timer");
         let timeLeft = ${test.timeLimit} * 60;
         <#noparse>
-
         const timer = setInterval(() => {
             let minutes = Math.floor(timeLeft / 60);
             let seconds = timeLeft % 60;
