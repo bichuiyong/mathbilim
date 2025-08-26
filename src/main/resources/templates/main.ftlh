@@ -20,6 +20,7 @@
                 </div>
             </div>
         </div>
+        <span id="currentLocale" style="display: none;">${.locale}</span>
 
         <div class="alert alert-warning mb-5">
         </div>
@@ -273,20 +274,43 @@
     </div>
 
     <script>
+        const localeSpan = document.getElementById('currentLocale');
+        const currentLocale = localeSpan ? localeSpan.textContent : 'ru';
+        console.log(currentLocale)
+
+        const i18n = {
+            locale: currentLocale,
+            carousel: {
+                defaultTitle: "<@spring.message 'news.carousel.default.title'/>",
+                defaultDescription: "<@spring.message 'news.carousel.default.description'/>",
+                slideLabel: "<@spring.message 'news.carousel.slide.label'/>",
+                detailsButton: "<@spring.message 'news.carousel.details.button'/>",
+                loadError: "<@spring.message 'news.carousel.load.error'/>",
+                noData: "<@spring.message 'news.carousel.no.data'/>",
+                loadDataError: "<@spring.message 'news.carousel.load.data.error'/>",
+                newsLoadError: "<@spring.message 'news.carousel.news.load.error'/>",
+                publicationsLoadError: "<@spring.message 'news.carousel.publications.load.error'/>",
+                httpError: "<@spring.message 'news.carousel.http.error'/>",
+                dataLoadError: "<@spring.message 'news.carousel.data.load.error'/>"
+            },
+            publications: {
+                loadError: "<@spring.message 'publications.carousel.load.error'/>"
+            }
+        };
         function createCarouselItem(item, index, carouselId, itemUrlPrefix, defaultImage) {
             const imageUrl = item.mainImageId ? `/api/files/`+item.mainImageId+`/view` : defaultImage;
 
             let title, description;
             if (item.newsTranslations && item.newsTranslations.length > 0) {
-                title = truncateText(item.newsTranslations[0].title || 'Заголовок', 10);
+                title = truncateText(item.newsTranslations[0].title || i18n.carousel.defaultTitle, 10);
                 description = truncateText(item.newsTranslations[0].content, 20);
             } else if (item.postTranslations && item.postTranslations.length > 0) {
-                title = truncateText(item.postTranslations[0].title || 'Заголовок', 10);
+                title = truncateText(item.postTranslations[0].title || i18n.carousel.defaultTitle, 10);
                 description = truncateText(item.postTranslations[0].content, 20);
             } else {
-                title = truncateText(item.title || 'Заголовок', 10);
+                title = truncateText(item.title || i18n.carousel.defaultTitle, 10);
                 description = truncateText(
-                    item.description || (item.content ? item.content : 'Подробнее...'),
+                    item.description || (item.content ? item.content :  i18n.carousel.defaultDescription),
                     20
                 );
             }
@@ -296,7 +320,7 @@
             indicator.type = 'button';
             indicator.setAttribute('data-bs-target', `#`+carouselId+``);
             indicator.setAttribute('data-bs-slide-to', index.toString());
-            indicator.setAttribute('aria-label', `Slide `+index + 1+``);
+            indicator.setAttribute('aria-label', i18n.carousel.slideLabel + ` `+(index + 1)+``);
             if (index === 0) {
                 indicator.classList.add('active');
                 indicator.setAttribute('aria-current', 'true');
@@ -313,7 +337,7 @@
                 '<div class="caption-content">' +
                 '<h5>' + title + '</h5>' +
                 '<p>' + description + '</p>' +
-                '<a href="' + itemUrlPrefix + '/' + item.id + '" class="btn btn-primary btn-sm">Подробнее</a>' +
+                '<a href="' + itemUrlPrefix + '/' + item.id + '" class="btn btn-primary btn-sm">' + i18n.carousel.detailsButton + '</a>' +
                 '</div>' +
                 '</div>';
 
@@ -327,7 +351,7 @@
         }
 
 
-        // Функция для скрытия/показа целых секций
+
         function toggleSectionVisibility(sectionSelector, isVisible) {
             const section = document.querySelector(sectionSelector);
             if (section) {
@@ -367,8 +391,7 @@
                     toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
                 }
             } catch (error) {
-                console.error('Ошибка загрузки новостей для карусели:', error);
-                // Скрываем секцию при ошибке
+                console.error(i18n.carousel.newsLoadError + ':', error);
                 toggleSectionVisibility('.col-lg-8:has(#newsCarousel)', false);
             }
         }
@@ -405,7 +428,7 @@
                     toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
                 }
             } catch (error) {
-                console.error('Ошибка загрузки публикаций для карусели:', error);
+                console.error(i18n.carousel.newsLoadError + ':', error);
                 // Скрываем секцию при ошибке
                 toggleSectionVisibility('.col-lg-8:has(#publicationsCarousel)', false);
             }
@@ -482,7 +505,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка загрузки публикаций для карусели:', error);
+                    console.error(i18n.carousel.publicationsLoadError + ':', error);
                     const publicationsSection = document.querySelector('#publicationsCarousel').closest('.col-lg-8');
                     publicationsSection.style.display = 'none';
                 });
@@ -491,7 +514,7 @@
         async function loadLatestItems(apiUrl, containerId, itemUrlPrefix, fallbackImage) {
             try {
                 const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error(`Ошибка HTTP: `+response.status+``);
+                if (!response.ok) throw new Error(i18n.carousel.httpError + `: `+response.status+``);
 
                 const items = await response.json();
                 const container = document.getElementById(containerId);
@@ -503,7 +526,7 @@
                             : fallbackImage;
 
                         const dateStr = item.createdAt
-                            ? new Date(item.createdAt).toLocaleDateString('ru-RU', {
+                            ? new Date(item.createdAt).toLocaleDateString(currentLocale, {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
@@ -515,14 +538,15 @@
                             '<div class="row g-2">' +
                             '<div class="col-4">' +
                             '<img src="' + imgSrc + '" ' +
-                            'alt="' + item.title + '" ' +
+                            'alt="' + (item.title || i18n.carousel.defaultTitle) + '" ' +
                             'class="img-fluid rounded" ' +
                             'style="height: 60px; object-fit: cover; width: 100%;">' +
                             '</div>' +
                             '<div class="col-8">' +
                             '<h6 class="mb-1">' +
-                            '<a href="' + itemUrlPrefix + '/' + item.id + '" class="text-decoration-none">' +
-                            item.title +
+                            '<a href="' + itemUrlPrefix + '/' + item.id + '" class="text-decoration-none">'
+                            +
+                            (item.title || i18n.carousel.defaultTitle) +
                             '</a>' +
                             '</h6>' +
                             '<small class="text-muted">' + dateStr + '</small>' +
@@ -531,12 +555,13 @@
                             '</div>';
 
                     }).join('');
-                } else {
-                    container.innerHTML = '<p class="text-muted">Нет данных для отображения</p>';
+                }
+                else {
+                    container.innerHTML = '<p class="text-muted">' + i18n.carousel.noData + '</p>';
                 }
             } catch (error) {
-                console.error(`Ошибка загрузки данных с `+apiUrl+`:`, error);
-                document.getElementById(containerId).innerHTML = '<p class="text-muted">Ошибка загрузки данных</p>';
+                console.error(i18n.carousel.dataLoadError + ` `+apiUrl+`:`, error);
+                document.getElementById(containerId).innerHTML = '<p class="text-muted">' + i18n.carousel.loadDataError + '</p>';
             }
         }
 
