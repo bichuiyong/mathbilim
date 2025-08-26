@@ -20,6 +20,8 @@
         canvas {
             display: block;
             margin: auto;
+            width: 100%;
+            max-width: 100%;
         }
 
         .nav-buttons {
@@ -28,6 +30,7 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 25px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -47,12 +50,12 @@
 
         .answers-wrapper {
             display: flex;
+            flex-direction: row;
+            align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
             margin-top: 20px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding-bottom: 10px;
+            padding: 0 10px;
         }
 
         .column {
@@ -63,7 +66,8 @@
             border-radius: 8px;
             padding: 10px 15px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            min-width: 180px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .col-header {
@@ -121,8 +125,9 @@
         }
 
         .frozen {
-            opacity: 0.6;
+            opacity: 0.1;
             pointer-events: none;
+            filter: grayscale(90%);
         }
 
         .past {
@@ -141,21 +146,15 @@
             left: 3px;
         }
 
-        input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            position: relative;
-        }
-
         input[type="radio"]:checked {
             background-color: #0d6efd;
             border-radius: 50%;
         }
 
         input[type="radio"].frozen {
-            opacity: 0.6;
+            opacity: 0.1;
             cursor: not-allowed;
+            filter: grayscale(90%);
         }
 
         input[type="text"] {
@@ -168,24 +167,66 @@
         }
 
         input[type="text"]:read-only {
-            background-color: #f5f5f5;
+            background-color: #e8ecef;
             cursor: not-allowed;
+            opacity: 0.3;
+            filter: grayscale(80%);
         }
 
+        @media (max-width: 768px) {
+            .answers-wrapper {
+                gap: 15px;
+                padding: 0 5px;
+            }
+
+            .column {
+                display: none;
+                max-width: 100%;
+            }
+
+            .column.active {
+                display: flex;
+            }
+
+            .answer-row {
+                display: none;
+            }
+
+            .answer-row.active {
+                display: grid;
+            }
+
+            .nav-buttons {
+                gap: 10px;
+                padding: 0 10px;
+            }
+
+            button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            #pdf-container {
+                margin: 10px;
+            }
+
+            .answers-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+        }
     </style>
 
     <h3 class="text-center mt-5">${test.name}</h3>
     <p class="text-center"><@spring.message"test.pass.count"/> ${test.questionCount}
-
         <#if test.hasLimit> — <@spring.message"test.pass.time"/> ${test.timeLimit} <@spring.message"test.pass.min"/></p>
-    </#if>
+</#if>
     <#if test.hasLimit>
         <div id="timer-container">
             <div id="timer-label">⏳ <@spring.message"test.pass.left"/></div>
             <div id="timer"></div>
         </div>
     </#if>
-
 
     <div id="pdf-container">
         <canvas id="pdf-render"></canvas>
@@ -217,11 +258,10 @@
                     <#list test.questionDtoList as question>
                         <#assign questionNum = question.numberOrder>
                         <#if questionNum <= totalQuestions && (questionNum > (col * perColumn)) && (questionNum <= ((col + 1) * perColumn))>
-                            <div class="answer-row" data-question="${questionNum}">
+                            <div class="answer-row" data-question="${questionNum}" data-page="${question.testPageNumber}">
                                 <div class="number">${questionNum}</div>
                                 <input type="hidden" name="attemptAnswerDtoList[${index}].questionNumber"
                                        value="${questionNum}">
-
                                 <#if question.textFormat?? && question.textFormat>
                                     <input type="text"
                                            name="attemptAnswerDtoList[${index}].chosenAnswer"
@@ -340,7 +380,6 @@
                 }
             });
         });
-
         </#noparse>
 
         function updateRadioAvailability(currentPage) {
@@ -364,14 +403,40 @@
                     inp.readOnly = parseInt(inp.dataset.page) !== currentPage;
                 }
             });
-        }
 
+            const answerRows = form.querySelectorAll('.answer-row');
+            answerRows.forEach(row => {
+                if (window.innerWidth <= 768) {
+                    if (parseInt(row.dataset.page) === currentPage) {
+                        row.classList.add('active');
+                    } else {
+                        row.classList.remove('active');
+                    }
+                } else {
+                    row.classList.add('active');
+                }
+            });
+
+            const columns = form.querySelectorAll('.column');
+            columns.forEach(column => {
+                const activeRows = column.querySelectorAll('.answer-row.active');
+                if (window.innerWidth <= 768) {
+                    if (activeRows.length > 0) {
+                        column.classList.add('active');
+                    } else {
+                        column.classList.remove('active');
+                    }
+                } else {
+                    column.classList.add('active');
+                }
+            });
+        }
 
         <#if test.hasLimit>
         const timerElement = document.getElementById("timer");
         let timeLeft = ${test.timeLimit} * 60;
-
         <#noparse>
+
         const timer = setInterval(() => {
             let minutes = Math.floor(timeLeft / 60);
             let seconds = timeLeft % 60;
@@ -398,6 +463,4 @@
         </#noparse>
         </#if>
     </script>
-
-
 </@main.layout>
