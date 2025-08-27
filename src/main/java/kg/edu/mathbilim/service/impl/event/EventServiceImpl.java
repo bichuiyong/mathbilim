@@ -55,8 +55,8 @@ public class EventServiceImpl extends
 
     private final OrganizationService organizationService;
 
-    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, NotificationFacade notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, NotificationFacade notificationService, MessageSource source) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, source);
         this.organizationService = organizationService;
     }
 

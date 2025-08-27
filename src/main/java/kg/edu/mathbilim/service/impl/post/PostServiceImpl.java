@@ -53,8 +53,8 @@ public class PostServiceImpl extends
         implements PostService {
 
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, NotificationFacade notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, NotificationFacade notificationService, MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override

@@ -48,8 +48,14 @@ public class BlogServiceImpl extends
                 >
         implements BlogService {
 
-    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService, FileService fileService, BlogTranslationService translationService, NotificationFacade notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public BlogServiceImpl(BlogRepository repository,
+                           BlogMapper mapper,
+                           UserService userService,
+                           FileService fileService,
+                           BlogTranslationService translationService,
+                           NotificationFacade notificationService,
+                           MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
     @Override

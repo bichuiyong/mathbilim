@@ -50,8 +50,8 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository, NotificationFacade notificationService) {
-        super(repository, mapper, userService, fileService, translationService, notificationService);
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository, NotificationFacade notificationService, MessageSource messageSource) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
         this.newsTranslationRepository = newsTranslationRepository;
     }
     private final NewsTranslationRepository newsTranslationRepository;;
