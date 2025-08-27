@@ -21,21 +21,17 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -54,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private final UserTypeService userTypeService;
     private final EmailServiceImpl emailService;
     private final FileService fileService;
+
 
     @Override
     public boolean userEmailIsNotReal(String email) {
@@ -107,6 +104,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getByTelegramId(String telegramId) {
+        Long userId = Long.parseLong(telegramId);
+        User user = userRepository.findByTelegramId(userId).orElseThrow(UserNotFoundException::new);
+
+        return userMapper.toDto(user);
+    }
+
+    @Override
     public User getEntityById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -149,7 +154,7 @@ public class UserServiceImpl implements UserService {
         User user = getEntityById(userDto.getId());
         user.setName(StringUtil.normalizeField(userDto.getName(), true));
         user.setSurname(StringUtil.normalizeField(userDto.getSurname(), true));
-        if(userDto.getTypeId() != null) {
+        if (userDto.getTypeId() != null) {
             user.setType(userTypeService.getUserTypeEntity(userDto.getTypeId()));
         }
 //        user.setRole(roleService.getRoleById(userDto.getRole().getId()));
@@ -218,6 +223,7 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
     @Override
     public User getEntityByEmail(String email) {
         return userRepository.findUserByEmail(email)
@@ -395,11 +401,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean hasChatId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.isPresent() && user.get().getTelegramId() != null;
-    }
+    public boolean hasChatId(Long chatId) {
+        log.debug("🔍 Безопасная проверка наличия chatId: {}", chatId);
 
+        try {
+            Optional<User> user = userRepository.findByTelegramId(chatId);
+
+            if (user.isEmpty()) {
+                log.debug("❌ Пользователь с telegramId={} не найден", chatId);
+                return false;
+            }
+
+            User foundUser = user.get();
+            Long telegramId = foundUser.getTelegramId();
+
+            if (telegramId == null) {
+                log.warn("⚠️ У пользователя id={} telegramId равен null", foundUser.getId());
+                return false;
+            }
+
+            boolean matches = telegramId.equals(chatId);
+            log.debug("✅ Пользователь найден: id={}, telegramId={}, совпадает={}",
+                    foundUser.getId(), telegramId, matches);
+
+            return matches;
+
+        } catch (Exception e) {
+            log.error("❌ Ошибка при проверке chatId: {}", chatId, e);
+            return false;
+        }
+    }
 
     @Override
     public List<Long> getSubscribedChatIds() {
@@ -433,11 +464,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(String password, String newPassword) throws IllegalStateException {
         UserDto authUser = getAuthUser();
-        if(passwordEncoder.matches(password, authUser.getPassword())) {
+        if (passwordEncoder.matches(password, authUser.getPassword())) {
             authUser.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(userMapper.toEntity(authUser));
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("you previous password is incorrect");
         }
     }
