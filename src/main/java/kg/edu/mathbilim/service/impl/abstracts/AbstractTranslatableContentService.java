@@ -15,11 +15,14 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslatableService;
 import kg.edu.mathbilim.service.interfaces.abstracts.BaseTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.management.Notification;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,13 +41,13 @@ public abstract class AbstractTranslatableContentService<
         implements BaseTranslatableService<D, T> {
 
     protected final TS translationService;
-    protected final UserNotificationService notificationService;
+    protected final NotificationFacade notificationFacade;
 
     protected AbstractTranslatableContentService(R repository, M mapper, UserService userService,
-                                                 FileService fileService, TS translationService, UserNotificationService notificationService) {
+                                                 FileService fileService, TS translationService, NotificationFacade notificationService) {
         super(repository, mapper, userService, fileService);
         this.translationService = translationService;
-        this.notificationService = notificationService;
+        this.notificationFacade = notificationService;
     }
 
     @Override
@@ -83,12 +86,12 @@ public abstract class AbstractTranslatableContentService<
         return result.map(mapper::toDto);
     }
 
-    protected void approveContent(Long id, NotificationEnum notificationType, String notificationMessage, User users) {
+    protected void approveContent(Long id, NotificationEnum notificationType, NotificationData notificationMessage, User users) {
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);
         content.setStatus(ContentStatus.APPROVED);
         ((Content) content).setApprovedBy(users);
         repository.save(content);
-        notificationService.notifyAllSubscribed(notificationType, notificationMessage);
+        notificationFacade.notifyAllSubscribed(notificationType, notificationMessage);
     }
 
 
