@@ -891,9 +891,8 @@
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.354 4.646L4.646 5.354a.5.5 0 0 0 0 .708L7.293 8.5H1.5a.5.5 0 0 0 0 1h5.793l-2.647 2.146a.5.5 0 0 0 .708.708l3.5-3a.5.5 0 0 0 0-.708l-3.5-3z"/>
             </svg>
-            Назад к публикациям
+            <@spring.message "blog.back.button"/>
         </a>
-
 
         <article class="publication-item">
             <header class="publication-header">
@@ -917,17 +916,16 @@
 
             <#assign allImages = []>
             <#if post.mainImage??>
-                <#assign allImages = allImages + [{"url": "/api/files/${post.mainImageId}/view", "alt": "Главное изображение"}]>
+                <#assign allImages = allImages + [{"url": "/api/files/${post.mainImageId}/view", "alt": "@spring.message('blog.image.main')"}]>
             </#if>
             <#if post.postFiles?? && post.postFiles?size gt 0>
                 <#list post.postFiles as file>
-                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": "Изображение ${file_index + 1}"}]>
+                    <#assign allImages = allImages + [{"url": "/api/files/${file.id}/view", "alt": "@spring.message('blog.image.number'?args(file_index + 1))"}]>
                 </#list>
             </#if>
 
             <#if allImages?size gt 0>
-                <div id="postCarousel"
-                     class="carousel slide publication-carousel <#if allImages?size == 1>single-image</#if>"
+                <div id="postCarousel" class="carousel slide publication-carousel <#if allImages?size == 1>single-image</#if>"
                      data-bs-ride="false" data-bs-touch="true">
                     <#if allImages?size gt 1>
                         <div class="image-counter">
@@ -952,15 +950,13 @@
                     </div>
 
                     <#if allImages?size gt 1>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel"
-                                data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
+                            <span class="visually-hidden"><@spring.message "blog.carousel.prev"/></span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel"
-                                data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
+                            <span class="visually-hidden"><@spring.message "blog.carousel.next"/></span>
                         </button>
                     </#if>
                 </div>
@@ -969,31 +965,34 @@
             <div class="publication-content">
                 <#if translation.content?? && translation.content?has_content>
                     <div class="publication-text collapsed" id="postContent">${translation.content?no_esc}</div>
-                    <button class="show-more-btn" id="toggleButton">Читать полностью</button>
+                    <button class="show-more-btn" id="toggleButton"><@spring.message "blog.read.more"/></button>
                 </#if>
             </div>
+
             <#if post.status == "APPROVED">
                 <div class="publication-meta">
                     <div class="meta-item">
                         <span class="icon">👁️</span>
-                        <span>${post.viewCount!0} просмотров</span>
+                        <span><@spring.message code="blog.viewCount"/> ${post.viewCount!0}</span>
                     </div>
+
                     <#if post.shareCount?? && post.shareCount gt 0>
                         <div class="meta-item">
                             <span class="icon">📤</span>
-                            <span>${post.shareCount} репостов</span>
+                            <span><@spring.message code="blog.shareCount" /> ${post.shareCount!0}</span>
                         </div>
                     </#if>
+
                     <#if allImages?size gt 1>
                         <div class="meta-item">
                             <span class="icon">📷</span>
-                            <span>${allImages?size} фотографий</span>
+                            <span><@spring.message code="blog.imageCount"/> ${allImages?size}</span>
                         </div>
                     </#if>
-                    <button id="viewCommentsBtn" data-post-id="${post.id}"
-                            <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
+
+                    <button id="viewCommentsBtn" data-post-id="${post.id}" <#if currentUser??>data-current-user-id="${currentUser.id}"</#if>>
                         <span class="icon">💬</span>
-                        Комментарии
+                        <@spring.message "blog.comments.title"/>
                     </button>
                 </div>
             </#if>
@@ -1003,31 +1002,33 @@
     <div class="comments-modal-overlay" id="commentsModalOverlay">
         <div class="comments-modal">
             <div class="comments-modal-header">
-                <h3 class="comments-modal-title">Комментарии</h3>
-                <button class="comments-modal-close" id="closeCommentsModal" aria-label="Закрыть комментарии">
+                <h3 class="comments-modal-title"><@spring.message "blog.comments.title"/></h3>
+                <button class="comments-modal-close" id="closeCommentsModal" aria-label="<@spring.message 'blog.comments.close'/>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                     </svg>
                 </button>
             </div>
+
             <div class="comments-modal-body">
                 <ul class="comments-list" id="comments-list"></ul>
                 <div class="comments-empty" id="comments-empty" style="display: none;">
                     <div class="comments-empty-icon">💬</div>
-                    <div class="comments-empty-text">Пока нет комментариев</div>
-                    <div class="comments-empty-subtext">Станьте первым, кто оставит комментарий</div>
+                    <div class="comments-empty-text"><@spring.message "blog.comments.empty"/></div>
+                    <div class="comments-empty-subtext"><@spring.message "blog.comments.first"/></div>
                 </div>
             </div>
+
             <div class="comments-modal-footer">
                 <#if currentUser??>
                     <div class="comment-input-wrapper">
-                        <textarea id="newCommentInput" placeholder="Оставьте комментарий..."></textarea>
-                        <button class="comment-submit-btn" id="submitComment">Отправить</button>
+                        <textarea id="newCommentInput" placeholder="<@spring.message 'blog.comments.placeholder'/>"></textarea>
+                        <button class="comment-submit-btn" id="submitComment"><@spring.message "blog.comments.submit"/></button>
                     </div>
                 <#else>
                     <div style="text-align: center; padding: 16px;">
                         <a href="/auth/login" class="back-btn" style="margin: 0; display: inline-flex;">
-                            Войти для комментирования
+                            <@spring.message "blog.comments.login"/>
                         </a>
                     </div>
                 </#if>
@@ -1044,11 +1045,12 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 5.883 16h4.234a2 2 0 0 0 1.992-1.84L12.962 3.5H13.5a.5.5 0 0 0 0-1H11z"/>
                     </svg>
-                    <@spring.message "test.details.delete"/>
+                    <@spring.message "blog.delete.button"/>
                 </button>
             </form>
         </#if>
     </div>
+
 
 
     <script>

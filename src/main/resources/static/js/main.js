@@ -12,6 +12,69 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 
+const translations = {
+    ru: {
+        views: {
+            oneView: "просмотр",
+            few: "просмотра",
+            manyView: "просмотров"
+        },
+        published: "Опубликовано",
+        viewAll: "Посмотреть все",
+        olympiadTitle: "🏆 Математические олимпиады",
+        olympiadDesc: "Следите за объявлениями о предстоящих олимпиадах и соревнованиях!",
+        olympiadBtn: "Все олимпиады",
+
+        heroTitle: 'Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span>',
+        heroDesc: "Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!",
+        heroStartBtn: "Начать тестирование",
+        heroOlympiadBtn: "Олимпиады",
+        heroAlt: "Математика",
+        apply: "Подать заявку"
+    },
+    ky: {
+        views: {
+            oneView: "көрүү",
+            few: "көрүү",
+            manyView: "көрүүлөр"
+        },
+        published: "Жарыяланды",
+        viewAll: "Бардыгын коруу",
+        olympiadTitle: "🏆 Математикалык олимпиадалар",
+        olympiadDesc: "Алдыда боло турган олимпиадалар жана сынактар жөнүндө кабарларды көзөмөлдөңүз!",
+        olympiadBtn: "Бардык олимпиадалар",
+
+        heroTitle: 'Математикалык ой жүгүртүүнү <span class="text-primary">Кыргызстанда</span> өнүктүрөбүз',
+        heroDesc: "Олимпиадаларга, тесттерге даярдануу жана математика боюнча жөндөмдөрдү өркүндөтүү үчүн платформа. Математиктердин коомчулугуна кошулуңуз!",
+        heroStartBtn: "Тестти баштоо",
+        heroOlympiadBtn: "Олимпиадалар",
+        heroAlt: "Математика",
+        apply: "Каттоо өтүү"
+    },
+    en: {
+        views: {
+            oneView: "view",
+            few: "views",
+            manyView: "views"
+        },
+        published: "Published",
+        viewAll: "View all",
+        olympiadTitle: "🏆 Math Olympiads",
+        olympiadDesc: "Stay updated on upcoming olympiads and competitions!",
+        olympiadBtn: "All Olympiads",
+
+        heroTitle: 'Developing mathematical thinking in <span class="text-primary">Kyrgyzstan</span>',
+        heroDesc: "A platform for preparing for olympiads, tests, and improving math skills. Join the community of mathematicians!",
+        heroStartBtn: "Start Testing",
+        heroOlympiadBtn: "Olympiads",
+        heroAlt: "Mathematics",
+        apply: "Apply now"
+    }
+
+};
+
+const locale = document.getElementById('currentLocale').textContent;
+
 function fetchAndRender(endpoint, containerId, contentType, icon) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -219,9 +282,15 @@ function fetchAndRender(endpoint, containerId, contentType, icon) {
                 const title = truncateText(fullTitle, 20);
                 const description = truncateText(fullContent.replace(/<[^>]*>/g, ''), 30); // Убираем HTML теги
 
-                const dateStr = item.formattedDate || new Date(item.createdAt).toLocaleDateString('ru-RU');
+                const dateStr = item.formattedDate || new Date(item.createdAt).toLocaleDateString(locale);
                 const views = item.viewCount ?? 0;
                 const linkUrl = contentType === 'новостей' ? `/news/${item.id}` : `/posts/${item.id}`;
+                console.log(views)
+
+                const ft = translations[locale];
+                console.log(ft.manyView)
+                const viewText = views === 1 ? ft.views.oneView : ft.views.manyView;
+                console.log(viewText)
 
                 const contentItem = document.createElement('a');
                 contentItem.href = linkUrl;
@@ -231,7 +300,7 @@ function fetchAndRender(endpoint, containerId, contentType, icon) {
                     ${description ? `<p class="item-description">${description}</p>` : ''}
                     <div class="item-meta">
                         <span>${dateStr}</span>
-                        <span class="meta-badge">${views} ${views === 1 ? 'просмотр' : 'просмотров'}</span>
+                        <span class="meta-badge">${views} ${viewText}</span>
                     </div>
                 `;
 
@@ -250,10 +319,11 @@ function fetchAndRender(endpoint, containerId, contentType, icon) {
             container.appendChild(contentWrapper);
 
             const viewAllSection = document.createElement('div');
+            const t = translations[locale];
             viewAllSection.className = 'view-all-section';
             viewAllSection.innerHTML = `
                 <a href="/${contentType === 'новостей' ? 'news' : 'posts'}" class="view-all-btn">
-                    <span>Посмотреть все</span>
+                    <span>${t.viewAll}</span>
                     <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
@@ -358,7 +428,7 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
 
                 const dateObj = new Date(olympiad.createdAt);
                 const day = dateObj.getDate();
-                const month = dateObj.toLocaleString('ru-RU', { month: 'short' }).toUpperCase();
+                const month = dateObj.toLocaleString(locale, {month: 'short'}).toUpperCase();
 
                 const cardWrapper = document.createElement('div');
                 cardWrapper.className = 'event-card-wrapper hover-card';
@@ -375,7 +445,7 @@ function fetchAndRenderOlympiads(endpoint, containerId) {
                             </div>
                             <div class="hover-overlay">
                                 <button class="details-button">
-                                    <span>Подробнее</span>
+                                    <span>Подробнее</span>    
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M5 12h14M12 5l7 7-7 7"/>
                                     </svg>
@@ -1181,44 +1251,7 @@ function renderHeroOlympiad(olympiad) {
                 </div>
             `;
 }
-const translations = {
-    ru: {
-        olympiadTitle: "🏆 Математические олимпиады",
-        olympiadDesc: "Следите за объявлениями о предстоящих олимпиадах и соревнованиях!",
-        olympiadBtn: "Все олимпиады",
 
-        heroTitle: 'Развиваем математическое мышление в <span class="text-primary">Кыргызстане</span>',
-        heroDesc: "Платформа для подготовки к олимпиадам, тестам и развития математических навыков. Присоединяйтесь к сообществу математиков!",
-        heroStartBtn: "Начать тестирование",
-        heroOlympiadBtn: "Олимпиады",
-        heroAlt: "Математика"
-    },
-    ky: {
-        olympiadTitle: "🏆 Математикалык олимпиадалар",
-        olympiadDesc: "Алдыда боло турган олимпиадалар жана сынактар жөнүндө кабарларды көзөмөлдөңүз!",
-        olympiadBtn: "Бардык олимпиадалар",
-
-        heroTitle: 'Математикалык ой жүгүртүүнү <span class="text-primary">Кыргызстанда</span> өнүктүрөбүз',
-        heroDesc: "Олимпиадаларга, тесттерге даярдануу жана математика боюнча жөндөмдөрдү өркүндөтүү үчүн платформа. Математиктердин коомчулугуна кошулуңуз!",
-        heroStartBtn: "Тестти баштоо",
-        heroOlympiadBtn: "Олимпиадалар",
-        heroAlt: "Математика"
-    },
-    en: {
-        olympiadTitle: "🏆 Math Olympiads",
-        olympiadDesc: "Stay updated on upcoming olympiads and competitions!",
-        olympiadBtn: "All Olympiads",
-
-        heroTitle: 'Developing mathematical thinking in <span class="text-primary">Kyrgyzstan</span>',
-        heroDesc: "A platform for preparing for olympiads, tests, and improving math skills. Join the community of mathematicians!",
-        heroStartBtn: "Start Testing",
-        heroOlympiadBtn: "Olympiads",
-        heroAlt: "Mathematics"
-    }
-
-};
-
-const locale = document.getElementById('current-locale').textContent;
 
 function showDefaultOlympiadAlert() {
     const t = translations[locale];
@@ -1282,6 +1315,7 @@ function showErrorHero() {
 
 
 function renderOlympiadAlert(olympiad) {
+    const ft = translations[locale];
     const alertContainer = document.querySelector('.alert.alert-warning');
 
     let title = olympiad.title || 'Математическая олимпиада';
@@ -1294,12 +1328,12 @@ function renderOlympiadAlert(olympiad) {
     let dateInfo = '';
     if (olympiad.createdAt) {
         const dateObj = new Date(olympiad.createdAt);
-        const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+        const formattedDate = dateObj.toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
-        dateInfo = ` Опубликовано: ${formattedDate}.`;
+        dateInfo = `  ${ft.published}: ${formattedDate}.`;
     }
 
     alertContainer.innerHTML = `
@@ -1312,12 +1346,11 @@ function renderOlympiadAlert(olympiad) {
                 <p class="mb-0">${dateInfo}</p>
             </div>
             <div class="announcement-action">
-                <a href="${olympiadUrl}" class="btn btn-primary">Подать заявку</a>
+                <a href="${olympiadUrl}" class="btn btn-primary">${ft.apply}</a>
             </div>
         </div>
     `;
 }
-
 
 
 function showOlympiadAlertError() {
@@ -1379,6 +1412,6 @@ function loadOlympiadAlert() {
         });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadOlympiadAlert();
 });

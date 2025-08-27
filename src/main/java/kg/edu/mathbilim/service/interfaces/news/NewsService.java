@@ -15,6 +15,7 @@ public interface NewsService extends BaseTranslatableService<NewsDto, NewsTransl
     @Transactional
     NewsDto create(CreateNewsDto createNewsDto);
 
+
     Page<NewsDto> getContentByCreatorIdNews(Long creatorId, Pageable pageable, String query);
 
     Page<NewsDto> getHistoryNews(Long creatorId, Pageable pageable, String query, String status);

@@ -3,12 +3,14 @@ package kg.edu.mathbilim.service.impl.olympiad;
 import jakarta.persistence.EntityManager;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.OrganizationDto;
+import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.olympiad.*;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.model.ContactType;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
+import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.olympiad.*;
 import kg.edu.mathbilim.model.organization.OlympiadOrganization;
 import kg.edu.mathbilim.model.organization.OlympiadOrganizationKey;
@@ -22,6 +24,8 @@ import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadContactService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadStageService;
 import kg.edu.mathbilim.service.interfaces.organization.OlympOrganizationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -51,6 +55,7 @@ public class OlympiadServiceImpl implements OlympiadService {
     private final FileService fileService;
     private final ContactTypeService contactTypeService;
     private final EntityManager entityManager;
+    private final NotificationFacade notificationFacade;
     private final OlympiadApprovedListRepository olympiadApprovedListRepository;
 
     @Transactional
@@ -132,6 +137,23 @@ public class OlympiadServiceImpl implements OlympiadService {
         olympiad.setStages(stages);
 
         olympiadRepository.save(olympiad);
+
+        sendNewsNotification(dto, olympFile);
+    }
+
+
+
+    private void sendNewsNotification(OlympiadCreateDto olympiadCreateDto, File file) {
+        NotificationData nt = NotificationData.builder()
+                .id(olympiadCreateDto.getId())
+                .message("Новая олимпиада")
+                .title(olympiadCreateDto.getTitle())
+                .mainImageId(file.getId())
+                .description(olympiadCreateDto.getInfo())
+                .contentId(olympiadCreateDto.getId())
+                .build();
+
+        notificationFacade.notifyAllSubscribed(NotificationEnum.OLYMPIAD, nt);
     }
 
     @Transactional
