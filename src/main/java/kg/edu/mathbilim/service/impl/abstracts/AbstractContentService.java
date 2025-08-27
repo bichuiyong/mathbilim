@@ -179,12 +179,12 @@ public abstract class AbstractContentService<
     }
 
     @Transactional
-
     public void incrementViewCount(Long id) {
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);
 
         if (userAuthCheckAndContentOwner(content.getCreator().getId())) {
-            repository.incrementViewCount(id);
+            content.setViewCount(content.getViewCount() + 1);
+            repository.saveAndFlush(content);
             log.debug("View count incremented for {} with id = {}", getEntityName(), id);
         }
 

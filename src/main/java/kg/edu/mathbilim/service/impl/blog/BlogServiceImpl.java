@@ -106,45 +106,13 @@ public class BlogServiceImpl extends
         Blog blog = repository.findDisplayBlogById(id)
                 .orElseThrow(BlogNotFoundException::new);
 
-        if (email == null || email.trim().isEmpty()) {
-            if (blog.getStatus() != ContentStatus.APPROVED) {
-                throw new ContentNotAvailableException("Для просмотра этого блога необходимо войти в систему");
-            }
-            return mapper.toDto(blog);
-        }
-
-        User user = userService.findByEmail(email);
-
-        boolean isOwner = blog.getCreator().getId().equals(user.getId());
-        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
-        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
-        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
-
-        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
-
-        if (isOwner) {
-            incrementViewCount(id);
-            return mapper.toDto(blog);
-        }
-
-        if (hasAdminPrivileges) {
-            incrementViewCount(id);
-            return mapper.toDto(blog);
-        }
-
-        if (blog.getStatus() == ContentStatus.PENDING_REVIEW) {
-            throw new ContentNotAvailableException("Блог находится на модерации и недоступен для просмотра");
-        }
-
-        if (blog.getStatus() == ContentStatus.REJECTED) {
-            throw new ContentNotAvailableException("Блог был отклонен модерацией и недоступен для просмотра");
-        }
 
         if (blog.getStatus() != ContentStatus.APPROVED) {
             throw new ContentNotAvailableException("Блог недоступен для просмотра");
         }
 
         incrementViewCount(id);
+
         return mapper.toDto(blog);
     }
 

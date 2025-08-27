@@ -114,53 +114,20 @@ public class EventServiceImpl extends
                 .orElseGet(() -> repository.findDisplayEventById(id, Language.RU.getCode())
                         .orElseThrow(this::getNotFoundException));
 
-        if (email == null || email.trim().isEmpty()) {
-            if (event.getStatus() != ContentStatus.APPROVED) {
-                throw new ContentNotAvailableException("Для просмотра этого мероприятия необходимо войти в систему");
-            }
-            incrementViewCount(id);
-            return event;
+        if (event.getStatus() != ContentStatus.APPROVED) {
+            throw new ContentNotAvailableException("Мероприятие недоступно для просмотра");
         }
 
-        User user = userService.findByEmail(email);
+        incrementViewCount(id);
 
+        DisplayEventDto updatedEvent = repository.findDisplayEventById(id, getCurrentLanguage())
+                .orElseGet(() -> repository.findDisplayEventById(id, Language.RU.getCode())
+                        .orElseThrow(this::getNotFoundException));
 
         List<Long> organizationIds = repository.findOrganizationIdsByEventId(id);
-        event.setOrganizationIds(organizationIds);
-        incrementViewCount(id);
+        updatedEvent.setOrganizationIds(organizationIds);
 
-        boolean isOwner = event.getCreator().getId().equals(user.getId());
-        boolean isAdmin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
-        boolean isModer = user.getRole() != null && "MODER".equals(user.getRole().getName());
-        boolean isSuperAdmin = user.getRole() != null && "SUPER_ADMIN".equals(user.getRole().getName());
-
-        boolean hasAdminPrivileges = isAdmin || isModer || isSuperAdmin;
-
-        if (isOwner) {
-            incrementViewCount(id);
-            return event;
-        }
-
-        if (hasAdminPrivileges) {
-            incrementViewCount(id);
-            return event;
-        }
-
-        if (event.getStatus() == ContentStatus.PENDING_REVIEW) {
-            throw new ContentNotAvailableException("Книга находится на модерации и недоступен для просмотра");
-        }
-
-        if (event.getStatus() == ContentStatus.REJECTED) {
-            throw new ContentNotAvailableException("Книга был отклонен модерацией и недоступен для просмотра");
-        }
-
-        if (event.getStatus() != ContentStatus.APPROVED) {
-            throw new ContentNotAvailableException("Книга недоступен для просмотра");
-
-        }
-
-        incrementViewCount(id);
-        return event;
+        return updatedEvent;
     }
 
     @Override

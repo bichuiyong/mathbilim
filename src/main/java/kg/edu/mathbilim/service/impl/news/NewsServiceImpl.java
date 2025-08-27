@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.news;
 import kg.edu.mathbilim.dto.news.CreateNewsDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
+import kg.edu.mathbilim.exception.nsee.NewsNotFoundException;
 import kg.edu.mathbilim.mapper.news.NewsMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
@@ -170,11 +171,14 @@ public class NewsServiceImpl extends
     @Override
     @Transactional
     public NewsDto getNewsById(Long id) {
-        News news = repository.findById(id).orElse(null);
-        if(news.isDeleted()==true) {
+        News news = repository.findById(id).orElseThrow(NewsNotFoundException::new);
+
+        if (news.isDeleted()) {
             throw new NoSuchElementException("News with id " + id + " not found");
         }
+
         incrementViewCount(id);
+
         log.info("News {} with id {}", news.getId(), news.getCreator().getId());
 
         return mapper.toDto(news);
