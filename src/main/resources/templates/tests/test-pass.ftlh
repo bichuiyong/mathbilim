@@ -408,11 +408,14 @@
             allRadios.forEach(r => {
                 if (timeOver) {
                     r.classList.add('frozen');
+                    r.disabled = true;
                 } else {
                     if (parseInt(r.dataset.page) === currentPage) {
                         r.classList.remove('frozen');
+                        r.disabled = false;
                     } else {
                         r.classList.add('frozen');
+                        r.disabled = true;
                     }
                 }
             });
@@ -421,8 +424,10 @@
             textInputs.forEach(inp => {
                 if (timeOver) {
                     inp.readOnly = true;
+                    inp.disabled = true;
                 } else {
                     inp.readOnly = parseInt(inp.dataset.page) !== currentPage;
+                    inp.disabled = parseInt(inp.dataset.page) !== currentPage;
                 }
             });
 
