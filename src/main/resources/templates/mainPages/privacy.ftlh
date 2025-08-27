@@ -104,136 +104,136 @@
     </style>
     <div class="page-content">
         <div class="page-container">
-            <h1>Политика конфиденциальности сервиса «Mathbilim»</h1>
-            <p><strong>Дата вступления в силу:</strong> 24 августа 2025 г.</p>
-            <p>Настоящая Политика конфиденциальности (далее — «Политика») описывает, как сервис «Mathbilim» (далее — «Сервис») собирает, использует, хранит и защищает персональные данные пользователей. Мы стремимся обеспечить прозрачность в отношении обработки данных и соблюдение ваших прав как субъекта данных. Если вы не согласны с положениями Политики, пожалуйста, воздержитесь от использования Сервиса.</p>
+            <h1 class="page-title h3"><@spring.message "privacy.policy.title"/></h1>
+            <p><strong><@spring.message "privacy.policy.effective.date"/></strong> <@spring.message "privacy.policy.effective.date.value"/></p>
+            <p><@spring.message "privacy.policy.intro"/></p>
 
-            <h2>1. Кто мы</h2>
-            <p>Сервис «Mathbilim» предоставляется компанией <strong>Mathbilim Ltd.</strong>, зарегистрированной по адресу: ул. Научная, д. 10, г. Алматы, Казахстан.</p>
+            <h2><@spring.message "privacy.policy.section.1.title"/></h2>
+            <p><@spring.message "privacy.policy.section.1.content"/></p>
             <div class="info-block">
-                <p><strong>Контакты для вопросов по персональным данным:</strong><br>
-                    Email: <a class="text-highlight" href="mailto:mathbilim@gmail.com">mathbilim@gmail.com</a>
+                <p><strong><@spring.message "privacy.policy.contact.title"/></strong><br>
+                    <@spring.message "privacy.policy.contact.email"/>: <a class="text-highlight" href="mailto:mathbilim@gmail.com">mathbilim@gmail.com</a>
             </div>
 
-            <h2>2. Какие данные мы собираем</h2>
-            <p>Мы собираем следующие категории данных:</p>
+            <h2><@spring.message "privacy.policy.section.2.title"/></h2>
+            <p><@spring.message "privacy.policy.section.2.intro"/></p>
             <ul>
-                <li><strong>Данные, предоставленные вами:</strong> имя, адрес электронной почты, номер телефона, данные учетной записи (логин, пароль), информация об оплате (при необходимости).</li>
-                <li><strong>Технические данные:</strong> IP-адрес, тип устройства, браузер, операционная система, данные о сессии, файлы cookie.</li>
-                <li><strong>Аналитические данные:</strong> данные об использовании Сервиса, включая действия на сайте, просматриваемые страницы, время взаимодействия.</li>
-                <li><strong>Данные из сторонних источников:</strong> информация, полученная от партнеров (например, провайдеров авторизации через социальные сети), если вы дали на это согласие.</li>
+                <li><strong><@spring.message "privacy.policy.data.provided"/></strong> <@spring.message "privacy.policy.data.provided.details"/></li>
+                <li><strong><@spring.message "privacy.policy.data.technical"/></strong> <@spring.message "privacy.policy.data.technical.details"/></li>
+                <li><strong><@spring.message "privacy.policy.data.analytical"/></strong> <@spring.message "privacy.policy.data.analytical.details"/></li>
+                <li><strong><@spring.message "privacy.policy.data.third.party"/></strong> <@spring.message "privacy.policy.data.third.party.details"/></li>
             </ul>
 
-            <h2>3. Цели обработки данных</h2>
-            <p>Мы обрабатываем ваши данные для следующих целей:</p>
+            <h2><@spring.message "privacy.policy.section.3.title"/></h2>
+            <p><@spring.message "privacy.policy.section.3.intro"/></p>
             <ul>
-                <li><strong>Предоставление услуг:</strong> регистрация и управление учетной записью, доступ к образовательным материалам, персонализация контента.</li>
-                <li><strong>Связь с пользователями:</strong> отправка уведомлений, ответы на запросы, информационные рассылки (с вашего согласия).</li>
-                <li><strong>Аналитика и улучшение:</strong> анализ использования Сервиса для улучшения функциональности и пользовательского опыта.</li>
-                <li><strong>Безопасность:</strong> защита Сервиса от мошенничества, обеспечение безопасности данных.</li>
-                <li><strong>Соблюдение законодательства:</strong> выполнение юридических обязательств, включая налоговые и регуляторные требования.</li>
+                <li><strong><@spring.message "privacy.policy.purpose.service"/></strong> <@spring.message "privacy.policy.purpose.service.details"/></li>
+                <li><strong><@spring.message "privacy.policy.purpose.communication"/></strong> <@spring.message "privacy.policy.purpose.communication.details"/></li>
+                <li><strong><@spring.message "privacy.policy.purpose.analytics"/></strong> <@spring.message "privacy.policy.purpose.analytics.details"/></li>
+                <li><strong><@spring.message "privacy.policy.purpose.security"/></strong> <@spring.message "privacy.policy.purpose.security.details"/></li>
+                <li><strong><@spring.message "privacy.policy.purpose.legal"/></strong> <@spring.message "privacy.policy.purpose.legal.details"/></li>
             </ul>
 
-            <h2>4. Основания для обработки данных</h2>
-            <p>Мы обрабатываем данные на следующих основаниях:</p>
+            <h2><@spring.message "privacy.policy.section.4.title"/></h2>
+            <p><@spring.message "privacy.policy.section.4.intro"/></p>
             <ul>
-                <li><strong>Договор:</strong> для предоставления услуг в рамках пользовательского соглашения.</li>
-                <li><strong>Согласие:</strong> для обработки данных, например, для маркетинговых рассылок или аналитики.</li>
-                <li><strong>Законный интерес:</strong> для обеспечения безопасности, предотвращения мошенничества и улучшения Сервиса.</li>
-                <li><strong>Юридические обязательства:</strong> для соблюдения применимого законодательства.</li>
+                <li><strong><@spring.message "privacy.policy.basis.contract"/></strong> <@spring.message "privacy.policy.basis.contract.details"/></li>
+                <li><strong><@spring.message "privacy.policy.basis.consent"/></strong> <@spring.message "privacy.policy.basis.consent.details"/></li>
+                <li><strong><@spring.message "privacy.policy.basis.interest"/></strong> <@spring.message "privacy.policy.basis.interest.details"/></li>
+                <li><strong><@spring.message "privacy.policy.basis.legal"/></strong> <@spring.message "privacy.policy.basis.legal.details"/></li>
             </ul>
 
-            <h2>5. Таблица обработки данных</h2>
+            <h2><@spring.message "privacy.policy.section.5.title"/></h2>
             <table>
                 <tr>
-                    <th>Категория данных</th>
-                    <th>Источник</th>
-                    <th>Цель</th>
-                    <th>Основание</th>
-                    <th>Срок хранения</th>
-                    <th>Передача</th>
+                    <th><@spring.message "privacy.policy.table.data.category"/></th>
+                    <th><@spring.message "privacy.policy.table.source"/></th>
+                    <th><@spring.message "privacy.policy.table.purpose"/></th>
+                    <th><@spring.message "privacy.policy.table.basis"/></th>
+                    <th><@spring.message "privacy.policy.table.retention"/></th>
+                    <th><@spring.message "privacy.policy.table.transfer"/></th>
                 </tr>
                 <tr>
-                    <td>Имя, email, телефон</td>
-                    <td>Пользователь</td>
-                    <td>Регистрация, доступ к аккаунту, связь</td>
-                    <td>Договор, согласие</td>
-                    <td>На срок действия аккаунта + 1 год</td>
-                    <td>Хостинг, почтовый сервис</td>
+                    <td><@spring.message "privacy.policy.table.row1.data"/></td>
+                    <td><@spring.message "privacy.policy.table.row1.source"/></td>
+                    <td><@spring.message "privacy.policy.table.row1.purpose"/></td>
+                    <td><@spring.message "privacy.policy.table.row1.basis"/></td>
+                    <td><@spring.message "privacy.policy.table.row1.retention"/></td>
+                    <td><@spring.message "privacy.policy.table.row1.transfer"/></td>
                 </tr>
                 <tr>
-                    <td>Логи (IP, запросы)</td>
-                    <td>Система</td>
-                    <td>Безопасность, диагностика</td>
-                    <td>Законный интерес</td>
-                    <td>6–24 мес.</td>
-                    <td>Хостинг, мониторинг</td>
+                    <td><@spring.message "privacy.policy.table.row2.data"/></td>
+                    <td><@spring.message "privacy.policy.table.row2.source"/></td>
+                    <td><@spring.message "privacy.policy.table.row2.purpose"/></td>
+                    <td><@spring.message "privacy.policy.table.row2.basis"/></td>
+                    <td><@spring.message "privacy.policy.table.row2.retention"/></td>
+                    <td><@spring.message "privacy.policy.table.row2.transfer"/></td>
                 </tr>
                 <tr>
-                    <td>Cookie сессии</td>
-                    <td>Браузер</td>
-                    <td>Авторизация, функциональность</td>
-                    <td>Договор</td>
-                    <td>До закрытия сессии</td>
-                    <td>-</td>
+                    <td><@spring.message "privacy.policy.table.row3.data"/></td>
+                    <td><@spring.message "privacy.policy.table.row3.source"/></td>
+                    <td><@spring.message "privacy.policy.table.row3.purpose"/></td>
+                    <td><@spring.message "privacy.policy.table.row3.basis"/></td>
+                    <td><@spring.message "privacy.policy.table.row3.retention"/></td>
+                    <td><@spring.message "privacy.policy.table.row3.transfer"/></td>
                 </tr>
                 <tr>
-                    <td>Аналитические события</td>
-                    <td>Браузер</td>
-                    <td>Улучшение продукта</td>
-                    <td>Согласие</td>
-                    <td>12–36 мес.</td>
-                    <td>Провайдер аналитики</td>
+                    <td><@spring.message "privacy.policy.table.row4.data"/></td>
+                    <td><@spring.message "privacy.policy.table.row4.source"/></td>
+                    <td><@spring.message "privacy.policy.table.row4.purpose"/></td>
+                    <td><@spring.message "privacy.policy.table.row4.basis"/></td>
+                    <td><@spring.message "privacy.policy.table.row4.retention"/></td>
+                    <td><@spring.message "privacy.policy.table.row4.transfer"/></td>
                 </tr>
                 <tr>
-                    <td>Платежные данные</td>
-                    <td>Пользователь</td>
-                    <td>Оплата услуг</td>
-                    <td>Договор</td>
-                    <td>В соответствии с законом</td>
-                    <td>Платежные системы</td>
+                    <td><@spring.message "privacy.policy.table.row5.data"/></td>
+                    <td><@spring.message "privacy.policy.table.row5.source"/></td>
+                    <td><@spring.message "privacy.policy.table.row5.purpose"/></td>
+                    <td><@spring.message "privacy.policy.table.row5.basis"/></td>
+                    <td><@spring.message "privacy.policy.table.row5.retention"/></td>
+                    <td><@spring.message "privacy.policy.table.row5.transfer"/></td>
                 </tr>
             </table>
 
-            <h2>6. Передача данных третьим лицам</h2>
-            <p>Мы можем передавать данные следующим сторонам:</p>
+            <h2><@spring.message "privacy.policy.section.6.title"/></h2>
+            <p><@spring.message "privacy.policy.section.6.intro"/></p>
             <ul>
-                <li><strong>Провайдерам услуг:</strong> хостинг, аналитика, почтовые сервисы, платежные системы.</li>
-                <li><strong>Партнерам:</strong> при вашем согласии, например, для интеграции с другими сервисами.</li>
-                <li><strong>Государственным органам:</strong> в случаях, предусмотренных законом.</li>
+                <li><strong><@spring.message "privacy.policy.transfer.providers"/></strong> <@spring.message "privacy.policy.transfer.providers.details"/></li>
+                <li><strong><@spring.message "privacy.policy.transfer.partners"/></strong> <@spring.message "privacy.policy.transfer.partners.details"/></li>
+                <li><strong><@spring.message "privacy.policy.transfer.authorities"/></strong> <@spring.message "privacy.policy.transfer.authorities.details"/></li>
             </ul>
-            <p>Мы обеспечиваем, чтобы все третьи стороны соблюдали стандарты защиты данных.</p>
+            <p><@spring.message "privacy.policy.transfer.assurance"/></p>
 
-            <h2>7. Хранение и защита данных</h2>
-            <p>Мы храним данные в течение срока, необходимого для достижения целей обработки, или в соответствии с законодательством. Мы используем современные меры безопасности, включая шифрование, защиту от несанкционированного доступа и регулярные проверки безопасности.</p>
+            <h2><@spring.message "privacy.policy.section.7.title"/></h2>
+            <p><@spring.message "privacy.policy.section.7.content"/></p>
 
-            <h2>8. Ваши права</h2>
-            <p>Как субъект данных, вы имеете следующие права:</p>
+            <h2><@spring.message "privacy.policy.section.8.title"/></h2>
+            <p><@spring.message "privacy.policy.section.8.intro"/></p>
             <ul>
-                <li><strong>Доступ:</strong> запросить информацию о том, какие данные мы обрабатываем.</li>
-                <li><strong>Исправление:</strong> исправить неточные данные.</li>
-                <li><strong>Удаление:</strong> запросить удаление данных, если они больше не нужны.</li>
-                <li><strong>Ограничение:</strong> ограничить обработку данных в определенных случаях.</li>
-                <li><strong>Переносимость:</strong> получить данные в машиночитаемом формате.</li>
-                <li><strong>Возражение:</strong> возражать против обработки на основании законного интереса.</li>
-                <li><strong>Отзыв согласия:</strong> отозвать согласие на обработку данных.</li>
+                <li><strong><@spring.message "privacy.policy.rights.access"/></strong> <@spring.message "privacy.policy.rights.access.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.correction"/></strong> <@spring.message "privacy.policy.rights.correction.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.deletion"/></strong> <@spring.message "privacy.policy.rights.deletion.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.restriction"/></strong> <@spring.message "privacy.policy.rights.restriction.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.portability"/></strong> <@spring.message "privacy.policy.rights.portability.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.objection"/></strong> <@spring.message "privacy.policy.rights.objection.details"/></li>
+                <li><strong><@spring.message "privacy.policy.rights.consent.withdrawal"/></strong> <@spring.message "privacy.policy.rights.consent.withdrawal.details"/></li>
             </ul>
-            <p>Для реализации прав свяжитесь с нами по адресу: <a class="text-highlight" href="mailto:privacy@mathbilim.com">privacy@mathbilim.com</a>.</p>
+            <p><@spring.message "privacy.policy.rights.contact"/> <a class="text-highlight" href="mailto:privacy@mathbilim.com">privacy@mathbilim.com</a>.</p>
 
-            <h2>9. Файлы cookie</h2>
-            <p>Мы используем файлы cookie для обеспечения функциональности, аналитики и персонализации. Вы можете управлять настройками cookie через ваш браузер или настройки Сервиса.</p>
+            <h2><@spring.message "privacy.policy.section.9.title"/></h2>
+            <p><@spring.message "privacy.policy.section.9.content"/></p>
 
-            <h2>10. Изменения в Политике</h2>
-            <p>Мы можем обновлять Политику. Все изменения будут опубликованы на этой странице с указанием новой даты вступления в силу. Рекомендуем периодически проверять Политику.</p>
+            <h2><@spring.message "privacy.policy.section.10.title"/></h2>
+            <p><@spring.message "privacy.policy.section.10.content"/></p>
 
-            <h2>11. Контакты</h2>
-            <p>Если у вас есть вопросы, замечания или жалобы, свяжитесь с нами:</p>
+            <h2><@spring.message "privacy.policy.section.11.title"/></h2>
+            <p><@spring.message "privacy.policy.section.11.intro"/></p>
             <div class="info-block">
-                <p>Email: <a class="text-highlight" href="mailto:mathbilim@gmail.com">mathbilim@gmail.com</a><br>
-                    Адрес: ул. Научная, д. 10, г. Алматы, 050000, Казахстан</p>
+                <p><@spring.message "privacy.policy.contact.email"/>: <a class="text-highlight" href="mailto:mathbilim@gmail.com">mathbilim@gmail.com</a><br>
+                    <@spring.message "privacy.policy.contact.address"/>: <@spring.message "privacy.policy.contact.address.value"/></p>
             </div>
 
-            <a href="/" class="return-button">Назад на главную</a>
+            <a href="/" class="return-button"><@spring.message "privacy.policy.back.home"/></a>
         </div>
     </div>
 </@main.layout>

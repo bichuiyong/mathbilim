@@ -48,11 +48,11 @@ public class OrganizationController {
         if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
         organizationService.create(organization, avatarFile);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User userDetails = (User) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User userDetails = (User) authentication.getPrincipal();
+//        Long userId = userDetails.getId();
 
-        return "redirect:/users/" + userId;
+        return "redirect:/";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN')")

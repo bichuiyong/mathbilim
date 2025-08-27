@@ -117,7 +117,7 @@
                             <script async src="https://telegram.org/js/telegram-widget.js?22"
                                     data-telegram-login="Mathbilimbot"
                                     data-size="medium"
-                                    data-auth-url="https://usable-selected-bird.ngrok-free.app/auth/telegram/callback"
+                                    data-auth-url="/auth/telegram/callback"
                                     data-request-access="write">
                             </script>
                         </div>
