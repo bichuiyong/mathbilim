@@ -12,6 +12,7 @@ public interface NewsService extends BaseTranslatableService<NewsDto, NewsTransl
     @Transactional
     NewsDto create(CreateNewsDto createNewsDto);
 
+
     NewsDto getNewsById(Long id);
 
     Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang);

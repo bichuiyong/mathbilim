@@ -23,9 +23,9 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                 SELECT new kg.edu.mathbilim.dto.abstracts.DisplayContentDto(
                     b.id,
                     b.creator.id,
-                    b.createdAt, 
-                    b.updatedAt, 
-                    b.viewCount, 
+                    b.createdAt,
+                    b.updatedAt,
+                    b.viewCount,
                     b.shareCount,
                     b.mainImage.id,
                     b.approvedBy.id,

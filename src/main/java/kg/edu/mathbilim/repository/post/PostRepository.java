@@ -26,6 +26,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     @Query("UPDATE Post b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
     void incrementShareCount(@Param("blogId") Long blogId);
 
+
     @Query("""
             SELECT DISTINCT p FROM Post p
             JOIN p.postTranslations t
