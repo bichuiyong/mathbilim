@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final EmailServiceImpl emailService;
     private final FileService fileService;
 
+
     @Override
     public boolean userEmailIsNotReal(String email) {
         return email.endsWith("notEmail.com");
@@ -102,6 +103,14 @@ public class UserServiceImpl implements UserService {
     public User findByTelegramId(String telegramId) {
         Long userId = Long.parseLong(telegramId);
         return userRepository.findByTelegramId(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserDto getByTelegramId(String telegramId) {
+        Long userId = Long.parseLong(telegramId);
+        User user = userRepository.findByTelegramId(userId).orElseThrow(UserNotFoundException::new);
+
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -414,11 +423,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean hasChatId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.isPresent() && user.get().getTelegramId() != null;
-    }
+    public boolean hasChatId(Long chatId) {
+        log.debug("🔍 Безопасная проверка наличия chatId: {}", chatId);
 
+        try {
+            Optional<User> user = userRepository.findByTelegramId(chatId);
+
+            if (user.isEmpty()) {
+                log.debug("❌ Пользователь с telegramId={} не найден", chatId);
+                return false;
+            }
+
+            User foundUser = user.get();
+            Long telegramId = foundUser.getTelegramId();
+
+            if (telegramId == null) {
+                log.warn("⚠️ У пользователя id={} telegramId равен null", foundUser.getId());
+                return false;
+            }
+
+            boolean matches = telegramId.equals(chatId);
+            log.debug("✅ Пользователь найден: id={}, telegramId={}, совпадает={}",
+                    foundUser.getId(), telegramId, matches);
+
+            return matches;
+
+        } catch (Exception e) {
+            log.error("❌ Ошибка при проверке chatId: {}", chatId, e);
+            return false;
+        }
+    }
 
     @Override
     public List<Long> getSubscribedChatIds() {

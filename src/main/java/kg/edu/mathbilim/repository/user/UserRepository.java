@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN FETCH u.role WHERE u.email = :email")
     Optional<User> findByEmail(String email);
 
+
     @Query("""
             select u from User u where 
             (LOWER(u.name) LIKE LOWER(CONCAT('%', :query, '%'))) OR 
@@ -36,7 +37,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailVerificationToken(String resetPasswordToken);
 
-    Optional<User> findByTelegramId(Long telegramId);
+
+    @Query(nativeQuery = true, value = "select * from users u where u.telegram_id = :telegramId")
+    Optional<User> findByTelegramId(@Param("telegramId") Long telegramId);
 
     boolean existsByTelegramId(Long telegramId);
 

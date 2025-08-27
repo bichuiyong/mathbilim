@@ -17,7 +17,8 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import kg.edu.mathbilim.service.interfaces.news.NewsTranslationService;
-import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -49,12 +50,8 @@ public class NewsServiceImpl extends
                 >
         implements NewsService {
 
-    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService,
-                           FileService fileService, NewsTranslationService translationService,
-                           NewsTranslationRepository newsTranslationRepository,
-                           UserNotificationService notificationService,
-                           MessageSource messageSource) {
-        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
+    public NewsServiceImpl(NewsRepository repository, NewsMapper mapper, UserService userService, FileService fileService, NewsTranslationService translationService, NewsTranslationRepository newsTranslationRepository, NotificationFacade notificationService) {
+        super(repository, mapper, userService, fileService, translationService, notificationService);
         this.newsTranslationRepository = newsTranslationRepository;
     }
     private final NewsTranslationRepository newsTranslationRepository;;
@@ -113,9 +110,15 @@ public class NewsServiceImpl extends
 
         repository.save(news);
 
+        String titleForNotification = "Без заголовка";
+        String contentForNotification = "Без описания";
+
         for (NewsTranslationDto translationDto : createNewsDto.getNews().getNewsTranslations()) {
             if ((translationDto.getTitle() != null && !translationDto.getTitle().isBlank()) ||
                     (translationDto.getContent() != null && !translationDto.getContent().isBlank())) {
+
+                String title = translationDto.getTitle();
+                String content = translationDto.getContent();
 
                 NewsTranslationId translationId = new NewsTranslationId();
                 translationId.setNewsId(news.getId());
@@ -124,24 +127,43 @@ public class NewsServiceImpl extends
                 NewsTranslation translation = NewsTranslation.builder()
                         .id(translationId)
                         .news(news)
-                        .title(translationDto.getTitle())
-                        .content(translationDto.getContent())
+                        .title(title)
+                        .content(content)
                         .build();
 
                 newsTranslationRepository.save(translation);
+
+                if (!titleForNotification.equals("Без заголовка")) continue;
+                titleForNotification = title != null ? title : titleForNotification;
+                contentForNotification = content != null ? content : contentForNotification;
             }
         }
 
         uploadMainImage(createNewsDto.getImage(), news);
-
         uploadFiles(createNewsDto.getAttachments(), news);
 
         repository.saveAndFlush(news);
 
-        log.info("Created News {} with id {}", news.getId());
-        notificationService.notifyAllSubscribed(NotificationEnum.NEWS,"New news uploaded");
-        return mapper.toDto(news);
+        NewsDto newsDto = mapper.toDto(news);
+
+        sendNewsNotification(titleForNotification, contentForNotification, newsDto);
+
+        return newsDto;
     }
+
+    private void sendNewsNotification(String title, String content, NewsDto newsDto) {
+        NotificationData nt = NotificationData.builder()
+                .id(newsDto.getId())
+                .message("Новая новость")
+                .title(title)
+                .mainImageId(newsDto.getMainImageId())
+                .description(content)
+                .contentId(newsDto.getId())
+                .build();
+
+        notificationFacade.notifyAllSubscribed(NotificationEnum.NEWS, nt);
+    }
+
 
     @Override
     public Page<NewsDto> getContentByCreatorIdNews(Long creatorId, Pageable pageable, String query) {
