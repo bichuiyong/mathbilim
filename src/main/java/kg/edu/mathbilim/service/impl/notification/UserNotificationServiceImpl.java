@@ -248,4 +248,8 @@ public class UserNotificationServiceImpl implements UserNotificationService {
 
         log.info("Удалено {} подписок для пользователя {}", userSubscriptions.size(), userId);
     }
+
+    public void notifyAllSubscribed(NotificationEnum any, String any1) {
+
+    }
 }
