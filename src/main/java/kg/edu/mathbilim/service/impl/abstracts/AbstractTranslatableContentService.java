@@ -46,7 +46,7 @@ public abstract class AbstractTranslatableContentService<
 
     protected AbstractTranslatableContentService(R repository, M mapper, UserService userService,
                                                  FileService fileService, TS translationService,
-                                                 UserNotificationService notificationService,
+                                                 NotificationFacade notificationService,
                                                  MessageSource messageSource) {
         super(repository, mapper, userService, fileService, messageSource);
         this.translationService = translationService;
