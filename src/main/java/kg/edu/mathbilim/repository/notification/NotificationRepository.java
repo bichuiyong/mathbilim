@@ -26,4 +26,6 @@ public interface NotificationRepository extends JpaRepository<UserNotification, 
     List<UserNotification> findByTypeWithUserNative(@Param("typeId") Integer typeId);
 
     Optional<UserNotification> findByUserIdAndTypeId(Long userId, Integer typeId);
+
+    List<UserNotification> findByUserId(Long userId);
 }

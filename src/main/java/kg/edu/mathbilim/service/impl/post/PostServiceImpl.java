@@ -13,14 +13,17 @@ import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.post.Post;
+import kg.edu.mathbilim.model.post.PostTranslation;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
+import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
-import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -50,11 +53,7 @@ public class PostServiceImpl extends
         implements PostService {
 
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService,
-                           FileService fileService, PostTranslationService translationService,
-                           PostRepository postRepository, PostMapperImpl postMapperImpl,
-                           UserNotificationService notificationService,
-                           MessageSource messageSource) {
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, NotificationFacade notificationService, MessageSource messageSource) {
         super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
 
@@ -136,7 +135,22 @@ public class PostServiceImpl extends
     @Override
     public void approve(Long id, String email) {
         User user = userService.findByEmail(email);
-        approveContent(id, NotificationEnum.POST, "New event", user);
+        Post post = repository.findById(id).orElseThrow(PostNotFoundException::new);
+        NotificationData nt = NotificationData.builder()
+                .id(post.getId())
+                .message("Новый пост")
+                .title(post.getPostTranslations().stream()
+                        .map(PostTranslation::getTitle)
+                        .findFirst()
+                        .orElse(null))
+                .mainImageId(post.getMainImage().getId())
+                .description(post.getPostTranslations().stream()
+                        .map(PostTranslation::getContent)
+                        .findFirst()
+                        .orElse(null))
+                .contentId(post.getId())
+                .build();
+        approveContent(id, NotificationEnum.POST, nt, user);
     }
 
     @Override

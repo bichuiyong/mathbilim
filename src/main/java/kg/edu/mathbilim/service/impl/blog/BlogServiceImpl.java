@@ -8,6 +8,7 @@ import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
 import kg.edu.mathbilim.model.blog.Blog;
+import kg.edu.mathbilim.model.blog.BlogTranslation;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.blog.BlogRepository;
@@ -17,6 +18,8 @@ import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -45,9 +48,12 @@ public class BlogServiceImpl extends
                 >
         implements BlogService {
 
-    public BlogServiceImpl(BlogRepository repository, BlogMapper mapper, UserService userService,
-                           FileService fileService, BlogTranslationService translationService,
-                           UserNotificationService notificationService,
+    public BlogServiceImpl(BlogRepository repository,
+                           BlogMapper mapper,
+                           UserService userService,
+                           FileService fileService,
+                           BlogTranslationService translationService,
+                           NotificationFacade notificationService,
                            MessageSource messageSource) {
         super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
     }
@@ -160,7 +166,17 @@ public class BlogServiceImpl extends
     @Override
     public void approve(Long id, String email) {
         User user = userService.findByEmail(email);
-        approveContent(id, NotificationEnum.BLOG, "New blog", user);
+        Blog blog = repository.findById(id).orElseThrow(this::getNotFoundException);
+
+        NotificationData nt = NotificationData.builder()
+                .id(blog.getId())
+                .message("Новый блог")
+                .title(blog.getBlogTranslations().stream().map(BlogTranslation::getTitle).findFirst().orElse("Без зоголовка"))
+                .description(blog.getBlogTranslations().stream().map(BlogTranslation::getContent).findFirst().orElse("Без описания"))
+                .contentId(blog.getId())
+                .mainImageId(blog.getMainImage().getId())
+                .build();
+        approveContent(id, NotificationEnum.BLOG, nt, user);
     }
 
     @Override

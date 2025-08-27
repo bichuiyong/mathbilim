@@ -26,6 +26,8 @@ public interface UserService {
 
     User findByTelegramId(String telegramId);
 
+    UserDto getByTelegramId(String telegramId);
+
     User getEntityById(Long userId);
 
     UserDto getDtoById(Long id);

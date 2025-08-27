@@ -9,9 +9,12 @@ import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.EventNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventMapper;
+import kg.edu.mathbilim.model.blog.BlogTranslation;
+import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
 import kg.edu.mathbilim.model.event.Event;
+import kg.edu.mathbilim.model.event.EventTranslation;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.repository.event.EventRepository;
@@ -21,6 +24,9 @@ import kg.edu.mathbilim.service.interfaces.OrganizationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
+import kg.edu.mathbilim.telegram.service.NotificationData;
+import kg.edu.mathbilim.telegram.service.NotificationFacade;
+import kg.edu.mathbilim.util.PaginationUtil;
 import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,12 +55,8 @@ public class EventServiceImpl extends
 
     private final OrganizationService organizationService;
 
-    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService,
-                            FileService fileService, EventTranslationService translationService,
-                            OrganizationService organizationService,
-                            UserNotificationService notificationService,
-                            MessageSource messageSource) {
-        super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
+    public EventServiceImpl(EventRepository repository, EventMapper mapper, UserService userService, FileService fileService, EventTranslationService translationService, OrganizationService organizationService, NotificationFacade notificationService, MessageSource source) {
+        super(repository, mapper, userService, fileService, translationService, notificationService, source);
         this.organizationService = organizationService;
     }
 
@@ -147,7 +149,18 @@ public class EventServiceImpl extends
     @Override
     public void approve(Long id, String email) {
         User user = userService.findByEmail(email);
-        approveContent(id, NotificationEnum.EVENT, "New event", user);
+        Event event = repository.findById(id).orElseThrow(this::getNotFoundException);
+
+        NotificationData nt = NotificationData.builder()
+                .id(event.getId())
+                .mainImageId(event.getMainImage().getId())
+                .message("Новый блог")
+                .title(event.getEventTranslations().stream().map(EventTranslation::getTitle).findFirst().orElse("Без зоголовка"))
+                .description(event.getEventTranslations().stream().map(EventTranslation::getContent).findFirst().orElse("Без описания"))
+                .contentId(event.getId())
+                .build();
+
+        approveContent(id, NotificationEnum.EVENT, nt, user);
     }
 
     private void setEventOrganizations(List<Long> organizationIds, Event event) {
