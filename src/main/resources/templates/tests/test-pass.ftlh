@@ -124,7 +124,7 @@
         }
 
         input[type="radio"].frozen {
-            opacity: 0.1;
+            opacity: 0.3;
             cursor: not-allowed;
             filter: grayscale(90%);
         }
