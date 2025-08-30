@@ -24,6 +24,50 @@ document.addEventListener("DOMContentLoaded", function () {
         return document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
     }
 
+
+    const noContent = {
+        en: {
+            actions: "No content for moderation",
+            statusPending: "Pending",
+            approve: "Approve",
+            reject: "Reject",
+            types: {
+                post: "Post",
+                blog: "Blog",
+                event: "Event",
+                book: "Book"
+            }
+        },
+        ru: {
+            actions: "Нет контента на модерации",
+            statusPending: "Ожидает",
+            approve: "Принять",
+            reject: "Отклонить",
+            types: {
+                post: "Пост",
+                blog: "Блог",
+                event: "Событие",
+                book: "Книга"
+            }
+        },
+        ky: {
+            actions: "Модерация үчүн контент жок",
+            statusPending: "Күтүлүүдө",
+            approve: "Кабыл алуу",
+            reject: "Кабыл кылбоо",
+            types: {
+                post: "Пост",
+                blog: "Блог",
+                event: "Иш-чара",
+                book: "Китеп"
+            }
+        }
+    };
+
+    function t(key) {
+        return noContent[currentLocale]?.[key] || key;
+    }
+
     function showLoading() {
         contentList.innerHTML = `
             <div class="text-center text-muted py-5">
@@ -33,13 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getTypeName(type) {
-        const typeNames = {
-            'post': 'Пост',
-            'blog': 'Блог',
-            'event': 'Событие',
-            'book': 'Книга'
-        };
-        return typeNames[type] || type;
+        return noContent[currentLocale]?.types?.[type] || type;
     }
 
     function getContentTitle(item, type) {
@@ -370,11 +408,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <line x1="20" y1="32" x2="44" y2="32" stroke="#bbb" stroke-width="1.5"/>
                     <line x1="20" y1="38" x2="44" y2="38" stroke="#bbb" stroke-width="1.5"/>
                 </svg>
-                <p class="fs-5">Нет контента на модерации</p>
+                <p class="fs-5">${t('actions')}</p>
             </div>
         `;
         paginationContainer.style.display = 'none';
     }
+
 
     function createContentCard(item, type) {
         const title = getContentTitle(item, type);
@@ -391,18 +430,20 @@ document.addEventListener("DOMContentLoaded", function () {
                          onclick="showContentDetailsById(${item.id}, '${type}')"
                          onerror="this.src='/static/images/img.png'">
                 </div>
+                
+                
                 <div class="content-info">
                     <div class="content-title" onclick="showContentDetailsById(${item.id}, '${type}')">${title}</div>
                     <div class="content-meta">${author} • ${date}</div>
                     <span class="badge bg-info me-2">${getTypeName(type)}</span>
-                    <span class="status-badge status-pending">Ожидает</span>
+                    <span class="status-badge status-pending">${t('statusPending')}</span>
                 </div>
                 <div class="action-buttons">
                     <button class="btn btn-approve" onclick="performModerationActionById('approve', ${item.id}, '${type}')">
-                        <i class="fas fa-check"></i> Принять
+                        <i class="fas fa-check"></i> ${t('approve')}
                     </button>
                     <button class="btn btn-reject" onclick="performModerationActionById('reject', ${item.id}, '${type}')">
-                        <i class="fas fa-times"></i> Отклонить
+                        <i class="fas fa-times"></i> ${t('reject')}
                     </button>
                 </div>
             </div>
