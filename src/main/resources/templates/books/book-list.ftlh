@@ -121,7 +121,7 @@
                                         <div class="mt-auto d-flex gap-2">
                                             <a href="/books/${bookItem.id}"
                                                class="btn btn-sm btn-outline-primary details-btn">
-                                                Подробнее
+                                                <@spring.message "book.detail"/>
                                             </a>
                                             <#if currentUser?? && (isAdmin || (bookItem.creator?? && bookItem.creator.id == currentUser.id))>
                                                 <form action="/books/delete/${bookItem.id}" method="post" style="">

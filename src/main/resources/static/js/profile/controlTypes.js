@@ -3,6 +3,14 @@ let typeContentList = document.getElementById('typeContentList');
 let staticTypeSortBy = document.getElementById('staticTypeSortBy');
 let createTypeBtn = document.getElementById('createTypeBtn');
 
+const translations = {
+    en: { actions: "Actions", edit: "✏️ Edit", delete: "🗑️ Delete" },
+    ru: { actions: "Действия", edit: "✏️ Изменить", delete: "🗑️ Удалить" },
+    ky: { actions: "Иш-аракеттер", edit: "✏️ Өзгөртүү", delete: "🗑️ Өчүрүү" }
+};
+function t(key) {
+    return translations[currentLocale]?.[key] || key;
+}
 
 
 document.getElementById('typeSearchBtn').addEventListener('click', function () {
@@ -228,7 +236,7 @@ function addContentInList(content) {
   <td>
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Действия
+        ${t("actions")}
       </button>
       <ul class="dropdown-menu">
         <li>
@@ -240,7 +248,7 @@ function addContentInList(content) {
              data-type-ru="${ru}" 
              data-type-en="${en}" 
              data-type-ky="${ky}">
-            ✏️ Изменить
+                ${t("edit")}
           </a>
         </li>
         <li>
@@ -249,11 +257,12 @@ function addContentInList(content) {
              data-bs-toggle="modal" 
              data-bs-target="#deleteUserModal"
              data-type-id="${c.id}">
-            🗑️ Удалить
+             ${t("delete")}
           </a>
         </li>
       </ul>
-    </div>
+      
+    </div>    
   </td>
 `;
         resultTableContent.appendChild(tr);
