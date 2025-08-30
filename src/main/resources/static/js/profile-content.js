@@ -1,3 +1,82 @@
+const modTranslations = {
+    en: {
+        actions: "No content for moderation",
+        statusPending: "Pending",
+        approve: "Approve",
+        reject: "Reject",
+        deleted: "Deleted",
+        newsHidden: "",
+        statuses: {
+            APPROVED: "Approved",
+            PENDING_REVIEW: "Pending review",
+            REJECTED: "Rejected",
+            DRAFT: "Draft"
+        },
+        types: {
+            post: "Post",
+            blog: "Blog",
+            event: "Event",
+            book: "Book",
+            news: "News",
+            default: "Content"        }
+    },
+    ru: {
+        actions: "Нет контента на модерации",
+        statusPending: "Ожидает",
+        approve: "Принять",
+        reject: "Отклонить",
+        deleted: "Удалён",
+        newsHidden: "",
+        statuses: {
+            APPROVED: "Одобрен",
+            PENDING_REVIEW: "На рассмотрении",
+            REJECTED: "Отклонён",
+            DRAFT: "Черновик"
+        },
+        types: {
+            post: "Пост",
+            blog: "Блог",
+            event: "Событие",
+            book: "Книга",
+            news: "Новость",
+            default: "Контент"
+        }
+    },
+    ky: {
+        actions: "Модерация үчүн контент жок",
+        statusPending: "Күтүлүүдө",
+        approve: "Кабыл алуу",
+        reject: "Кабыл кылбоо",
+        deleted: "Өчүрүлгөн",
+        newsHidden: "",
+        statuses: {
+            APPROVED: "Кабыл болду",
+            PENDING_REVIEW: "Каралып жатат",
+            REJECTED: "Кабыл болгон жок",
+            DRAFT: "Черновик"
+        },
+        types: {
+            post: "Пост",
+            blog: "Блог",
+            event: "Иш-чара",
+            book: "Китеп",
+            news: "Жаңылык",
+            default: "Контент"
+        }
+    }
+};
+
+function mod_t(key) {
+    const keys = key.split('.');
+    let value = modTranslations[currentLocale];
+
+    for (let k of keys) {
+        value = value?.[k];
+        if (value === undefined) return key;
+    }
+    return value;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const container = document.querySelector(".container");
     if (!container) {
@@ -696,14 +775,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function getTypeLabel(type) {
-            const labels = {
-                post: 'Пост',
-                blog: 'Блог',
-                event: 'Событие',
-                book: 'Книга',
-                news: 'Новость'
-            };
-            return labels[type] || type;
+            return modTranslations[currentLocale]?.types?.[type]
+                || modTranslations[currentLocale]?.types?.default
+                || type;
         }
 
         function formatDate(dateString) {
@@ -917,7 +991,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function getStatusBadge(status, deleted = false, type = null) {
             if (deleted === true || deleted === "true") {
-                return '<span class="badge bg-dark text-white">Удалён</span>';
+                return `<span class="badge bg-dark text-white">${mod_t('deleted')}</span>`;
             }
 
             // Для новостей статус не показываем
@@ -929,28 +1003,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
             switch (statusName) {
                 case 'APPROVED':
-                    return '<span class="badge bg-success text-white">Одобрен</span>';
+                    return `<span class="badge bg-success text-white">${mod_t('statuses.APPROVED')}</span>`;
                 case 'PENDING_REVIEW':
-                    return '<span class="badge bg-warning text-dark">На рассмотрении</span>';
+                    return `<span class="badge bg-warning text-dark">${mod_t('statuses.PENDING_REVIEW')}</span>`;
                 case 'REJECTED':
-                    return '<span class="badge bg-danger text-white">Отклонён</span>';
+                    return `<span class="badge bg-danger text-white">${mod_t('statuses.REJECTED')}</span>`;
                 case 'DRAFT':
-                    return '<span class="badge bg-secondary text-white">Черновик</span>';
+                    return `<span class="badge bg-secondary text-white">${mod_t('statuses.DRAFT')}</span>`;
                 default:
-                    return statusName ? `<span class="badge bg-info text-white">${statusName}</span>` : '';
+                    return statusName ? `<span class="badge bg-info text-white">${mod_t('statuses.APPROVED')}</span>` : '';
             }
         }
 
+
         function getTypeLabel(type) {
-            switch (type) {
-                case 'post': return 'Пост';
-                case 'blog': return 'Блог';
-                case 'event': return 'Событие';
-                case 'book': return 'Книга';
-                case 'news': return 'Новость';
-                default: return 'Контент';
-            }
+            return modTranslations[currentLocale]?.types?.[type]
+                || modTranslations[currentLocale]?.types?.default
+                || 'Content';
         }
+
+
 
         function getContentTitle(item, type) {
             console.log(`🎯 История - получение title для типа "${type}":`, item);

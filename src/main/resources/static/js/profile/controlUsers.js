@@ -12,7 +12,7 @@ usersTab.addEventListener('shown.bs.tab', function (e) {
 const locale = document.getElementById("currentLocale").textContent;
 console.log(locale)
 
-const i18n = {
+const transl = {
     en: {
         id: "ID",
         username: "Username",
@@ -70,7 +70,7 @@ const i18n = {
 };
 
 function t(key) {
-    return i18n[locale]?.[key] || key;
+    return transl[locale]?.[key] || key;
 }
 
 

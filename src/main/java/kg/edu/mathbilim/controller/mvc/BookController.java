@@ -10,8 +10,10 @@ import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Locale;
 import java.util.Optional;
 
 import java.security.Principal;
@@ -34,6 +37,13 @@ public class BookController {
     private final FileService fileService;
     private final TranslationService translationService;
     private final UserService userService;
+    private final CategoryService categoryService;
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        Locale lan =  LocaleContextHolder.getLocale();
+        model.addAttribute("bookCategories", categoryService.getCategoriesByLanguage(lan.getLanguage()));
+    }
 
     @GetMapping
     public String books(@RequestParam(required = false) String query,

@@ -2,6 +2,77 @@ let currentPage = 0;
 let currentQuery = '';
 const pageSize = 10;
 
+const i18n = {
+    ru: {
+        edit_org: "Редактирование организации",
+        name: "Название организации *",
+        enter_name: "Пожалуйста, введите название организации",
+        description: "Описание *",
+        enter_description: "Пожалуйста, введите описание",
+        url: "Веб-сайт",
+        avatar: "Аватар",
+        cancel: "Отмена",
+        save: "Сохранить изменения",
+        confirm_delete: "Подтвердите удаление",
+        really_delete: "Вы действительно хотите удалить организацию?",
+        irreversible: "Это действие нельзя отменить. Организация будет удалена только если к ней не привязаны события или олимпиады.",
+        delete: "Удалить",
+        creator: "Создатель",
+        go_site: "Перейти на сайт",
+        enter_url: "Пожалуйста, введите корректный URL",
+        current_avatar: "Текущий аватар",
+        no_description: "Описание отсутствует"
+    },
+    ky: {
+        edit_org: "Уюмду түзөтүү",
+        name: "Уюмдун аталышы *",
+        enter_name: "Сураныч, уюмдун атын жазыңыз",
+        description: "Сүрөттөмө *",
+        enter_description: "Сураныч, сүрөттөмө жазыңыз",
+        url: "Веб-сайт",
+        enter_url: "Сураныч, туура URL жазыңыз",
+        current_avatar: "Азыркы аватар",
+        avatar: "Аватар",
+        cancel: "Жокко чыгаруу",
+        save: "Өзгөртүүлөрдү сактоо",
+        confirm_delete: "Өчүрүүнү тастыктаңыз",
+        really_delete: "Сиз чын эле уюмду өчүргүңүз келеби?",
+        irreversible: "Бул аракетти жокко чыгарууга болбойт. Эгер уюмга иш-чаралар же олимпиадалар байланыштырылбаса гана өчүрүлөт.",
+        delete: "Өчүрүү",
+        creator: "Жаратуучу",
+        go_site: "Сайтка өтүү",
+        no_description: "Сүрөттөмө жок"
+    },
+    en: {
+        edit_org: "Edit Organization",
+        enter_url: "Please enter a valid URL",
+        current_avatar: "Current avatar",
+        name: "Organization Name *",
+        enter_name: "Please enter organization name",
+        description: "Description *",
+        enter_description: "Please enter description",
+        url: "Website",
+        avatar: "Avatar",
+        cancel: "Cancel",
+        save: "Save changes",
+        confirm_delete: "Confirm Deletion",
+        really_delete: "Do you really want to delete this organization?",
+        irreversible: "This action cannot be undone. The organization will be deleted only if no events or olympiads are linked to it.",
+        delete: "Delete",
+        creator: "Creator",
+        go_site: "Go to site",
+        no_description: "No description"
+    }
+};
+
+const currentLocale = document.getElementById("currentLocale").textContent;
+console.log(currentLocale)
+
+function t(key) {
+    return i18n[currentLocale][key] || key;
+}
+
+
 function showSuccessMessage(message) {
     showToast(message, 'success');
 }
@@ -180,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <i class="fas fa-external-link-alt me-1"></i>Перейти на сайт
                                     </a><br>` : ''}
                                 <small class="text-muted">
-                                    <i class="fas fa-user me-1"></i>Создатель: ${creatorName}
+                                    <i class="fas fa-user me-1"></i>${t("creator")}: ${creatorName}
                                 </small>
                             </div>
                         </div>
@@ -359,6 +430,7 @@ function editOrganization(id, name) {
         });
 }
 
+
 function showEditModal(orgData) {
     const modalHtml = `
         <div class="modal fade" id="editOrgModal" tabindex="-1">
@@ -366,64 +438,65 @@ function showEditModal(orgData) {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            <i class="fas fa-edit me-2"></i>Редактирование организации
+                            <i class="fas fa-edit me-2"></i>${t("edit_org")}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <form id="editOrgForm">
                             <div class="mb-3">
-                                <label for="editOrgName" class="form-label">Название организации *</label>
+                                <label for="editOrgName" class="form-label">${t("name")}</label>
                                 <input type="text" class="form-control" id="editOrgName" name="name"
                                        value="${escapeHtml(orgData.name || '')}" required>
                                 <div class="invalid-feedback">
-                                    Пожалуйста, введите название организации
+                                   ${t("enter_name")}
                                 </div>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="editOrgDescription" class="form-label">Описание *</label>
+                                <label for="editOrgDescription" class="form-label">${t("description")}</label>
                                 <textarea class="form-control" id="editOrgDescription" name="description"
-                                          rows="4" placeholder="Введите описание организации" required>${escapeHtml(orgData.description || '')}</textarea>
-                                <div class="invalid-feedback">Пожалуйста, введите описание</div>
+              rows="4" placeholder="${t("enter_description")}" required>${escapeHtml(orgData.description || '')}</textarea>
+                                <div class="invalid-feedback">${t("enter_description")}</div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="editOrgUrl" class="form-label">Веб-сайт</label>
-                                <input type="url" class="form-control" id="editOrgUrl" name="url"
-                                       value="${escapeHtml(orgData.url || '')}"
-                                       placeholder="https://example.com">
-                                <div class="invalid-feedback">
-                                    Пожалуйста, введите корректный URL
+                        <div class="mb-3">
+                                    <label for="editOrgUrl" class="form-label">${t("url")}</label>
+                                    <input type="url" class="form-control" id="editOrgUrl" name="url"
+                                           value="${escapeHtml(orgData.url || '')}"
+                                           placeholder="https://example.com">
+                                    <div class="invalid-feedback">
+                                        ${t("enter_url")}
+                                    </div>
                                 </div>
-                            </div>
+
                             
-                            <div class="mb-3">
-                                <label for="editOrgAvatar" class="form-label">Аватар</label>
-                                <div class="current-avatar mb-2">
-                                    ${orgData.avatar ?
-        `<img src="/api/files/${orgData.avatar.id}/download"
-                                             alt="Текущий аватар"
-                                             class="rounded border"
-                                             style="width: 100px; height: 100px; object-fit: cover;">` :
-        `<div class="bg-light border rounded d-flex align-items-center justify-content-center"
-                                              style="width: 100px; height: 100px;">
-                                            <i class="fas fa-building text-muted fa-2x"></i>
-                                        </div>`
-    }
-                                </div>
-                                <input type="file" class="form-control" id="editOrgAvatar" name="avatarFile" accept="image/*">
-                            </div>
+                      <div class="mb-3">
+                        <label for="editOrgAvatar" class="form-label">${t("avatar")}</label>
+                        <div class="current-avatar mb-2">
+                            ${orgData.avatar ?
+                            `<img src="/api/files/${orgData.avatar.id}/download"
+                                     alt="${t("current_avatar")}"
+                                     class="rounded border"
+                                     style="width: 100px; height: 100px; object-fit: cover;">` :
+                            `<div class="bg-light border rounded d-flex align-items-center justify-content-center"
+                                      style="width: 100px; height: 100px;">
+                                    <i class="fas fa-building text-muted fa-2x"></i>
+                                 </div>`
+                        }
+                        </div>
+                        <input type="file" class="form-control" id="editOrgAvatar" name="avatarFile" accept="image/*">
+                    </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-2"></i>Отмена
-                        </button>
-                        <button type="button" class="btn btn-primary" id="saveOrgBtn">
-                            <i class="fas fa-save me-2"></i>Сохранить изменения
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>${t("cancel")}
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveOrgBtn">
+                        <i class="fas fa-save me-2"></i>${t("save")}
+                    </button>
+                </div>
                 </div>
             </div>
         </div>
