@@ -82,12 +82,24 @@ public abstract class AbstractTranslatableContentService<
     ) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
 
-        Page<E> result = (query == null || query.isEmpty())
-                ? statusFinder.apply(pageable)
-                : queryFinder.apply(query, pageable);
+        String safeQuery = query == null ? "" : query;
+
+        log.info("getContentByStatus: status={}, query='{}', page={}, size={}, sortBy={}, sortDirection={}, pageable={}",
+                status, safeQuery, page, size, sortBy, sortDirection, pageable);
+
+        Page<E> result = queryFinder.apply(safeQuery, pageable);
+
+        log.info("getContentByStatus executed: returned totalElements={}, totalPages={}, pageNumber={}, pageSize={}, sort={}",
+                result.getTotalElements(), result.getTotalPages(), result.getNumber(), result.getSize(), pageable.getSort());
+
+        result.getContent().forEach(e ->
+                log.debug("getContentByStatus element: {}", e)
+        );
 
         return result.map(mapper::toDto);
     }
+
+
 
     protected void approveContent(Long id, NotificationEnum notificationType, NotificationData notificationMessage, User users) {
         E content = repository.findById(id).orElseThrow(this::getNotFoundException);

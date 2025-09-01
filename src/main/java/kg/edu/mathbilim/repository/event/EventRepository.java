@@ -83,7 +83,6 @@ public interface EventRepository extends BaseContentRepository<Event> {
                      AND p.deleted = false AND
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and 
                         p.deleted = false
-            ORDER BY p.createdAt DESC
             """)
     Page<Event> getEventsByStatusWithQuery(ContentStatus contentStatus,
                                            String query,

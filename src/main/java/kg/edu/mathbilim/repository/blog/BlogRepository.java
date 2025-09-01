@@ -165,7 +165,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
                         t.id.languageCode = :languageCode
                          and p.deleted = false
-            ORDER BY p.createdAt DESC
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
                                                 String query,
