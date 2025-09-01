@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.book.BookDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -88,6 +90,7 @@ public class BookController {
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
 //                          @RequestParam MultipartFile attachments,
+                          RedirectAttributes redirectAttributes,
                           BindingResult bindingResult,
 //                          @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                           Model model
@@ -101,7 +104,16 @@ public class BookController {
             return "books/create-book";
         }
 
-        bookService.createBook(book.getAttachments(), book.getMpMainImage(), book);
+        BookDto bookDto = bookService.createBook(book.getAttachments(), book.getMpMainImage(), book);
+
+        if (bookDto.getStatus() == ContentStatus.APPROVED) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Книга успешно создан и опубликован.");
+        } else if (bookDto.getStatus() == ContentStatus.PENDING_REVIEW) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Книга успешно создан и ожидает модерации. После одобрения будет опубликован.");
+        }
+
         return "redirect:/books";
     }
 
