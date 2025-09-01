@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,18 +79,22 @@ public class BlogController {
     @PostMapping("/create")
     public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
                              BindingResult bindingResult,
-                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
+//                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              Model model) {
-        if (bindingResult.hasErrors() || mpMainImage == null || mpMainImage.isEmpty()) {
-            if (mpMainImage == null || mpMainImage.isEmpty()) {
-                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
-                model.addAttribute("image", errorMessage);
+        if (bindingResult.hasErrors()) {
+            FieldError imageError = bindingResult.getFieldError("mpMainImage");
+            if (imageError != null) {
+                model.addAttribute("image", imageError.getDefaultMessage());
             }
+//            if (mpMainImage == null || mpMainImage.isEmpty()) {
+//                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
+//                model.addAttribute("image", errorMessage);
+//            }
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }
 
-        blogService.create(blogDto, mpMainImage);
+        blogService.create(blogDto, blogDto.getMpMainImage());
 
         return "redirect:/blog";
     }
