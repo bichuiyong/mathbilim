@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kg.edu.mathbilim.validation.annotation.AllowedExtension;
+import kg.edu.mathbilim.validation.annotation.NotEmptyMultipartFile;
 import kg.edu.mathbilim.validation.annotation.ValidTimeLimit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +28,8 @@ public class TestCreateDto {
     @Size(min = 1, max = 100)
     private String description;
 
-    @NotNull
+    @NotEmptyMultipartFile(message = "{blog.image.required}")
+    @AllowedExtension({"pdf"})
     private MultipartFile file;
 
     @NotNull

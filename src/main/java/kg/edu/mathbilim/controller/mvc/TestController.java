@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -93,6 +94,12 @@ public class TestController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("testCreateDto", testCreateDto);
             model.addAttribute("topics",testService.getTopics());
+
+            FieldError fileError = bindingResult.getFieldError("file");
+
+            if (fileError != null) {
+                model.addAttribute("fileError", fileError.getDefaultMessage());
+            }
             return "tests/test-create";
         }
         testService.createTest(testCreateDto);

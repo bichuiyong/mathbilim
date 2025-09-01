@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.dto.news;
 
 
+import jakarta.validation.Valid;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
 import kg.edu.mathbilim.dto.abstracts.ContentDto;
@@ -24,7 +25,7 @@ public class NewsDto extends ContentDto {
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    List<NewsTranslationDto> newsTranslations = createDefaultTranslations();
+    List<@Valid NewsTranslationDto> newsTranslations = createDefaultTranslations();
 
     static List<NewsTranslationDto> createDefaultTranslations() {
         return TranslationUtil.createDefaultTranslations(languageCode ->
