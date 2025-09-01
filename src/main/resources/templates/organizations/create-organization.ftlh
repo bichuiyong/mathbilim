@@ -90,6 +90,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <small class="text-danger">
+                                ${imageError!""}
+                            </small>
                             <@spring.showErrors '<div class="text-danger mt-1 small">' "</div>"/>
                         </div>
 
