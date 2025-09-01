@@ -6,12 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.book.BookDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
+import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -20,8 +23,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Locale;
 import java.util.Optional;
 
 import java.security.Principal;
@@ -34,6 +39,13 @@ public class BookController {
     private final FileService fileService;
     private final TranslationService translationService;
     private final UserService userService;
+    private final CategoryService categoryService;
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        Locale lan =  LocaleContextHolder.getLocale();
+        model.addAttribute("bookCategories", categoryService.getCategoriesByLanguage(lan.getLanguage()));
+    }
 
     @GetMapping
     public String books(@RequestParam(required = false) String query,
@@ -87,6 +99,7 @@ public class BookController {
 
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
+                          RedirectAttributes redirectAttributes,
                           BindingResult bindingResult,
                           Model model
                          ) {
@@ -105,7 +118,16 @@ public class BookController {
             return "books/create-book";
         }
 
-        bookService.createBook(book.getAttachments(), book.getMpMainImage(), book);
+        BookDto bookDto = bookService.createBook(book.getAttachments(), book.getMpMainImage(), book);
+
+        if (bookDto.getStatus() == ContentStatus.APPROVED) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Книга успешно создан и опубликован.");
+        } else if (bookDto.getStatus() == ContentStatus.PENDING_REVIEW) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Книга успешно создан и ожидает модерации. После одобрения будет опубликован.");
+        }
+
         return "redirect:/books";
     }
 

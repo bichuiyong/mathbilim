@@ -119,50 +119,161 @@
         }
 
         .btn-approve {
-            background-color: #198754;
-            border-color: #198754;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            border: none;
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .btn-reject {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .btn-approve:hover {
-            background-color: #157347;
-            border-color: #146c43;
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+            color: white;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .btn-reject:hover {
-            background-color: #bb2d3b;
-            border-color: #b02a37;
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+            color: white;
         }
 
+        /* Улучшенные стили для модального окна */
         .modal-content {
-            border-radius: 12px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 24px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header .modal-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e0 #f8f9fa;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
         }
 
         .modal-image {
             width: 100%;
-            max-height: 300px;
+            max-height: 280px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        .publication-text {
-            max-height: 200px;
-            overflow-y: auto;
+        .modal-image:hover {
+            transform: scale(1.02);
+        }
+
+        .content-detail-item {
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .content-detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .content-detail-label {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content-detail-value {
+            color: #4a5568;
             line-height: 1.6;
-            color: #495057;
+            font-size: 1rem;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        /* Улучшенные стили для текстового контента */
+        .publication-text {
+            line-height: 1.7;
+            color: #2d3748;
+            font-size: 1rem;
+            word-wrap: break-word;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
         .publication-text.collapsed {
@@ -171,34 +282,92 @@
             position: relative;
         }
 
+        .publication-text.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, white);
+            pointer-events: none;
+        }
+
         .publication-text.expanded {
             max-height: none;
         }
 
+        .publication-text.expanded::after {
+            display: none;
+        }
+
         .show-more-btn {
-            color: #0d6efd;
+            color: #667eea;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 12px;
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            background: white;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
         }
 
         .show-more-btn:hover {
-            text-decoration: underline;
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        .content-card.removing {
-            animation: fadeOut 0.3s ease-out forwards;
+        .show-more-btn i {
+            margin-left: 6px;
+            transition: transform 0.3s ease;
         }
 
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: scale(0.8);
-            }
+        .show-more-btn.expanded i {
+            transform: rotate(180deg);
+        }
+
+        /* Стили для дополнительной информации */
+        .additional-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .additional-info .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .additional-info .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .additional-info .info-label {
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 100px;
+            margin-right: 12px;
+        }
+
+        .additional-info .info-value {
+            color: #4a5568;
+            flex: 1;
+        }
+
+        /* Улучшенные стили для футера модального окна */
+        .modal-footer {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-top: 1px solid #e2e8f0;
         }
 
         .no-content {
@@ -324,6 +493,30 @@
 
             #usersPagination .page-link.nav-link {
                 padding: 8px 16px;
+            }
+
+            .modal-dialog {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+
+            .modal-body {
+                padding: 16px;
+                max-height: 60vh;
+            }
+
+            .modal-header {
+                padding: 16px;
+            }
+
+            .modal-footer {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
             }
         }
 
@@ -480,45 +673,6 @@
             color: white;
         }
 
-        .modal-content {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .modal-header .modal-title {
-            font-weight: 600;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
-        }
-
-        @media (max-width: 768px) {
-            #organizationsContentList .card-body .row {
-                text-align: center;
-            }
-
-            #organizationsContentList .card-body .col-auto:last-child {
-                margin-top: 1rem;
-            }
-
-            .btn-group {
-                width: 100%;
-            }
-
-            .btn-group .btn {
-                flex: 1;
-            }
-        }
-
         .alert {
             border-radius: 8px;
             font-weight: 500;
@@ -555,116 +709,19 @@
             animation: fadeInUp 0.3s ease-out;
         }
 
-        /* Красивые стили для пагинации */
-        #usersPagination {
-            margin: 20px 0;
+        .content-card.removing {
+            animation: fadeOut 0.3s ease-out forwards;
         }
 
-        #usersPagination .pagination {
-            gap: 8px;
-            margin: 0;
-            justify-content: center;
-        }
-
-        #usersPagination .page-item {
-            margin: 0;
-        }
-
-        #usersPagination .page-link {
-            border: 1px solid #e0e6ed;
-            border-radius: 8px;
-            color: #374151;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 10px;
-            width: 44px;
-            height: 44px;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            background-color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #usersPagination .page-link:hover {
-            background-color: #f8fafc;
-            border-color: #3b82f6;
-            color: #3b82f6;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-        }
-
-        #usersPagination .page-item.active .page-link {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
-            color: #ffffff;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        #usersPagination .page-item.active .page-link:hover {
-            background-color: #2563eb;
-            border-color: #2563eb;
-            transform: translateY(-1px);
-        }
-
-        #usersPagination .page-item.disabled .page-link {
-            background-color: #f9fafb;
-            border-color: #e5e7eb;
-            color: #9ca3af;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        #usersPagination .page-item.disabled .page-link:hover {
-            background-color: #f9fafb;
-            border-color: #e5e7eb;
-            color: #9ca3af;
-            transform: none;
-            box-shadow: none;
-        }
-
-        #usersPagination .page-link i {
-            font-size: 14px;
-        }
-
-        @media (max-width: 576px) {
-            #usersPagination .pagination {
-                gap: 4px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            #usersPagination .page-link {
-                width: 38px;
-                height: 38px;
-                padding: 8px;
-                font-size: 13px;
-            }
-        }
-
-        @keyframes fadeIn {
+        @keyframes fadeOut {
             from {
-                opacity: 0;
-                transform: translateY(10px);
+                opacity: 1;
+                transform: scale(1);
             }
             to {
-                opacity: 1;
-                transform: translateY(0);
+                opacity: 0;
+                transform: scale(0.8);
             }
-        }
-
-        #usersPagination .pagination {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        #usersPagination .page-link:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
     </style>
 
@@ -696,7 +753,6 @@
                         </div>
 
                         <h4 class="mb-1">${user.name!} ${user.surname!}</h4>
-<#--                        <p class="text-muted mb-2">${user.email}</p>-->
 
                         <#if user.type??>
                             <span class="badge bg-light-blue text-primary mb-3">
@@ -766,9 +822,9 @@
                                 <i class="fas fa-book me-2"></i><@spring.message "content.type.book"/>
                             </a>
                             <#if isModer || isAdmin>
-                            <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
-                            </a>
+                                <a href="/organizations/create" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-book me-2"></i><@spring.message "content.type.organization"/>
+                                </a>
                             </#if>
                             <#if isModer || isAdmin>
                                 <a href="/olympiad/create" class="btn btn-outline-primary btn-sm">
@@ -983,22 +1039,22 @@
                                                             id="organizationsSearchBtn">
                                                         <i class="fas fa-search"></i>
                                                     </button>
+                                                </div>
                                             </div>
                                         </div>
-                                </div>
-                                </div>
-
-                                <div id="organizationsContentList" class="content-list">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                        <p><@spring.message "message.loading"/></p>
                                     </div>
-                                </div>
 
-                                <nav id="organizationsPagination" class="mt-3" style="display: none;">
-                                    <ul class="pagination justify-content-center"></ul>
-                                </nav>
-                            </div>
+                                    <div id="organizationsContentList" class="content-list">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                            <p><@spring.message "message.loading"/></p>
+                                        </div>
+                                    </div>
+
+                                    <nav id="organizationsPagination" class="mt-3" style="display: none;">
+                                        <ul class="pagination justify-content-center"></ul>
+                                    </nav>
+                                </div>
                             </#if>
 
                             <!-- Вкладка "Пользователи" (для администраторов) -->
@@ -1095,47 +1151,6 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
-
-                                <!-- All Content Tab (for admins) -->
-                                <div class="tab-pane fade" id="allcontent" role="tabpanel">
-                                    <!-- All Content Filters -->
-                                    <div class="allcontent-filters mb-4">
-                                        <div class="row g-2">
-                                            <div class="col-md-3">
-                                                <select class="form-select form-select-sm" id="allcontentTypeFilter">
-                                                    <option value="all"><@spring.message "filter.all.types"/></option>
-                                                    <option value="post"><@spring.message "content.type.post"/></option>
-                                                    <option value="blog"><@spring.message "content.type.blog"/></option>
-                                                    <option value="event"><@spring.message "content.type.event"/></option>
-                                                    <option value="book"><@spring.message "content.type.book"/></option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <select class="form-select form-select-sm" id="allcontentStatusFilter">
-                                                    <option value="all"><@spring.message "filter.all.statuses"/></option>
-                                                    <option value="APPROVED"><@spring.message "status.approved"/></option>
-                                                    <option value="REJECTED"><@spring.message "status.rejected"/></option>
-                                                    <option value="PENDING_REVIEW"><@spring.message "status.pending"/></option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group input-group-sm">
-                                                    <input type="text" class="form-control" id="allcontentSearch"
-                                                           placeholder="<@spring.message "placeholder.search.content"/>">
-                                                    <button class="btn btn-outline-secondary" type="button"
-                                                            id="allcontentSearchBtn">
-                                                        <i class="fas fa-search"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Пагинация -->
-                                    <nav id="allcontentPagination" class="mt-3" style="display: none;">
-                                        <ul class="pagination justify-content-center"></ul>
-                                    </nav>
-                                </div>
                             </#if>
                         </div>
                     </div>
@@ -1144,7 +1159,7 @@
         </div>
     </div>
 
-
+    <!-- Модальные окна -->
     <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -1279,7 +1294,7 @@
         </div>
     </div>
 
-
+    <!-- Модальное окно контента -->
     <div class="modal fade" id="contentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1305,8 +1320,6 @@
         </div>
     </div>
 
-    <script src="/static/js/admin.js"></script>
-    <script src="/static/js/profile-content.js"></script>
     <div class="modal fade" id="createTypeModal" tabindex="-1" aria-labelledby="createTypeModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -1371,6 +1384,8 @@
         </div>
     </div>
 
+    <script src="/static/js/admin.js"></script>
+    <script src="/static/js/profile-content.js"></script>
     <script src="/static/js/profile/controlOrganizations.js"></script>
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>

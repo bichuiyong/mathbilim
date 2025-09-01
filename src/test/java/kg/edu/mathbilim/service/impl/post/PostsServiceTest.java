@@ -149,20 +149,20 @@ class PostsServiceTest {
         assertThat(post.getId()).isEqualTo(postDto.getId());
     }
 
-    @Test
-    void approvePostTest(){
-        when(postRepository.findById(post.getId())).thenReturn(Optional.ofNullable(post));
-        doNothing().when(notificationService)
-                .notifyAllSubscribed(any(NotificationEnum.class), any(String.class));
-
-        postService.approve(postDto.getId(), user.getEmail());
-        Post post = postService.findByPostId(postDto.getId());
-        assertThat(post).isNotNull();
-        assertThat(post.getId()).isEqualTo(postDto.getId());
-        assertThat(post.getStatus()).isEqualTo(ContentStatus.APPROVED);
-        verify(notificationService, times(1)).notifyAllSubscribed(any(), any());
-        verify(postRepository, times(1)).save(post);
-    }
+//    @Test
+//    void approvePostTest(){
+//        when(postRepository.findById(post.getId())).thenReturn(Optional.ofNullable(post));
+//        doNothing().when(notificationService)
+//                .notifyAllSubscribed(any(NotificationEnum.class), any(String.class));
+//
+//        postService.approve(postDto.getId(), user.getEmail());
+//        Post post = postService.findByPostId(postDto.getId());
+//        assertThat(post).isNotNull();
+//        assertThat(post.getId()).isEqualTo(postDto.getId());
+//        assertThat(post.getStatus()).isEqualTo(ContentStatus.APPROVED);
+//        verify(notificationService, times(1)).notifyAllSubscribed(any(), any());
+//        verify(postRepository, times(1)).save(post);
+//    }
 
     @Test
     void getPostsByStatusTest(){

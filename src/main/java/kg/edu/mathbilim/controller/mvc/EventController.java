@@ -6,6 +6,7 @@ import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.event.CreateEventDto;
 import kg.edu.mathbilim.dto.event.DisplayEventDto;
 import kg.edu.mathbilim.dto.event.EventDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Locale;
@@ -88,11 +90,21 @@ public class EventController {
 
     @PostMapping("create")
     public String createEvent(@ModelAttribute("createEventDto") @Valid CreateEventDto createEventDto,
+                              RedirectAttributes redirectAttributes,
                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "events/event-create";
         }
-        eventService.create(createEventDto);
+        EventDto eventDto = eventService.create(createEventDto);
+
+        if (eventDto.getStatus() == ContentStatus.APPROVED) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Мероприятие успешно создан и опубликован.");
+        } else if (eventDto.getStatus() == ContentStatus.PENDING_REVIEW) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Мероприятие успешно создан и ожидает модерации. После одобрения будет опубликован.");
+        }
+
         return "redirect:/events?success=created";
     }
 

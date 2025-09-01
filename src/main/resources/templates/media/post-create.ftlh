@@ -7,7 +7,14 @@
             <div class="col-lg-10">
                 <div class="card">
                     <#assign currentLocale = springMacroRequestContext.locale.language>
-
+                    <small class="text-danger">
+                        <#if imageError??>
+                            <div class="toast-error">
+                                <span class="toast-icon">⚠</span>
+                                ${imageError}
+                            </div>
+                        </#if>
+                    </small>
                     <div class="card-header">
                         <h2 class="mb-0"><@spring.message "posts.create.title"/></h2>
                     </div>
@@ -15,10 +22,13 @@
                         <form id="postForm" action="/posts/create" method="post" enctype="multipart/form-data">
                             <@main.csrf/>
                             <#if error??>
-                                <div class="alert alert-danger">
+                                <div class="toast-error">
+                                    <span class="toast-icon">⚠</span>
                                     ${error}
                                 </div>
                             </#if>
+
+
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
@@ -253,6 +263,47 @@
         .tox-tinymce {
             border-radius: 8px !important;
         }
+
+        .toast-error {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 320px;
+            background-color: #ff4d4f;
+            color: #fff;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideInRight 0.5s forwards, fadeOut 0.5s 4.5s forwards;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
     </style>
 
 </@main.layout>

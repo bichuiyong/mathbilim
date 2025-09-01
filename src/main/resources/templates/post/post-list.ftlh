@@ -2,7 +2,53 @@
 <#import "/spring.ftl" as spring>
 <@main.layout>
 
+    <#if successMessage??>
+        <div id="infoAlert" class="info-alert">
+            <span class="info-icon">ℹ️</span>
+            <span class="info-text">${successMessage}</span>
+        </div>
+    </#if>
     <style>
+
+        .info-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e7f3fe;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+            padding: 12px 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            z-index: 1050;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 5s forwards;
+        }
+
+        .info-icon {
+            font-weight: bold;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
         .content-wrapper {
             max-width: 1200px;
             margin: 0 auto;

@@ -3,8 +3,8 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
-import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
@@ -12,20 +12,16 @@ import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -78,6 +74,7 @@ public class BlogController {
 
     @PostMapping("/create")
     public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
+                             RedirectAttributes redirectAttributes,
                              BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
@@ -90,7 +87,18 @@ public class BlogController {
             return "blog/blog-create";
         }
 
-        blogService.create(blogDto, blogDto.getMpMainImage());
+
+       BlogDto blogDto1 = blogService.create(blogDto, blogDto.getMpMainImage());
+
+        if (blogDto1.getStatus() == ContentStatus.APPROVED) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Блог успешно создан и опубликован.");
+        } else if (blogDto1.getStatus() == ContentStatus.PENDING_REVIEW) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Блог успешно создан и ожидает модерации. После одобрения будет опубликован.");
+        }
+
+
 
         return "redirect:/blog";
     }

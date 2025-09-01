@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.service.interfaces.CommentService;
@@ -27,6 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Locale;
@@ -66,6 +68,7 @@ public class    PostController {
 
     @PostMapping("create")
     public String createPost(@ModelAttribute("createPostDto") @Valid CreatePostDto post,
+                             RedirectAttributes redirectAttributes,
                              BindingResult bindingResult, Model model) {
 
 
@@ -82,7 +85,16 @@ public class    PostController {
 
             return "media/post-create";
         }
-        postService.createPost(post);
+        PostDto postDto = postService.createPost(post);
+
+        if (postDto.getStatus() == ContentStatus.APPROVED) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Пост успешно создан и опубликован.");
+        } else if (postDto.getStatus() == ContentStatus.PENDING_REVIEW) {
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Пост успешно создан и ожидает модерации. После одобрения будет опубликован.");
+        }
+
         return "redirect:/posts";
     }
 
