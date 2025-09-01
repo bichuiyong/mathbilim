@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -323,6 +324,8 @@
         }
     </style>
 
+    <#assign currentLocale = springMacroRequestContext.locale.language>
+
     <div class="book-container">
         <div class="book-header">
             <h1 class="book-title">${book.name}</h1>
@@ -337,9 +340,9 @@
 
                 <div class="read-button-container d-flex gap-2 mt-3 justify-content-center">
                     <a href="/books/${book.file.id}/pdf-reader" class="btn btn-primary">
-                        📖 Начать читать
+                        📖 <@spring.message "book.read"/>
                     </a>
-                    <a href="/api/files/${book.file.id}/download" class="btn btn-primary" title="Скачать">
+                    <a href="/api/files/${book.file.id}/download" class="btn btn-primary" title="<@spring.message 'book.download'/>">
                         <i class="bi bi-download"></i>
                     </a>
                 </div>
@@ -351,7 +354,7 @@
                         <div class="dropdown">
                             <button class="dropdown-toggle" type="button">⋮</button>
                             <div class="dropdown-menu">
-                                <a href="/books/update/${book.id}" class="dropdown-item">Редактировать</a>
+                                <a href="/books/update/${book.id}" class="dropdown-item"><@spring.message "book.edit"/></a>
                             </div>
                         </div>
                     </div>
@@ -360,24 +363,34 @@
                 <!-- Метаинформация -->
                 <div class="book-meta">
                     <div class="meta-item">
-                        <span class="meta-label">Дата:</span>
+                        <span class="meta-label"><@spring.message "book.date"/>:</span>
                         <span class="meta-value">${book.formattedDate}</span>
                     </div>
                     <div class="meta-item">
-                        <span class="meta-label">Авторы:</span>
+                        <span class="meta-label"><@spring.message "book.authors"/>:</span>
                         <span class="meta-value">${book.authors}</span>
                     </div>
                     <div class="meta-item">
-                        <span class="meta-label">ISBN:</span>
+                        <span class="meta-label"><@spring.message "book.isbn"/>:</span>
                         <span class="meta-value">${book.isbn}</span>
                     </div>
                     <div class="meta-item">
-                        <span class="meta-label">Создатель:</span>
+                        <span class="meta-label"><@spring.message "book.creator"/>:</span>
                         <span class="meta-value">${book.creator.name}</span>
                     </div>
                     <div class="meta-item">
-                        <span class="meta-label">Категория:</span>
-                        <span class="meta-value">${book.category.translations[0].translation}</span>
+                        <span class="meta-label"><@spring.message "book.category"/>:</span>
+                        <span class="meta-value">
+                    <#assign translations = bookCategories[0].translations![]>
+                            <#assign translation = translations?filter(t -> t.languageCode == currentLocale)?first!>
+                            <#if translation??>
+                                ${translation.translation}
+                            <#elseif translations?size > 0>
+                                ${translations[0].translation}
+                            <#else>
+                                [Без перевода]
+                            </#if>
+                        </span>
                     </div>
                 </div>
 
@@ -385,7 +398,7 @@
                 <div class="book-stats">
                     <div class="stat-item">
                         <span class="stat-value">${book.viewCount}</span>
-                        <span class="stat-label">Просмотров</span>
+                        <span class="stat-label"><@spring.message "book.views"/></span>
                     </div>
                 </div>
 
