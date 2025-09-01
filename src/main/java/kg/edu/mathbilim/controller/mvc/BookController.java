@@ -87,15 +87,19 @@ public class BookController {
 
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
-//                          @RequestParam MultipartFile attachments,
                           BindingResult bindingResult,
-//                          @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                           Model model
                          ) {
         if (bindingResult.hasErrors()) {
             FieldError attachmentError = bindingResult.getFieldError("attachments");
+            FieldError imageError = bindingResult.getFieldError("mpMainImage");
+
             if (attachmentError != null) {
                 model.addAttribute("attachmentError", attachmentError.getDefaultMessage());
+            }
+
+            if (imageError != null) {
+                model.addAttribute("imageError", imageError.getDefaultMessage());
             }
             model.addAttribute("categories", translationService.getCategoriesByLanguage());
             return "books/create-book";

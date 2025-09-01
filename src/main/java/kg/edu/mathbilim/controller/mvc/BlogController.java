@@ -79,17 +79,13 @@ public class BlogController {
     @PostMapping("/create")
     public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
                              BindingResult bindingResult,
-//                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              Model model) {
         if (bindingResult.hasErrors()) {
             FieldError imageError = bindingResult.getFieldError("mpMainImage");
             if (imageError != null) {
                 model.addAttribute("image", imageError.getDefaultMessage());
             }
-//            if (mpMainImage == null || mpMainImage.isEmpty()) {
-//                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
-//                model.addAttribute("image", errorMessage);
-//            }
+
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }

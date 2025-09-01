@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.dto.event;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
@@ -52,7 +53,7 @@ public class EventDto extends ContentDto {
 
     @AtLeastOneTranslationRequired
     @Builder.Default
-    List<EventTranslationDto> eventTranslations = createDefaultTranslations();
+    List<@Valid EventTranslationDto> eventTranslations = createDefaultTranslations();
 
     static List<EventTranslationDto> createDefaultTranslations() {
         return TranslationUtil.createDefaultTranslations(languageCode ->

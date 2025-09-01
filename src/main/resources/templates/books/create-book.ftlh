@@ -45,6 +45,10 @@
                                 </button>
                             </div>
                         </div>
+                        <small class="text-danger">
+                            ${imageError!""}
+                        </small>
+                        <br>
                         <small class="form-text text-muted">
                             <@spring.message "books.cover.aspectRatio"/>
                         </small>
