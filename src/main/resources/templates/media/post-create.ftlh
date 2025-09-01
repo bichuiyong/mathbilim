@@ -7,9 +7,7 @@
             <div class="col-lg-10">
                 <div class="card">
                     <#assign currentLocale = springMacroRequestContext.locale.language>
-                    <small class="text-danger">
-                        ${imageError!""}
-                    </small>
+
                     <div class="card-header">
                         <h2 class="mb-0"><@spring.message "posts.create.title"/></h2>
                     </div>
@@ -55,9 +53,14 @@
                                         </button>
                                     </div>
                                 </div>
+                                <small class="text-danger">
+                                    ${imageError!""}
+                                </small>
+                                <br>
                                 <small class="form-text text-muted">
                                     <@spring.message "posts.cover.aspectRatio"/>
                                 </small>
+
                             </div>
 
                             <div class="card mb-4">
@@ -170,6 +173,9 @@
                                     <@spring.message "posts.attachments"/>
                                 </label>
                                 <input type="file" class="form-control" name="attachments" multiple>
+                                <#if attachmentError??>
+                                    <span class="text-danger small">${attachmentError}</span>
+                                </#if>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">

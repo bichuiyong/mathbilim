@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,10 +70,16 @@ public class    PostController {
 
 
         if (bindingResult.hasErrors() || post.getImage() == null || post.getImage().isEmpty()) {
-            if (post.getImage() == null || post.getImage().isEmpty()) {
-                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
-                model.addAttribute("imageError",errorMessage);
+            FieldError attachmentError = bindingResult.getFieldError("attachments");
+            if (attachmentError != null) {
+                model.addAttribute("attachmentError", attachmentError.getDefaultMessage());
             }
+
+            FieldError mainImageError = bindingResult.getFieldError("image");
+            if (mainImageError != null) {
+                model.addAttribute("imageError", mainImageError.getDefaultMessage());
+            }
+
             return "media/post-create";
         }
         postService.createPost(post);
