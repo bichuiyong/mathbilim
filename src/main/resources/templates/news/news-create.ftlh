@@ -131,13 +131,11 @@
                                 </div>
                             </div>
 
-                            <!-- Attachments -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><@spring.message "news.create.attachments" /></label>
-                                <input type="file" class="form-control" name="attachments" multiple>
+                                <input type="file" class="form-control" accept="image/*" name="attachments" multiple>
                             </div>
 
-                            <!-- Buttons -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <span class="text-muted">

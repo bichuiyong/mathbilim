@@ -50,14 +50,14 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
     List<Post> findTop10ByStatusOrderByCreatedAtDesc(ContentStatus status);
 
     @Query("""
-            SELECT DISTINCT p FROM Post p
-            JOIN p.postTranslations t
-            WHERE p.status = :contentStatus
-                        AND
-            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
-                        t.id.languageCode = :languageCode
-                             and p.deleted=false
-            ORDER BY p.createdAt DESC
+            SELECT p FROM Post p
+           WHERE p.id IN (
+               SELECT t.post.id FROM PostTranslation t
+               WHERE t.id.languageCode = :languageCode
+                 AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+           )
+           AND p.status = :contentStatus
+           AND p.deleted = false
             """)
     Page<Post> getPostsByStatusWithQuery(ContentStatus contentStatus,
                                          String query,
@@ -65,20 +65,19 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
 
 
     @Query("""
-    SELECT DISTINCT p FROM Post p
-    JOIN p.postTranslations t
-    WHERE p.status = :status
-      AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
-      AND p.creator.id = :userId
-    ORDER BY p.createdAt DESC
-""")
+                SELECT DISTINCT p FROM Post p
+                JOIN p.postTranslations t
+                WHERE p.status = :status
+                  AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                  AND p.creator.id = :userId
+                ORDER BY p.createdAt DESC
+            """)
     Page<Post> getPostsByStatusAndQuery(
             @Param("status") ContentStatus status,
             @Param("query") String query,
             @Param("userId") Long userId,
             Pageable pageable
     );
-
 
 
     @Query("""
@@ -117,8 +116,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
             ORDER BY p.createdAt DESC
             """)
     Page<Post> getPostsByCreatorId(ContentStatus contentStatus,
-                               Long userId,
-                               Pageable pageable);
+                                   Long userId,
+                                   Pageable pageable);
 
 
     @Query("""

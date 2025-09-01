@@ -135,26 +135,50 @@ document.addEventListener("DOMContentLoaded", function () {
             const locationType = item.isOffline ? 'Офлайн' : 'Онлайн';
 
             additionalInfo = `
-                <div class="mb-3">
-                    <strong>Дата и время:</strong> ${eventDateTime}
-                </div>
-                <div class="mb-3">
-                    <strong>Тип:</strong> ${locationType}
-                </div>
-                <div class="mb-3">
-                    <strong>${item.isOffline ? 'Адрес' : 'Ссылка'}:</strong> ${location}
+                <div class="additional-info">
+                    <div class="info-item">
+                        <div class="info-label">Дата и время:</div>
+                        <div class="info-value">${eventDateTime}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Тип:</div>
+                        <div class="info-value">${locationType}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">${item.isOffline ? 'Адрес' : 'Ссылка'}:</div>
+                        <div class="info-value">${location}</div>
+                    </div>
                 </div>
             `;
         } else if (type === 'book') {
-            additionalInfo = `
-                ${item.authors ? `<div class="mb-3"><strong>Авторы:</strong> ${item.authors}</div>` : ''}
-                ${item.isbn ? `<div class="mb-3"><strong>ISBN:</strong> ${item.isbn}</div>` : ''}
-                ${item.category && item.category.name ? `<div class="mb-3"><strong>Категория:</strong> ${item.category.name}</div>` : ''}
-            `;
+            const infoItems = [];
+            if (item.authors) infoItems.push({ label: 'Авторы', value: item.authors });
+            if (item.isbn) infoItems.push({ label: 'ISBN', value: item.isbn });
+            if (item.category && item.category.name) infoItems.push({ label: 'Категория', value: item.category.name });
+
+            if (infoItems.length > 0) {
+                additionalInfo = `
+                    <div class="additional-info">
+                        ${infoItems.map(info => `
+                            <div class="info-item">
+                                <div class="info-label">${info.label}:</div>
+                                <div class="info-value">${info.value}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
         } else if (type === 'post' || type === 'blog') {
-            additionalInfo = `
-                ${item.postFiles && item.postFiles.length > 0 ? `<div class="mb-3"><strong>Файлы:</strong> ${item.postFiles.length} файл(ов)</div>` : ''}
-            `;
+            if (item.postFiles && item.postFiles.length > 0) {
+                additionalInfo = `
+                    <div class="additional-info">
+                        <div class="info-item">
+                            <div class="info-label">Файлы:</div>
+                            <div class="info-value">${item.postFiles.length} файл(ов)</div>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         modalContent.innerHTML = `
@@ -163,40 +187,103 @@ document.addEventListener("DOMContentLoaded", function () {
                      alt="Изображение" class="modal-image"
                      onerror="this.src='/static/images/img.png'">
             </div>
-            <div class="mb-3">
-                <strong>Заголовок:</strong> ${title}
+            
+            <div class="content-detail-item">
+                <div class="content-detail-label">Заголовок</div>
+                <div class="content-detail-value">${title}</div>
             </div>
-            <div class="mb-3">
-                <strong>Тип:</strong> <span class="badge bg-secondary">${getTypeName(type)}</span>
+
+            <div class="content-detail-item">
+                <div class="content-detail-label">Тип</div>
+                <div class="content-detail-value">
+                    <span class="badge bg-secondary">${getTypeName(type)}</span>
+                </div>
             </div>
-            <div class="mb-3">
-                <strong>Автор:</strong> ${author}
+
+            <div class="content-detail-item">
+                <div class="content-detail-label">Автор</div>
+                <div class="content-detail-value">${author}</div>
             </div>
-            <div class="mb-3">
-                <strong>Дата создания:</strong> ${date}
+
+            <div class="content-detail-item">
+                <div class="content-detail-label">Дата создания</div>
+                <div class="content-detail-value">${date}</div>
             </div>
+
             ${additionalInfo}
-            <div class="mb-3">
-                <strong>${type === 'book' ? 'Описание' : (type === 'event' ? 'Описание' : 'Контент')}:</strong>
-                <div class="publication-text collapsed" id="modalPostContent">${content}</div>
-                <div class="show-more-btn" id="modalToggleButton">Показать ещё</div>
+
+            <div class="content-detail-item">
+                <div class="content-detail-label">${type === 'book' ? 'Описание' : (type === 'event' ? 'Описание' : 'Контент')}</div>
+                <div class="content-detail-value">
+                    <div class="publication-text" id="modalPostContent">${content}</div>
+                    <div class="show-more-btn" id="modalToggleButton" style="display: none;">
+                        Показать полностью <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
             </div>
         `;
 
-        const toggleBtn = document.getElementById('modalToggleButton');
-        const postContent = document.getElementById('modalPostContent');
-
-        toggleBtn.addEventListener('click', function () {
-            if (postContent.classList.contains('collapsed')) {
-                postContent.classList.remove('collapsed');
-                toggleBtn.textContent = 'Скрыть';
-            } else {
-                postContent.classList.add('collapsed');
-                toggleBtn.textContent = 'Показать ещё';
-            }
-        });
+        // Инициализируем кнопку "Показать еще"
+        initializeToggleButton();
 
         modal.show();
+    }
+
+    function initializeToggleButton() {
+        const postContent = document.getElementById('modalPostContent');
+        const toggleBtn = document.getElementById('modalToggleButton');
+
+        if (!postContent || !toggleBtn) return;
+
+        // Сбрасываем предыдущие обработчики событий
+        const newToggleBtn = toggleBtn.cloneNode(true);
+        toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+
+        // Проверяем, нужна ли кнопка "Показать еще"
+        const maxHeight = 150;
+
+        // Временно убираем ограничения для измерения реальной высоты
+        postContent.style.maxHeight = 'none';
+        postContent.style.overflow = 'visible';
+        postContent.classList.remove('collapsed', 'expanded');
+
+        const actualHeight = postContent.scrollHeight;
+
+        if (actualHeight > maxHeight) {
+            // Показываем кнопку и применяем ограничения
+            postContent.classList.add('collapsed');
+            postContent.style.maxHeight = '';
+            postContent.style.overflow = '';
+            newToggleBtn.style.display = 'inline-block';
+
+            newToggleBtn.addEventListener('click', function() {
+                const isCollapsed = postContent.classList.contains('collapsed');
+
+                if (isCollapsed) {
+                    postContent.classList.remove('collapsed');
+                    postContent.classList.add('expanded');
+                    newToggleBtn.innerHTML = 'Скрыть <i class="fas fa-chevron-up"></i>';
+                    newToggleBtn.classList.add('expanded');
+                } else {
+                    postContent.classList.remove('expanded');
+                    postContent.classList.add('collapsed');
+                    newToggleBtn.innerHTML = 'Показать полностью <i class="fas fa-chevron-down"></i>';
+                    newToggleBtn.classList.remove('expanded');
+
+                    // Прокручиваем модальное окно к началу контента
+                    const modalBody = postContent.closest('.modal-body');
+                    if (modalBody) {
+                        modalBody.scrollTop = postContent.offsetTop - modalBody.offsetTop - 20;
+                    }
+                }
+            });
+        } else {
+            // Скрываем кнопку, если контент помещается
+            newToggleBtn.style.display = 'none';
+            postContent.classList.remove('collapsed', 'expanded');
+            postContent.style.maxHeight = 'none';
+            postContent.style.overflow = 'visible';
+        }
     }
 
     function showContentDetailsById(id, type) {
@@ -286,13 +373,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         cardElement.remove();
                         const remainingCards = contentList.querySelectorAll('.content-card');
                         if (remainingCards.length === 0 && totalElements > currentSize) {
-                            // Если элементов больше чем на одной странице, но текущая страница пуста
                             if (currentPage > 0) {
                                 currentPage--;
                             }
                             loadContent();
                         } else if (remainingCards.length === 0) {
-                            // Если это последние элементы
                             showNoContent();
                         }
                     }, 300);
@@ -417,7 +502,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         paginationContainer.style.display = 'block';
 
-        // Создаем контейнер пагинации если его нет
         let pagination = paginationContainer.querySelector('.pagination');
         if (!pagination) {
             pagination = document.createElement('nav');
@@ -428,7 +512,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         pagination.innerHTML = '';
 
-        // Предыдущая страница
         const prevLi = document.createElement('li');
         prevLi.className = `page-item ${currentPageNum === 0 ? 'disabled' : ''}`;
         prevLi.innerHTML = `
@@ -438,16 +521,14 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
         pagination.appendChild(prevLi);
 
-        const maxVisiblePages = 7; // Увеличено с 5 до 7 для соответствия другим функциям
+        const maxVisiblePages = 7;
         let startPage = Math.max(0, currentPageNum - Math.floor(maxVisiblePages / 2));
         let endPage = Math.min(totalPagesNum - 1, startPage + maxVisiblePages - 1);
 
-        // Корректируем диапазон если недостаточно страниц
         if (endPage - startPage < maxVisiblePages - 1) {
             startPage = Math.max(0, endPage - maxVisiblePages + 1);
         }
 
-        // Первая страница и многоточие (если нужно)
         if (startPage > 0) {
             const firstLi = document.createElement('li');
             firstLi.className = 'page-item';
@@ -462,7 +543,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Основные страницы
         for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement('li');
             if (i === currentPageNum) {
@@ -476,7 +556,6 @@ document.addEventListener("DOMContentLoaded", function () {
             pagination.appendChild(li);
         }
 
-        // Многоточие и последняя страница (если нужно)
         if (endPage < totalPagesNum - 1) {
             if (endPage < totalPagesNum - 2) {
                 const dotsLi = document.createElement('li');
@@ -491,7 +570,6 @@ document.addEventListener("DOMContentLoaded", function () {
             pagination.appendChild(lastLi);
         }
 
-        // Следующая страница
         const nextLi = document.createElement('li');
         nextLi.className = `page-item ${currentPageNum === totalPagesNum - 1 ? 'disabled' : ''}`;
         nextLi.innerHTML = `
@@ -531,7 +609,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadAllContent() {
         const types = ['post', 'blog', 'event', 'book'];
 
-        const promises = types.map(type => loadTypeContent(type, 0, 1000)); // Большой размер для получения всех элементов
+        const promises = types.map(type => loadTypeContent(type, 0, 1000));
 
         Promise.all(promises)
             .then(results => {
@@ -545,18 +623,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
 
-                // Сортируем по дате создания
                 allItems.sort((a, b) => {
                     const dateA = new Date(a.item.createdAt || 0);
                     const dateB = new Date(b.item.createdAt || 0);
                     return dateB - dateA;
                 });
 
-                // Применяем пагинацию
                 totalElements = allItems.length;
                 totalPages = Math.ceil(totalElements / currentSize);
 
-                // Проверяем, не превышает ли текущая страница общее количество страниц
                 if (currentPage >= totalPages && totalPages > 0) {
                     currentPage = totalPages - 1;
                 }
@@ -594,10 +669,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 totalPages = result.totalPages || 0;
                 totalElements = result.totalElements || result.content.length;
 
-                // Проверяем, не превышает ли текущая страница общее количество страниц
                 if (currentPage >= totalPages && totalPages > 0) {
                     currentPage = totalPages - 1;
-                    // Перезагружаем с исправленной страницей
                     loadSpecificContent(type);
                     return;
                 }
@@ -651,23 +724,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function performSearch() {
         currentQuery = searchInput.value.trim();
-        currentPage = 0; // Сбрасываем на первую страницу при поиске
-        loadContent();
-    }
-
-    function resetFilters() {
-        currentQuery = '';
         currentPage = 0;
-        currentType = 'all';
-        searchInput.value = '';
-        typeFilter.value = 'all';
         loadContent();
     }
 
     // Обработчики событий
     typeFilter.addEventListener('change', (e) => {
         currentType = e.target.value;
-        currentPage = 0; // Сбрасываем на первую страницу при смене фильтра
+        currentPage = 0;
         loadContent();
     });
 
@@ -695,7 +759,6 @@ document.addEventListener("DOMContentLoaded", function () {
     modalApproveBtn.addEventListener('click', () => performModerationAction('approve'));
     modalRejectBtn.addEventListener('click', () => performModerationAction('reject'));
 
-    // Инициализация
     loadContent();
 });
 
