@@ -1,6 +1,7 @@
 package kg.edu.mathbilim.repository.blog;
 
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
+import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.post.Post;
@@ -145,6 +146,9 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
                                          Pageable pageable);
 
 
+    Page<Blog> findAllByDeletedFalse(Pageable pageable);
+
+
     @Query("""
             SELECT DISTINCT p FROM Blog p
             WHERE p.status = :contentStatus
@@ -194,6 +198,16 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
             """)
     Page<Blog> getBlogsWithQuery(@Param("query") String query,
                                  @Param("userId") Long userId,
+                                 Pageable pageable);
+
+    @Query("""
+                SELECT DISTINCT p FROM Blog p
+                JOIN p.blogTranslations t
+                WHERE LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                            and p.deleted = false
+                ORDER BY p.createdAt DESC
+            """)
+    Page<Blog> getBlogsWithQuery(@Param("query") String query,
                                  Pageable pageable);
 
 
