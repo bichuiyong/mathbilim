@@ -283,6 +283,11 @@
     </footer>
 
     <script>
+        <#noparse>
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.cookie = `timezone=${timeZone}; path=/; max-age=${60*60*24*365}; SameSite=Lax`;
+        </#noparse>
+
         document.addEventListener("DOMContentLoaded", () => {
             const navbar = document.querySelector(".navbar");
             if (!navbar) return;
