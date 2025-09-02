@@ -280,6 +280,17 @@ class AllContentManager {
         return title || 'Без заголовка';
     }
 
+    getImageId(item, contentType) {
+        if (!item) return null;
+
+        switch (contentType) {
+            case 'olympiad':
+                return item.fileId || null;
+            default:
+                return item.mainImageId || null;
+        }
+    }
+
     renderServerPagination(data) {
         const pagination = document.getElementById('allContentPagination');
         if (!pagination) return;
@@ -417,6 +428,7 @@ class AllContentManager {
         const contentType = item.contentType || 'unknown';
         const typeLabel = this.getTypeLabel(contentType);
         const title = this.getContentTitle(item, contentType);
+        const imageId = this.getImageId(item, contentType);
 
         const creatorName = this.getCreatorName(item);
         const createdAt = this.formatDate(item.createdAt);
@@ -427,6 +439,8 @@ class AllContentManager {
         const status = item.status || '';
         const statusBadge = status ? `<span class="badge ${this.getStatusBadgeClass(status)} ms-2">${this.getStatusLabel(status)}</span>` : '';
 
+        const imageHtml = imageId ? `<img src="/api/files/${imageId}/view" alt="${contentType} Image" class="content-image">` : '';
+
         return `
             <div class="card mb-3">
                 <div class="card-body">
@@ -436,8 +450,7 @@ class AllContentManager {
                                 <span class="badge bg-primary me-2">${typeLabel}</span>
                             </div>
                             
-                                        <img src="/api/files/${item.mainImageId}/view" alt="${item.type} Image" class="content-image">
-
+                            ${imageHtml}
                             
                             <h6 class="card-title mb-2">${title}</h6>
                             
@@ -499,7 +512,7 @@ class AllContentManager {
             'event': `/events/delete/${id}`,
             'book': `/books/delete/${id}`,
             'news': `/news/delete/${id}`,
-            'olympiad': `/olympiads/delete/${id}`
+            'olympiad': `/olympiad/delete/${id}`
         };
 
         const deleteUrl = deleteUrls[type];
@@ -572,7 +585,6 @@ class AllContentManager {
                     responseText: responseText
                 });
 
-                // Пробуем распарсить JSON ошибку
                 try {
                     const errorData = JSON.parse(responseText);
                     console.error('📋 Данные ошибки:', errorData);
@@ -644,7 +656,6 @@ class AllContentManager {
             }
         }
 
-        // Номера страниц
         for (let i = startPage; i <= endPage; i++) {
             if (i === this.currentPage) {
                 paginationHtml += `
@@ -661,7 +672,6 @@ class AllContentManager {
             }
         }
 
-        // Многоточие и последняя страница
         if (endPage < totalPages - 1) {
             if (endPage < totalPages - 2) {
                 paginationHtml += `
