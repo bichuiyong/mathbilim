@@ -1107,7 +1107,7 @@
                                     <!-- Фильтры для всего контента -->
                                 <div class="all-content-filters mb-4">
                                     <div class="row g-2">
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <select class="form-select form-select-sm" id="allContentTypeFilter">
                                                 <option value="all"><@spring.message "filter.all.types"/></option>
                                                 <option value="post"><@spring.message "content.type.post"/></option>
@@ -1116,14 +1116,6 @@
                                                 <option value="book"><@spring.message "content.type.book"/></option>
                                                 <option value="news"><@spring.message "content.type.news"/></option>
                                                 <option value="olympiad"><@spring.message "content.type.olympiad"/></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select form-select-sm" id="allContentStatusFilter">
-                                                <option value=""><@spring.message "filter.all.statuses"/></option>
-                                                <option value="APPROVED"><@spring.message "status.approved"/></option>
-                                                <option value="REJECTED"><@spring.message "status.rejected"/></option>
-                                                <option value="PENDING_REVIEW"><@spring.message "status.pending"/></option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
