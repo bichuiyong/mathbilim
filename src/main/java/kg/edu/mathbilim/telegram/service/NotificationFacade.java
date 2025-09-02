@@ -45,12 +45,18 @@ public class NotificationFacade {
         List<UserNotification> subscriptions = notificationRepository
                 .findByTypeWithUserNative(notificationType.getId());
 
+        String description = notificationData.getDescription();
+        if (description != null) {
+            description = description.replaceAll("Powered by Froala Editor", "").trim();
+            notificationData.setDescription(description);
+        }
+
         log.info("Начинается рассылка уведомлений типа '{}' для {} подписчиков",
                 type, subscriptions.size());
         log.info("Данные уведомления: title='{}', description='{}', mainImageId={}",
                 notificationData.getTitle(),
-                notificationData.getDescription() != null ?
-                        notificationData.getDescription().substring(0, Math.min(50, notificationData.getDescription().length())) + "..." : "null",
+                description != null ?
+                        description.substring(0, Math.min(50, description.length())) + "..." : "null",
                 notificationData.getMainImageId());
 
         int successCount = 0;
@@ -75,6 +81,7 @@ public class NotificationFacade {
 
         log.info("Рассылка завершена. Успешно: {}, Ошибок: {}", successCount, errorCount);
     }
+
 
     public void notifyUser(Long telegramId, NotificationEnum type, NotificationData notificationData) {
         log.info("Отправка уведомления пользователю с telegramId: {}", telegramId);

@@ -4,6 +4,7 @@ import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController("restNews")
 @RequestMapping("api/news")
 @RequiredArgsConstructor

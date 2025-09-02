@@ -1,6 +1,54 @@
 <#import "../layout.ftlh" as main>
 <#import "/spring.ftl" as spring>
 <@main.layout>
+    <#if successMessage??>
+        <div id="infoAlert" class="info-alert">
+            <span class="info-icon">ℹ️</span>
+            <span class="info-text">${successMessage}</span>
+        </div>
+    </#if>
+    <style>
+
+        .info-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e7f3fe;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+            padding: 12px 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            z-index: 1050;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 5s forwards;
+        }
+
+        .info-icon {
+            font-weight: bold;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+    </style>
     <#assign known = SPRING_SECURITY_CONTEXT?? >
     <#if known>
         <#assign
@@ -18,13 +66,15 @@
                         <h3 class="h5 fw-bold mb-3"><@spring.message "books.sidebar.title"/></h3>
                         <ul class="nav flex-column categories-list">
                             <li class="nav-item">
-                                <a href="/books" class="nav-link category-link <#if categoryId??>text-primary<#else>fw-bold active-category</#if>">
+                                <a href="/books"
+                                   class="nav-link category-link <#if categoryId??>text-primary<#else>fw-bold active-category</#if>">
                                     <@spring.message "books.sidebar.all"/>
                                 </a>
                             </li>
                             <#list categories as category>
                                 <li class="nav-item">
-                                    <a href="/books?categoryId=${category.id}" class="nav-link category-link <#if categoryId?? && categoryId == category.id>fw-bold active-category</#if>">
+                                    <a href="/books?categoryId=${category.id}"
+                                       class="nav-link category-link <#if categoryId?? && categoryId == category.id>fw-bold active-category</#if>">
                                         ${category.translations[0].translation}
                                     </a>
                                 </li>
@@ -113,7 +163,7 @@
                                                     </#list>
                                                 </#if>
 
-                                             ${categoryName?has_content?then(categoryName, "No category")}
+                                                ${categoryName?has_content?then(categoryName, "No category")}
                                         </span>
 
                                         </div>
@@ -121,7 +171,7 @@
                                         <div class="mt-auto d-flex gap-2">
                                             <a href="/books/${bookItem.id}"
                                                class="btn btn-sm btn-outline-primary details-btn">
-                                                Подробнее
+                                                <@spring.message "book.detail"/>
                                             </a>
                                             <#if currentUser?? && (isAdmin || (bookItem.creator?? && bookItem.creator.id == currentUser.id))>
                                                 <form action="/books/delete/${bookItem.id}" method="post" style="">
@@ -268,7 +318,7 @@
 
         .sidebar-content {
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .categories-list {
@@ -347,13 +397,13 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             transition: left 0.5s ease;
         }
 
         .book-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             border-color: #0d6efd;
         }
 
@@ -361,12 +411,29 @@
             left: 100%;
         }
 
-        .book-card:nth-child(1) { animation-delay: 0.1s; }
-        .book-card:nth-child(2) { animation-delay: 0.2s; }
-        .book-card:nth-child(3) { animation-delay: 0.3s; }
-        .book-card:nth-child(4) { animation-delay: 0.4s; }
-        .book-card:nth-child(5) { animation-delay: 0.5s; }
-        .book-card:nth-child(n+6) { animation-delay: 0.6s; }
+        .book-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .book-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .book-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .book-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .book-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .book-card:nth-child(n+6) {
+            animation-delay: 0.6s;
+        }
 
         /* Обложка книги */
         .book-cover-container {
@@ -379,7 +446,7 @@
             object-fit: cover;
             border-radius: 6px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .book-cover-placeholder {
@@ -388,7 +455,7 @@
             border-radius: 6px;
             font-size: 2rem;
             color: #6c757d;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .book-cover-overlay {
@@ -404,7 +471,7 @@
         }
 
         .view-badge {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 2px 6px;
             border-radius: 10px;
@@ -608,7 +675,7 @@
                 max-height: 300px;
                 margin: 0;
                 border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
                 position: relative;
                 overflow: hidden;
                 background: white;
@@ -720,7 +787,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             function truncateText(element, maxLength) {
                 const originalText = element.textContent;
                 if (originalText.length > maxLength) {
@@ -742,7 +809,7 @@
                 rootMargin: '0px 0px -50px 0px'
             };
 
-            const observer = new IntersectionObserver(function(entries) {
+            const observer = new IntersectionObserver(function (entries) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.style.opacity = '1';
@@ -756,11 +823,11 @@
             });
 
             document.querySelectorAll('.book-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
+                card.addEventListener('mouseenter', function () {
                     this.style.transform = 'translateY(-3px) scale(1.02)';
                 });
 
-                card.addEventListener('mouseleave', function() {
+                card.addEventListener('mouseleave', function () {
                     this.style.transform = 'translateY(0) scale(1)';
                 });
             });
@@ -787,7 +854,7 @@
             const toggleButton = document.querySelector('[data-bs-target="#sidebarCategories"]');
 
             if (sidebar && toggleButton) {
-                document.addEventListener('click', function(e) {
+                document.addEventListener('click', function (e) {
                     if (window.innerWidth <= 768 &&
                         sidebar.classList.contains('show') &&
                         !sidebar.contains(e.target) &&
@@ -798,14 +865,14 @@
                     }
                 });
 
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape' && window.innerWidth <= 768 && sidebar.classList.contains('show')) {
                         const bsCollapse = new bootstrap.Collapse(sidebar);
                         bsCollapse.hide();
                     }
                 });
 
-                sidebar.addEventListener('click', function(e) {
+                sidebar.addEventListener('click', function (e) {
                     if (window.innerWidth <= 768 && e.target.classList.contains('category-link')) {
                         setTimeout(() => {
                             const bsCollapse = new bootstrap.Collapse(sidebar);

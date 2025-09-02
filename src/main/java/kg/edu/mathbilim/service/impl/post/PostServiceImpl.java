@@ -10,7 +10,6 @@ import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
 import kg.edu.mathbilim.model.File;
-import kg.edu.mathbilim.model.news.News;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.post.Post;
 import kg.edu.mathbilim.model.post.PostTranslation;
@@ -19,7 +18,6 @@ import kg.edu.mathbilim.repository.post.PostRepository;
 import kg.edu.mathbilim.service.impl.abstracts.AbstractTranslatableContentService;
 import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
-import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.post.PostTranslationService;
 import kg.edu.mathbilim.telegram.service.NotificationData;
@@ -28,7 +26,6 @@ import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -119,18 +116,40 @@ public class PostServiceImpl extends
     }
 
 
-    public Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang) {
-        return getContentByStatus(
+    public Page<PostDto> getPostsByStatus(String status,
+                                          String query,
+                                          int page,
+                                          int size,
+                                          String sortBy,
+                                          String sortDirection,
+                                          String lang) {
+
+        log.info("getPostsByStatus called with status={}, query='{}', page={}, size={}, sortBy={}, sortDirection={}, lang={}",
+                status, query, page, size, sortBy, sortDirection, lang);
+
+        Page<PostDto> result = getContentByStatus(
                 status,
                 query,
                 page,
                 size,
                 sortBy,
                 sortDirection,
-                pageable -> repository.getPostsByStatus(ContentStatus.fromName(status), pageable),
-                (q, pageable) -> repository.getPostsByStatusWithQuery(ContentStatus.fromName(status), q, pageable, lang)
+                pageable -> {
+                    Page<Post> p = repository.getPostsByStatus(ContentStatus.fromName(status), pageable);
+                    log.info("Posts by status fetched: {}", p.getTotalElements());
+                    return p;
+                },
+                (q, pageable) -> {
+                    Page<Post> p = repository.getPostsByStatusWithQuery(ContentStatus.fromName(status), q, pageable, lang);
+                    log.info("Posts by status with query fetched: {}", p.getTotalElements());
+                    return p;
+                }
         );
+
+        log.info("Final posts returned: {}", result.getTotalElements());
+        return result;
     }
+
 
     @Override
     public void approve(Long id, String email) {

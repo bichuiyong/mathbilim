@@ -211,23 +211,17 @@ public class NewsServiceImpl extends
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        log.info("getNewsByLang called with query='{}', page={}, size={}, sortBy='{}', sortDirection='{}', lang='{}'",
-                query, page, size, sortBy, sortDirection, lang);
 
         Page<News> resultPage;
 
         if (query != null && !query.isEmpty()) {
-            log.info("Searching news by query '{}' and lang '{}'", query, lang);
             resultPage = repository.findNewsByQuery(query, lang, pageable);
         } else if (lang != null && !lang.isEmpty()) {
-            log.info("Searching news by language '{}'", lang);
             resultPage = repository.findByNewsWithLang(lang, pageable);
         } else {
-            log.info("Fetching all news");
             resultPage = repository.findAllNews(pageable);
         }
 
-        log.info("Found {} news items", resultPage.getTotalElements());
 
         return PaginationUtil.getPage(() -> resultPage, mapper::toDto);
     }

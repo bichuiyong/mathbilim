@@ -42,14 +42,6 @@ public class NewsController {
     ) {
         Page<NewsDto> newsPage = newsService.getNewsByLang(query, page, size, sortBy, sortDirection, lang);
 
-        newsPage.getContent().forEach(news -> {
-            System.out.println("📰 News ID: " + news.getId());
-            System.out.println("🔁 Translations:");
-            news.getNewsTranslations().forEach(t -> {
-                System.out.println(" - Lang: " + t.getLanguageCode() + ", Title: " + t.getTitle());
-            });
-        });
-
         model.addAttribute("news", newsPage);
         model.addAttribute("query", query);
         model.addAttribute("page", page);
@@ -87,6 +79,7 @@ public class NewsController {
         if (bindingResult.hasErrors()) {
             return "news/news-create";
         }
+
         newsService.create(newsDto);
         return redirect;
     }
