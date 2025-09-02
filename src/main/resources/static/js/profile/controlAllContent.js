@@ -62,33 +62,48 @@ class AllContentManager {
     }
 
     initEventListeners() {
-        // Фильтры
-        document.getElementById('allContentTypeFilter').addEventListener('change', (e) => {
-            this.currentType = e.target.value;
-            this.currentPage = 0;
-            this.loadAllContent();
-        });
+        // Проверяем существование элементов перед добавлением обработчиков
+        const typeFilter = document.getElementById('allContentTypeFilter');
+        const statusFilter = document.getElementById('allContentStatusFilter');
+        const searchBtn = document.getElementById('allContentSearchBtn');
+        const searchInput = document.getElementById('allContentSearch');
 
-        document.getElementById('allContentStatusFilter').addEventListener('change', (e) => {
-            this.currentStatus = e.target.value;
-            this.currentPage = 0;
-            this.loadAllContent();
-        });
+        // Фильтры
+        if (typeFilter) {
+            typeFilter.addEventListener('change', (e) => {
+                this.currentType = e.target.value;
+                this.currentPage = 0;
+                this.loadAllContent();
+            });
+        }
+
+        if (statusFilter) {
+            statusFilter.addEventListener('change', (e) => {
+                this.currentStatus = e.target.value;
+                this.currentPage = 0;
+                this.loadAllContent();
+            });
+        }
 
         // Поиск
-        document.getElementById('allContentSearchBtn').addEventListener('click', () => {
-            this.performSearch();
-        });
-
-        document.getElementById('allContentSearch').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
                 this.performSearch();
-            }
-        });
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch();
+                }
+            });
+        }
     }
 
     performSearch() {
-        this.currentQuery = document.getElementById('allContentSearch').value.trim();
+        const searchInput = document.getElementById('allContentSearch');
+        this.currentQuery = searchInput ? searchInput.value.trim() : '';
         this.currentPage = 0;
         this.loadAllContent();
     }
@@ -96,6 +111,11 @@ class AllContentManager {
     async loadAllContent() {
         const contentList = document.getElementById('allContentList');
         const pagination = document.getElementById('allContentPagination');
+
+        if (!contentList) {
+            console.error('Элемент allContentList не найден');
+            return;
+        }
 
         // Показать загрузку
         contentList.innerHTML = `
@@ -144,7 +164,13 @@ class AllContentManager {
                 const response = await fetch(`/api/admin/content?${params}`);
                 if (response.ok) {
                     const data = await response.json();
-                    return data.content.map(item => ({...item, contentType: type}));
+                    // Добавляем contentType к каждому элементу и проверяем структуру
+                    return data.content ? data.content.map(item => ({
+                        ...item,
+                        contentType: type,
+                        // Обеспечиваем наличие creator объекта
+                        creator: item.creator || { name: 'ADMIN', id: null }
+                    })) : [];
                 }
                 return [];
             } catch (error) {
@@ -156,7 +182,12 @@ class AllContentManager {
         const results = await Promise.all(promises);
         allContent = results.flat();
 
-        allContent.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // Сортируем по дате создания (новые сначала)
+        allContent.sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return dateB - dateA;
+        });
 
         const pageSize = 10;
         const startIndex = this.currentPage * pageSize;
@@ -182,66 +213,81 @@ class AllContentManager {
         const response = await fetch(`/api/admin/content?${params}`);
 
         if (!response.ok) {
-            throw new Error('Ошибка загрузки контента');
+            throw new Error(`Ошибка загрузки контента: ${response.status}`);
         }
 
         const data = await response.json();
-        const contentWithType = data.content.map(item => ({...item, contentType: this.currentType}));
+        // Добавляем проверку и обеспечиваем наличие creator
+        const contentWithType = (data.content || []).map(item => ({
+            ...item,
+            contentType: this.currentType,
+            creator: item.creator || { name: 'ADMIN', id: null }
+        }));
+
         this.renderAllContent(contentWithType);
         this.renderServerPagination(data);
     }
 
     getContentTitle(item, type) {
+        if (!item) return 'Без заголовка';
+
         let title = '';
 
-        switch (type) {
-            case 'event':
-                if (item.eventTranslations && item.eventTranslations[0]?.title) {
-                    title = item.eventTranslations[0].title;
-                } else {
+        try {
+            switch (type) {
+                case 'event':
+                    if (item.eventTranslations && Array.isArray(item.eventTranslations) && item.eventTranslations.length > 0) {
+                        title = item.eventTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
+                case 'blog':
+                    if (item.blogTranslations && Array.isArray(item.blogTranslations) && item.blogTranslations.length > 0) {
+                        title = item.blogTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
+                case 'post':
+                    if (item.postTranslations && Array.isArray(item.postTranslations) && item.postTranslations.length > 0) {
+                        title = item.postTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
+                case 'news':
+                    if (item.newsTranslations && Array.isArray(item.newsTranslations) && item.newsTranslations.length > 0) {
+                        title = item.newsTranslations[0].title;
+                    } else {
+                        title = item.title || 'Без заголовка';
+                    }
+                    break;
+                case 'book':
+                    title = item.name || item.title || 'Без заголовка';
+                    break;
+                case 'olympiad':
                     title = item.title || 'Без заголовка';
-                }
-                break;
-            case 'blog':
-                if (item.blogTranslations && item.blogTranslations[0]?.title) {
-                    title = item.blogTranslations[0].title;
-                } else {
+                    break;
+                default:
                     title = item.title || 'Без заголовка';
-                }
-                break;
-            case 'post':
-                if (item.postTranslations && item.postTranslations[0]?.title) {
-                    title = item.postTranslations[0].title;
-                } else {
-                    title = item.title || 'Без заголовка';
-                }
-                break;
-            case 'news':
-                if (item.newsTranslations && item.newsTranslations[0]?.title) {
-                    title = item.newsTranslations[0].title;
-                } else {
-                    title = item.title || 'Без заголовка';
-                }
-                break;
-            case 'book':
-                title = item.name || item.title || 'Без заголовка';
-                break;
-            case 'olympiad':
-                title = item.title || 'Без заголовка';
-                break;
-            default:
-                title = item.title || 'Без заголовка';
+            }
+        } catch (error) {
+            console.error(`Ошибка получения заголовка для ${type}:`, error);
+            title = 'Без заголовка';
         }
 
-        console.log(`📝 Итоговый title для ${type}:`, title);
-        return title;
+        return title || 'Без заголовка';
     }
 
     renderServerPagination(data) {
         const pagination = document.getElementById('allContentPagination');
-        const paginationList = pagination.querySelector('.pagination');
+        if (!pagination) return;
 
-        if (data.totalPages <= 1) {
+        const paginationList = pagination.querySelector('.pagination');
+        if (!paginationList) return;
+
+        if (!data || data.totalPages <= 1) {
             pagination.style.display = 'none';
             return;
         }
@@ -252,7 +298,7 @@ class AllContentManager {
         // Кнопка "Назад"
         paginationHtml += `
             <li class="page-item ${data.first ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="allContentManager.goToPage(${data.number - 1})" 
+                <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${data.number - 1})" 
                    ${data.first ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Previous">
                     &laquo;
                 </a>
@@ -272,7 +318,7 @@ class AllContentManager {
         if (startPage > 0) {
             paginationHtml += `
                 <li class="page-item">
-                    <a class="page-link" href="#" onclick="allContentManager.goToPage(0)">1</a>
+                    <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(0)">1</a>
                 </li>
             `;
 
@@ -296,7 +342,7 @@ class AllContentManager {
             } else {
                 paginationHtml += `
                     <li class="page-item">
-                        <a class="page-link" href="#" onclick="allContentManager.goToPage(${i})">${i + 1}</a>
+                        <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${i})">${i + 1}</a>
                     </li>
                 `;
             }
@@ -314,14 +360,14 @@ class AllContentManager {
 
             paginationHtml += `
                 <li class="page-item">
-                    <a class="page-link" href="#" onclick="allContentManager.goToPage(${data.totalPages - 1})">${data.totalPages}</a>
+                    <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${data.totalPages - 1})">${data.totalPages}</a>
                 </li>
             `;
         }
 
         paginationHtml += `
             <li class="page-item ${data.last ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="allContentManager.goToPage(${data.number + 1})" 
+                <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${data.number + 1})" 
                    ${data.last ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Next">
                     &raquo;
                 </a>
@@ -333,25 +379,53 @@ class AllContentManager {
 
     renderAllContent(content) {
         const contentList = document.getElementById('allContentList');
+        if (!contentList) {
+            console.error('Элемент allContentList не найден');
+            return;
+        }
 
         if (!content || content.length === 0) {
             contentList.innerHTML = `
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-inbox fa-3x mb-3"></i>
-                    <p>Контент не найден</p>
+                    <p>Нету контента</p>
                 </div>
             `;
             return;
         }
 
-        const contentHtml = content.map(item => this.renderContentCard(item)).join('');
-        contentList.innerHTML = contentHtml;
+        try {
+            const contentHtml = content.map(item => this.renderContentCard(item)).join('');
+            contentList.innerHTML = contentHtml;
+        } catch (error) {
+            console.error('Ошибка при рендеринге контента:', error);
+            contentList.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Ошибка отображения контента
+                </div>
+            `;
+        }
     }
 
     renderContentCard(item) {
-        const typeLabel = this.getTypeLabel(item.contentType);
-        const title = this.getContentTitle(item, item.contentType);
+        if (!item) {
+            console.warn('Получен пустой item');
+            return '';
+        }
 
+        const contentType = item.contentType || 'unknown';
+        const typeLabel = this.getTypeLabel(contentType);
+        const title = this.getContentTitle(item, contentType);
+
+        const creatorName = this.getCreatorName(item);
+        const createdAt = this.formatDate(item.createdAt);
+        const viewCount = item.viewCount || 0;
+        const description = item.description || '';
+        const itemId = item.id || 0;
+
+        const status = item.status || '';
+        const statusBadge = status ? `<span class="badge ${this.getStatusBadgeClass(status)} ms-2">${this.getStatusLabel(status)}</span>` : '';
 
         return `
             <div class="card mb-3">
@@ -361,6 +435,9 @@ class AllContentManager {
                             <div class="d-flex align-items-center mb-2">
                                 <span class="badge bg-primary me-2">${typeLabel}</span>
                             </div>
+                            
+                                        <img src="/api/files/${item.mainImageId}/view" alt="${item.type} Image" class="content-image">
+
                             
                             <h6 class="card-title mb-2">${title}</h6>
                             
@@ -384,8 +461,35 @@ class AllContentManager {
         `;
     }
 
+    getCreatorName(item) {
+        try {
+            if (item.creator && item.creator.name) {
+                return item.creator.name;
+            }
+
+            if (item.creatorName) {
+                return item.creatorName;
+            }
+
+            if (item.author && item.author.name) {
+                return item.author.name;
+            }
+
+            if (item.authorName) {
+                return item.authorName;
+            }
+
+            return 'ADMIN';
+        } catch (error) {
+            console.warn('Ошибка получения имени создателя:', error);
+            return 'ADMIN';
+        }
+    }
+
     async deleteContent(type, id, title) {
+
         if (!confirm(`Вы уверены, что хотите удалить "${title}"?`)) {
+            console.log('❌ Удаление отменено пользователем');
             return;
         }
 
@@ -399,7 +503,10 @@ class AllContentManager {
         };
 
         const deleteUrl = deleteUrls[type];
+        console.log('🔗 URL для удаления:', deleteUrl);
+
         if (!deleteUrl) {
+            console.error('❌ Неизвестный тип контента:', type);
             this.showNotification('Неизвестный тип контента', 'error');
             return;
         }
@@ -410,8 +517,10 @@ class AllContentManager {
             csrfToken = csrfMeta.getAttribute('content');
         }
 
+        console.log('🔐 CSRF токен:', csrfToken ? 'найден' : 'НЕ НАЙДЕН');
+
         if (!csrfToken) {
-            console.warn('CSRF токен не найден');
+            console.warn('⚠️ CSRF токен не найден');
             this.showNotification('Ошибка безопасности: CSRF токен не найден', 'error');
             return;
         }
@@ -421,6 +530,12 @@ class AllContentManager {
             formData.append('_csrf', csrfToken);
             formData.append('_method', 'delete');
 
+            console.log('📤 Отправка запроса на удаление...');
+            console.log('📋 FormData содержимое:', {
+                '_csrf': csrfToken,
+                '_method': 'delete'
+            });
+
             const response = await fetch(deleteUrl, {
                 method: 'POST',
                 body: formData,
@@ -429,23 +544,61 @@ class AllContentManager {
                 }
             });
 
+            console.log('📥 Ответ сервера:', {
+                status: response.status,
+                statusText: response.statusText,
+                ok: response.ok,
+                url: response.url
+            });
+
+            const responseText = await response.text();
+
+
             if (response.ok) {
-                this.showNotification('Контент успешно удален', 'success');
-                this.loadAllContent();
+                console.log('✅ Сервер сообщил об успешном удалении');
+
+                if (responseText.includes('success') || responseText.includes('удален') || response.status === 200) {
+                    this.showNotification('Контент успешно удален', 'success');
+                    console.log('🔄 Перезагружаем список контента...');
+                    await this.loadAllContent();
+                } else {
+                    console.warn('⚠️ Сервер вернул OK, но в ответе нет подтверждения удаления');
+                    this.showNotification('Возможно, контент не был удален. Проверьте вручную.', 'warning');
+                }
             } else {
-                throw new Error(`Ошибка сервера: ${response.status}`);
+                console.error('❌ Ошибка сервера при удалении:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    responseText: responseText
+                });
+
+                // Пробуем распарсить JSON ошибку
+                try {
+                    const errorData = JSON.parse(responseText);
+                    console.error('📋 Данные ошибки:', errorData);
+                    this.showNotification(`Ошибка удаления: ${errorData.message || errorData.error || 'Неизвестная ошибка'}`, 'error');
+                } catch (parseError) {
+                    this.showNotification(`Ошибка сервера: ${response.status} - ${response.statusText}`, 'error');
+                }
             }
 
         } catch (error) {
-            console.error('Ошибка при удалении:', error);
-            this.showNotification('Ошибка при удалении контента', 'error');
+            console.error('💥 Критическая ошибка при удалении:', error);
+            console.error('📊 Детали ошибки:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+            this.showNotification('Критическая ошибка при удалении контента', 'error');
         }
     }
 
-
     renderClientPagination(totalItems, pageSize) {
         const pagination = document.getElementById('allContentPagination');
+        if (!pagination) return;
+
         const paginationList = pagination.querySelector('.pagination');
+        if (!paginationList) return;
 
         const totalPages = Math.ceil(totalItems / pageSize);
 
@@ -459,7 +612,7 @@ class AllContentManager {
 
         paginationHtml += `
             <li class="page-item ${this.currentPage === 0 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="allContentManager.goToPage(${this.currentPage - 1})" 
+                <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${this.currentPage - 1})" 
                    ${this.currentPage === 0 ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Previous">
                     &laquo;
                 </a>
@@ -478,7 +631,7 @@ class AllContentManager {
         if (startPage > 0) {
             paginationHtml += `
                 <li class="page-item">
-                    <a class="page-link" href="#" onclick="allContentManager.goToPage(0)">1</a>
+                    <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(0)">1</a>
                 </li>
             `;
 
@@ -502,7 +655,7 @@ class AllContentManager {
             } else {
                 paginationHtml += `
                     <li class="page-item">
-                        <a class="page-link" href="#" onclick="allContentManager.goToPage(${i})">${i + 1}</a>
+                        <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${i})">${i + 1}</a>
                     </li>
                 `;
             }
@@ -520,14 +673,14 @@ class AllContentManager {
 
             paginationHtml += `
                 <li class="page-item">
-                    <a class="page-link" href="#" onclick="allContentManager.goToPage(${totalPages - 1})">${totalPages}</a>
+                    <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${totalPages - 1})">${totalPages}</a>
                 </li>
             `;
         }
 
         paginationHtml += `
             <li class="page-item ${this.currentPage >= totalPages - 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="allContentManager.goToPage(${this.currentPage + 1})" 
+                <a class="page-link" href="#" onclick="event.preventDefault(); allContentManager.goToPage(${this.currentPage + 1})" 
                    ${this.currentPage >= totalPages - 1 ? 'tabindex="-1" aria-disabled="true"' : ''} aria-label="Next">
                     &raquo;
                 </a>
@@ -538,6 +691,7 @@ class AllContentManager {
     }
 
     goToPage(page) {
+        if (page < 0) page = 0;
         this.currentPage = page;
         this.loadAllContent();
     }
@@ -556,7 +710,7 @@ class AllContentManager {
             case 'APPROVED': return 'Одобрено';
             case 'REJECTED': return 'Отклонено';
             case 'PENDING_REVIEW': return 'На рассмотрении';
-            default: return status;
+            default: return status || 'Неизвестно';
         }
     }
 
@@ -569,43 +723,58 @@ class AllContentManager {
             'news': 'Новость',
             'olympiad': 'Олимпиада'
         };
-        return labels[type] || type;
+        return labels[type] || type || 'Неизвестно';
     }
 
     formatDate(dateString) {
         if (!dateString) return 'Неизвестно';
 
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Неверная дата';
+            }
+
+            return date.toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error('Ошибка форматирования даты:', error);
+            return 'Ошибка даты';
+        }
     }
 
     truncateText(text, maxLength) {
-        if (!text || text.length <= maxLength) return text;
+        if (!text || typeof text !== 'string') return '';
+        if (text.length <= maxLength) return text;
         return text.substring(0, maxLength) + '...';
     }
 
     escapeHtml(text) {
+        if (!text || typeof text !== 'string') return '';
+
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 
     showNotification(message, type = 'info') {
+        console.log(`🔔 Уведомление [${type}]:`, message);
+
         const alertClass = type === 'success' ? 'alert-success' :
-            type === 'error' ? 'alert-danger' : 'alert-info';
+            type === 'error' ? 'alert-danger' :
+                type === 'warning' ? 'alert-warning' : 'alert-info';
 
         const notification = document.createElement('div');
         notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
         notification.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 300px;';
         notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-            ${message}
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${this.escapeHtml(message)}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
 
@@ -621,5 +790,9 @@ class AllContentManager {
 
 let allContentManager;
 document.addEventListener('DOMContentLoaded', () => {
-    allContentManager = new AllContentManager();
+    try {
+        allContentManager = new AllContentManager();
+    } catch (error) {
+        console.error('Ошибка инициализации AllContentManager:', error);
+    }
 });
