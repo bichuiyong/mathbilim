@@ -7,6 +7,37 @@
     </head>
 
     <style>
+        content-item {
+            transition: all 0.3s ease;
+        }
+
+        .content-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-group .btn {
+            border-radius: 0.25rem !important;
+            margin-left: 2px;
+        }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .alert.position-fixed {
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
         .collapsed {
             max-height: 150px;
             overflow: hidden;
@@ -383,20 +414,20 @@
 
 
         /* Красивые стили для пагинации */
-        #usersPagination {
+        #usersPagination, #allContentPagination {
             margin: 20px 0;
         }
 
-        #usersPagination .pagination {
+        #usersPagination .pagination, #allContentPagination .pagination {
             gap: 8px;
             margin: 0;
         }
 
-        #usersPagination .page-item {
+        #usersPagination .page-item, #allContentPagination .page-item {
             margin: 0;
         }
 
-        #usersPagination .page-link {
+        #usersPagination .page-link, #allContentPagination .page-link {
             border: 1px solid #e0e6ed;
             border-radius: 8px;
             color: #374151;
@@ -411,7 +442,7 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        #usersPagination .page-link:hover {
+        #usersPagination .page-link:hover, #allContentPagination .page-link:hover {
             background-color: #f8fafc;
             border-color: #3b82f6;
             color: #3b82f6;
@@ -419,7 +450,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
         }
 
-        #usersPagination .page-item.active .page-link {
+        #usersPagination .page-item.active .page-link, #allContentPagination .page-item.active .page-link {
             background-color: #3b82f6;
             border-color: #3b82f6;
             color: #ffffff;
@@ -427,14 +458,16 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
 
-        #usersPagination .page-item.active .page-link:hover {
+        #usersPagination .page-item.active .page-link:hover, #allContentPagination .page-item.active .page-link:hover {
             background-color: #2563eb;
             border-color: #2563eb;
             transform: translateY(-1px);
         }
 
         #usersPagination .page-item.disabled .page-link,
-        #usersPagination .page-item.disabled span {
+        #usersPagination .page-item.disabled span,
+        #allContentPagination .page-item.disabled .page-link,
+        #allContentPagination .page-item.disabled span {
             background-color: #f9fafb;
             border-color: #e5e7eb;
             color: #9ca3af;
@@ -443,7 +476,9 @@
         }
 
         #usersPagination .page-item.disabled .page-link:hover,
-        #usersPagination .page-item.disabled span:hover {
+        #usersPagination .page-item.disabled span:hover,
+        #allContentPagination .page-item.disabled .page-link:hover,
+        #allContentPagination .page-item.disabled span:hover {
             background-color: #f9fafb;
             border-color: #e5e7eb;
             color: #9ca3af;
@@ -452,7 +487,7 @@
         }
 
         /* Стили для навигационных кнопок */
-        #usersPagination .page-link.nav-link {
+        #usersPagination .page-link.nav-link, #allContentPagination .page-link.nav-link {
             font-weight: 500;
             padding: 10px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -460,7 +495,7 @@
             color: white;
         }
 
-        #usersPagination .page-link.nav-link:hover {
+        #usersPagination .page-link.nav-link:hover, #allContentPagination .page-link.nav-link:hover {
             background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
             color: white;
             transform: translateY(-1px);
@@ -468,7 +503,7 @@
         }
 
         /* Многоточие */
-        #usersPagination .page-item.disabled span {
+        #usersPagination .page-item.disabled span, #allContentPagination .page-item.disabled span {
             border: none;
             background: transparent;
             color: #9ca3af;
@@ -479,19 +514,19 @@
 
         /* Адаптивность */
         @media (max-width: 576px) {
-            #usersPagination .pagination {
+            #usersPagination .pagination, #allContentPagination .pagination {
                 gap: 4px;
                 flex-wrap: wrap;
                 justify-content: center;
             }
 
-            #usersPagination .page-link {
+            #usersPagination .page-link, #allContentPagination .page-link {
                 padding: 8px 12px;
                 min-width: 38px;
                 font-size: 13px;
             }
 
-            #usersPagination .page-link.nav-link {
+            #usersPagination .page-link.nav-link, #allContentPagination .page-link.nav-link {
                 padding: 8px 16px;
             }
 
@@ -532,15 +567,16 @@
             }
         }
 
-        #usersPagination .pagination {
+        #usersPagination .pagination, #allContentPagination .pagination {
             animation: fadeIn 0.3s ease-out;
         }
 
-        #usersPagination .page-link:focus {
+        #usersPagination .page-link:focus, #allContentPagination .page-link:focus {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+
         .bg-purple {
             background-color: #6f42c1 !important;
         }
@@ -647,19 +683,19 @@
             height: 3rem;
         }
 
-        #organizationsSearch {
+        #organizationsSearch, #allContentSearch {
             border-radius: 8px;
             border: 1px solid #e3e6f0;
             padding: 8px 16px;
             transition: all 0.3s ease;
         }
 
-        #organizationsSearch:focus {
+        #organizationsSearch:focus, #allContentSearch:focus {
             border-color: #4e73df;
             box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
         }
 
-        #organizationsSearchBtn {
+        #organizationsSearchBtn, #allContentSearchBtn {
             border-radius: 8px;
             border: 1px solid #e3e6f0;
             background-color: #f8f9fc;
@@ -667,7 +703,7 @@
             transition: all 0.3s ease;
         }
 
-        #organizationsSearchBtn:hover {
+        #organizationsSearchBtn:hover, #allContentSearchBtn:hover {
             background-color: #4e73df;
             border-color: #4e73df;
             color: white;
@@ -705,7 +741,7 @@
             }
         }
 
-        #organizationsContentList .card {
+        #organizationsContentList .card, #allContentList .card {
             animation: fadeInUp 0.3s ease-out;
         }
 
@@ -722,6 +758,40 @@
                 opacity: 0;
                 transform: scale(0.8);
             }
+        }
+
+        /* Стили для автора контента */
+        .content-author {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .content-author .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+            object-fit: cover;
+        }
+
+        .content-author .author-name {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .content-author .author-placeholder {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            color: #6c757d;
+            font-size: 12px;
         }
     </style>
 
@@ -866,6 +936,12 @@
                                             data-bs-target="#moderation" type="button" role="tab">
                                         <i class="fas fa-tasks me-2"></i><@spring.message "tab.moderation"/>
                                         <span class="badge bg-danger ms-1" id="moderationCount">0</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="all-content-tab" data-bs-toggle="tab"
+                                            data-bs-target="#all-content" type="button" role="tab">
+                                        <i class="fas fa-globe me-2"></i><@spring.message "tab.all.content"/>
                                     </button>
                                 </li>
                             </#if>
@@ -1025,6 +1101,55 @@
                                         <ul class="pagination justify-content-center"></ul>
                                     </nav>
                                 </div>
+
+                                <!-- Вкладка "Контент весь" (для модераторов и администраторов) -->
+                                <div class="tab-pane fade" id="all-content" role="tabpanel">
+                                    <!-- Фильтры для всего контента -->
+                                <div class="all-content-filters mb-4">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <select class="form-select form-select-sm" id="allContentTypeFilter">
+                                                <option value="all"><@spring.message "filter.all.types"/></option>
+                                                <option value="post"><@spring.message "content.type.post"/></option>
+                                                <option value="blog"><@spring.message "content.type.blog"/></option>
+                                                <option value="event"><@spring.message "content.type.event"/></option>
+                                                <option value="book"><@spring.message "content.type.book"/></option>
+                                                <option value="news"><@spring.message "content.type.news"/></option>
+                                                <option value="olympiad"><@spring.message "content.type.olympiad"/></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select form-select-sm" id="allContentStatusFilter">
+                                                <option value=""><@spring.message "filter.all.statuses"/></option>
+                                                <option value="APPROVED"><@spring.message "status.approved"/></option>
+                                                <option value="REJECTED"><@spring.message "status.rejected"/></option>
+                                                <option value="PENDING_REVIEW"><@spring.message "status.pending"/></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" id="allContentSearch"
+                                                       placeholder="<@spring.message "placeholder.search.all.content"/>">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        id="allContentSearchBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="allContentList" class="content-list">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                        <p><@spring.message "message.loading.all.content"/></p>
+                                    </div>
+                                </div>
+
+                                <nav id="allContentPagination" class="mt-3" style="display: none;">
+                                    <ul class="pagination justify-content-center"></ul>
+                                </nav>
+                            </div>
                             </#if>
 
                             <#if isModer || isAdmin>
@@ -1384,9 +1509,29 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Подтверждение удаления</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы уверены, что хотите удалить этот контент?</p>
+                    <p class="text-danger"><strong>Внимание:</strong> Это действие нельзя отменить!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+                </div>
+            </div>
+        </div>
+
     <script src="/static/js/admin.js"></script>
     <script src="/static/js/profile-content.js"></script>
     <script src="/static/js/profile/controlOrganizations.js"></script>
     <script src="/static/js/profile/controlUsers.js"></script>
     <script src="/static/js/profile/controlTypes.js"></script>
+    <script src="/static/js/profile/controlAllContent.js"></script>
 </@main.layout>
