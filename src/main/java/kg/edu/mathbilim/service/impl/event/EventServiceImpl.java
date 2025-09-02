@@ -9,11 +9,9 @@ import kg.edu.mathbilim.enums.Language;
 import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.EventNotFoundException;
 import kg.edu.mathbilim.mapper.event.EventMapper;
-import kg.edu.mathbilim.model.blog.BlogTranslation;
 import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.Organization;
-import kg.edu.mathbilim.model.event.Event;
 import kg.edu.mathbilim.model.event.EventTranslation;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
@@ -26,8 +24,6 @@ import kg.edu.mathbilim.service.interfaces.event.EventService;
 import kg.edu.mathbilim.service.interfaces.event.EventTranslationService;
 import kg.edu.mathbilim.telegram.service.NotificationData;
 import kg.edu.mathbilim.telegram.service.NotificationFacade;
-import kg.edu.mathbilim.util.PaginationUtil;
-import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -215,6 +211,39 @@ public class EventServiceImpl extends
 
 
     @Override
+    public Page<EventDto> getAllEvent(Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getEventsByStatusWithQuery(
+                        contentStatus, query.trim(), pageable
+                ).map(mapper::toDto);
+            } else {
+                return repository.getEventsWithQuery(
+                        query, pageable
+                ).map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getEventsByStatus(contentStatus, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return repository.findAllByDeletedFalse(pageable)
+                .map(mapper::toDto);
+    }
+
+
+    @Override
     public Long countEventForModeration() {
         return repository.countByStatus(ContentStatus.PENDING_REVIEW);
     }
@@ -249,7 +278,6 @@ public class EventServiceImpl extends
             log.info("Events fetched: {}", events.getSize());
         }
 
-        // Логи для проверки creator перед конвертацией в DTO
         events.forEach(event -> {
             if (event.getCreator() != null) {
                 log.info("Event ID: {}, Creator ID: {}, Name: {}", event.getId(),

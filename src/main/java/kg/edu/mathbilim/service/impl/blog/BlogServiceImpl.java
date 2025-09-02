@@ -17,14 +17,12 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogTranslationService;
-import kg.edu.mathbilim.service.interfaces.notification.UserNotificationService;
 import kg.edu.mathbilim.telegram.service.NotificationData;
 import kg.edu.mathbilim.telegram.service.NotificationFacade;
 import kg.edu.mathbilim.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -228,6 +226,38 @@ public class BlogServiceImpl extends
 
         return getContentByCreatorId(creatorId, pageable);
     }
+
+
+    @Override
+    public Page<BlogDto> getAllBlogs(Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getBlogsByStatusWithQuery(contentStatus, query, pageable)
+                        .map(mapper::toDto);
+            } else {
+                return repository.getBlogsWithQuery(query.trim(), pageable)
+                        .map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getBlogsByStatus(contentStatus, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return repository.findAllByDeletedFalse(pageable)
+                .map(mapper::toDto);
+    }
+
 
 
     @Override
