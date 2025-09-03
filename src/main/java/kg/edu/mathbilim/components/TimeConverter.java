@@ -15,6 +15,7 @@ public class TimeConverter implements AttributeConverter<LocalDateTime, LocalDat
     public LocalDateTime convertToDatabaseColumn(LocalDateTime attribute) {
         if (attribute == null) return null;
 
+
         return attribute
                 .atZone(TimeZoneFilter.getUserZone())
                 .withZoneSameInstant(UTC)
