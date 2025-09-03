@@ -229,13 +229,13 @@ function addUserToTable(content) {
             <td><span class="badge bg-secondary">${user.role.name}</span></td>
             <td>
                 <span class="${user.enabled ? 'user-status-active' : 'user-status-blocked'}">
-                 ${user.enabled ? t('userActive') : t('userInactive')}
+                    ${user.enabled ? 'Активен' : 'Неактивен'}
                 </span>
             </td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ${t('actions')}
+                        Действия
                     </button>
                     <ul class="dropdown-menu">
                         <li>
@@ -248,7 +248,7 @@ function addUserToTable(content) {
                                data-user-surname="${user.surname}"
                                data-user-role="${user.role.name}"
                                data-user-type="${user.type?.id || ''}">
-                                ✏️${t('edit')}
+                                ✏️ Изменить
                             </a>
                         </li>
                         <li>
@@ -257,14 +257,14 @@ function addUserToTable(content) {
                                data-bs-toggle="modal"
                                data-bs-target="#deleteUserModal"
                                data-user-id="${user.id}">
-                                🗑️ ${t('delete')}
+                                🗑️ Удалить
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item block-button text-warning"
                                href="#"
                                data-user-id="${user.id}">
-                                    ${user.enabled ? t('block') : t('unblock')}
+                                ${user.enabled ? '🔒 Заблокировать' : '🔓 Разблокировать'}
                             </a>
                         </li>
                     </ul>
