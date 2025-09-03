@@ -1,3 +1,4 @@
+const currentLocale = document.documentElement.lang || 'ru';
 const modTranslations = {
     en: {
         actions: "No content for moderation",
@@ -18,7 +19,8 @@ const modTranslations = {
             event: "Event",
             book: "Book",
             news: "News",
-            default: "Content"        }
+            default: "Content"
+        }
     },
     ru: {
         actions: "Нет контента на модерации",
@@ -69,7 +71,6 @@ const modTranslations = {
 function mod_t(key) {
     const keys = key.split('.');
     let value = modTranslations[currentLocale];
-
     for (let k of keys) {
         value = value?.[k];
         if (value === undefined) return key;

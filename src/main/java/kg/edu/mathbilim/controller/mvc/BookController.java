@@ -99,8 +99,8 @@ public class BookController {
 
     @PostMapping("/create")
     public String addBook(@ModelAttribute("book") @Valid BookDto book,
-                          RedirectAttributes redirectAttributes,
                           BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes,
                           Model model
                          ) {
         if (bindingResult.hasErrors()) {
@@ -154,9 +154,9 @@ public class BookController {
     @PostMapping("update/{id}")
     public String updateBook(@PathVariable long id,
                              @ModelAttribute("book") @Valid BookDto book,
+                             BindingResult bindingResult,
                              @RequestParam MultipartFile attachments,
                              @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
-                             BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", translationService.getCategoriesByLanguage());

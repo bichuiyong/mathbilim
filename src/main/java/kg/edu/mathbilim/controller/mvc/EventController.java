@@ -90,8 +90,8 @@ public class EventController {
 
     @PostMapping("create")
     public String createEvent(@ModelAttribute("createEventDto") @Valid CreateEventDto createEventDto,
-                              RedirectAttributes redirectAttributes,
-                              BindingResult bindingResult) {
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "events/event-create";
         }

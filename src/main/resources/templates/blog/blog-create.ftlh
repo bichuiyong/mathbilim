@@ -52,6 +52,7 @@
                                 <small class="text-danger">
                                     ${image!""}
                                 </small>
+                                <br>
                                 <small class="form-text text-muted">
                                     <@spring.message "blog.mainImage.info"/>
                                 </small>
