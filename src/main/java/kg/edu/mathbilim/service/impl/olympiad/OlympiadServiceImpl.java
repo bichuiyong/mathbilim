@@ -3,7 +3,6 @@ package kg.edu.mathbilim.service.impl.olympiad;
 import jakarta.persistence.EntityManager;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.OrganizationDto;
-import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.olympiad.*;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
@@ -382,6 +381,49 @@ public class OlympiadServiceImpl implements OlympiadService {
         Olympiad o = olympiadRepository.findByIdAndDeletedFalse(olympId).orElseThrow(() -> new BlogNotFoundException("Olympiad not found"));
         olympiadRepository.deleteByIdAndDeletedFalse(o.getId());
     }
+
+
+
+    @Override
+    public Page<OlympiadDto> getAllOlympiad(Pageable pageable, String query) {
+        String safeQuery = query == null ? "" : query.trim();
+
+        Page<Olympiad> result;
+        if (!safeQuery.isEmpty()) {
+            result = olympiadRepository.getOlympiadByQuery(safeQuery, pageable);
+        } else {
+            result = olympiadRepository.findAllByDeletedFalse(pageable);
+        }
+
+        return result.map(olympiad -> OlympiadDto.builder()
+                .id(Math.toIntExact(olympiad.getId()))
+                .title(olympiad.getTitle())
+                .info(olympiad.getInfo())
+                .rules(olympiad.getRules())
+                .startDate(olympiad.getStartDate())
+                .endDate(olympiad.getEndDate())
+                .createdAt(olympiad.getCreatedAt())
+                .updatedAt(olympiad.getUpdatedAt())
+                .fileId(olympiad.getImage() != null ? olympiad.getImage().getId() : null)
+                .organizations(
+                        olympOrganizationService.getOrganizationIds(Math.toIntExact(olympiad.getId()))
+                                .stream()
+                                .map(organizationService::getById)
+                                .toList()
+                )
+                .contacts(
+                        olympiad.getContactInfos().stream()
+                                .map(contact -> OlympContactDto.builder()
+                                        .contactType(contact.getContactType().getName())
+                                        .info(contact.getInfo())
+                                        .build())
+                                .toList()
+                )
+                .stages(olympiadStageService.getOlympStageDtos(olympiad.getId()))
+                .build()
+        );
+    }
+
 
 
 }

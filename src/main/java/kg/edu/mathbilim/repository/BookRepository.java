@@ -106,10 +106,18 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
                                  @Param("query") String query,
                                  Pageable pageable);
 
+    @Query("""
+                SELECT DISTINCT b FROM Book b
+                WHERE LOWER(b.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                            and b.deleted = false
+            """)
+    Page<Book> getBooksWithQuery(@Param("query") String query,
+                                 Pageable pageable);
+
 
     @Query("""
-            select b from Book b 
-            where b.status=:status   
+            select b from Book b
+            where b.status=:status
             and b.deleted=false
              ORDER BY b.createdAt DESC    
                
@@ -127,6 +135,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, BaseContentRe
              ORDER BY b.createdAt DESC          
             """)
     Page<Book> findAllBooksByLanguageAndQuery(String query, ContentStatus status, Pageable pageable);
+
+    Page<Book> findAllByDeletedFalse(Pageable pageable);
+
 
     @Query("""
             select b from Book b 

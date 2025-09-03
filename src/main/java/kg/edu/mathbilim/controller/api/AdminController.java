@@ -4,11 +4,14 @@ import kg.edu.mathbilim.service.interfaces.BookService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;
+import kg.edu.mathbilim.service.interfaces.news.NewsService;
+import kg.edu.mathbilim.service.interfaces.olympiad.OlympiadService;
 import kg.edu.mathbilim.service.interfaces.post.PostService;
 import kg.edu.mathbilim.service.interfaces.reference.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,9 @@ public class AdminController {
     private final BlogService blogService;
     private final EventService eventService;
     private final BookService bookService;
+    private final NewsService newsService;
+    private final OlympiadService olympiadService;
+
     private static final String STATUS = "PENDING_REVIEW";
 
     @PostMapping("approve/{type}/{id}")
@@ -89,5 +95,44 @@ public class AdminController {
         }
     }
 
+    @GetMapping("content")
+    public ResponseEntity<Page<?>> getAllContent(Pageable pageable,
+                                                 @RequestParam String type,
+                                                 @RequestParam String status,
+                                                 @RequestParam(required = false) String query) {
+
+        Page<?> contentPage;
+
+        try {
+            switch (type.toLowerCase()) {
+                case "post" -> {
+                    contentPage = postService.getAllPost(pageable, query, status);
+                }
+                case "event" -> {
+                    contentPage = eventService.getAllEvent(pageable, query, status);
+                }
+                case "book" -> {
+                    contentPage = bookService.getAllBook(pageable, query, status);
+                }
+                case "blog" -> {
+                    contentPage = blogService.getAllBlogs(pageable, query, status);
+                }
+                case "news" -> {
+                    contentPage = newsService.getAllNews(pageable, query);
+                }
+                case "olympiad" -> {
+                    contentPage = olympiadService.getAllOlympiad(pageable, query);
+                }
+                default -> {
+                    log.warn("Неверный тип контента: {}", type);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return ResponseEntity.ok(contentPage);
+    }
 
 }

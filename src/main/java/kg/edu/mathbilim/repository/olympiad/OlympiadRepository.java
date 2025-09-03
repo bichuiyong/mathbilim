@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,5 +23,11 @@ public interface OlympiadRepository extends JpaRepository<Olympiad, Long> {
     @Transactional
     @Query("update Olympiad o set o.deleted = true where o.id = :id and o.deleted = false")
     void deleteByIdAndDeletedFalse(Long id);
+
+
+    @Query(value = "select distinct o from Olympiad o where LOWER(o.title) LIKE LOWER(CONCAT('%', :query, '%')) and o.deleted = false", nativeQuery = true)
+    Page<Olympiad> getOlympiadByQuery(@Param("query") String query, Pageable pageable);
+
+    Page<Olympiad> findAllByDeletedFalse(Pageable pageable);
 
 }

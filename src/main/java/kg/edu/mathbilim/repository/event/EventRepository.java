@@ -125,6 +125,15 @@ public interface EventRepository extends BaseContentRepository<Event> {
                                    @Param("userId") Long userId,
                                    Pageable pageable);
 
+    @Query("""
+                SELECT DISTINCT e FROM Event e
+                JOIN e.eventTranslations t
+                WHERE LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                            and e.deleted = false
+                ORDER BY e.createdAt DESC
+            """)
+    Page<Event> getEventsWithQuery(@Param("query") String query,
+                                   Pageable pageable);
 
     Long countByStatus(ContentStatus status);
 
@@ -154,5 +163,8 @@ public interface EventRepository extends BaseContentRepository<Event> {
     @Transactional
     @Query("UPDATE Event e SET e.deleted = true WHERE e.id = :eventId")
     void deleteContentById(@Param("eventId") Long eventId);
+
+    Page<Event> findAllByDeletedFalse(Pageable pageable);
+
 
 }
