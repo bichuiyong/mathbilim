@@ -285,7 +285,7 @@
     <script>
         <#noparse>
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        document.cookie = `timezone=${timeZone}; path=/; max-age=${60*60*24*365}; SameSite=Lax`;
+        document.cookie = `timezone=${timeZone}; path=/; max-age=${60*60*24*365}; SameSite=Lax; Secure`;
         </#noparse>
 
         document.addEventListener("DOMContentLoaded", () => {
