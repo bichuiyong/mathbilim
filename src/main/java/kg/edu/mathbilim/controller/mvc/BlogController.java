@@ -74,8 +74,8 @@ public class BlogController {
 
     @PostMapping("/create")
     public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
-                             RedirectAttributes redirectAttributes,
                              BindingResult bindingResult,
+                             RedirectAttributes redirectAttributes,
                              Model model) {
         if (bindingResult.hasErrors()) {
             FieldError imageError = bindingResult.getFieldError("mpMainImage");

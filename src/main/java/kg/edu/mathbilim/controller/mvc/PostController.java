@@ -68,8 +68,9 @@ public class    PostController {
 
     @PostMapping("create")
     public String createPost(@ModelAttribute("createPostDto") @Valid CreatePostDto post,
+                             BindingResult bindingResult,
                              RedirectAttributes redirectAttributes,
-                             BindingResult bindingResult, Model model) {
+                              Model model) {
 
 
         if (bindingResult.hasErrors() || post.getImage() == null || post.getImage().isEmpty()) {

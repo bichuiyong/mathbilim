@@ -45,6 +45,7 @@ public class UserController {
 
     @GetMapping("/{id}/public")
     public String publicProfile(@PathVariable Long id, Principal principal, Model model) {
+
         if (principal != null) {
             String currentUserEmail = principal.getName();
             UserDto currentUser = userService.getUserByEmail(currentUserEmail);
