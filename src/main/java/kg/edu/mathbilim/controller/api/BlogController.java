@@ -55,10 +55,6 @@ public class BlogController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUPER_ADMIN') or @blogSecurity.isOwner(#id,  principal.username)")
     @PostMapping("delete/{id}")
     public String deleteBlog(@PathVariable Long id, Principal principal) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info("delete blog {}", id);
-        log.info("User trying to delete blog: {}",
-                principal != null ? principal.getName() : "anonymous");
         blogService.delete(id);
         return "redirect:/blog";
     }

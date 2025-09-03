@@ -22,9 +22,7 @@
                                 <label class="form-label fw-bold">
                                     <@spring.message "blog.mainImage.label"/> <span class="text-danger">*</span>
                                 </label>
-                                <small class="text-danger">
-                                    ${image!""}
-                                </small>
+
                                 <div class="image-upload-container">
                                     <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
@@ -49,10 +47,15 @@
                                             <@spring.message "blog.mainImage.preview.change"/>
                                         </button>
                                     </div>
+
                                 </div>
+                                <small class="text-danger">
+                                    ${image!""}
+                                </small>
                                 <small class="form-text text-muted">
                                     <@spring.message "blog.mainImage.info"/>
                                 </small>
+
                             </div>
 
                             <div class="card mb-4">

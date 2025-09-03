@@ -994,7 +994,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return `<span class="badge bg-dark text-white">${mod_t('deleted')}</span>`;
             }
 
-            // Для новостей статус не показываем
             if (type === 'news') {
                 return '';
             }
@@ -1083,10 +1082,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(`🔄 История - загрузка контента: тип="${currentType}", статус="${currentStatus}", запрос="${currentQuery}"`);
 
             if (currentType === "all") {
-                // Для режима "all" загружаем все данные только один раз
                 const types = ['post', 'blog', 'event', 'book', 'news'];
                 const fetches = types.map(type => {
-                    // Загружаем максимальное количество данных для правильной пагинации
                     const url = `/api/users/history?id=${userId}&type=${type}&page=0&size=1000` +
                         (currentStatus !== "all" ? `&status=${currentStatus}` : '') +
                         (currentQuery ? `&query=${encodeURIComponent(currentQuery)}` : '');

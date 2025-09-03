@@ -37,6 +37,8 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     Page<PostDto> getHisotryPost(Long creatorId, Pageable pageable, String query, String status);
 
+    Page<PostDto> getAllPost(Pageable pageable, String query, String status);
+
     Page<PostDto> getPostsForModeration(Pageable pageable, String query);
 
     Page<PostDto> getAllPostByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);

@@ -37,6 +37,8 @@ public interface BlogService extends BaseTranslatableService<BlogDto, BlogTransl
 
     Page<BlogDto> getHistoryBlog(Long creatorId, Pageable pageable, String query, String status);
 
+    Page<BlogDto> getAllBlogs(Pageable pageable, String query, String status);
+
     Long countBlogForModeration();
 
     Blog findByBlogId(Long blogId);

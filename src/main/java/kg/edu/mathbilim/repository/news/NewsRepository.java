@@ -40,7 +40,6 @@ public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRe
                                     and LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
                                        AND n.deleted = false
             """)
-
     Page<News> findNewsByQuery(@Param("query") String query, @Param("lang") String lang, Pageable pageable);
 
 
@@ -61,8 +60,8 @@ public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRe
             ORDER BY p.createdAt DESC
             """)
     Page<News> getNewsByStatusWithQuery(String query,
-                                         Long userId,
-                                         Pageable pageable);
+                                        Long userId,
+                                        Pageable pageable);
 
 
     @Query("""
@@ -83,8 +82,21 @@ public interface NewsRepository extends JpaRepository<News, Long>, BaseContentRe
                 ORDER BY p.createdAt DESC
             """)
     Page<News> getNewsWithQuery(@Param("userId") Long userId,
-                                                  @Param("query") String query,
-                                                  Pageable pageable);
+                                @Param("query") String query,
+                                Pageable pageable);
+
+    @Query("""
+                SELECT DISTINCT p FROM News p
+                JOIN p.newsTranslations t
+                WHERE LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                            and p.deleted = false
+                ORDER BY p.createdAt DESC
+            """)
+    Page<News> getNewsWithQuery(@Param("query") String query,
+                                Pageable pageable);
+
+
+    Page<News> findAllByDeletedFalse(Pageable pageable);
 
 
 

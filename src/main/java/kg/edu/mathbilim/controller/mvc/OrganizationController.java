@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,18 +40,24 @@ public class OrganizationController {
     @PostMapping("create")
     public String create(@ModelAttribute("organizationDto") @Valid OrganizationDto organization,
                          BindingResult bindingResult,
-                         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                          Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("organizationDto", organization);
+
+            FieldError imageError = bindingResult.getFieldError("avatarFile");
+
+            if (imageError != null) {
+                model.addAttribute("imageError", imageError.getDefaultMessage());
+            }
+
             return "organizations/create-organization";
         }
-        if (avatarFile != null && avatarFile.isEmpty()) avatarFile = null;
-        organizationService.create(organization, avatarFile);
 
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User userDetails = (User) authentication.getPrincipal();
-//        Long userId = userDetails.getId();
+        if (organization.getAvatarFile() != null && organization.getAvatarFile().isEmpty()) {
+            organization.setAvatarFile(null);
+        }
+
+        organizationService.create(organization, organization.getAvatarFile());
 
         return "redirect:/";
     }

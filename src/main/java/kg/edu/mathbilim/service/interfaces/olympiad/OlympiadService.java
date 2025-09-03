@@ -30,4 +30,5 @@ public interface OlympiadService {
 
     void deleteOlympiad(long olympId);
 
+    Page<OlympiadDto> getAllOlympiad(Pageable pageable, String query);
 }

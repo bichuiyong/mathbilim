@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -75,18 +76,19 @@ public class BlogController {
     public String createBlog(@ModelAttribute("blogDto") @Valid BlogDto blogDto,
                              RedirectAttributes redirectAttributes,
                              BindingResult bindingResult,
-                             @RequestParam(value = "mpMainImage", required = false) MultipartFile mpMainImage,
                              Model model) {
-        if (bindingResult.hasErrors() || mpMainImage == null || mpMainImage.isEmpty()) {
-            if (mpMainImage == null || mpMainImage.isEmpty()) {
-                String errorMessage = messageSource.getMessage("blog.image.required", null, LocaleContextHolder.getLocale());
-                model.addAttribute("image", errorMessage);
+        if (bindingResult.hasErrors()) {
+            FieldError imageError = bindingResult.getFieldError("mpMainImage");
+            if (imageError != null) {
+                model.addAttribute("image", imageError.getDefaultMessage());
             }
+
             model.addAttribute("blogDto", blogDto);
             return "blog/blog-create";
         }
 
-       BlogDto blogDto1 = blogService.create(blogDto, mpMainImage);
+
+       BlogDto blogDto1 = blogService.create(blogDto, blogDto.getMpMainImage());
 
         if (blogDto1.getStatus() == ContentStatus.APPROVED) {
             redirectAttributes.addFlashAttribute("successMessage",
@@ -95,6 +97,7 @@ public class BlogController {
             redirectAttributes.addFlashAttribute("successMessage",
                     "Блог успешно создан и ожидает модерации. После одобрения будет опубликован.");
         }
+
 
 
         return "redirect:/blog";

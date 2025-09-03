@@ -24,7 +24,9 @@ public interface BookService extends BaseContentService<BookDto> {
 
     Page<BookDto> getContentByCreatorIdBook(Long creatorId, Pageable pageable, String quary);
 
-    Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable, String query, String status);
+    Page<BookDto> getHistoryBook(Long creatorId, Pageable pageable, String query, String status);
+
+    Page<BookDto> getAllBook(Pageable pageable, String query, String status);
 
     Page<BookDto> getBooksForModeration(Pageable pageable, String query);
 

@@ -40,6 +40,18 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
                                      @Param("query") String query,
                                      Pageable pageable);
 
+
+    @Query("""
+            SELECT DISTINCT p FROM Post p
+            JOIN p.postTranslations t
+            WHERE
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                        and p.deleted = false
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> getPostByQuery( @Param("query") String query,
+                                     Pageable pageable);
+
     @Query("""
             SELECT DISTINCT p FROM Post p
                WHERE p.status = :contentStatus
@@ -150,6 +162,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, BaseContentRe
                  and p.deleted=false
             """)
     Page<Post> findByQuery(@Param("query") String query, Pageable pageable);
+
+    Page<Post> findAllByDeletedFalse(Pageable pageable);
+
 
 
     @Query("""

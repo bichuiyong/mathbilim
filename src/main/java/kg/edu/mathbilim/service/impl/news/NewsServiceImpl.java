@@ -191,6 +191,17 @@ public class NewsServiceImpl extends
     }
 
     @Override
+    public Page<NewsDto> getAllNews(Pageable pageable, String query) {
+        if (query != null && !query.trim().isEmpty()) {
+            return repository.getNewsWithQuery(query, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return repository.findAllByDeletedFalse(pageable)
+                .map(mapper::toDto);
+    }
+
+    @Override
     @Transactional
     public NewsDto getNewsById(Long id) {
         News news = repository.findById(id).orElseThrow(NewsNotFoundException::new);

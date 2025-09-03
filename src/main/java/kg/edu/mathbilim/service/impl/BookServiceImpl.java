@@ -22,14 +22,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 
 @Slf4j
@@ -184,7 +181,7 @@ public class BookServiceImpl extends
     }
 
     @Override
-    public Page<BookDto> getHisotryBook(Long creatorId, Pageable pageable, String query, String status) {
+    public Page<BookDto> getHistoryBook(Long creatorId, Pageable pageable, String query, String status) {
         ContentStatus contentStatus = null;
         if (status != null && !status.isBlank()) {
             try {
@@ -214,6 +211,41 @@ public class BookServiceImpl extends
         }
 
         return getContentByCreatorId(creatorId, pageable);
+    }
+
+
+    @Override
+    public Page<BookDto> getAllBook(Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+            }
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            if (contentStatus != null) {
+                return repository.getBooksByStatusWithQuery(
+                        contentStatus, pageable, query
+                ).map(mapper::toDto);
+            } else {
+                return repository.getBooksWithQuery(
+                        query.trim(), pageable
+                ).map(mapper::toDto);
+            }
+        }
+
+        if (contentStatus != null) {
+            return repository.getBooksByStatus(
+                            contentStatus, pageable
+                    )
+                    .map(mapper::toDto);
+        }
+
+        return repository.findAllByDeletedFalse(pageable)
+                .map(mapper::toDto);
     }
 
 

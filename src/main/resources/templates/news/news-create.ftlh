@@ -48,6 +48,10 @@
                                         </button>
                                     </div>
                                 </div>
+                                <small class="text-danger">
+                                    ${imageError!""}
+                                </small>
+                                <br>
                                 <small class="form-text text-muted">
                                     <@spring.message "news.create.imageHint" />
                                 </small>
@@ -134,6 +138,9 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><@spring.message "news.create.attachments" /></label>
                                 <input type="file" class="form-control" accept="image/*" name="attachments" multiple>
+                                <#if attachmentError??>
+                                    <span class="text-danger small">${attachmentError}</span>
+                                </#if>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">

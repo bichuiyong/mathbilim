@@ -139,7 +139,7 @@ public class UserController {
         switch (type.toLowerCase()) {
             case "post" -> historyPage = postService.getHisotryPost(id, pageable, query, status);
             case "event" -> historyPage = eventService.getHistoryEvent(id, pageable, query, status);
-            case "book" -> historyPage = bookService.getHisotryBook(id, pageable, query, status);
+            case "book" -> historyPage = bookService.getHistoryBook(id, pageable, query, status);
             case "blog" -> historyPage = blogService.getHistoryBlog(id, pageable, query, status);
             case "news" -> historyPage = newsService.getHistoryNews(id, pageable, query, status);
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип контента");

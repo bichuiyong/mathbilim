@@ -247,6 +247,43 @@ public class PostServiceImpl extends
     }
 
 
+
+    @Override
+    public Page<PostDto> getAllPost(Pageable pageable, String query, String status) {
+        ContentStatus contentStatus = null;
+
+        if (status != null && !status.isBlank()) {
+            try {
+                contentStatus = ContentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid content status: " + status);
+            }
+        }
+
+        boolean hasQuery = query != null && !query.isBlank();
+        boolean hasStatus = contentStatus != null;
+
+        if (hasQuery && hasStatus) {
+            return repository.getPostsByStatus(contentStatus, query, pageable)
+                    .map(mapper::toDto);
+        }
+
+        if (hasQuery) {
+            return repository.getPostByQuery(query, pageable)
+                    .map(mapper::toDto);
+        }
+
+        if (hasStatus) {
+            return repository.getPostsByStatus(contentStatus, pageable)
+                    .map(mapper::toDto);
+        }
+
+        return repository.findAllByDeletedFalse(pageable)
+                .map(mapper::toDto);
+    }
+
+
+
     @Override
     public Page<PostDto> getPostsForModeration(Pageable pageable, String query) {
         if (query != null) {

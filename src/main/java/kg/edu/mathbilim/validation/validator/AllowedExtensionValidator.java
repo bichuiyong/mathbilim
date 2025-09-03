@@ -5,7 +5,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import kg.edu.mathbilim.validation.annotation.AllowedExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-public class AllowedExtensionValidator implements ConstraintValidator<AllowedExtension, MultipartFile> {
+import java.util.Arrays;
+import java.util.Collection;
+
+public class AllowedExtensionValidator implements ConstraintValidator<AllowedExtension, Object> {
 
     private String[] allowedExtensions;
 
@@ -15,9 +18,32 @@ public class AllowedExtensionValidator implements ConstraintValidator<AllowedExt
     }
 
     @Override
-    public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+//        if (value == null) {
+//            return true; // null пропускаем
+//        }
+
+        if (value instanceof MultipartFile file) {
+            return isFileValid(file);
+        }
+
+        if (value instanceof MultipartFile[] files) {
+            return Arrays.stream(files).allMatch(this::isFileValid);
+        }
+
+        if (value instanceof Collection<?> collection) {
+            return collection.stream()
+                    .filter(MultipartFile.class::isInstance)
+                    .map(f -> (MultipartFile) f)
+                    .allMatch(this::isFileValid);
+        }
+
+        return false;
+    }
+
+    private boolean isFileValid(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            return true;
+            return true; // пустые пропускаем
         }
 
         String filename = file.getOriginalFilename();
@@ -26,11 +52,7 @@ public class AllowedExtensionValidator implements ConstraintValidator<AllowedExt
         }
 
         String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-        for (String allowed : allowedExtensions) {
-            if (extension.equalsIgnoreCase(allowed)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(allowedExtensions)
+                .anyMatch(ext -> ext.equalsIgnoreCase(extension));
     }
 }
