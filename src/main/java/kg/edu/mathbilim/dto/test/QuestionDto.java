@@ -1,6 +1,6 @@
 package kg.edu.mathbilim.dto.test;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class QuestionDto {
     @NotNull
     private Integer testPageNumber;
     private boolean textFormat;
-    @NotEmpty
+    @NotBlank
     private String correctAnswer;
     @NotNull
     private Double weight;

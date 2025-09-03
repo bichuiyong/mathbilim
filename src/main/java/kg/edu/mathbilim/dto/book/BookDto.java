@@ -47,5 +47,7 @@ public class BookDto extends ContentDto {
     @AllowedExtension({"pdf"})
     MultipartFile attachments;
 
+    @NotEmptyMultipartFile(message = "{blog.image.required}")
+    @AllowedExtension({"jpg", "jpeg", "png"})
     MultipartFile mpMainImage;
 }

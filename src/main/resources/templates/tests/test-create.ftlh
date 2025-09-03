@@ -387,6 +387,9 @@
                             <label for="pdfFile" class="tc-label tc-required"><@spring.message "test.create.file"/></label>
                             <input type="file" id="pdfFile" name="file" class="tc-file-input" accept=".pdf" required>
                             <div class="tc-file-info tc-hidden" id="fileInfo"><@spring.message "test.create.file.info"/></div>
+                            <#if fileError??>
+                                <span class="text-danger small">${fileError}</span>
+                            </#if>
                         </div>
 
                         <div class="tc-form-group">

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -75,8 +76,18 @@ public class NewsController {
 
     @PostMapping("create")
     public String createNewsPost(@Valid @ModelAttribute("newsDto") CreateNewsDto newsDto,
-                                 BindingResult bindingResult) {
+                                 BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            FieldError attachmentError = bindingResult.getFieldError("attachments");
+            if (attachmentError != null) {
+                model.addAttribute("attachmentError", attachmentError.getDefaultMessage());
+            }
+
+            FieldError mainImageError = bindingResult.getFieldError("image");
+            if (mainImageError != null) {
+                model.addAttribute("imageError", mainImageError.getDefaultMessage());
+            }
+
             return "news/news-create";
         }
 

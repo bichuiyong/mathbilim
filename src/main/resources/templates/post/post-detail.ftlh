@@ -964,7 +964,7 @@
 
             <div class="publication-content">
                 <#if translation.content?? && translation.content?has_content>
-                    <div class="publication-text collapsed" id="postContent">${translation.content?no_esc}</div>
+                    <div class="publication-text collapsed" id="postContent">${translation.content}</div>
                     <button class="show-more-btn" id="toggleButton"><@spring.message "blog.read.more"/></button>
                 </#if>
             </div>
