@@ -172,40 +172,40 @@
 
                             <!-- Вкладка "Настройки аккаунта" -->
                             <div class="tab-pane fade" id="settings" role="tabpanel">
-                                <#if isAdmin>
-                                    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-                                        <i class="fas fa-exclamation-triangle me-3"></i>
-                                        <div>
-                                            <strong><@spring.message "admin.settingsTitle"/></strong><br>
-                                            <@spring.message "admin.settingsDescription"/>
-                                        </div>
-                                    </div>
+<#--                                <#if isAdmin>-->
+<#--                                    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">-->
+<#--                                        <i class="fas fa-exclamation-triangle me-3"></i>-->
+<#--                                        <div>-->
+<#--                                            <strong><@spring.message "admin.settingsTitle"/></strong><br>-->
+<#--                                            <@spring.message "admin.settingsDescription"/>-->
+<#--                                        </div>-->
+<#--                                    </div>-->
 
-                                    <div class="mb-4">
-                                        <label for="roleId" class="form-label">
-                                            <i class="fas fa-shield-alt me-1 text-danger"></i><@spring.message "label.userRole"/>
-                                        </label>
-                                        <#if roles?? && roles?size gt 0>
-                                            <#assign roleMap = {}>
-                                            <#list roles as role>
-                                                <#assign roleMap = roleMap + {role.id?string: role.name}>
-                                            </#list>
-                                            <@spring.formSingleSelect "userEditDto.role.id", roleMap, 'class="form-select admin-select" id="roleId"'/>
-                                        <#else>
-                                            <select class="form-select admin-select" id="roleId" disabled>
-                                                <option><@spring.message "select.rolesNotLoaded"/></option>
-                                            </select>
-                                        </#if>
-                                        <@spring.showErrors '<br>', 'text-danger small mt-1'/>
-                                        <div class="form-text"><@spring.message "help.rolesDescription"/></div>
-                                    </div>
-                                <#else>
+<#--                                    <div class="mb-4">-->
+<#--                                        <label for="roleId" class="form-label">-->
+<#--                                            <i class="fas fa-shield-alt me-1 text-danger"></i><@spring.message "label.userRole"/>-->
+<#--                                        </label>-->
+<#--                                        <#if roles?? && roles?size gt 0>-->
+<#--                                            <#assign roleMap = {}>-->
+<#--                                            <#list roles as role>-->
+<#--                                                <#assign roleMap = roleMap + {role.id?string: role.name}>-->
+<#--                                            </#list>-->
+<#--                                            <@spring.formSingleSelect "userEditDto.role.id", roleMap, 'class="form-select admin-select" id="roleId"'/>-->
+<#--                                        <#else>-->
+<#--                                            <select class="form-select admin-select" id="roleId" disabled>-->
+<#--                                                <option><@spring.message "select.rolesNotLoaded"/></option>-->
+<#--                                            </select>-->
+<#--                                        </#if>-->
+<#--                                        <@spring.showErrors '<br>', 'text-danger small mt-1'/>-->
+<#--                                        <div class="form-text"><@spring.message "help.rolesDescription"/></div>-->
+<#--                                    </div>-->
+<#--                                <#else>-->
                                     <div class="text-center py-5">
                                         <i class="fas fa-cog fa-3x text-muted mb-3"></i>
                                         <h5 class="text-muted"><@spring.message "settings.noneTitle"/></h5>
                                         <p class="text-muted"><@spring.message "settings.noneDescription"/></p>
                                     </div>
-                                </#if>
+<#--                                </#if>-->
                             </div>
                         </div>
 

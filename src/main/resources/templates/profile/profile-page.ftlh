@@ -1321,7 +1321,10 @@
                             <label for="editUserRole" class="form-label"><@spring.message "label.role"/></label>
                             <select class="form-select" id="editUserRole" name="role">
                                 <#list roles as role>
-                                    <option value="${role.name}">${role.name}</option>
+                                    <#if role.name != 'SUPER_ADMIN'>
+                                        <option value="${role.name}">${role.name}</option>
+                                    </#if>
+
                                 </#list>
                             </select>
                         </div>
@@ -1381,7 +1384,9 @@
                             <label for="newUserRole" class="form-label"><@spring.message "label.role"/></label>
                             <select class="form-select" id="newUserRole" name="role">
                                 <#list roles as role>
-                                    <option value="${role.name}">${role.name}</option>
+                                    <#if role.name != 'SUPER_ADMIN'>
+                                        <option value="${role.name}">${role.name}</option>
+                                    </#if>
                                 </#list>
                             </select>
                         </div>

@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import kg.edu.mathbilim.dto.AfterGoogleAuthDto;
 import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
@@ -197,10 +198,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        User user = getAuthUserEntity();
+
         if (query == null || query.isEmpty()) {
-            return getPage(() -> userRepository.findAll(pageable), userMapper::toDto);
+            return getPage(() -> userRepository.findAllExceptCurrent(user.getId(), pageable), userMapper::toDto);
         }
-        return getPage(() -> userRepository.findByQuery(query, pageable), userMapper::toDto);
+
+        return getPage(() -> userRepository.findByQueryExceptCurrent(query, user.getId(), pageable), userMapper::toDto);
     }
 
     @Transactional
@@ -257,16 +261,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserType(String email, Integer userTypeId) {
-        User user = getEntityByEmail(email);
+    public void setUserType(AfterGoogleAuthDto afterGoogleAuthDto) {
+        User user = getAuthUserEntity();
 
         if (user.getType() != null) {
-            throw new IllegalStateException("User type already set for user: " + email);
+            throw new IllegalStateException("User type already set for user: " + user.getEmail());
         }
 
-        UserType userType = userTypeService.getUserTypeEntity(userTypeId);
+        UserType userType = userTypeService.getUserTypeEntity(afterGoogleAuthDto.getUserTypeId());
 
         user.setType(userType);
+        user.setPassword(passwordEncoder.encode(afterGoogleAuthDto.getPassword()));
         user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);

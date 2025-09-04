@@ -2,6 +2,7 @@ package kg.edu.mathbilim.service.interfaces;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import kg.edu.mathbilim.dto.AfterGoogleAuthDto;
 import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
@@ -59,7 +60,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void setUserType(String email, Integer userTypeId);
+    void setUserType(AfterGoogleAuthDto afterGoogleAuthDto);
 
     void makeResetPasswordToken(HttpServletRequest request)
             throws
