@@ -773,7 +773,7 @@
                 </#if>
 
                 <div class="pagination-info">
-                    <@spring.messageArgs "pagination.page", [page + 1]/>
+                    <@spring.message "pagination.page"/> ${page}
                 </div>
 
                 <#if posts.hasNext()>
