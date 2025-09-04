@@ -4,6 +4,7 @@ package kg.edu.mathbilim.controller.mvc;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kg.edu.mathbilim.dto.AfterGoogleAuthDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEmailDto;
 import kg.edu.mathbilim.dto.user.UserTypeDto;
@@ -197,7 +198,10 @@ public class AuthController {
     }
 
     @PostMapping("/select-user-type")
-    public String selectUserType(@RequestParam("userTypeId") Integer userTypeId,
+    public String selectUserType(
+//            @RequestParam("userTypeId") Integer userTypeId,
+            @ModelAttribute("afterGoogleAuthDto") @Valid @RequestBody AfterGoogleAuthDto afterGoogleAuthDto,
+                                 BindingResult bindingResult,
                                  Authentication authentication,
                                  RedirectAttributes redirectAttributes) {
 
@@ -206,8 +210,8 @@ public class AuthController {
         }
 
         try {
-            String email = authentication.getName();
-            userService.setUserType(email, userTypeId);
+//            String email = authentication.getName();
+            userService.setUserType(afterGoogleAuthDto);
 
             redirectAttributes.addFlashAttribute("message",
                     "Тип пользователя успешно выбран!");
