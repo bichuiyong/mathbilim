@@ -395,7 +395,7 @@
                         <div class="form-group full-width">
                             <label class="olympiad-label required"><@spring.message "olympiad.create.label.mainImage" /></label>
                             <div class="image-upload-container">
-                                <input type="file" id="mainImageInput" name="imageFile" accept="image/*" class="form-control mb-3" required>
+                                <input type="file" id="mainImageInput" name="imageFile" accept=".jpg, .jpeg, .png" class="form-control mb-3" required>
                                 <div class="image-preview-container" style="display: none;">
                                     <p class="crop-hint"><@spring.message "olympiad.create.cropHint" /></p>
                                     <div class="crop-container">

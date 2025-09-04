@@ -26,10 +26,43 @@ class BaseContentCreateManager {
         this.setupComponentIntegration();
     }
 
+    resizeImage(file, maxSize = 2000) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.src = e.target.result;
+            };
+            img.onload = () => {
+                let canvas = document.createElement("canvas");
+                let ctx = canvas.getContext("2d");
+
+                let ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+                canvas.width = img.width * ratio;
+                canvas.height = img.height * ratio;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, { type: blob.type }));
+                }, "image/jpeg", 0.9);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+
     initComponents() {
         this.imageCropManager = new ImageCropManager({
             onCropComplete: (blob, dataURL) => this.onImageCropped(blob, dataURL),
             onError: (message) => this.showAlert(message, 'danger'),
+            beforeImageLoad: async (file) => {
+                // новый хук – обработка файла перед загрузкой в cropper
+                if (file.size > 3 * 1024 * 1024) {
+                    console.warn("Файл больше 3MB, уменьшаем перед кропом...");
+                    file = await this.resizeImage(file, 2000);
+                }
+                return file;
+            },
             ...this.options.imageCropOptions
         });
 

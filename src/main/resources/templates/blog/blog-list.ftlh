@@ -12,19 +12,19 @@
 
         .info-alert {
             position: fixed;
-            top: 20px;
+            top: 50px;
             right: 20px;
-            background-color: #e7f3fe;
-            color: #31708f;
+            background-color: #0085ff;
+            color: #ffffff;
             border: 1px solid #bce8f1;
-            padding: 12px 16px;
+            padding: 20px 16px;
             border-radius: 6px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             gap: 8px;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 20px;
             z-index: 1050;
             opacity: 0;
             transform: translateY(-20px);
@@ -756,7 +756,7 @@
             </#if>
 
             <div class="pagination-info">
-                <@spring.message "blogs.page"/> ${page + 1}
+                <@spring.message "blogs.page"/> ${page}
             </div>
 
             <#if blog.hasNext()>

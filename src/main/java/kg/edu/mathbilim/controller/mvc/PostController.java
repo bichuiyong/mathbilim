@@ -105,7 +105,7 @@ public class    PostController {
                         @RequestParam(value = "page", defaultValue = "1") int page,
                         @RequestParam(value = "size", defaultValue = "10") int size,
                         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
-                        @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                        @RequestParam(value = "sortDirection", defaultValue = "DESC") String sortDirection,
                         @RequestParam(value = "language", defaultValue = "ru", required = false) String lang,
                         Authentication auth,
                         Model model) {
