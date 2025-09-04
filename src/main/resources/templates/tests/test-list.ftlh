@@ -67,7 +67,7 @@
         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
         <#assign authorities = SPRING_SECURITY_CONTEXT.authentication.authorities?map(auth -> auth.authority)>
         <#assign
-        isAdmin = authorities?seq_contains("ADMIN")
+        isAdmin = authorities?seq_contains("ADMIN") || authorities?seq_contains("SUPER_ADMIN")
         isModer = authorities?seq_contains("MODER") || isAdmin
         isUser = authorities?seq_contains("USER")
         >
@@ -88,9 +88,6 @@
                     </div>
                     <div class="d-flex gap-2">
                         <button form="search" type="submit" class="btn btn-primary flex-shrink-0"><@spring.message "test.list.find"/></button>
-                        <#if (user??) && ((isModer!false) || (isAdmin!false))>
-                        <button class="btn btn-success flex-shrink-0"><a style="all:unset" href="/tests/create"><@spring.message "test.list.create"/></a></button>
-                        </#if>
                     </div>
                 </div>
 

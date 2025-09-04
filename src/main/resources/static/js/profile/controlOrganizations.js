@@ -65,7 +65,7 @@ const i18n = {
     }
 };
 
-const currentLocale = document.getElementById("currentLocale").textContent;
+// const currentLocale = document.getElementById("currentLocale").textContent;
 console.log(currentLocale)
 
 function t(key) {
