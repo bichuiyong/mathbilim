@@ -40,12 +40,23 @@ class ImageCropManager {
             return;
         }
 
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
+        imageInput.addEventListener('change', async (e) => {
+            let file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                // вызываем хук перед загрузкой (если есть)
+                if (this.options.beforeImageLoad) {
+                    file = await this.options.beforeImageLoad(file);
+                }
+
                 this.loadImageForCrop(file);
+            } catch (err) {
+                this.onError("Ошибка обработки изображения: " + err.message);
+                console.error(err);
             }
         });
+
 
         cropButton?.addEventListener('click', () => this.applyCrop());
         cancelCrop?.addEventListener('click', () => this.cancelCrop());
