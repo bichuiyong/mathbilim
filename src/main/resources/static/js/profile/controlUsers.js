@@ -221,6 +221,10 @@ function addUserToTable(content) {
 
     const resultTableUsers = document.getElementById('resultTableUsers');
     users.forEach(user => {
+        if (user.role.name === 'SUPER_ADMIN') {
+            return;
+        }
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${user.id}</td>

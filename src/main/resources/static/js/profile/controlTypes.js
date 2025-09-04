@@ -2,6 +2,7 @@ let categoryTab = document.getElementById('category-tab');
 let typeContentList = document.getElementById('typeContentList');
 let staticTypeSortBy = document.getElementById('staticTypeSortBy');
 let createTypeBtn = document.getElementById('createTypeBtn');
+let currentLocale = document.documentElement.lang || 'ru';
 
 const translations = {
     en: { actions: "Actions", edit: "✏️ Edit", delete: "🗑️ Delete" },

@@ -76,6 +76,18 @@ SELECT SUM(cnt) FROM (
     int totalContent(@Param("id") Long id);
 
 
+    @Query("SELECT u FROM User u WHERE u.id <> :currentUserId")
+    Page<User> findAllExceptCurrent(@Param("currentUserId") Long currentUserId, Pageable pageable);
+
+    @Query("SELECT u FROM User u " +
+            "WHERE (LOWER(u.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "   OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+            "AND u.id <> :currentUserId")
+    Page<User> findByQueryExceptCurrent(@Param("query") String query,
+                                        @Param("currentUserId") Long currentUserId,
+                                        Pageable pageable);
+
+
 
 
 

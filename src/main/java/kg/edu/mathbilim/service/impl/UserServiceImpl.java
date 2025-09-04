@@ -197,10 +197,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getUserPage(String query, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+        User user = getAuthUserEntity();
+
         if (query == null || query.isEmpty()) {
-            return getPage(() -> userRepository.findAll(pageable), userMapper::toDto);
+            return getPage(() -> userRepository.findAllExceptCurrent(user.getId(), pageable), userMapper::toDto);
         }
-        return getPage(() -> userRepository.findByQuery(query, pageable), userMapper::toDto);
+
+        return getPage(() -> userRepository.findByQueryExceptCurrent(query, user.getId(), pageable), userMapper::toDto);
     }
 
     @Transactional
