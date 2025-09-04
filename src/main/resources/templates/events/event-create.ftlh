@@ -24,7 +24,7 @@
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="image-upload-container">
-                                    <input type="file" id="mainImageInput" name="image" accept="image/*" class="form-control mb-3">
+                                    <input type="file" id="mainImageInput" name="image" accept=".jpg, .jpeg, .png" class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
                                         <div class="crop-container">
                                             <img id="imagePreview" class="img-fluid">
@@ -313,7 +313,7 @@
                                 <label class="form-label fw-bold">
                                     <@spring.message "events.attachments"/>
                                 </label>
-                                <input type="file" name="attachments" multiple class="form-control">
+                                <input type="file" name="attachments" multiple class="form-control" accept=".jpg, .jpeg, .png">
                                 <small class="form-text text-muted">
                                     <@spring.message "events.attachments.description"/>
                                 </small>

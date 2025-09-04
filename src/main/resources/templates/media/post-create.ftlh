@@ -35,7 +35,7 @@
                                     <@spring.message "posts.cover"/>
                                 </label>
                                 <div class="image-upload-container">
-                                    <input type="file" id="mainImageInput" name="image" accept="image/*"
+                                    <input type="file" id="mainImageInput" name="image" accept=".jpg, .jpeg, .png"
                                            class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
                                         <div class="crop-container">

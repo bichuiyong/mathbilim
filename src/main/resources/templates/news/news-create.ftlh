@@ -22,7 +22,7 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><@spring.message "news.create.mainImage" /></label>
                                 <div class="image-upload-container">
-                                    <input type="file" id="mainImageInput" name="image" accept="image/*"
+                                    <input type="file" id="mainImageInput" name="image" accept=".jpg, .jpeg, .png"
                                            class="form-control mb-3">
                                     <div class="image-preview-container" style="display: none;">
                                         <div class="crop-container">
@@ -137,7 +137,7 @@
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><@spring.message "news.create.attachments" /></label>
-                                <input type="file" class="form-control" accept="image/*" name="attachments" multiple>
+                                <input type="file" class="form-control" accept=".jpg, .jpeg, .png" name="attachments" multiple>
                                 <#if attachmentError??>
                                     <span class="text-danger small">${attachmentError}</span>
                                 </#if>
