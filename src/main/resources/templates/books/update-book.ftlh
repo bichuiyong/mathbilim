@@ -31,7 +31,7 @@
                             </div>
                         </#if>
                         <div class="image-upload-container">
-                            <input type="file" id="mainImageInput" name="mpMainImage" accept="image/*" class="form-control mb-3">
+                            <input type="file" id="mainImageInput" name="mpMainImage" accept=".jpg, .jpeg, .png" class="form-control mb-3">
                             <div class="image-preview-container" style="display: none;">
                                 <div class="crop-container">
                                     <img id="imagePreview" class="img-fluid">

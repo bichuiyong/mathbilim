@@ -69,7 +69,7 @@
                                        name="avatarFile"
                                        id="avatarFile"
                                        class="form-control d-none"
-                                       accept="image/*"
+                                       accept=".jpg, .jpeg, .png"
                                        onchange="previewImage(event)">
                                 <label for="avatarFile" class="btn btn-outline-primary mb-2">
                                     <i class="fas fa-upload me-2"></i>

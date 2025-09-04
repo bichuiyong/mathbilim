@@ -81,7 +81,7 @@
             <!-- Файлы -->
             <div class="mb-3">
                 <label class="form-label"><@spring.message "news.coverImage"/></label>
-                <input type="file" class="form-control" name="image" accept="image/*">
+                <input type="file" class="form-control" name="image" accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="mb-3">

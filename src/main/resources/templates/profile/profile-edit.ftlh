@@ -44,7 +44,7 @@
                                             <i class="fas fa-camera me-2"></i><@spring.message "button.changePhoto"/>
                                         </label>
                                         <input id="avatar-upload" name="avatar" type="file"
-                                               accept="image/jpeg, image/png, image/jpg, image/gif" class="d-none"
+                                               accept=".jpg, .jpeg, .png" class="d-none"
                                                onchange="this.form.submit()">
                                         <div class="text-muted">
                                             <small><@spring.message "profile.avatar.formatInfo"/></small>
