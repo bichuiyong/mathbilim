@@ -756,7 +756,7 @@
             </#if>
 
             <div class="pagination-info">
-                <@spring.message "blogs.page"/> ${page + 1}
+                <@spring.message "blogs.page"/> ${page}
             </div>
 
             <#if blog.hasNext()>
