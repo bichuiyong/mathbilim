@@ -1,7 +1,6 @@
 package kg.edu.mathbilim.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import kg.edu.mathbilim.components.TimeZoneFilter;
 import kg.edu.mathbilim.service.impl.auth.CustomOAuth2UserService;
 import kg.edu.mathbilim.service.impl.auth.OAuth2LoginSuccessHandler;
 import kg.edu.mathbilim.service.impl.auth.UserEmailHandler;
@@ -29,7 +28,6 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oauthSuccessHandler;
     private final UserTypeHandler userTypeHandler;
     private final UserEmailHandler userEmailHandler;
-    private final TimeZoneFilter timeZoneFilter;
 
     @Value("${logging.app.remember-me.key:#{T(java.util.UUID).randomUUID().toString()}}")
     private String rememberMeKey;
@@ -37,7 +35,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .addFilterBefore(timeZoneFilter,UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userEmailHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(userTypeHandler, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
