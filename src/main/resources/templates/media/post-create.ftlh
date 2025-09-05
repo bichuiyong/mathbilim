@@ -76,7 +76,7 @@
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
-                                        <#list createPostDto.post.postTranslations?sort_by("languageCode") as trans>
+                                        <#list createPostDto.post.postTranslations as trans>
                                             <li class="nav-item">
                                                 <button class="nav-link <#if trans?is_first>active</#if>"
                                                         type="button"
