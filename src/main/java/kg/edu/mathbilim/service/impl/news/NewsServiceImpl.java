@@ -233,8 +233,17 @@ public class NewsServiceImpl extends
             resultPage = repository.findAllNews(pageable);
         }
 
+        Page<NewsDto> pages =  PaginationUtil.getPage(() -> resultPage, mapper::toDto);
 
-        return PaginationUtil.getPage(() -> resultPage, mapper::toDto);
+        for (NewsDto newsDto : pages.getContent()) {
+            List<NewsTranslationDto> translations = newsDto.getNewsTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(lang)) return -1;
+                if (b.getLanguageCode().equals(lang)) return 1;
+                return 0;
+            });
+        }
+        return pages;
     }
 
 
