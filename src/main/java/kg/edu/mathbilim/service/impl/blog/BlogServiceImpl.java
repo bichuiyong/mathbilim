@@ -3,6 +3,7 @@ package kg.edu.mathbilim.service.impl.blog;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
@@ -113,7 +114,8 @@ public class BlogServiceImpl extends
     }
 
     @Transactional
-    public BlogDto getDisplayBlogById(Long id, String email) {
+    @Override
+    public BlogDto getDisplayBlogByIdAndLanguage(Long id, String email, String language) {
         Blog blog = repository.findDisplayBlogById(id)
                 .orElseThrow(BlogNotFoundException::new);
 
@@ -124,7 +126,19 @@ public class BlogServiceImpl extends
 
         incrementViewCount(id);
 
-        return mapper.toDto(blog);
+        BlogDto blogDto = blogReadMapper.toDto(blog);
+
+        if (language != null && !language.isBlank()) {
+
+            List<BlogTranslationDto> translations = blogDto.getBlogTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(language)) return -1;
+                if (b.getLanguageCode().equals(language)) return 1;
+                return 0;
+            });
+
+        }
+        return blogDto;
     }
 
 

@@ -121,12 +121,13 @@ public class BlogController {
 
     @GetMapping("/{id}")
     public String viewBlog(@PathVariable Long id,
+                           @RequestParam(required = false) String language,
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
 //        blogService.incrementViewCount(id);
         String email = (principal != null) ? principal.getName() : null;
-        BlogDto blog = blogService.getDisplayBlogById(id, email);
+        BlogDto blog = blogService.getDisplayBlogByIdAndLanguage(id, email, language);
 
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
