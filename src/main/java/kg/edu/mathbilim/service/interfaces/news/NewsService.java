@@ -22,7 +22,7 @@ public interface NewsService extends BaseTranslatableService<NewsDto, NewsTransl
 
     Page<NewsDto> getAllNews(Pageable pageable, String query);
 
-    NewsDto getNewsById(Long id);
+    NewsDto getNewsByIdAndLanguage(Long id, String language);
 
     Page<NewsDto> getNewsByLang(String query, int page, int size, String sortBy, String sortDirection, String lang);
 

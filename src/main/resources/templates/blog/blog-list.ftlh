@@ -674,7 +674,7 @@
         <#if blog?? && blog.content?size gt 0>
             <div class="blogs-grid">
                 <#list blog.content as b>
-                    <article class="blog-item" onclick="window.location.href='/blog/${b.id}'" tabindex="0">
+                    <article class="blog-item" onclick="window.location.href='/blog/${b.id}?language=${currentLang}'" tabindex="0">
                         <div class="blog-image-container">
                             <#if b.mainImage??>
                                 <img src="/api/files/${b.mainImage.id}/view" alt="Blog Image">

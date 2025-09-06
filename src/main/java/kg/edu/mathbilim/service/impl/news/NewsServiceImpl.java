@@ -1,5 +1,7 @@
 package kg.edu.mathbilim.service.impl.news;
 
+import kg.edu.mathbilim.dto.blog.BlogDto;
+import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
 import kg.edu.mathbilim.dto.news.CreateNewsDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.dto.news.NewsTranslationDto;
@@ -203,7 +205,7 @@ public class NewsServiceImpl extends
 
     @Override
     @Transactional
-    public NewsDto getNewsById(Long id) {
+    public NewsDto getNewsByIdAndLanguage(Long id, String language) {
         News news = repository.findById(id).orElseThrow(NewsNotFoundException::new);
 
         if (news.isDeleted()) {
@@ -214,7 +216,19 @@ public class NewsServiceImpl extends
 
         log.info("News {} with id {}", news.getId(), news.getCreator().getId());
 
-        return mapper.toDto(news);
+        NewsDto newsDto = mapper.toDto(news);
+
+        if (language != null && !language.isBlank()) {
+
+                List<NewsTranslationDto> translations = newsDto.getNewsTranslations();
+                translations.sort((a, b) -> {
+                    if (a.getLanguageCode().equals(language)) return -1;
+                    if (b.getLanguageCode().equals(language)) return 1;
+                    return 0;
+                });
+
+        }
+        return newsDto;
     }
 
     @Override
@@ -233,8 +247,17 @@ public class NewsServiceImpl extends
             resultPage = repository.findAllNews(pageable);
         }
 
+        Page<NewsDto> pages =  PaginationUtil.getPage(() -> resultPage, mapper::toDto);
 
-        return PaginationUtil.getPage(() -> resultPage, mapper::toDto);
+        for (NewsDto newsDto : pages.getContent()) {
+            List<NewsTranslationDto> translations = newsDto.getNewsTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(lang)) return -1;
+                if (b.getLanguageCode().equals(lang)) return 1;
+                return 0;
+            });
+        }
+        return pages;
     }
 
 

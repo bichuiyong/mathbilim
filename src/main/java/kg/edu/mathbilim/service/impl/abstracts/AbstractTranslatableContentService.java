@@ -96,7 +96,8 @@ public abstract class AbstractTranslatableContentService<
                 log.debug("getContentByStatus element: {}", e)
         );
 
-        return result.map(mapper::toDto);
+        Page<D> resultMap = result.map(mapper::toDto);
+        return resultMap;
     }
 
 

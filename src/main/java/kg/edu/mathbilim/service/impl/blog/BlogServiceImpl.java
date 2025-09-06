@@ -3,10 +3,12 @@ package kg.edu.mathbilim.service.impl.blog;
 import kg.edu.mathbilim.dto.abstracts.DisplayContentDto;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.exception.accs.ContentNotAvailableException;
 import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.mapper.blog.BlogMapper;
+import kg.edu.mathbilim.mapper.blog.BlogReadMapper;
 import kg.edu.mathbilim.model.blog.Blog;
 import kg.edu.mathbilim.model.blog.BlogTranslation;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
@@ -32,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -52,9 +56,13 @@ public class BlogServiceImpl extends
                            FileService fileService,
                            BlogTranslationService translationService,
                            NotificationFacade notificationService,
-                           MessageSource messageSource) {
+                           MessageSource messageSource,
+                           BlogReadMapper blogReadMapper) {
         super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
+        this.blogReadMapper = blogReadMapper;
     }
+
+    private final BlogReadMapper blogReadMapper;
 
     @Override
     protected RuntimeException getNotFoundException() {
@@ -106,7 +114,8 @@ public class BlogServiceImpl extends
     }
 
     @Transactional
-    public BlogDto getDisplayBlogById(Long id, String email) {
+    @Override
+    public BlogDto getDisplayBlogByIdAndLanguage(Long id, String email, String language) {
         Blog blog = repository.findDisplayBlogById(id)
                 .orElseThrow(BlogNotFoundException::new);
 
@@ -117,7 +126,19 @@ public class BlogServiceImpl extends
 
         incrementViewCount(id);
 
-        return mapper.toDto(blog);
+        BlogDto blogDto = blogReadMapper.toDto(blog);
+
+        if (language != null && !language.isBlank()) {
+
+            List<BlogTranslationDto> translations = blogDto.getBlogTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(language)) return -1;
+                if (b.getLanguageCode().equals(language)) return 1;
+                return 0;
+            });
+
+        }
+        return blogDto;
     }
 
 
@@ -134,16 +155,52 @@ public class BlogServiceImpl extends
 
     @Override
     public Page<BlogDto> getBlogsByStatusForMainPage(String status, String query, int page, int size, String sortBy, String sortDirection, String language) {
-        return getContentByStatus(
-                status,
-                query,
-                page,
-                size,
-                sortBy,
-                sortDirection,
-                pageable -> repository.getBlogsByStatus(ContentStatus.fromName(status), pageable),
-                (q, pageable) -> repository.getBlogsByStatusWithQueryAndLang(ContentStatus.fromName(status), q, pageable, language)
+
+//        Function<Pageable, Page<Blog>> findByStatus = pageable ->
+//                repository.getBlogsByStatus(
+//                        ContentStatus.fromName(status),
+//                        pageable
+//                );
+
+        BiFunction<String, Pageable, Page<Blog>> queryFinder = (q, pageable) ->
+                repository.getBlogsByStatusWithQueryAndLang(
+                        ContentStatus.fromName(status),
+                        q,
+                        pageable,
+                        language
+                );
+//
+//        Page<BlogDto> pages = getContentByStatus(
+//                status,
+//                query,
+//                page,
+//                size,
+//                sortBy,
+//                sortDirection,
+//                findByStatus,
+//                findByStatusWithQueryAndLang
+//        );
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+
+        String safeQuery = query == null ? "" : query;
+
+        log.info("getContentByStatus: status={}, query='{}', page={}, size={}, sortBy={}, sortDirection={}, pageable={}",
+                status, safeQuery, page, size, sortBy, sortDirection, pageable);
+
+        Page<Blog> result = queryFinder.apply(safeQuery, pageable);
+
+        log.info("getContentByStatus executed: returned totalElements={}, totalPages={}, pageNumber={}, pageSize={}, sort={}",
+                result.getTotalElements(), result.getTotalPages(), result.getNumber(), result.getSize(), pageable.getSort());
+
+        result.getContent().forEach(e ->
+                log.debug("getContentByStatus element: {}", e)
         );
+
+        Page<BlogDto> resultMap = result.map(blogReadMapper::toDto);
+
+        return resultMap;
+
+
     }
 
 

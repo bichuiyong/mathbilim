@@ -2,8 +2,11 @@ package kg.edu.mathbilim.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
+import kg.edu.mathbilim.dto.news.NewsDto;
+import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.user.User;
@@ -14,6 +17,7 @@ import kg.edu.mathbilim.service.interfaces.post.PostTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -111,16 +116,26 @@ public class    PostController {
                         Model model) {
 
         log.info("language{}", lang);
-        model.addAttribute("posts",
-                postService.getPostsByStatus(
-                        "APPROVED",
-                        query,
-                        page,
-                        size,
-                        sortBy,
-                        sortDirection,
-                        lang
-                ));
+        Page<PostDto> posts = postService.getPostsForMainPostPage(
+                "APPROVED",
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                lang
+        );
+        for (PostDto postDto : posts.getContent()) {
+            List<PostTranslationDto> translations = postDto.getPostTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(lang)) return -1;
+                if (b.getLanguageCode().equals(lang)) return 1;
+                return 0;
+            });
+        }
+
+        model.addAttribute("posts", posts);
+
 
         model.addAttribute("query", query);
         model.addAttribute("page", page);
@@ -136,9 +151,9 @@ public class    PostController {
 
 
     @GetMapping("{postId}")
-    public String detailPost(@PathVariable Long postId, Model model, Principal principal) {
+    public String detailPost(@PathVariable Long postId, Model model, Principal principal, @RequestParam(required = false) String language) {
         String email = (principal != null) ? principal.getName() : null;
-        model.addAttribute("post", postService.getPostById(postId, email));
+        model.addAttribute("post", postService.getPostByIdAndLanguage(postId, email, language));
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
     }
