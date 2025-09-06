@@ -401,12 +401,15 @@ function changeEditModal() {
             document.getElementById('editUserRole').value = button.dataset.userRole;
             document.getElementById('editUserType').value = button.dataset.userType;
         } else if (button.classList.contains('delete-button')) {
-            let deleteUserModal = document.getElementById('deleteUserModalBody');
-            let deleteUserInput = document.getElementById('deleteUserInput');
-            let deleteUserBtn = document.getElementById('deleteUserBtn');
+            const userId = button.dataset.userId;
+
+            const deleteUserText  = document.getElementById('deleteUserText');
+            const deleteUserInput = document.getElementById('deleteUserInput');
+            const deleteUserBtn   = document.getElementById('deleteUserBtn');
+
             deleteUserBtn.dataset.userId = userId;
             deleteUserInput.value = userId;
-            deleteUserModal.textContent = 'Вы уверены что хотите удалить пользователя с ID:' + userId;
+            deleteUserText.textContent = 'Вы уверены, что хотите удалить пользователя с ID: ' + userId + '?';
         } else if (button.classList.contains('block-button')) {
             await handleUserAction(
                 'PATCH',

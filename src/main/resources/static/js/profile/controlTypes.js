@@ -61,16 +61,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    if (typeContentList) {
+        typeContentList.addEventListener('click', function(event) {
+            const editButton = event.target.closest('.edit-button');
+            const deleteButton = event.target.closest('.delete-button');
+
+            if (editButton) {
+                handleEditButton(editButton);
+            } else if (deleteButton) {
+                handleDeleteButton(deleteButton);
+            }
+        });
+    }
+
     document.body.addEventListener('click', function(event) {
-        const editButton = event.target.closest('.edit-button');
-        const deleteButton = event.target.closest('.delete-button');
-
-        if (editButton) {
-            handleEditButton(editButton);
-        } else if (deleteButton) {
-            handleDeleteButton(deleteButton);
-        }
-
         if (event.target.matches('[data-bs-dismiss="modal"]') ||
             event.target.classList.contains('modal') ||
             event.target.closest('.btn-close')) {
@@ -82,16 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-});
-
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        const createTypeModal = document.getElementById('createTypeModal');
-        if (createTypeModal && createTypeModal.classList.contains('show')) {
-            const form = document.getElementById('categoryForm');
-            clearFormErrors(form);
-        }
-    }
 });
 
 function handleEditButton(editButton) {
