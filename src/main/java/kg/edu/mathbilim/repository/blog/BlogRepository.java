@@ -162,13 +162,14 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, BaseContentRe
 
 
     @Query("""
-            SELECT DISTINCT p FROM Blog p
-            JOIN p.blogTranslations t
-            WHERE p.status = :contentStatus
-                        AND
-            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) and
-                        t.id.languageCode = :languageCode
-                         and p.deleted = false
+            SELECT p FROM Blog p
+           WHERE p.id IN (
+               SELECT t.blog.id FROM BlogTranslation t
+               WHERE t.id.languageCode = :languageCode
+                 AND LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%'))
+           )
+           AND p.status = :contentStatus
+           AND p.deleted = false
             """)
     Page<Blog> getBlogsByStatusWithQueryAndLang(ContentStatus contentStatus,
                                                 String query,

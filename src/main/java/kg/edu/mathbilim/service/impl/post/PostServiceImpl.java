@@ -9,6 +9,7 @@ import kg.edu.mathbilim.exception.nsee.BlogNotFoundException;
 import kg.edu.mathbilim.exception.nsee.PostNotFoundException;
 import kg.edu.mathbilim.mapper.post.PostMapper;
 import kg.edu.mathbilim.mapper.post.PostMapperImpl;
+import kg.edu.mathbilim.mapper.post.PostReadMapper;
 import kg.edu.mathbilim.model.File;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.model.post.Post;
@@ -34,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,9 +52,12 @@ public class PostServiceImpl extends
         implements PostService {
 
 
-    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, NotificationFacade notificationService, MessageSource messageSource) {
+    public PostServiceImpl(PostRepository repository, PostMapper mapper, UserService userService, FileService fileService, PostTranslationService translationService, PostRepository postRepository, PostMapperImpl postMapperImpl, NotificationFacade notificationService, MessageSource messageSource, PostReadMapper postReadMapper) {
         super(repository, mapper, userService, fileService, translationService, notificationService, messageSource);
+        this.postReadMapper = postReadMapper;
     }
+
+    private final PostReadMapper postReadMapper;
 
     @Override
     protected RuntimeException getNotFoundException() {
@@ -148,6 +153,52 @@ public class PostServiceImpl extends
 
         log.info("Final posts returned: {}", result.getTotalElements());
         return result;
+    }
+    @Override
+    public Page<PostDto> getPostsForMainPostPage(String status,
+                                                 String query,
+                                                 int page,
+                                                 int size,
+                                                 String sortBy,
+                                                 String sortDirection,
+                                                 String lang) {
+        BiFunction<String, Pageable, Page<Post>> queryFinder = (q, pageable) ->
+                repository.getPostsByStatusWithQuery(
+                        ContentStatus.fromName(status),
+                        q,
+                        pageable,
+                        lang
+                );
+//
+//        Page<BlogDto> pages = getContentByStatus(
+//                status,
+//                query,
+//                page,
+//                size,
+//                sortBy,
+//                sortDirection,
+//                findByStatus,
+//                findByStatusWithQueryAndLang
+//        );
+        Pageable pageable = PaginationUtil.createPageableWithSort(page, size, sortBy, sortDirection);
+
+        String safeQuery = query == null ? "" : query;
+
+        log.info("getContentByStatus: status={}, query='{}', page={}, size={}, sortBy={}, sortDirection={}, pageable={}",
+                status, safeQuery, page, size, sortBy, sortDirection, pageable);
+
+        Page<Post> result = queryFinder.apply(safeQuery, pageable);
+
+        log.info("getContentByStatus executed: returned totalElements={}, totalPages={}, pageNumber={}, pageSize={}, sort={}",
+                result.getTotalElements(), result.getTotalPages(), result.getNumber(), result.getSize(), pageable.getSort());
+
+        result.getContent().forEach(e ->
+                log.debug("getContentByStatus element: {}", e)
+        );
+
+        Page<PostDto> resultMap = result.map(postReadMapper::toDto);
+
+        return resultMap;
     }
 
 

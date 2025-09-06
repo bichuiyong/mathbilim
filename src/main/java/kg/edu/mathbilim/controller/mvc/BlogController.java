@@ -4,6 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.blog.BlogDto;
+import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
+import kg.edu.mathbilim.dto.post.PostDto;
+import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Controller("mvcBlog")
@@ -45,15 +50,26 @@ public class BlogController {
                       @RequestParam(value = "language", defaultValue = "ru", required = false) String lang,
                       Authentication authentication,
                       Model model) {
-        model.addAttribute("blog",
-                blogService.getBlogsByStatusForMainPage(
-                        "APPROVED",
-                        query,
-                        page,
-                        size,
-                        sortBy,
-                        sortDirection,
-                        lang));
+
+        Page<BlogDto> blogDtos = blogService.getBlogsByStatusForMainPage(
+                "APPROVED",
+                query,
+                page,
+                size,
+                sortBy,
+                sortDirection,
+                lang);
+
+        for (BlogDto blogDto : blogDtos.getContent()) {
+            List<BlogTranslationDto> translations = blogDto.getBlogTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(lang)) return -1;
+                if (b.getLanguageCode().equals(lang)) return 1;
+                return 0;
+            });
+        }
+
+        model.addAttribute("blog", blogDtos);
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
