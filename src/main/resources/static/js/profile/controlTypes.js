@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+
     if (typeContentList) {
         typeContentList.addEventListener('click', function(event) {
             const editButton = event.target.closest('.edit-button');
@@ -85,7 +86,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearFormErrors(form);
             }
         }
+
+        if (event.target.matches('[data-bs-dismiss="modal"]') ||
+            event.target.classList.contains('modal') ||
+            event.target.closest('.btn-close')) {
+
+            const modal = event.target.closest('.modal');
+            if (modal && modal.id === 'createTypeModal') {
+                const form = document.getElementById('categoryForm');
+                clearFormErrors(form);
+            }
+        }
     });
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const createTypeModal = document.getElementById('createTypeModal');
+        if (createTypeModal && createTypeModal.classList.contains('show')) {
+            const form = document.getElementById('categoryForm');
+            clearFormErrors(form);
+        }
+    }
 });
 
 function handleEditButton(editButton) {
