@@ -5,6 +5,7 @@ import kg.edu.mathbilim.dto.user.ChangePasswordDto;
 import kg.edu.mathbilim.dto.user.PublicUserDto;
 import kg.edu.mathbilim.dto.user.UserDto;
 import kg.edu.mathbilim.dto.user.UserEditDto;
+import kg.edu.mathbilim.model.user.User;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.RoleService;
@@ -30,9 +31,13 @@ public class UserController {
     private final RoleService roleService;
 
 
-    @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
+//    @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
     @GetMapping("{id}")
     public String profile(@PathVariable Long id, Model model) {
+        User user = userService.getAuthUserEntity();
+        if (!user.getId().equals(id)) {
+            return "redirect:/users/" + user.getId();
+        }
         UserDto userDto = userService.getDtoById(id);
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("types", translationService.getUserTypesByLanguage());
