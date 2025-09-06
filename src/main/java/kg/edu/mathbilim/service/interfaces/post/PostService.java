@@ -23,12 +23,20 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
 //    Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection);
 
+    Page<PostDto> getPostsForMainPostPage(String status,
+                                          String query,
+                                          int page,
+                                          int size,
+                                          String sortBy,
+                                          String sortDirection,
+                                          String lang);
+
     void approve(Long id, String email);
     Page<PostDto> getPostsByStatus(String status, String query, int page, int size, String sortBy, String sortDirection, String lang);
 
     void reject(Long id, String email);
 
-    PostDto getPostById(Long id, String email);
+    PostDto getPostByIdAndLanguage(Long id, String email, String language);
 
     @Transactional
     PostDto getPostById(Long id);

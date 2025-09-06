@@ -472,7 +472,7 @@
         <#if news?? && news.content?size gt 0>
             <div class="news-grid">
                 <#list news.content as p>
-                    <article class="news-card" onclick="window.location.href='/news/${p.id}'" tabindex="0">
+                    <article class="news-card" onclick="window.location.href='/news/${p.id}?language=${currentLang}'" tabindex="0">
                         <div class="news-image-container">
                             <#if p.mainImage??>
                                 <img src="/api/files/${p.mainImageId}/view" alt="News Image">
