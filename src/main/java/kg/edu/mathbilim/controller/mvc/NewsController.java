@@ -57,11 +57,12 @@ public class NewsController {
     @GetMapping("{id}")
     public String news(
             @PathVariable long id,
+            @RequestParam(required = false) String language,
             Model model,
             Principal principal
     ) {
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
-        model.addAttribute(newsDto, newsService.getNewsById(id));
+        model.addAttribute(newsDto, newsService.getNewsByIdAndLanguage(id, language));
         return "news/news-detail";
     }
 
