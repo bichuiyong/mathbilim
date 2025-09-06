@@ -1,5 +1,6 @@
 package kg.edu.mathbilim.service.impl.post;
 
+import kg.edu.mathbilim.dto.news.NewsTranslationDto;
 import kg.edu.mathbilim.dto.post.CreatePostDto;
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.post.PostTranslationDto;
@@ -232,7 +233,7 @@ public class PostServiceImpl extends
 
     @Override
     @Transactional
-    public PostDto getPostById(Long id, String email) {
+    public PostDto getPostByIdAndLanguage(Long id, String email, String language) {
         Post post = repository.findById(id)
                 .orElseThrow(BlogNotFoundException::new);
 
@@ -241,8 +242,20 @@ public class PostServiceImpl extends
         }
 
         incrementViewCount(id);
+        PostDto postDto = postReadMapper.toDto(post);
 
-        return mapper.toDto(post);
+        if (language != null && !language.isBlank()) {
+
+            List<PostTranslationDto> translations = postDto.getPostTranslations();
+            translations.sort((a, b) -> {
+                if (a.getLanguageCode().equals(language)) return -1;
+                if (b.getLanguageCode().equals(language)) return 1;
+                return 0;
+            });
+
+        }
+
+        return postDto;
     }
 
     @Transactional

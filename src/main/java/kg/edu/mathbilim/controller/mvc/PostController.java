@@ -151,9 +151,9 @@ public class    PostController {
 
 
     @GetMapping("{postId}")
-    public String detailPost(@PathVariable Long postId, Model model, Principal principal) {
+    public String detailPost(@PathVariable Long postId, Model model, Principal principal, @RequestParam(required = false) String language) {
         String email = (principal != null) ? principal.getName() : null;
-        model.addAttribute("post", postService.getPostById(postId, email));
+        model.addAttribute("post", postService.getPostByIdAndLanguage(postId, email, language));
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
         return "post/post-detail";
     }

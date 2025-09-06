@@ -36,7 +36,7 @@ public interface PostService extends BaseTranslatableService<PostDto, PostTransl
 
     void reject(Long id, String email);
 
-    PostDto getPostById(Long id, String email);
+    PostDto getPostByIdAndLanguage(Long id, String email, String language);
 
     @Transactional
     PostDto getPostById(Long id);

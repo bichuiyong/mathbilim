@@ -682,7 +682,7 @@
         <#if posts?? && posts.content?size gt 0>
             <div class="posts-grid">
                 <#list posts.content as p>
-                    <article class="post-item" onclick="window.location.href='/posts/${p.id}'" tabindex="0">
+                    <article class="post-item" onclick="window.location.href='/posts/${p.id}?language=${currentLang}'" tabindex="0">
                         <div class="post-image-container">
                             <#if p.mainImage??>
                                 <img src="/api/files/${p.mainImageId}/view" alt="Post Image">
