@@ -348,7 +348,7 @@ async function handleUserAction(method, successMessage, errorMessage, url, modal
         }
     } catch (error) {
         console.error('Ошибка:', error.message);
-        showErrorMessage(modalId, 'Что-то пошло не так.');
+        showErrorMessage(modalId, 'Удалить невозможно. Есть связанный контент');
     }
 }
 
