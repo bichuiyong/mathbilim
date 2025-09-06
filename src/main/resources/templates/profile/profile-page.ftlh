@@ -1483,9 +1483,9 @@
                                         <@spring.message "modal.createType.selectPrompt"/>
                                     </option>
                                     <option value="categories"><@spring.message "modal.createType.option.category"/></option>
-                                    <option value="event_type"><@spring.message "modal.createType.option.eventType"/></option>
-                                    <option value="post_type"><@spring.message "modal.createType.option.postType"/></option>
-                                    <option value="user_type"><@spring.message "modal.createType.option.userType"/></option>
+                                    <option value="eventTypes"><@spring.message "modal.createType.option.eventType"/></option>
+                                    <option value="postTypes"><@spring.message "modal.createType.option.postType"/></option>
+                                    <option value="userTypes"><@spring.message "modal.createType.option.userType"/></option>
                                 </select>
                                 <i class="bi bi-chevron-down dropdown-icon"></i>
                             </div>

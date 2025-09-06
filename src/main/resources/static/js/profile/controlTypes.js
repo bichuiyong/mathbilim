@@ -14,7 +14,53 @@ function t(key) {
     return translations[currentLocaleForCategory]?.[key] || key;
 }
 
+// document.addEventListener('DOMContentLoaded', function() {
+//     document.body.addEventListener('click', function(event) {
+//         const editButton = event.target.closest('.edit-button');
+//         const deleteButton = event.target.closest('.delete-button');
+//
+//         if (editButton) {
+//             handleEditButton(editButton);
+//         } else if (deleteButton) {
+//             handleDeleteButton(deleteButton);
+//         }
+//     });
+// });
+
+function clearFormErrors(form) {
+    if (!form) return;
+
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    form.querySelectorAll('.invalid-feedback, .error-message').forEach(el => el.remove());
+
+    const staticTypeError = document.getElementById('staticTypeError');
+    if (staticTypeError) {
+        staticTypeError.remove();
+    }
+
+    form.querySelectorAll('.alert-danger, .general-error').forEach(el => el.remove());
+    console.log('Form errors cleared');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    const createTypeModal = document.getElementById('createTypeModal');
+
+    if (createTypeModal) {
+        createTypeModal.addEventListener('hide.bs.modal', function () {
+            console.log('Modal is closing, clearing errors...');
+            const form = document.getElementById('categoryForm');
+            clearFormErrors(form);
+        });
+
+        createTypeModal.addEventListener('hidden.bs.modal', function () {
+            console.log('Modal fully hidden');
+            const form = document.getElementById('categoryForm');
+            if (form) {
+                clearFormErrors(form);
+            }
+        });
+    }
+
     document.body.addEventListener('click', function(event) {
         const editButton = event.target.closest('.edit-button');
         const deleteButton = event.target.closest('.delete-button');
@@ -24,7 +70,28 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (deleteButton) {
             handleDeleteButton(deleteButton);
         }
+
+        if (event.target.matches('[data-bs-dismiss="modal"]') ||
+            event.target.classList.contains('modal') ||
+            event.target.closest('.btn-close')) {
+
+            const modal = event.target.closest('.modal');
+            if (modal && modal.id === 'createTypeModal') {
+                const form = document.getElementById('categoryForm');
+                clearFormErrors(form);
+            }
+        }
     });
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const createTypeModal = document.getElementById('createTypeModal');
+        if (createTypeModal && createTypeModal.classList.contains('show')) {
+            const form = document.getElementById('categoryForm');
+            clearFormErrors(form);
+        }
+    }
 });
 
 function handleEditButton(editButton) {
@@ -129,8 +196,8 @@ createTypeBtn.onclick = function () {
     );
 };
 
-function onCreateTypeError(response) {
-    let form = document.getElementById('categoryForm');
+function onCreateTypeError(response, form) {
+    // let form = document.getElementById('categoryForm');
 
     response.json().then(errorBody => {
         const errors = errorBody.response;
