@@ -439,125 +439,137 @@ class EventCreateManager {
     // ==========================================
 
     initImageCrop() {
-        console.log('Initializing image crop...');
+        console.log('Initializing image crop with ImageCropManager...');
 
-        const imageInput = document.getElementById('mainImageInput');
-        if (!imageInput) {
-            console.warn('Image input not found');
-            return;
-        }
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.handleImageSelection(file);
+        // Используем ImageCropManager вместо собственной логики
+        this.imageCropManager = new ImageCropManager({
+            inputId: 'mainImageInput',
+            previewId: 'imagePreview',
+            previewContainerSelector: '.image-preview-container',
+            croppedPreviewSelector: '.cropped-preview',
+            cropButtonId: 'cropButton',
+            cancelCropId: 'cancelCrop',
+            changeCropId: 'changeCrop',
+            croppedImageId: 'croppedImage',
+            aspectRatio: 3, // 1200x400
+            outputWidth: 1200,
+            outputHeight: 400,
+            onCropComplete: (blob, dataUrl) => {
+                console.log('Image crop completed');
+                // Дополнительная логика после обрезки, если нужна
+            },
+            onError: (message) => {
+                this.showNotification(message, 'danger');
             }
         });
 
-        console.log('Image crop initialized');
+        // Сохраняем в window для отладки
+        window.imageCropManager = this.imageCropManager;
+
+        console.log('ImageCropManager initialized successfully');
     }
 
-    handleImageSelection(file) {
-        if (!file.type.startsWith('image/')) {
-            this.showNotification('Пожалуйста, выберите изображение', 'warning');
-            return;
-        }
+    // handleImageSelection(file) {
+    //     if (!file.type.startsWith('image/')) {
+    //         this.showNotification('Пожалуйста, выберите изображение', 'warning');
+    //         return;
+    //     }
+    //
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //         this.showImageCropInterface(e.target.result);
+    //     };
+    //     reader.readAsDataURL(file);
+    // }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            this.showImageCropInterface(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
+    // showImageCropInterface(imageSrc) {
+    //     const previewContainer = document.querySelector('.image-preview-container');
+    //     const previewImage = document.getElementById('imagePreview');
+    //
+    //     if (!previewContainer || !previewImage) {
+    //         console.warn('Image preview elements not found');
+    //         return;
+    //     }
+    //
+    //     previewImage.src = imageSrc;
+    //     previewContainer.style.display = 'block';
+    //
+    //     // Инициализация Cropper.js если доступен
+    //     if (typeof Cropper !== 'undefined') {
+    //         if (this.cropper) {
+    //             this.cropper.destroy();
+    //         }
+    //
+    //         this.cropper = new Cropper(previewImage, {
+    //             aspectRatio: 3 / 1, // 1200x400
+    //             viewMode: 2,
+    //             autoCropArea: 1,
+    //             responsive: true,
+    //             restore: false,
+    //             guides: true,
+    //             center: true,
+    //             highlight: false,
+    //             cropBoxMovable: true,
+    //             cropBoxResizable: true,
+    //             toggleDragModeOnDblclick: false
+    //         });
+    //
+    //         this.setupCropButtons();
+    //     }
+    // }
 
-    showImageCropInterface(imageSrc) {
-        const previewContainer = document.querySelector('.image-preview-container');
-        const previewImage = document.getElementById('imagePreview');
+    // setupCropButtons() {
+    //     const cropButton = document.getElementById('cropButton');
+    //     const cancelButton = document.getElementById('cancelCrop');
+    //
+    //     if (cropButton) {
+    //         cropButton.onclick = () => this.applyCrop();
+    //     }
+    //
+    //     if (cancelButton) {
+    //         cancelButton.onclick = () => this.cancelCrop();
+    //     }
+    // }
 
-        if (!previewContainer || !previewImage) {
-            console.warn('Image preview elements not found');
-            return;
-        }
-
-        previewImage.src = imageSrc;
-        previewContainer.style.display = 'block';
-
-        // Инициализация Cropper.js если доступен
-        if (typeof Cropper !== 'undefined') {
-            if (this.cropper) {
-                this.cropper.destroy();
-            }
-
-            this.cropper = new Cropper(previewImage, {
-                aspectRatio: 3 / 1, // 1200x400
-                viewMode: 2,
-                autoCropArea: 1,
-                responsive: true,
-                restore: false,
-                guides: true,
-                center: true,
-                highlight: false,
-                cropBoxMovable: true,
-                cropBoxResizable: true,
-                toggleDragModeOnDblclick: false
-            });
-
-            this.setupCropButtons();
-        }
-    }
-
-    setupCropButtons() {
-        const cropButton = document.getElementById('cropButton');
-        const cancelButton = document.getElementById('cancelCrop');
-
-        if (cropButton) {
-            cropButton.onclick = () => this.applyCrop();
-        }
-
-        if (cancelButton) {
-            cancelButton.onclick = () => this.cancelCrop();
-        }
-    }
-
-    applyCrop() {
-        if (!this.cropper) return;
-
-        const canvas = this.cropper.getCroppedCanvas({
-            width: 1200,
-            height: 400,
-            fillColor: '#fff'
-        });
-
-        const croppedImage = document.getElementById('croppedImage');
-        const croppedPreview = document.querySelector('.cropped-preview');
-
-        if (croppedImage && croppedPreview) {
-            croppedImage.src = canvas.toDataURL('image/jpeg', 0.8);
-            croppedPreview.style.display = 'block';
-        }
-
-        this.hideCropInterface();
-    }
-
-    cancelCrop() {
-        this.hideCropInterface();
-        const imageInput = document.getElementById('mainImageInput');
-        if (imageInput) {
-            imageInput.value = '';
-        }
-    }
-
-    hideCropInterface() {
-        const previewContainer = document.querySelector('.image-preview-container');
-        if (previewContainer) {
-            previewContainer.style.display = 'none';
-        }
-
-        if (this.cropper) {
-            this.cropper.destroy();
-            this.cropper = null;
-        }
-    }
+    // applyCrop() {
+    //     if (!this.cropper) return;
+    //
+    //     const canvas = this.cropper.getCroppedCanvas({
+    //         width: 1200,
+    //         height: 400,
+    //         fillColor: '#fff'
+    //     });
+    //
+    //     const croppedImage = document.getElementById('croppedImage');
+    //     const croppedPreview = document.querySelector('.cropped-preview');
+    //
+    //     if (croppedImage && croppedPreview) {
+    //         croppedImage.src = canvas.toDataURL('image/jpeg', 0.8);
+    //         croppedPreview.style.display = 'block';
+    //     }
+    //
+    //     this.hideCropInterface();
+    // }
+    //
+    // cancelCrop() {
+    //     this.hideCropInterface();
+    //     const imageInput = document.getElementById('mainImageInput');
+    //     if (imageInput) {
+    //         imageInput.value = '';
+    //     }
+    // }
+    //
+    // hideCropInterface() {
+    //     const previewContainer = document.querySelector('.image-preview-container');
+    //     if (previewContainer) {
+    //         previewContainer.style.display = 'none';
+    //     }
+    //
+    //     if (this.cropper) {
+    //         this.cropper.destroy();
+    //         this.cropper = null;
+    //     }
+    // }
 
     // ==========================================
     // FROALA РЕДАКТОРЫ
