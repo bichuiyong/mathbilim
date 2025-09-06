@@ -61,14 +61,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    document.body.addEventListener('click', function(event) {
-        const editButton = event.target.closest('.edit-button');
-        const deleteButton = event.target.closest('.delete-button');
 
-        if (editButton) {
-            handleEditButton(editButton);
-        } else if (deleteButton) {
-            handleDeleteButton(deleteButton);
+    if (typeContentList) {
+        typeContentList.addEventListener('click', function(event) {
+            const editButton = event.target.closest('.edit-button');
+            const deleteButton = event.target.closest('.delete-button');
+
+            if (editButton) {
+                handleEditButton(editButton);
+            } else if (deleteButton) {
+                handleDeleteButton(deleteButton);
+            }
+        });
+    }
+
+    document.body.addEventListener('click', function(event) {
+        if (event.target.matches('[data-bs-dismiss="modal"]') ||
+            event.target.classList.contains('modal') ||
+            event.target.closest('.btn-close')) {
+
+            const modal = event.target.closest('.modal');
+            if (modal && modal.id === 'createTypeModal') {
+                const form = document.getElementById('categoryForm');
+                clearFormErrors(form);
+            }
         }
 
         if (event.target.matches('[data-bs-dismiss="modal"]') ||

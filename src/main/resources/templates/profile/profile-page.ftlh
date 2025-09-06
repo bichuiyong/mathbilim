@@ -1286,6 +1286,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="deleteUserModalBody">
+                    <p id="deleteUserText" class="mb-2"></p>
                     <input type="hidden" value="" id="deleteUserInput">
                 </div>
                 <div class="modal-footer">
