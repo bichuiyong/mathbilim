@@ -90,7 +90,6 @@
                         <input type="file" class="form-control"
                                id="attachments"
                                name="attachments"
-                               multiple required
                                accept=".pdf">
                         <div class="form-text text-danger">
                             📎 <@spring.message "books.attachments.supported"/>
