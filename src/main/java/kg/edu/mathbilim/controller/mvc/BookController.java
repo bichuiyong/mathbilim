@@ -1,9 +1,6 @@
 package kg.edu.mathbilim.controller.mvc;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import kg.edu.mathbilim.dto.FileDto;
 import kg.edu.mathbilim.dto.book.BookDto;
 import kg.edu.mathbilim.enums.ContentStatus;
@@ -12,7 +9,6 @@ import kg.edu.mathbilim.service.interfaces.FileService;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.UserService;
 import kg.edu.mathbilim.service.interfaces.reference.CategoryService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +25,6 @@ import java.security.Principal;
 import java.util.Locale;
 import java.util.Optional;
 
-import java.security.Principal;
 
 @Controller("mvcBook")
 @RequiredArgsConstructor

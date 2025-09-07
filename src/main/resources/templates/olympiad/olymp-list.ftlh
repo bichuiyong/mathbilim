@@ -67,7 +67,7 @@
             subscribe: '<@spring.message "olympiads.button.subscribe"></@spring.message>',
             unsubscribe: '<@spring.message "olympiads.button.unsubscribe"></@spring.message>',
             processing: 'loading',
-            detailsLink: 'обработка'
+            detailsLink: '<@spring.message "more.details"></@spring.message>'
         };
 
         const urlParams = new URLSearchParams(window.location.search);
