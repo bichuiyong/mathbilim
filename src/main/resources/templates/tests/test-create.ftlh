@@ -132,7 +132,7 @@
         .tc-input:focus,
         .tc-select:focus,
         .tc-textarea:focus,
-        .tc-file-input:focus {
+        .EventListener .tc-file-input:focus {
             outline: none;
             border-color: var(--tc-primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
@@ -318,12 +318,18 @@
             color: var(--tc-text-light);
         }
 
-        .tc-page-input:invalid {
+        .tc-page-input:invalid,
+        .tc-input:invalid,
+        .tc-select:invalid {
             border-color: var(--tc-error);
             background-color: rgba(239, 68, 68, 0.05);
         }
 
-        .tc-page-input:invalid+.tc-page-error { display: block; }
+        .tc-page-input:invalid+.tc-page-error,
+        .tc-input:invalid+.tc-page-error,
+        .tc-select:invalid+.tc-page-error {
+            display: block;
+        }
 
         .tc-page-error {
             display: none;
@@ -348,10 +354,12 @@
             </div>
 
             <div class="tc-form-content">
-                <#if errors??>
-                    <div class="tc-page-error">
+                <#if errors?? && (errors?size > 0)>
+                    <div class="tc-page-error" style="margin-bottom: 1rem; padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--tc-error); border-radius: 0.5rem;">
                         <#list errors as error>
-                            ${error.defaultMessage}<br>
+                            <#if !error.field??>
+                                ${error.defaultMessage}<br>
+                            </#if>
                         </#list>
                     </div>
                 </#if>
@@ -362,33 +370,40 @@
                         </#if>
 
                         <div class="tc-form-group">
-                            <label for="testName" class="tc-label tc-required"><@spring.message "test.create.name"/></label>
-                            <input type="text" id="testName" name="name" class="tc-input" required maxlength="50">
-                            <div class="tc-page-error" id="testNameError"><@spring.message "test.create.name.error"/></div>
+                            <label for="testName" class="tc-label"><@spring.message "test.create.name"/></label>
+                            <@spring.formInput "testCreateDto.name" 'class="tc-input"'/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="tc-form-group">
-                            <label for="description" class="tc-label tc-required"><@spring.message "test.create.description"/></label>
-                            <input type="text" id="description" name="description" class="tc-input" required maxlength="100">
-                            <div class="tc-page-error" id="descriptionError"><@spring.message "test.create.description.error"/></div>
+                            <label for="description" class="tc-label"><@spring.message "test.create.description"/></label>
+                            <@spring.formInput "testCreateDto.description" 'class="tc-input"'/>
+                            <@spring.showErrors "<br>", "text-danger small mt-1"/>
                         </div>
 
                         <div class="tc-form-group">
-                            <label for="timeLimit" class="tc-label tc-required"><@spring.message "test.create.timeLimit"/></label>
-                            <input type="number" id="timeLimit" name="timeLimit" class="tc-input" min="1">
+                            <label for="timeLimit" class="tc-label"><@spring.message "test.create.timeLimit"/></label>
+                            <input type="number" id="timeLimit" name="timeLimit" class="tc-input" min="1" value="${(testCreateDto.timeLimit!'')?string}">
                             <label class="tc-checkbox-label">
                                 <input type="hidden" name="_hasLimit" value="false">
-                                <input type="checkbox" id="hasLimit" name="hasLimit" value="true" checked onchange="testCreator.toggleTimeLimit()">
+                                <input type="checkbox" id="hasLimit" name="hasLimit" value="true" <#if testCreateDto.hasLimit?? && testCreateDto.hasLimit>checked</#if>>
                                 <@spring.message "test.create.timeLimit.set"/>
                             </label>
                         </div>
 
                         <div class="tc-form-group tc-full-width">
                             <label for="pdfFile" class="tc-label tc-required"><@spring.message "test.create.file"/></label>
-                            <input type="file" id="pdfFile" name="file" class="tc-file-input" accept=".pdf" required>
+                            <input type="file" id="pdfFile" name="file" class="tc-file-input" accept=".pdf" <#if !(testCreateDto.file??)>required</#if>>
                             <div class="tc-file-info tc-hidden" id="fileInfo"><@spring.message "test.create.file.info"/></div>
                             <#if fileError??>
                                 <span class="text-danger small">${fileError}</span>
+                            </#if>
+                            <#if errors??>
+                                <#list errors as error>
+                                    <#if error.field?? && error.field == "file">
+                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                    </#if>
+                                </#list>
                             </#if>
                         </div>
 
@@ -400,8 +415,120 @@
 
                     <div class="tc-questions-container">
                         <h2><@spring.message "test.create.questions"/></h2>
-                        <div id="questionsList"></div>
-                        <div class="tc-page-error" id="questionsError"><@spring.message "test.create.questions.error"/></div>
+                        <div id="questionsList">
+                            <#if testCreateDto?? && testCreateDto.questions?? && (testCreateDto.questions?size > 0)>
+                            <#list testCreateDto.questions as question>
+                                <#assign index = question?index />
+                                <#assign questionId = "question_${index?c}" />
+                                <div class="tc-question-card" id="${questionId}">
+                                    <div class="tc-question-header">
+                                        <span class="tc-question-number"><@spring.message "test.question"/> ${index + 1}</span>
+                                        <button type="button" class="tc-remove-question" onclick="testCreator.removeQuestion('${questionId}')">
+                                            ×
+                                        </button>
+                                    </div>
+
+                                    <div class="tc-question-inline">
+                                        <div class="tc-compact-group">
+                                            <input type="hidden" name="questions[${index}].numberOrder" value="${question.numberOrder!'${index + 1}'}">
+                                            <label for="${questionId}_page"><@spring.message "test.question.page"/></label>
+                                            <input type="number" id="${questionId}_page" name="questions[${index}].testPageNumber" class="tc-input tc-page-input" min="1" max="999" value="${question.testPageNumber!''}" required>
+                                            <div class="tc-page-error" <#if !(errors?? && errors?filter(e -> e.field?? && e.field == "questions[${index}].testPageNumber")?size > 0)>style="display: none;"</#if>><@spring.message "test.question.page.error"/> ${999}</div>
+                                            <#if errors??>
+                                                <#list errors as error>
+                                                    <#if error.field?? && error.field == "questions[${index}].testPageNumber">
+                                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                                    </#if>
+                                                </#list>
+                                            </#if>
+                                        </div>
+
+                                        <div class="tc-compact-group">
+                                            <label for="${questionId}_coefficient"><@spring.message "test.question.coefficient"/></label>
+                                            <input type="number" id="${questionId}_coefficient" name="questions[${index}].weight" class="tc-input" min="0.1" max="10" step="0.1" required value="${(question.weight!'1.0')?string}">
+                                            <#if errors??>
+                                                <#list errors as error>
+                                                    <#if error.field?? && error.field == "questions[${index}].weight">
+                                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                                    </#if>
+                                                </#list>
+                                            </#if>
+                                        </div>
+
+                                        <div class="tc-compact-group">
+                                            <label for="${questionId}_topicId"><@spring.message "test.question.topic"/></label>
+                                            <select id="${questionId}_topicId" name="questions[${index}].topicId" class="tc-select" required>
+                                                <option value=""><@spring.message "test.question.topic.select"/></option>
+                                                <#list topics as topic>
+                                                    <option value="${topic.id}" <#if (question.topicId!0) == topic.id>selected</#if>>${topic.name}</option>
+                                                </#list>
+                                            </select>
+                                            <#if errors??>
+                                                <#list errors as error>
+                                                    <#if error.field?? && error.field == "questions[${index}].topicId">
+                                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                                    </#if>
+                                                </#list>
+                                            </#if>
+                                        </div>
+
+                                        <div class="tc-compact-group">
+                                            <label class="tc-checkbox-label">
+                                                <input type="checkbox" id="${questionId}_isTextFormat" name="questions[${index}].textFormat" value="true" <#if (question.textFormat!'false')>checked</#if>>
+                                                <@spring.message "test.question.textAnswer"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="tc-answer-options" id="${questionId}_multipleOptions" <#if (question.textFormat!'false')>style="display: none;"</#if>>
+                                            <div style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--tc-text-light);"><@spring.message "test.question.correct"/></div>
+                                            <#assign correct = (question.correctAnswer!'A') />
+                                            <div class="tc-option-row">
+                                                <input type="radio" id="${questionId}_option_a" name="questions[${index}].correctAnswer" value="A" <#if correct == 'A'>checked</#if> <#if (question.textFormat!'false')>disabled</#if> required>
+                                                <label for="${questionId}_option_a"><@spring.message "test.question.optionA"/></label>
+                                            </div>
+                                            <div class="tc-option-row">
+                                                <input type="radio" id="${questionId}_option_b" name="questions[${index}].correctAnswer" value="B" <#if correct == 'B'>checked</#if> <#if (question.textFormat!'false')>disabled</#if>>
+                                                <label for="${questionId}_option_b"><@spring.message "test.question.optionB"/></label>
+                                            </div>
+                                            <div class="tc-option-row">
+                                                <input type="radio" id="${questionId}_option_c" name="questions[${index}].correctAnswer" value="C" <#if correct == 'C'>checked</#if> <#if (question.textFormat!'false')>disabled</#if>>
+                                                <label for="${questionId}_option_c"><@spring.message "test.question.optionC"/></label>
+                                            </div>
+                                            <div class="tc-option-row">
+                                                <input type="radio" id="${questionId}_option_d" name="questions[${index}].correctAnswer" value="D" <#if correct == 'D'>checked</#if> <#if (question.textFormat!'false')>disabled</#if>>
+                                                <label for="${questionId}_option_d"><@spring.message "test.question.optionD"/></label>
+                                            </div>
+                                            <#if errors??>
+                                                <#list errors as error>
+                                                    <#if error.field?? && error.field == "questions[${index}].correctAnswer">
+                                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                                    </#if>
+                                                </#list>
+                                            </#if>
+                                        </div>
+
+                                        <div class="tc-text-answer" id="${questionId}_textAnswer" <#if !(question.textFormat!'false')>style="display: none;"</#if>>
+                                            <label for="${questionId}_correctAnswer" style="font-size: 0.8rem; color: var(--tc-text-light);"><@spring.message "test.question.answer.label"/></label>
+                                            <input type="text" id="${questionId}_correctAnswer" name="questions[${index}].correctAnswer" class="tc-input" placeholder="<@spring.message 'test.question.answer.placeholder'/>" value="${question.correctAnswer!''}" <#if !(question.textFormat!'false')>disabled</#if> <#if (question.textFormat!'false')>required</#if>>
+                                            <#if errors??>
+                                                <#list errors as error>
+                                                    <#if error.field?? && error.field == "questions[${index}].correctAnswer">
+                                                        <div class="tc-page-error" style="display: block;">${error.defaultMessage}</div>
+                                                    </#if>
+                                                </#list>
+                                            </#if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </#list>
+                                <script>
+                                    window.testCreatorQuestionCount = ${(testCreateDto.questions?size!'0')};
+                                </script>
+                            </#if>
+                        </div>
+                        <div class="tc-page-error" id="questionsError" <#if !(errors?? && errors?filter(e -> e.field?? && e.field?starts_with("questions"))?size > 0)>style="display: none;"</#if>>
+                            <@spring.message "test.create.questions.error"/>
+                        </div>
 
                         <button type="button" id="addQuestionBtn" class="tc-btn tc-btn-primary">
                             <@spring.message "test.create.questions.add"/>
@@ -422,7 +549,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         const topics = [
             <#list topics as topic>
-            { id: ${topic.id}, name: "${topic.name}" }<#if topic_has_next>,</#if>
+            { id: ${topic.id}, name: "${topic.name?js_string}" }<#if topic_has_next>,</#if>
             </#list>
         ];
         const i18n = {
@@ -444,18 +571,21 @@
             answerPlaceholder: "<@spring.message 'test.question.answer.placeholder'/>",
             removeConfirm: "<@spring.message 'test.question.remove.confirm'/>",
             noQuestions: "<@spring.message 'test.question.error'/>",
-            textAnswerRequired: "<@spring.message 'test.question.textAnswer.required'/>"
+            textAnswerRequired: "<@spring.message 'test.question.textAnswer.required'/>",
+            nameError: "<@spring.message 'test.create.name.error'/>",
+            descriptionError: "<@spring.message 'test.create.description.error'/>"
         };
         <#noparse>
         class TestCreator {
             constructor() {
-                this.questionCount = 0;
+                this.questionCount = window.testCreatorQuestionCount || 0;
                 this.questionsList = document.getElementById('questionsList');
                 this.addQuestionBtn = document.getElementById('addQuestionBtn');
                 this.pdfFileInput = document.getElementById('pdfFile');
                 this.pageCountInput = document.getElementById('pageCount');
                 this.fileInfo = document.getElementById('fileInfo');
                 this.testNameInput = document.getElementById('testName');
+                this.descriptionInput = document.getElementById('description');
                 this.timeLimitInput = document.getElementById('timeLimit');
                 this.hasLimitCheckbox = document.getElementById('hasLimit');
                 this.form = document.getElementById('testForm');
@@ -464,61 +594,116 @@
             }
 
             init() {
-                this.addQuestionBtn.addEventListener('click', () => this.addQuestion());
-                this.pdfFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
-                this.testNameInput.addEventListener('input', () => this.validateTestName());
-                this.hasLimitCheckbox.addEventListener('change', () => this.toggleTimeLimit());
-                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                if (this.addQuestionBtn) {
+                    this.addQuestionBtn.addEventListener('click', () => this.addQuestion());
+                }
+                if (this.pdfFileInput) {
+                    this.pdfFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+                }
+                if (this.testNameInput) {
+                    this.testNameInput.addEventListener('input', () => this.validateTestName());
+                }
+                if (this.descriptionInput) {
+                    this.descriptionInput.addEventListener('input', () => this.validateDescription());
+                }
+                if (this.hasLimitCheckbox) {
+                    this.hasLimitCheckbox.addEventListener('change', () => this.toggleTimeLimit());
+                }
+                if (this.form) {
+                    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                }
                 this.toggleTimeLimit();
+
+                const existingCards = document.querySelectorAll('.tc-question-card');
+                existingCards.forEach((card, index) => {
+                    const questionId = card.id;
+                    this.setupQuestionEvents(card, questionId, index);
+                });
+            }
+
+            setupQuestionEvents(card, questionId, index) {
+                const textFormatCheckbox = card.querySelector(`#${questionId}_isTextFormat`);
+                if (textFormatCheckbox) {
+                    textFormatCheckbox.addEventListener('change', () => this.toggleAnswerType(questionId, index));
+                    this.toggleAnswerType(questionId, index);
+                }
             }
 
             toggleTimeLimit() {
-                if (this.hasLimitCheckbox.checked) {
-                    this.timeLimitInput.disabled = false;
-                    this.timeLimitInput.required = true;
-                    if (!this.timeLimitInput.value) {
-                        this.timeLimitInput.value = 1;
-                    }
-                } else {
-                    this.timeLimitInput.disabled = true;
-                    this.timeLimitInput.required = false;
+                if (!this.timeLimitInput || !this.hasLimitCheckbox) return;
+
+                const hasLimit = this.hasLimitCheckbox.checked;
+                this.timeLimitInput.disabled = !hasLimit;
+                this.timeLimitInput.required = hasLimit;
+
+                const hiddenInput = document.querySelector('input[name="_hasLimit"]');
+                if (hiddenInput) {
+                    hiddenInput.value = hasLimit ? 'true' : 'false';
+                }
+
+                if (!hasLimit) {
                     this.timeLimitInput.value = '';
+                } else {
+                    if (!this.timeLimitInput.value || this.timeLimitInput.value === '') {
+                        this.timeLimitInput.value = '5';
+                    }
                 }
             }
 
             validateTestName() {
-                const testName = this.testNameInput.value;
-                const error = document.getElementById('testNameError');
-                if (testName.length < 1 || testName.length > 100) {
-                    this.testNameInput.setCustomValidity('Invalid');
-                    error.style.display = 'block';
+                if (!this.testNameInput) return;
+                const testName = this.testNameInput.value.trim();
+                if (testName.length > 50) {
+                    this.testNameInput.setCustomValidity(i18n.nameError);
                 } else {
                     this.testNameInput.setCustomValidity('');
-                    error.style.display = 'none';
+                }
+            }
+
+            validateDescription() {
+                if (!this.descriptionInput) return;
+                const description = this.descriptionInput.value.trim();
+                // Note: The error elements might not exist, so we'll handle validation differently
+                if (description.length > 100) {
+                    this.descriptionInput.setCustomValidity(i18n.descriptionError);
+                } else {
+                    this.descriptionInput.setCustomValidity('');
                 }
             }
 
             async handleFileUpload(e) {
                 if (e.target.files.length > 0) {
                     const file = e.target.files[0];
-                    this.fileInfo.textContent = `${i18n.fileSelected} ${file.name}`;
-                    this.fileInfo.classList.remove('tc-hidden');
+                    if (this.fileInfo) {
+                        this.fileInfo.textContent = `${i18n.fileSelected} ${file.name}`;
+                        this.fileInfo.classList.remove('tc-hidden');
+                    }
 
                     try {
                         const arrayBuffer = await file.arrayBuffer();
                         const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                         const pageCount = pdf.numPages;
-                        this.pageCountInput.value = pageCount;
+                        if (this.pageCountInput) {
+                            this.pageCountInput.value = pageCount;
+                        }
                         this.updatePageInputsMax(pageCount);
                     } catch (error) {
-                        console.error('Ошибка при чтении PDF:', error);
-                        this.fileInfo.textContent = `${i18n.fileError} ${file.name}`;
-                        this.pageCountInput.value = '';
+                        console.error('Error reading PDF:', error);
+                        if (this.fileInfo) {
+                            this.fileInfo.textContent = `${i18n.fileError} ${file.name}`;
+                        }
+                        if (this.pageCountInput) {
+                            this.pageCountInput.value = '';
+                        }
                         this.updatePageInputsMax(999);
                     }
                 } else {
-                    this.fileInfo.classList.add('tc-hidden');
-                    this.pageCountInput.value = '';
+                    if (this.fileInfo) {
+                        this.fileInfo.classList.add('tc-hidden');
+                    }
+                    if (this.pageCountInput) {
+                        this.pageCountInput.value = '';
+                    }
                     this.updatePageInputsMax(999);
                 }
             }
@@ -534,98 +719,102 @@
                 questionCard.innerHTML = this.getQuestionHTML(questionId, index);
                 this.questionsList.appendChild(questionCard);
 
+                this.setupQuestionEvents(questionCard, questionId, index);
                 this.questionCount++;
                 this.updateQuestionNumbers();
-                document.getElementById('questionsError').style.display = 'none';
-
-                const maxPages = this.pageCountInput.value;
-                if (maxPages) {
-                    const newPageInput = document.getElementById(`${questionId}_page`);
-                    if (newPageInput) {
-                        newPageInput.setAttribute('max', maxPages);
-                    }
+                const questionsError = document.getElementById('questionsError');
+                if (questionsError) {
+                    questionsError.style.display = 'none';
                 }
 
-                this.toggleAnswerType(questionId, index);
+                const maxPages = this.pageCountInput ? (this.pageCountInput.value || 999) : 999;
+                const newPageInput = document.getElementById(`${questionId}_page`);
+                if (newPageInput) {
+                    newPageInput.setAttribute('max', maxPages);
+                }
             }
 
             getQuestionHTML(questionId, index) {
-                const maxPages = this.pageCountInput.value || 999;
+                const maxPages = this.pageCountInput ? (this.pageCountInput.value || 999) : 999;
 
                 return `
-    <div class="tc-question-header">
-        <span class="tc-question-number">${i18n.question} ${index + 1}</span>
-        <button type="button" class="tc-remove-question" onclick="testCreator.removeQuestion('${questionId}')">
-            ×
-        </button>
-    </div>
+                    <div class="tc-question-header">
+                        <span class="tc-question-number">${i18n.question} ${index + 1}</span>
+                        <button type="button" class="tc-remove-question" onclick="testCreator.removeQuestion('${questionId}')">
+                            ×
+                        </button>
+                    </div>
 
-    <div class="tc-question-inline">
-        <div class="tc-compact-group">
-            <input type="hidden" name="questions[${index}].numberOrder" value="${index + 1}">
-            <label for="${questionId}_page">${i18n.pageLabel}</label>
-            <input type="number" id="${questionId}_page" name="questions[${index}].testPageNumber" class="tc-input tc-page-input" min="1" max="${maxPages}" required>
-            <div class="tc-page-error">${i18n.pageError.replace('{0}', maxPages)}</div>
-        </div>
+                    <div class="tc-question-inline">
+                        <div class="tc-compact-group">
+                            <input type="hidden" name="questions[${index}].numberOrder" value="${index + 1}">
+                            <label for="${questionId}_page">${i18n.pageLabel}</label>
+                            <input type="number" id="${questionId}_page" name="questions[${index}].testPageNumber" class="tc-input tc-page-input" min="1" max="${maxPages}" required>
+                            <div class="tc-page-error">${i18n.pageError.replace('{0}', maxPages)}</div>
+                        </div>
 
-        <div class="tc-compact-group">
-            <label for="${questionId}_coefficient">${i18n.coefficient}</label>
-            <input type="number" id="${questionId}_coefficient" name="questions[${index}].weight" class="tc-input" min="0.1" max="10" step="0.1" required value="1.0">
-        </div>
+                        <div class="tc-compact-group">
+                            <label for="${questionId}_coefficient">${i18n.coefficient}</label>
+                            <input type="number" id="${questionId}_coefficient" name="questions[${index}].weight" class="tc-input" min="0.1" max="10" step="0.1" required value="1.0">
+                        </div>
 
-        <div class="tc-compact-group">
-            <label for="${questionId}_topicId">${i18n.topic}</label>
-            <select id="${questionId}_topicId" name="questions[${index}].topicId" class="tc-select" required>
-                <option value="">${i18n.selectTopic}</option>
-                ${topics.map(topic => `<option value="${topic.id}">${topic.name}</option>`).join('')}
-            </select>
-        </div>
+                        <div class="tc-compact-group">
+                            <label for="${questionId}_topicId">${i18n.topic}</label>
+                            <select id="${questionId}_topicId" name="questions[${index}].topicId" class="tc-select" required>
+                                <option value="">${i18n.selectTopic}</option>
+                                ${topics.map(topic => `<option value="${topic.id}">${topic.name}</option>`).join('')}
+                            </select>
+                        </div>
 
-        <div class="tc-compact-group">
-            <label class="tc-checkbox-label">
-                <input type="checkbox" id="${questionId}_isTextFormat" name="questions[${index}].textFormat" value="true" onchange="testCreator.toggleAnswerType('${questionId}', ${index})">
-                ${i18n.textAnswer}
-            </label>
-        </div>
+                        <div class="tc-compact-group">
+                            <label class="tc-checkbox-label">
+                                <input type="checkbox" id="${questionId}_isTextFormat" name="questions[${index}].textFormat" value="true">
+                                ${i18n.textAnswer}
+                            </label>
+                        </div>
 
-        <div class="tc-answer-options" id="${questionId}_multipleOptions">
-            <div style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--tc-text-light);">${i18n.correct}</div>
-            <div class="tc-option-row">
-                <input type="radio" id="${questionId}_option_a" name="questions[${index}].correctAnswer" value="A" checked required>
-                <label for="${questionId}_option_a">${i18n.optionA}</label>
-            </div>
-            <div class="tc-option-row">
-                <input type="radio" id="${questionId}_option_b" name="questions[${index}].correctAnswer" value="B">
-                <label for="${questionId}_option_b">${i18n.optionB}</label>
-            </div>
-            <div class="tc-option-row">
-                <input type="radio" id="${questionId}_option_c" name="questions[${index}].correctAnswer" value="C">
-                <label for="${questionId}_option_c">${i18n.optionC}</label>
-            </div>
-            <div class="tc-option-row">
-                <input type="radio" id="${questionId}_option_d" name="questions[${index}].correctAnswer" value="D">
-                <label for="${questionId}_option_d">${i18n.optionD}</label>
-            </div>
-        </div>
+                        <div class="tc-answer-options" id="${questionId}_multipleOptions">
+                            <div style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--tc-text-light);">${i18n.correct}</div>
+                            <div class="tc-option-row">
+                                <input type="radio" id="${questionId}_option_a" name="questions[${index}].correctAnswer" value="A" checked required>
+                                <label for="${questionId}_option_a">${i18n.optionA}</label>
+                            </div>
+                            <div class="tc-option-row">
+                                <input type="radio" id="${questionId}_option_b" name="questions[${index}].correctAnswer" value="B">
+                                <label for="${questionId}_option_b">${i18n.optionB}</label>
+                            </div>
+                            <div class="tc-option-row">
+                                <input type="radio" id="${questionId}_option_c" name="questions[${index}].correctAnswer" value="C">
+                                <label for="${questionId}_option_c">${i18n.optionC}</label>
+                            </div>
+                            <div class="tc-option-row">
+                                <input type="radio" id="${questionId}_option_d" name="questions[${index}].correctAnswer" value="D">
+                                <label for="${questionId}_option_d">${i18n.optionD}</label>
+                            </div>
+                        </div>
 
-        <div class="tc-text-answer tc-hidden" id="${questionId}_textAnswer">
-            <label for="${questionId}_correctAnswer" style="font-size: 0.8rem; color: var(--tc-text-light);">${i18n.answerLabel}</label>
-            <input type="text" id="${questionId}_correctAnswer" name="questions[${index}].correctAnswer" class="tc-input" placeholder="${i18n.answerPlaceholder}" disabled>
-        </div>
-    </div>
-    `;
+                        <div class="tc-text-answer tc-hidden" id="${questionId}_textAnswer">
+                            <label for="${questionId}_correctAnswer" style="font-size: 0.8rem; color: var(--tc-text-light);">${i18n.answerLabel}</label>
+                            <input type="text" id="${questionId}_correctAnswer" name="questions[${index}].correctAnswer" class="tc-input" placeholder="${i18n.answerPlaceholder}" disabled>
+                        </div>
+                    </div>
+                `;
             }
 
             toggleAnswerType(questionId, index) {
-                const isTextFormat = document.getElementById(`${questionId}_isTextFormat`).checked;
+                const checkbox = document.getElementById(`${questionId}_isTextFormat`);
                 const multipleOptions = document.getElementById(`${questionId}_multipleOptions`);
                 const textAnswer = document.getElementById(`${questionId}_textAnswer`);
                 const correctAnswerInput = document.getElementById(`${questionId}_correctAnswer`);
                 const radioInputs = document.querySelectorAll(`input[name="questions[${index}].correctAnswer"][type="radio"]`);
 
+                if (!checkbox || !multipleOptions || !textAnswer) return;
+
+                const isTextFormat = checkbox.checked;
+
                 if (isTextFormat) {
-                    multipleOptions.classList.add('tc-hidden');
-                    textAnswer.classList.remove('tc-hidden');
+                    multipleOptions.style.display = 'none';
+                    textAnswer.style.display = 'block';
                     if (correctAnswerInput) {
                         correctAnswerInput.disabled = false;
                         correctAnswerInput.required = true;
@@ -635,12 +824,11 @@
                         radio.required = false;
                     });
                 } else {
-                    multipleOptions.classList.remove('tc-hidden');
-                    textAnswer.classList.add('tc-hidden');
+                    multipleOptions.style.display = 'block';
+                    textAnswer.style.display = 'none';
                     if (correctAnswerInput) {
                         correctAnswerInput.disabled = true;
                         correctAnswerInput.required = false;
-                        correctAnswerInput.value = '';
                     }
                     radioInputs.forEach(radio => {
                         radio.disabled = false;
@@ -651,9 +839,13 @@
 
             removeQuestion(questionId) {
                 if (confirm(i18n.removeConfirm)) {
-                    document.getElementById(questionId).remove();
-                    this.updateQuestionNumbers();
-                    this.reindexQuestions();
+                    const questionCard = document.getElementById(questionId);
+                    if (questionCard) {
+                        questionCard.remove();
+                        this.questionCount = document.querySelectorAll('.tc-question-card').length;
+                        this.updateQuestionNumbers();
+                        this.reindexQuestions();
+                    }
                 }
             }
 
@@ -662,7 +854,7 @@
                 questionCards.forEach((card, index) => {
                     const questionNumber = card.querySelector('.tc-question-number');
                     if (questionNumber) {
-                        questionNumber.textContent = `Вопрос #${index + 1}`;
+                        questionNumber.textContent = `${i18n.question} ${index + 1}`;
                     }
                 });
             }
@@ -670,20 +862,51 @@
             reindexQuestions() {
                 const questionCards = this.questionsList.querySelectorAll('.tc-question-card');
                 questionCards.forEach((card, index) => {
-                    const questionId = card.id;
-                    const inputs = card.querySelectorAll('input, select');
-                    inputs.forEach(input => {
-                        if (input.name && input.name.includes('questions[')) {
-                            input.name = input.name.replace(/questions\[\d+\]/, `questions[${index}]`);
+                    const oldQuestionId = card.id;
+                    const newQuestionId = `question_${index}`;
+                    card.id = newQuestionId;
+
+                    const formElements = card.querySelectorAll('input, select');
+                    formElements.forEach(element => {
+                        if (element.name && element.name.includes('questions[')) {
+                            element.name = element.name.replace(/questions\[\d+\]/, `questions[${index}]`);
+                        }
+                        if (element.id && element.id.includes('question_')) {
+                            element.id = element.id.replace(/question_\d+/, newQuestionId);
                         }
                     });
-                    const numberOrderInput = card.querySelector(`input[name="questions[${index}].numberOrder"]`);
-                    if (numberOrderInput) {
-                        numberOrderInput.value = index + 1;
+
+                    const labels = card.querySelectorAll('label[for]');
+                    labels.forEach(label => {
+                        if (label.htmlFor && label.htmlFor.includes('question_')) {
+                            label.htmlFor = label.htmlFor.replace(/question_\d+/, newQuestionId);
+                        }
+                    });
+
+                    const multipleOptions = card.querySelector('.tc-answer-options');
+                    if (multipleOptions) {
+                        multipleOptions.id = `${newQuestionId}_multipleOptions`;
                     }
-                    const textFormatCheckbox = card.querySelector(`input[id="${questionId}_isTextFormat"]`);
+
+                    const textAnswer = card.querySelector('.tc-text-answer');
+                    if (textAnswer) {
+                        textAnswer.id = `${newQuestionId}_textAnswer`;
+                    }
+
+                    const textFormatCheckbox = card.querySelector('#' + newQuestionId + '_isTextFormat');
                     if (textFormatCheckbox) {
-                        textFormatCheckbox.setAttribute('onchange', `testCreator.toggleAnswerType('${questionId}', ${index})`);
+                        textFormatCheckbox.removeEventListener('change', () => this.toggleAnswerType(oldQuestionId, index));
+                        textFormatCheckbox.addEventListener('change', () => this.toggleAnswerType(newQuestionId, index));
+                    }
+
+                    const removeButton = card.querySelector('.tc-remove-question');
+                    if (removeButton) {
+                        removeButton.setAttribute('onclick', `testCreator.removeQuestion('${newQuestionId}')`);
+                    }
+
+                    const numberOrderInput = card.querySelector(`input[name^="questions[${index}]"]`);
+                    if (numberOrderInput && numberOrderInput.name.includes('numberOrder')) {
+                        numberOrderInput.value = index + 1;
                     }
                 });
             }
@@ -697,7 +920,7 @@
                     }
                     const error = input.nextElementSibling;
                     if (error && error.classList.contains('tc-page-error')) {
-                        error.textContent = `Страница должна быть от 1 до ${maxPages}`;
+                        error.textContent = i18n.pageError.replace('{0}', maxPages);
                     }
                 });
             }
@@ -706,27 +929,53 @@
                 const questionCards = this.questionsList.querySelectorAll('.tc-question-card');
                 if (questionCards.length === 0) {
                     e.preventDefault();
-                    document.getElementById('questionsError').style.display = 'block';
+                    const questionsError = document.getElementById('questionsError');
+                    if (questionsError) {
+                        questionsError.style.display = 'block';
+                    }
                     return;
                 }
+
                 for (let card of questionCards) {
-                    const index = card.id.split('_')[1];
-                    const textFormatCheckbox = card.querySelector(`input[id="question_${index}_isTextFormat"]`);
-                    const correctAnswerInput = card.querySelector(`input[id="question_${index}_correctAnswer"]`);
-                    if (textFormatCheckbox.checked && (!correctAnswerInput.value || correctAnswerInput.value.trim() === '')) {
+                    const index = Array.from(questionCards).indexOf(card);
+                    const textFormatCheckbox = card.querySelector(`input[name="questions[${index}].textFormat"]`);
+                    const correctAnswerInput = card.querySelector(`input[name="questions[${index}].correctAnswer"]`);
+
+                    if (textFormatCheckbox && textFormatCheckbox.checked && correctAnswerInput && (!correctAnswerInput.value || correctAnswerInput.value.trim() === '')) {
                         e.preventDefault();
-                        correctAnswerInput.setCustomValidity(i18n.textAnswerRequired);
-                        correctAnswerInput.reportValidity();
+                        if (correctAnswerInput) {
+                            correctAnswerInput.setCustomValidity(i18n.textAnswerRequired);
+                            correctAnswerInput.reportValidity();
+                        }
                         return;
-                    } else {
+                    } else if (correctAnswerInput) {
                         correctAnswerInput.setCustomValidity('');
                     }
                 }
+
+                this.validateTestName();
+                this.validateDescription();
+                if (this.testNameInput && this.testNameInput.validity.valid === false) {
+                    e.preventDefault();
+                    return;
+                }
+                if (this.descriptionInput && this.descriptionInput.validity.valid === false) {
+                    e.preventDefault();
+                    return;
+                }
+
                 this.reindexQuestions();
             }
         }
 
-        const testCreator = new TestCreator();
+        document.addEventListener('DOMContentLoaded', function() {
+            window.testCreator = new TestCreator();
+        });
+
+        if (document.readyState === 'loading') {
+        } else {
+            window.testCreator = new TestCreator();
+        }
+        </#noparse>
     </script>
-</#noparse>
 </@main.layout>
