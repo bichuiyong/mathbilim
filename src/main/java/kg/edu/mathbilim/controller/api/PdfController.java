@@ -18,7 +18,6 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class PdfController {
 
-    //Если хранить пдф в директории
     @GetMapping("/proxy/pdf")
     public ResponseEntity<byte[]> proxyPdf() {
         try {
@@ -33,7 +32,6 @@ public class PdfController {
         }
     }
 
-    // из инета хз
     @GetMapping("/proxy/pdfUrl")
     public ResponseEntity<byte[]> proxyPdfUrl() {
         try (InputStream in = new URL("https://kstu.kg/fileadmin/user_upload/proizvodstvennaja_praktika_bst.pdf").openStream()) {

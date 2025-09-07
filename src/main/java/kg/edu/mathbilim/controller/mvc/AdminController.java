@@ -2,7 +2,6 @@ package kg.edu.mathbilim.controller.mvc;
 
 import kg.edu.mathbilim.dto.post.PostDto;
 import kg.edu.mathbilim.dto.user.UserDto;
-import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.service.interfaces.TranslationService;
 import kg.edu.mathbilim.service.interfaces.blog.BlogService;
 import kg.edu.mathbilim.service.interfaces.event.EventService;

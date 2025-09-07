@@ -5,8 +5,6 @@ import jakarta.validation.Valid;
 import kg.edu.mathbilim.components.SubscriptionModelPopulator;
 import kg.edu.mathbilim.dto.blog.BlogDto;
 import kg.edu.mathbilim.dto.blog.BlogTranslationDto;
-import kg.edu.mathbilim.dto.post.PostDto;
-import kg.edu.mathbilim.dto.post.PostTranslationDto;
 import kg.edu.mathbilim.enums.ContentStatus;
 import kg.edu.mathbilim.model.notifications.NotificationEnum;
 import kg.edu.mathbilim.service.interfaces.UserService;
@@ -16,7 +14,6 @@ import kg.edu.mathbilim.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,7 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -125,14 +121,12 @@ public class BlogController {
                            HttpServletRequest request,
                            Model model, Principal principal) {
 
-//        blogService.incrementViewCount(id);
         String email = (principal != null) ? principal.getName() : null;
         BlogDto blog = blogService.getDisplayBlogByIdAndLanguage(id, email, language);
 
 
         String shareUrl = UrlUtil.getBaseURL(request) + "/blog/" + id;
         model.addAttribute("blog", blog);
-//        log.info("Creator name {}", blog.getCreator().getName());
         model.addAttribute("shareUrl", shareUrl);
         model.addAttribute("currentUser", principal != null ? userService.getUserByEmail(principal.getName()) : null);
 

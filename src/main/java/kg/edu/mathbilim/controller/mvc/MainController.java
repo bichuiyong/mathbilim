@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class MainController {
-//    private final TelegramNotificationService telegramNotificationService;
 
     @GetMapping
     public String index() {
-//        telegramNotificationService.sendVisitNotificationToAll();
         return "main";
     }
 

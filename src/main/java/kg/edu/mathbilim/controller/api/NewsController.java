@@ -1,6 +1,5 @@
 package kg.edu.mathbilim.controller.api;
 
-import kg.edu.mathbilim.dto.abstracts.AdminContentDto;
 import kg.edu.mathbilim.dto.news.NewsDto;
 import kg.edu.mathbilim.service.interfaces.news.NewsService;
 import lombok.RequiredArgsConstructor;
