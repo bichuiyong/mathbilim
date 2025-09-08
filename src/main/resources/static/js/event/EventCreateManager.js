@@ -779,10 +779,6 @@ class EventCreateManager {
         const offlineRadio = document.getElementById('offlineEvent');
         const onlineRadio = document.getElementById('onlineEvent');
 
-        if (!offlineRadio?.checked && !onlineRadio?.checked) {
-            this.showNotification('Выберите тип проведения мероприятия', 'warning');
-            return false;
-        }
 
         if (offlineRadio?.checked) {
             const addressInput = document.querySelector('input[name*="address"]');
@@ -813,16 +809,10 @@ class EventCreateManager {
             }
         });
 
-        if (!hasAtLeastOneTranslation) {
-            this.showNotification('Заполните название хотя бы на одном языке', 'warning');
-            return false;
-        }
-
         return true;
     }
 
     prepareFormData() {
-        // Синхронизируем данные из Froala редакторов
         Object.keys(this.froalaInstances).forEach(lang => {
             const editor = this.froalaInstances[lang];
             const textarea = document.querySelector(`textarea[data-lang="${lang}"]`);
