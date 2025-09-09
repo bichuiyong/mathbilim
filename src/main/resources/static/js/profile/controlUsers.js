@@ -391,40 +391,67 @@ function clearErrorMessage(modalId) {
 }
 
 function changeEditModal() {
-    document.getElementById('resultTableUsers').addEventListener('click', async function(event) {
-        const button = event.target;
-        const userId = button.dataset.userId;
-        if (button.classList.contains('edit-button')) {
-            document.getElementById('editUserId').value = userId;
-            document.getElementById('editUserName').value = button.dataset.userName;
-            document.getElementById('editUserSurname').value = button.dataset.userSurname;
-            document.getElementById('editUserRole').value = button.dataset.userRole;
-            document.getElementById('editUserType').value = button.dataset.userType;
-        } else if (button.classList.contains('delete-button')) {
-            const userId = button.dataset.userId;
+    const resultTable = document.getElementById('resultTableUsers');
 
-            const deleteUserText  = document.getElementById('deleteUserText');
-            const deleteUserInput = document.getElementById('deleteUserInput');
-            const deleteUserBtn   = document.getElementById('deleteUserBtn');
+    if (resultTable) {
+        resultTable.addEventListener('click', async function(event) {
+            const editButton = event.target.closest('.edit-button');
+            const deleteButton = event.target.closest('.delete-button');
 
-            deleteUserBtn.dataset.userId = userId;
-            deleteUserInput.value = userId;
-            deleteUserText.textContent = 'Вы уверены, что хотите удалить пользователя с ID: ' + userId + '?';
-        } else if (button.classList.contains('block-button')) {
-            await handleUserAction(
-                'PATCH',
-                `Пользователь с id=${userId} успешно заблокирован/изменён`,
-                'Ошибка блокировки/изменения пользователя',
-                `/api/users/${userId}`,
-                null,
-                {
-                    url: '/api/users',
-                    onSuccess: addUserToTable,
-                    changeModals: changeEditModal
+            if (editButton) {
+                const userId = editButton.dataset.userId;
+                document.getElementById('editUserId').value = userId;
+                document.getElementById('editUserName').value = editButton.dataset.userName;
+                document.getElementById('editUserSurname').value = editButton.dataset.userSurname;
+                document.getElementById('editUserRole').value = editButton.dataset.userRole;
+                document.getElementById('editUserType').value = editButton.dataset.userType;
+
+            } else if (deleteButton) {
+                const userId = deleteButton.dataset.userId;
+
+                console.log('Delete user button clicked, userId:', userId);
+
+                const deleteUserText = document.getElementById('deleteUserText');
+                const deleteUserInput = document.getElementById('deleteUserInput');
+                const deleteUserBtn = document.getElementById('deleteUserBtn');
+
+                if (deleteUserBtn) {
+                    deleteUserBtn.removeAttribute('data-user-id');
+                    deleteUserBtn.removeAttribute('data-type-id');
+                    deleteUserBtn.removeAttribute('data-content-type');
+                    deleteUserBtn.setAttribute('data-user-id', userId);
                 }
-            );
-        }
-    });
+
+                if (deleteUserInput) {
+                    deleteUserInput.value = userId;
+                }
+
+                if (deleteUserText) {
+                    deleteUserText.textContent = 'Вы уверены, что хотите удалить пользователя с ID: ' + userId + '?';
+                }
+            }
+        });
+    }
+
+    if (resultTable) {
+        resultTable.addEventListener('click', async function(event) {
+            if (event.target.classList.contains('block-button')) {
+                const userId = event.target.dataset.userId;
+                await handleUserAction(
+                    'PATCH',
+                    `Пользователь с id=${userId} успешно заблокирован/изменён`,
+                    'Ошибка блокировки/изменения пользователя',
+                    `/api/users/${userId}`,
+                    null,
+                    {
+                        url: '/api/users',
+                        onSuccess: addUserToTable,
+                        changeModals: changeEditModal
+                    }
+                );
+            }
+        });
+    }
 }
 
 let editUserBtn = document.getElementById('editUserBtn');
@@ -444,22 +471,27 @@ editUserBtn.onclick = function () {
 
 let deleteUserBtn = document.getElementById('deleteUserBtn');
 deleteUserBtn.onclick = async function () {
-    let userId = deleteUserBtn.dataset.userId;
-    let typeId = deleteUserBtn.dataset.typeId;
+    let userId = deleteUserBtn.getAttribute('data-user-id');
+    let typeId = deleteUserBtn.getAttribute('data-type-id');
+
     let url, successUrl, onSuccess, changeModals;
-    if (userId) {
+
+    if (userId && userId !== 'null' && userId !== '') {
         url = `/api/users/${userId}`;
         successUrl = '/api/users';
         onSuccess = addUserToTable;
         changeModals = changeEditModal;
-    }
-    if (typeId) {
-        let contentType = deleteUserBtn.dataset.contentType;
+    } else if (typeId && typeId !== 'null' && typeId !== '') {
+        let contentType = deleteUserBtn.getAttribute('data-content-type');
         url = `/api/${contentType}/${typeId}`;
         successUrl = `/api/${contentType}`;
         onSuccess = addContentInList;
         changeModals = changeModalForTypes;
+    } else {
+        console.error('No valid ID found for deletion');
+        return;
     }
+
     await handleUserAction(
         'DELETE',
         `Объект успешно удалён`,

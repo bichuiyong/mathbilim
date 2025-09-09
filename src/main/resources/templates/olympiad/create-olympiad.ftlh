@@ -488,7 +488,7 @@
                                         <div class="stage-card">
                                             <div class="stage-header">
                                             <span class="stage-title">
-                                                <@spring.message "olympiad.create.stageTitle"/>
+                                                <@spring.message "olympiad.create.stageTitle"/> ${stage.stageOrder}
                                             </span>
                                             </div>
                                             <div class="olympiad-grid" style="gap: 1rem;">

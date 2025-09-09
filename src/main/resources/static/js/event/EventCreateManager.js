@@ -755,8 +755,6 @@ class EventCreateManager {
     }
 
 
-
-
     validateTranslations() {
         const titleFields = document.querySelectorAll('input[name*="title"]');
         let hasAtLeastOneTranslation = false;

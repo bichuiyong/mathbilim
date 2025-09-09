@@ -87,11 +87,17 @@ public class TestServiceImpl implements TestService {
         List<Integer> pages = new ArrayList<>();
         List<MultipartFile> sorted  = new ArrayList<>();
         List<Question> questions = new ArrayList<>();
+        int pageCount = 0;
+        int tempPageCount = 0;
 
         for (QuestionDto dtoQuestion : dto.getQuestions()) {
+            if (tempPageCount != dtoQuestion.getTestPageNumber()) {
+                tempPageCount = dtoQuestion.getTestPageNumber();
+                pageCount++;
+            }
             Question ques = Question.builder()
                     .numberOrder(dtoQuestion.getNumberOrder())
-                    .testPageNumber(dtoQuestion.getTestPageNumber())
+                    .testPageNumber(pageCount)
                     .textFormat(dtoQuestion.isTextFormat())
                     .correctAnswer(dtoQuestion.getCorrectAnswer())
                     .weight(dtoQuestion.getWeight())

@@ -65,6 +65,10 @@ public class UserController {
 
     @GetMapping("{id}/edit")
     public String profileEdit(@PathVariable Long id, Model model) {
+        User user = userService.getAuthUserEntity();
+        if (!user.getId().equals(id)) {
+            return "redirect:/users/" + user.getId();
+        }
         if (!model.containsAttribute("userEditDto")) {
             model.addAttribute("userEditDto", userService.getEditUserById(id));
         } else {
