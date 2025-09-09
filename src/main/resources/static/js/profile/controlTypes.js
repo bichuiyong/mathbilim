@@ -144,11 +144,15 @@ function handleDeleteButton(deleteButton) {
         return;
     }
 
-    const deleteUserModal = document.getElementById('deleteUserModalBody');
+    const deleteUserText = document.getElementById('deleteUserText');   // ← ПРАВИЛЬНО
     const deleteUserInput = document.getElementById('deleteUserInput');
     const deleteUserBtn = document.getElementById('deleteUserBtn');
 
     if (deleteUserBtn) {
+        deleteUserBtn.removeAttribute('data-user-id');
+        deleteUserBtn.removeAttribute('data-type-id');
+        deleteUserBtn.removeAttribute('data-content-type');
+
         deleteUserBtn.setAttribute('data-type-id', typeId);
         if (staticTypeSortBy) {
             deleteUserBtn.setAttribute('data-content-type', staticTypeSortBy.value);
@@ -159,8 +163,8 @@ function handleDeleteButton(deleteButton) {
         deleteUserInput.value = typeId;
     }
 
-    if (deleteUserModal) {
-        deleteUserModal.textContent = 'Вы уверены, что хотите удалить объект с ID: ' + typeId;
+    if (deleteUserText) {
+        deleteUserText.textContent = 'Вы уверены, что хотите удалить объект с ID: ' + typeId + '?';
     }
 }
 

@@ -3,6 +3,9 @@
 <@main.layout title="Создать мероприятие">
     <div class="container mt-5">
         <#assign currentLocale = springMacroRequestContext.locale.language>
+
+        <div id="notificationsContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999; max-width: 400px;"></div>
+
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
@@ -12,12 +15,19 @@
                     <div class="card-body">
                         <form id="eventForm" action="/events/create" method="post" enctype="multipart/form-data">
                             <@main.csrf/>
+
+                            <!-- Общие ошибки формы -->
                             <#if error??>
-                                <div class="alert alert-danger">
-                                    ${error}
+                                <div class="alert alert-danger alert-dismissible fade show notification-custom mb-4" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle me-2 fs-5"></i>
+                                        <strong>${error}</strong>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             </#if>
 
+                            <!-- Основные поля мероприятия -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
                                     <@spring.message "events.cover"/>
@@ -49,13 +59,18 @@
                                             <@spring.message "events.crop.change"/>
                                         </button>
                                     </div>
+
+                                    <#if imageError??>
+                                        <span class="text-danger small">${imageError}</span>
+                                    </#if>
+
                                 </div>
                                 <small class="form-text text-muted">
                                     <@spring.message "events.cover.aspectRatio"/>
                                 </small>
                             </div>
 
-                            <!-- Основные поля мероприятия -->
+                            <!-- Дата и время -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <@spring.bind "createEventDto.event.startDate"/>
@@ -75,7 +90,8 @@
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
                                     </div>
                                     <#if spring.status.error>
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
                                             <#list spring.status.errorMessages as error>${error}</#list>
                                         </div>
                                     </#if>
@@ -97,7 +113,8 @@
                                         <i class="fas fa-calendar-alt datetime-icon"></i>
                                     </div>
                                     <#if spring.status.error>
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
                                             <#list spring.status.errorMessages as error>${error}</#list>
                                         </div>
                                     </#if>
@@ -108,6 +125,7 @@
                                 </div>
                             </div>
 
+                            <!-- Тип и организации -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <@spring.bind "createEventDto.event.typeId"/>
@@ -132,7 +150,8 @@
                                         </#list>
                                     </select>
                                     <#if spring.status.error>
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
                                             <#list spring.status.errorMessages as error>${error}</#list>
                                         </div>
                                     </#if>
@@ -142,7 +161,7 @@
                                     <label class="form-label fw-bold">
                                         <@spring.message "events.organizations"/>
                                     </label>
-                                    <select class="form-select" name="organizationIds" multiple>
+                                    <select class="form-select <#if spring.status.error>is-invalid</#if>" name="organizationIds" multiple>
                                         <#if organizations?has_content>
                                             <#list organizations as org>
                                                 <option value="${org.id}">${org.name}</option>
@@ -151,12 +170,19 @@
                                             <option disabled><@spring.message "events.organizations.notFound"/></option>
                                         </#if>
                                     </select>
+                                    <#if spring.status.error>
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <#list spring.status.errorMessages as error>${error}</#list>
+                                        </div>
+                                    </#if>
                                     <small class="form-text text-muted">
                                         <@spring.message "events.organizations.multiple"/>
                                     </small>
                                 </div>
                             </div>
 
+                            <!-- Формат мероприятия -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
                                     <@spring.message "events.format"/> <span class="text-danger">*</span>
@@ -170,7 +196,8 @@
                                                    id="offlineEvent"
                                                    name="event.isOffline"
                                                    value="true"
-                                                   <#if spring.status.value?? && spring.status.value == "true">checked</#if>>
+                                                   <#if spring.status.error>aria-invalid="true"</#if>
+                                                    <#if spring.status.value?? && spring.status.value == "true">checked</#if>>
                                             <label class="form-check-label" for="offlineEvent">
                                                 <i class="fas fa-map-marker-alt me-2"></i>
                                                 <@spring.message "events.format.offline"/>
@@ -184,7 +211,8 @@
                                                    id="onlineEvent"
                                                    name="event.isOffline"
                                                    value="false"
-                                                   <#if spring.status.value?? && spring.status.value == "false">checked</#if>>
+                                                   <#if spring.status.error>aria-invalid="true"</#if>
+                                                    <#if spring.status.value?? && spring.status.value == "false">checked</#if>>
                                             <label class="form-check-label" for="onlineEvent">
                                                 <i class="fas fa-globe me-2"></i>
                                                 <@spring.message "events.format.online"/>
@@ -192,8 +220,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <#if spring.status.error>
+                                    <div class="text-danger mt-2 d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <#list spring.status.errorMessages as error>${error}</#list>
+                                    </div>
+                                </#if>
                             </div>
 
+                            <!-- Поля локации -->
                             <div class="location-fields">
                                 <div class="mb-4" id="addressField" style="display: none;">
                                     <@spring.bind "createEventDto.event.address"/>
@@ -208,7 +243,8 @@
                                            value="${spring.status.value!''}"
                                            placeholder="${springMacroRequestContext.getMessage('events.address.placeholder')}">
                                     <#if spring.status.error>
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
                                             <#list spring.status.errorMessages as error>${error}</#list>
                                         </div>
                                     </#if>
@@ -227,13 +263,15 @@
                                            value="${spring.status.value!''}"
                                            placeholder="https://example.com/meeting">
                                     <#if spring.status.error>
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
                                             <#list spring.status.errorMessages as error>${error}</#list>
                                         </div>
                                     </#if>
                                 </div>
                             </div>
 
+                            <!-- Переводы -->
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" id="languageTabs">
@@ -266,7 +304,6 @@
                                             <div class="tab-pane fade <#if trans?is_first>show active</#if>"
                                                  id="lang-${trans.languageCode}">
 
-                                                <!-- Заголовок -->
                                                 <div class="mb-4">
                                                     <@spring.bind "createEventDto.event.eventTranslations[${trans?index}].title"/>
                                                     <label class="form-label fw-bold">
@@ -279,13 +316,13 @@
                                                            value="${spring.status.value!''}"
                                                            placeholder="${springMacroRequestContext.getMessage('events.title.placeholder')}">
                                                     <#if spring.status.error>
-                                                        <div class="invalid-feedback">
+                                                        <div class="invalid-feedback d-flex align-items-center">
+                                                            <i class="fas fa-exclamation-circle me-2"></i>
                                                             <#list spring.status.errorMessages as error>${error}</#list>
                                                         </div>
                                                     </#if>
                                                 </div>
 
-                                                <!-- Контент -->
                                                 <div class="mb-4">
                                                     <@spring.bind "createEventDto.event.eventTranslations[${trans?index}].content"/>
                                                     <label class="form-label fw-bold">
@@ -296,7 +333,8 @@
                                                               data-lang="${trans.languageCode}"
                                                               id="content-${trans.languageCode}">${spring.status.value!''}</textarea>
                                                     <#if spring.status.error>
-                                                        <div class="invalid-feedback">
+                                                        <div class="invalid-feedback d-flex align-items-center">
+                                                            <i class="fas fa-exclamation-circle me-2"></i>
                                                             <#list spring.status.errorMessages as error>${error}</#list>
                                                         </div>
                                                     </#if>
@@ -310,15 +348,26 @@
                             </div>
 
                             <div class="mb-4">
+                                <@spring.bind "createEventDto.attachments"/>
                                 <label class="form-label fw-bold">
                                     <@spring.message "events.attachments"/>
                                 </label>
-                                <input type="file" name="attachments" multiple class="form-control" accept=".jpg, .jpeg, .png">
+                                <input type="file" name="attachments" multiple class="form-control <#if spring.status.error>is-invalid</#if>" accept=".jpg, .jpeg, .png">
+                                <#if spring.status.error>
+                                    <div class="invalid-feedback d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <#list spring.status.errorMessages as error>${error}</#list>
+                                    </div>
+                                </#if>
                                 <small class="form-text text-muted">
                                     <@spring.message "events.attachments.description"/>
                                 </small>
                             </div>
+                            <#if attachmentError??>
+                                <span class="text-danger small">${attachmentError}</span>
+                            </#if>
 
+                            <!-- Кнопки -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                 <span class="text-muted">
@@ -351,17 +400,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
 
-    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-    <!-- Подключение Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
 
-    <!-- Подключение компонентов -->
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
     <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
@@ -369,182 +415,71 @@
     <script src="/static/js/event/EventCreateManager.js"></script>
 
     <style>
-        /* Стили для кропа */
-        .image-upload-container {
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: border-color 0.3s ease;
+        .is-invalid {
+            border-color: #dc3545 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4'/%3e%3cpath d='M6 7v2'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+            padding-right: calc(1.5em + 0.75rem);
         }
 
-        .image-upload-container:hover {
-            border-color: #2563eb;
+        .invalid-feedback {
+            display: flex;
+            align-items: center;
+            color: #dc3545;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(220, 53, 69, 0.05);
+            border-radius: 0.375rem;
+            border-left: 3px solid #dc3545;
         }
 
-        .crop-container {
-            max-width: 100%;
-            max-height: 400px;
-            overflow: hidden;
+        .invalid-feedback i {
+            font-size: 0.875rem;
         }
 
-        .cropped-image-container {
-            width: 100%;
-            max-width: 600px;
-            aspect-ratio: 3/1;
-            overflow: hidden;
-            border-radius: 8px;
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
-        .cropped-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .is-invalid {
+            animation: shakeError 0.6s ease;
         }
 
-        /* Стили для индикаторов заполненности */
-        .translation-indicator .fa-circle.text-success {
-            color: #10b981 !important;
+        .notification-custom {
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .translation-indicator .fa-circle.text-warning {
-            color: #f59e0b !important;
+        .notification-custom.alert-danger {
+            border-left: 4px solid #dc3545;
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
         }
 
-        .translation-indicator .fa-circle.text-danger {
-            color: #ef4444 !important;
+        .notification-custom.alert-warning {
+            border-left: 4px solid #ffc107;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
         }
 
-        /* Стили для полей локации */
-        .location-fields {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+        .notification-custom.alert-success {
+            border-left: 4px solid #198754;
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
         }
 
-        /* Стили для радио-кнопок */
-        .form-check-label {
-            cursor: pointer;
-            user-select: none;
+        .alert {
+            animation: slideInRight 0.5s ease forwards;
         }
 
-        .form-check-input:checked + .form-check-label {
-            color: #2563eb;
-            font-weight: 600;
+        .alert.fade {
+            animation: slideOutRight 0.5s ease forwards;
         }
 
-        /* Стили для полей дат с Flatpickr */
-        .datetime-input-wrapper {
-            position: relative;
-        }
-
-        .datetime-picker {
-            padding-right: 2.5rem;
-            cursor: pointer;
-        }
-
-        .datetime-icon {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6b7280;
-            pointer-events: none;
-            font-size: 1rem;
-        }
-
-        .datetime-picker:focus + .datetime-icon,
-        .datetime-picker.flatpickr-input.active + .datetime-icon {
-            color: #2563eb;
-        }
-
-        /* Кастомизация Flatpickr */
-        .flatpickr-calendar {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-            border: none !important;
-            border-radius: 12px !important;
-            overflow: hidden;
-        }
-
-        .flatpickr-calendar.open {
-            z-index: 1060 !important;
-        }
-
-        .flatpickr-day.selected {
-            background: #2563eb !important;
-            border-color: #2563eb !important;
-        }
-
-        .flatpickr-day.selected:hover {
-            background: #1d4ed8 !important;
-            border-color: #1d4ed8 !important;
-        }
-
-        .flatpickr-day:hover {
-            background: #e0e7ff !important;
-            border-color: #e0e7ff !important;
-        }
-
-        .flatpickr-day.today {
-            border-color: #2563eb !important;
-            color: #2563eb !important;
-        }
-
-        .flatpickr-day.today:hover {
-            background: #e0e7ff !important;
-            color: #1d4ed8 !important;
-        }
-
-        .flatpickr-months .flatpickr-month {
-            background: #f8fafc !important;
-            color: #1e293b !important;
-        }
-
-        .flatpickr-weekdays {
-            background: #f1f5f9 !important;
-        }
-
-        .flatpickr-weekday {
-            color: #64748b !important;
-            font-weight: 600 !important;
-        }
-
-        .flatpickr-time {
-            border-top: 1px solid #e2e8f0 !important;
-        }
-
-        .flatpickr-time .numInputWrapper {
-            background: #f8fafc !important;
-        }
-
-        .flatpickr-time input {
-            color: #1e293b !important;
-            font-weight: 600 !important;
-        }
-
-        /* Анимация для появления полей даты */
-        .datetime-input-wrapper {
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .datetime-input-wrapper:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .datetime-input-wrapper:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Анимации для уведомлений */
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
@@ -567,36 +502,73 @@
             }
         }
 
-        /* Улучшенные стили для уведомлений */
-        .notification-custom {
-            backdrop-filter: blur(10px);
-            border-left: 4px solid;
+        /* Дополнительные стили для полей */
+        .form-control:focus.is-invalid {
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
         }
 
-        .notification-custom.alert-success {
-            border-left-color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
+        .form-select:focus.is-invalid {
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
         }
 
-        .notification-custom.alert-warning {
-            border-left-color: #f59e0b;
-            background: rgba(245, 158, 11, 0.1);
+        /* Стили для радио-кнопок с ошибками */
+        .form-check-input.is-invalid {
+            border-color: #dc3545;
         }
 
-        .notification-custom.alert-danger {
-            border-left-color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
+        .form-check-input.is-invalid:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
         }
 
-        .notification-custom.alert-info {
-            border-left-color: #2563eb;
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        /* Стили для Froala */
-        .fr-box.fr-basic {
-            border-radius: 8px !important;
+        .text-danger {
+            color: #dc3545 !important;
+            font-weight: 500;
         }
     </style>
+
+    <script>
+        function showNotification(message, type = 'danger') {
+            const container = document.getElementById('notificationsContainer');
+            const notificationId = 'notification-' + Date.now();
+
+            const notification = document.createElement('div');
+            notification.className = `alert alert-`+ type+` alert-dismissible fade show notification-custom mb-3`;
+            notification.role = 'alert';
+            notification.id = notificationId;
+
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas `+ type === 'danger' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle'+ ` me-2"></i>
+                    <strong>`+ message +`</strong>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+
+            container.appendChild(notification);
+
+            setTimeout(() => {
+                const alert = bootstrap.Alert.getOrCreateInstance(notification);
+                alert.close();
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            <#if error??>
+            showNotification('${error}', 'danger');
+            </#if>
+
+            const invalidFields = document.querySelectorAll('.is-invalid');
+            invalidFields.forEach(field => {
+                field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Сохранение...';
+        });
+    </script>
 
 </@main.layout>

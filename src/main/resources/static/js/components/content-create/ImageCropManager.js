@@ -69,10 +69,6 @@ class ImageCropManager {
             return;
         }
 
-        if (!file.type.startsWith('image/')) {
-            this.onError('Пожалуйста, выберите изображение');
-            return;
-        }
 
         const reader = new FileReader();
         reader.onload = (e) => {
