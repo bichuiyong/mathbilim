@@ -738,19 +738,8 @@ class EventCreateManager {
             isValid = false;
         }
 
-        // Валидация типа мероприятия
-        if (!this.validateEventType()) {
-            console.log('Event type validation failed');
-            isValid = false;
-        }
 
-        // Валидация локации
-        if (!this.validateLocation()) {
-            console.log('Location validation failed');
-            isValid = false;
-        }
 
-        // Валидация переводов
         if (!this.validateTranslations()) {
             console.log('Translations validation failed');
             isValid = false;
@@ -759,45 +748,12 @@ class EventCreateManager {
         console.log('=== FORM VALIDATION RESULT:', isValid, '===');
 
         if (!isValid) {
-            // Прокручиваем к первой ошибке
             this.scrollToFirstError();
         }
 
         return isValid;
     }
 
-    validateEventType() {
-        const typeSelect = document.querySelector('select[name*="typeId"]');
-        if (!typeSelect || !typeSelect.value) {
-            this.showNotification('Выберите тип мероприятия', 'warning');
-            return false;
-        }
-        return true;
-    }
-
-    validateLocation() {
-        const offlineRadio = document.getElementById('offlineEvent');
-        const onlineRadio = document.getElementById('onlineEvent');
-
-
-        if (offlineRadio?.checked) {
-            const addressInput = document.querySelector('input[name*="address"]');
-            if (!addressInput?.value?.trim()) {
-                this.showNotification('Укажите адрес для офлайн мероприятия', 'warning');
-                return false;
-            }
-        }
-
-        if (onlineRadio?.checked) {
-            const urlInput = document.querySelector('input[name*="url"]');
-            if (!urlInput?.value?.trim()) {
-                this.showNotification('Укажите ссылку для онлайн мероприятия', 'warning');
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     validateTranslations() {
         const titleFields = document.querySelectorAll('input[name*="title"]');

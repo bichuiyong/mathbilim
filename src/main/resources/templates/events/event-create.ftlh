@@ -59,6 +59,11 @@
                                             <@spring.message "events.crop.change"/>
                                         </button>
                                     </div>
+
+                                    <#if imageError??>
+                                        <span class="text-danger small">${imageError}</span>
+                                    </#if>
+
                                 </div>
                                 <small class="form-text text-muted">
                                     <@spring.message "events.cover.aspectRatio"/>
@@ -358,6 +363,9 @@
                                     <@spring.message "events.attachments.description"/>
                                 </small>
                             </div>
+                            <#if attachmentError??>
+                                <span class="text-danger small">${attachmentError}</span>
+                            </#if>
 
                             <!-- Кнопки -->
                             <div class="d-flex justify-content-between align-items-center">
@@ -392,17 +400,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/css/froala_editor.pkgd.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.2.1/js/froala_editor.pkgd.min.js"></script>
 
-    <!-- Подключение Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-    <!-- Подключение Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
 
-    <!-- Подключение компонентов -->
     <script src="/static/js/components/content-create/ImageCropManager.js"></script>
     <script src="/static/js/components/content-create/LanguageTabsManager.js"></script>
     <script src="/static/js/components/content-create/TranslationValidationManager.js"></script>
@@ -410,7 +415,6 @@
     <script src="/static/js/event/EventCreateManager.js"></script>
 
     <style>
-        /* Стили для ошибок */
         .is-invalid {
             border-color: #dc3545 !important;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4'/%3e%3cpath d='M6 7v2'/%3e%3c/svg%3e");
@@ -436,7 +440,6 @@
             font-size: 0.875rem;
         }
 
-        /* Анимация для появления ошибок */
         @keyframes shakeError {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
@@ -447,7 +450,6 @@
             animation: shakeError 0.6s ease;
         }
 
-        /* Стили для уведомлений */
         .notification-custom {
             backdrop-filter: blur(10px);
             border: none;
@@ -470,7 +472,6 @@
             background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
         }
 
-        /* Анимации для уведомлений */
         .alert {
             animation: slideInRight 0.5s ease forwards;
         }
