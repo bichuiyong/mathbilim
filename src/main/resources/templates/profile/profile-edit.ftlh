@@ -84,7 +84,7 @@
                             <a href="/users/change-password" class="btn btn-outline-warning btn-sm">
                                 <i class="fas fa-key me-2"></i><@spring.message "button.changePassword"/>
                             </a>
-                            <a href="https://t.me/Math_Bilim_bot?start=${user.id}" class="btn btn-outline-info btn-sm">
+                            <a href="https://t.me/Math_Bilim_bot?start=${userEditDto.id}" class="btn btn-outline-info btn-sm">
                                 <i class="fas fa-bell me-2"></i><@spring.message "button.notifications"/>
                             </a>
                             <#if isAdmin>
